@@ -46,26 +46,4 @@
     
   </entry>
   
-  <entry>
-    <title>test_blog</title>
-    <link href="http://yoursite.com/2016/12/01/test-blog/"/>
-    <id>http://yoursite.com/2016/12/01/test-blog/</id>
-    <published>2016-12-01T08:55:53.000Z</published>
-    <updated>2016-12-01T16:37:21.465Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="this-is-a-test"><a href="#this-is-a-test" class="headerlink" title="this is a test"></a>this is a test</h1>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;this-is-a-test&quot;&gt;&lt;a href=&quot;#this-is-a-test&quot; class=&quot;headerlink&quot; title=&quot;this is a test&quot;&gt;&lt;/a&gt;this is a test&lt;/h1&gt;
-    
-    </summary>
-    
-      <category term="C" scheme="http://yoursite.com/categories/C/"/>
-    
-    
-      <category term="hehe" scheme="http://yoursite.com/tags/hehe/"/>
-    
-  </entry>
-  
 </feed>
