@@ -215,6 +215,84 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2016/12/05/tornado入门-简单的web服务/">
+                            tornado入门(简单的web服务)
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-05T22:18:06+08:00">
+	
+		    12月 05, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/python学习/">python学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="tornado入门"><a href="#tornado入门" class="headerlink" title="tornado入门"></a>tornado入门</h1><p>tornado是使用python编写的一个强大的，可扩展的web服务器。它在高并发的网络请求中表现的足够稳定，但是却在创建和编写的过程中有着足够的轻量级，并能够被用在大量的应用和工具中。<br>不同于那些最多只能达到10000个并发连接的传统web服务器，tornado在设计之初就考虑到了性能因素，旨在解决C10K问题，这样的设计使得其成为一个非常<strong>高性能</strong>的框架。此外，它还拥有处理安全性，用户验证，社交网络以及与外部服务进行异步交互的工具。</p>
+<h2 id="Hello-tornado"><a href="#Hello-tornado" class="headerlink" title="Hello tornado"></a>Hello tornado</h2><p>tornado是一个编写对HTTP请求响应的框架。作为程序员，你的工作是编写响应特定条件HTTP请求的响应的handler。</p>
+<p>hello.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> tornado.httpserver</div><div class="line"><span class="keyword">import</span> tornado.ioloop</div><div class="line"><span class="keyword">import</span> tornado.options</div><div class="line"><span class="keyword">import</span> tornado.web</div><div class="line"></div><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> define, options</div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, help = <span class="string">"run on the give port"</span>, type = int)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">indexHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        greeting = self.get_argument(<span class="string">"greeting"</span>, <span class="string">"hello"</span>)</div><div class="line">        self.write(greeting + <span class="string">", friend user!"</span>)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application(handlers=[(<span class="string">r"/"</span>, indexHandler)])</div><div class="line">    http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">    http_server.listen(options.port)</div><div class="line">    tornado.ioloop.IOLoop.instance().start()</div></pre></td></tr></table></figure></p>
+<p>编写一个tornado应用中最多的工作是定义继承自tornado.RequestHandler的类。在这个例子中，我们创建了一个简单的应用，在指定的端口监听请求，并在根目录(“/“)下响应请求。<br>执行命令:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python hello.py --port=9999</div></pre></td></tr></table></figure></p>
+<p>使用命令对其访问<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">curl http://localhost:9999</div><div class="line">hello, friend user!</div><div class="line"></div><div class="line">curl http://localhost:9999/?greeting=david</div><div class="line">david, friend user!</div></pre></td></tr></table></figure></p>
+<p>现在tornado程序就已经在localhost:9999处进行监听。我们可以对其进行根目录使用get方法进行那个访问.</p>
+<h3 id="程序分析"><a href="#程序分析" class="headerlink" title="程序分析"></a>程序分析</h3><p>下面我们开始<strong>逐条语句</strong>进行分析：<br>开始的import语句导入了程序所必须的tornado的相关模块。虽然tornado还有其他模块，但是我们在这个程序中只需要这四个模块</p>
+<h4 id="tornado中options模块分析"><a href="#tornado中options模块分析" class="headerlink" title="tornado中options模块分析"></a>tornado中options模块分析</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> define, options</div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, help=<span class="string">"run on the given port"</span>, type=int)</div></pre></td></tr></table></figure>
+<p>tornado包含了一个有用的模块<strong>tornado.options来从命令行读取设置</strong>。我们在这里使用这个模块指定我们监听http请求的端口。它的工作流程是:<br>如果一个与define语句中同名的设置在命令行中给出，那么它将成为<strong>全局options的一个属性</strong>。如果用户程序在运行的时候使用了–help选项，程序将打印出你所定义的选项以及你在define函数的help参数中指定的文本。如果程序没有为这个选项指定值，那么则使用default进行替代。tornado使用type来验证参数的类型，当类型不合适的时候跑出一个异常。因此，我们允许一个整数port作为options.port来访问程序，如果用户没有指定port的值，则默认为9999端口。</p>
+<h4 id="请求处理函数类及方法"><a href="#请求处理函数类及方法" class="headerlink" title="请求处理函数类及方法"></a>请求处理函数类及方法</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">indexHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        greeting = self.get_argument(<span class="string">"greeting"</span>, <span class="string">"hello"</span>)</div><div class="line">        self.write(greeting + <span class="string">", friend user!"</span>)</div></pre></td></tr></table></figure>
+<p>这是tornado请求处理函数类，它继承自tornado.web.RequestHandler,<strong>当处理一个请求的时候，tornado将这个类实例化，并调用http请求方法所对应的方法。</strong>在这个例子中，我们只定义了get方法，也就是说这个类对http的GET请求作出响应。我们稍后将看到实现不止一个http方法的处理函数。</p>
+<h4 id="获取查询参数"><a href="#获取查询参数" class="headerlink" title="获取查询参数"></a>获取查询参数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.get_argument(<span class="string">"greeting"</span>, <span class="string">"hello"</span>)</div></pre></td></tr></table></figure>
+<p>tornado的request类有很多有用的内建函数，包括get_argument()用来用一个查询字符串中获取参数的值。上述的意思是从查询字符串中获取查询参数greeting的值，若查询参数中没有greeting参数，则会其值为”hello”，即为其默认值。</p>
+<h4 id="RequestHandler的write函数"><a href="#RequestHandler的write函数" class="headerlink" title="RequestHandler的write函数"></a>RequestHandler的write函数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.write(greeting + <span class="string">", firendly user"</span>)</div></pre></td></tr></table></figure>
+<p>tornado另一个有用的方法是write,它以一个字符串作为参数，并将其写入到http响应中去。在这里，我们使用请求中greeting的参数提供的值插入到greeting中，并写回到相应中去。</p>
+<h4 id="创建Application实例"><a href="#创建Application实例" class="headerlink" title="创建Application实例"></a>创建Application实例</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application(handlers=[(<span class="string">r"/"</span>, indexHandler)])</div></pre></td></tr></table></figure>
+<p>这里是真正使得tornado运转起来的语句。首先我们使用tornado的options解析命令行。然后我们创建了一个tornado的Application实例。传递给Application的<strong>init</strong>方法的最重要的参数就是handlers。它告诉tornado用那个类来响应特定的请求。</p>
+<h4 id="端口监听"><a href="#端口监听" class="headerlink" title="端口监听"></a>端口监听</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">http_server.listen(options.port)</div><div class="line">tornado.ioloop.IOLoop.instance().start()</div></pre></td></tr></table></figure>
+<p>从这离开始的代码会被反复使用，一旦Application对象被创建，我们可以将其传递给httpServer的对象，然后使用我们在命令行指定的端口进行监听。最后，在程序准备好接收HTTP请求后，我们创建一个tornado的IOLoop的实例进行启动。</p>
+<h2 id="简单字符串服务"><a href="#简单字符串服务" class="headerlink" title="简单字符串服务"></a>简单字符串服务</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> textwrap</div><div class="line"></div><div class="line"><span class="keyword">import</span> tornado.web</div><div class="line"><span class="keyword">import</span> tornado.httpserver</div><div class="line"><span class="keyword">import</span> tornado.ioloop</div><div class="line"><span class="keyword">import</span> tornado.options</div><div class="line"></div><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> define,options</div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, help=<span class="string">"run on the given port"</span>, type=int)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReverseHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, input1, input2)</span>:</span></div><div class="line">        self.write(input1)</div><div class="line">        self.write(input2)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WrapHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self)</span>:</span></div><div class="line">        text =self.get_argument(<span class="string">"text"</span>)</div><div class="line">        width = self.get_argument(<span class="string">"width"</span>, <span class="number">40</span>)</div><div class="line">        self.write(textwrap.fill(text, int(width)))</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application(handlers=[(<span class="string">r"/reverse/([0-9]+)(\w+)"</span>, ReverseHandler),\</div><div class="line">                                            (<span class="string">r"/wrap"</span>, WrapHandler)])</div><div class="line">    http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">    http_server.listen(options.port)</div><div class="line">    tornado.ioloop.IOLoop.instance().start()</div></pre></td></tr></table></figure>
+<p>上述是一个简单的字符串操作的web服务，有两个作用:第一，到/reverse/string的GET请求奖会返回url路径中指定字符串的反转形式。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$curl http://localhost:8000/reverse/123456</div><div class="line">654321</div></pre></td></tr></table></figure></p>
+<p>作用二是，到/wrap的POST请求从参数text中取得指定文本，并返回按照参数width指定宽度装饰的文本。下面的请求指定一个没有宽度的字符串，所以它的输出宽度被指定为程序中的get_argument的默认值40<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$http://localhost:8000/wrap -d text=Lorem+ipsum+dolor+sit+amet,+consectetuer+adipiscing+elit.</div><div class="line">Lorem ipsum dolor sit amet, consectetuer</div><div class="line">adipiscing elit.</div></pre></td></tr></table></figure></p>
+<h2 id="RequestHandler的更多知识"><a href="#RequestHandler的更多知识" class="headerlink" title="RequestHandler的更多知识"></a>RequestHandler的更多知识</h2><h3 id="HTTP方法"><a href="#HTTP方法" class="headerlink" title="HTTP方法"></a>HTTP方法</h3><p>到目前为止我们只用了http中的get,post方法，但tornado支持任何合法的HTTP请求（GET,POST,HEAD,DELETE,OPTIONS）。你可以非常容易的定义上述任何一种方法的行为，只需要在RequestHandler类中使用同名方法。</p>
+<h3 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h3><p>从上面的代码可以看出，你可以使用RequestHandler类的set_status()方法显式的去设置http的状态麻，但是你需要记住在某些情况下，tornado会自动的设置状态码。下面是一种常见的纲要。</p>
+<ul>
+<li>404 Not Found<br>当http请求的路径无法匹配到任何RequestHandler类对应的模式的时候tornado会返回404相应码。</li>
+<li>400 Bad Request<br>如果你调用了一个没有默认值的get_argument()方法，并且没有发现给定名称的参数，tornado将自动返回一个400响应码</li>
+<li>405 Method Not Allowed<br>如果传入的请求使用了RequestHandler中没有定义的http方法，tornado将自动返回一个405响应码。</li>
+<li>500 Internal Server Error<br>当程序遇到任何不能让其退出的错误的时候，tornado自动返回响应码500.代码中任何没有捕获的异常也会返回500.</li>
+<li>200 OK<br>如果相应成功，并没有其他返回码被设置，tornado将默认返回一个200.</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/05/tornado入门-简单的web服务/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/12/04/迭代器和简单的生成器/">
                             迭代器和简单的生成器
                         </a>
