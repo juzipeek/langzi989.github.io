@@ -252,15 +252,8 @@
 </blockquote>
 </li>
 </ul>
-<h2 id="nice相关linux命令nice与renice"><a href="#nice相关linux命令nice与renice" class="headerlink" title="nice相关linux命令nice与renice"></a>nice相关linux命令nice与renice</h2><ol>
-<li>nice的作用是启动时设置nice的值<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ice -n -<span class="number">5</span> ./MatrixJudge &amp;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>-n参数用于指定nice值</p>
-<ol>
-<li>renice的作用是修改已经存在的进程的nice值<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">renice -<span class="number">5</span> -p <span class="number">10000</span></div></pre></td></tr></table></figure>
-</li>
-</ol>
+<h2 id="nice相关linux命令nice与renice"><a href="#nice相关linux命令nice与renice" class="headerlink" title="nice相关linux命令nice与renice"></a>nice相关linux命令nice与renice</h2><p>1.nice的作用是启动时设置nice的值<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ice -n -<span class="number">5</span> ./MatrixJudge &amp;</div></pre></td></tr></table></figure></p>
+<p>-n参数用于指定nice值<br>2.renice的作用是修改已经存在的进程的nice值<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">renice -<span class="number">5</span> -p <span class="number">10000</span></div></pre></td></tr></table></figure></p>
 <p>上述的意思是将PID为10000的nice值置为-5,-p参数用于指定PID。</p>
 
                     

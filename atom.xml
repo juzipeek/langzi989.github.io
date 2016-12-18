@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-12-18T20:25:45.625Z</updated>
+  <updated>2016-12-18T20:26:48.601Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2016/12/19/linux%E8%BF%9B%E7%A8%8Bnice%E5%80%BC%E5%8F%8A%E5%85%B6%E4%B8%8E%E4%BC%98%E5%85%88%E7%BA%A7%E7%9A%84%E5%85%B3%E7%B3%BB/"/>
     <id>http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/</id>
     <published>2016-12-18T20:25:04.000Z</published>
-    <updated>2016-12-18T20:25:45.625Z</updated>
+    <updated>2016-12-18T20:26:48.601Z</updated>
     
     <content type="html"><![CDATA[<h1 id="linux进程nice值及其与优先级的关系"><a href="#linux进程nice值及其与优先级的关系" class="headerlink" title="linux进程nice值及其与优先级的关系"></a>linux进程nice值及其与优先级的关系</h1><p>在linux多任务环境的系统中，系统是根据进程的优先级(priority)给进程进行分配资源。优先级越高的进程越有优先执行的权利。配置进程优先权碎玉linux很有用，可以大大改善系统的性能。还可以把指定的进程运行在指定的cpu上。</p>
 <h2 id="nice与priority"><a href="#nice与priority" class="headerlink" title="nice与priority"></a>nice与priority</h2><p>在linux中使用ps 的-l参数可以对进程的优先权信息进行查看：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ ps -l</div><div class="line"><span class="comment">#打印信息:</span></div><div class="line">F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD</div><div class="line"><span class="number">0</span> S  <span class="number">1000</span>  <span class="number">5242</span>  <span class="number">5232</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> -  <span class="number">7461</span> wait   pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> bash</div><div class="line"><span class="number">4</span> T  <span class="number">1000</span>  <span class="number">5881</span>  <span class="number">5242</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> - <span class="number">12247</span> signal pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> top</div><div class="line"><span class="number">4</span> R  <span class="number">1000</span>  <span class="number">6386</span>  <span class="number">5242</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> -  <span class="number">8996</span> -      pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ps</div></pre></td></tr></table></figure></p>
@@ -35,15 +35,8 @@
 </blockquote>
 </li>
 </ul>
-<h2 id="nice相关linux命令nice与renice"><a href="#nice相关linux命令nice与renice" class="headerlink" title="nice相关linux命令nice与renice"></a>nice相关linux命令nice与renice</h2><ol>
-<li>nice的作用是启动时设置nice的值<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ice -n -<span class="number">5</span> ./MatrixJudge &amp;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>-n参数用于指定nice值</p>
-<ol>
-<li>renice的作用是修改已经存在的进程的nice值<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">renice -<span class="number">5</span> -p <span class="number">10000</span></div></pre></td></tr></table></figure>
-</li>
-</ol>
+<h2 id="nice相关linux命令nice与renice"><a href="#nice相关linux命令nice与renice" class="headerlink" title="nice相关linux命令nice与renice"></a>nice相关linux命令nice与renice</h2><p>1.nice的作用是启动时设置nice的值<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ice -n -<span class="number">5</span> ./MatrixJudge &amp;</div></pre></td></tr></table></figure></p>
+<p>-n参数用于指定nice值<br>2.renice的作用是修改已经存在的进程的nice值<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">renice -<span class="number">5</span> -p <span class="number">10000</span></div></pre></td></tr></table></figure></p>
 <p>上述的意思是将PID为10000的nice值置为-5,-p参数用于指定PID。</p>
 ]]></content>
     
