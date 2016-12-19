@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Categoría: linux笔记 - 魏传柳</title>
+    <title>通过/proc/meminfo实时获取系统内存使用情况 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,12 +15,16 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta property="og:type" content="blog">
-<meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/categories/linux笔记/index.html">
+    <meta name="description" content="通过/proc/meminfo实时获取系统内存使用情况(Linux)linux内核提供了一种通过/proc文件系统来在运行时访问内核内部数据结构，改变内核设置的机制，各种硬件平台上的linux系统的/proc文件系统的基本概念都是相同的。/proc文件系统是一种内核和内核模块用来向进程发送信息的机制。这个伪文件系统可以和内核内部的数据结构进行交互，获取实时的进程信息。注意，/proc文件系统是存储">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="通过/proc/meminfo实时获取系统内存使用情况">
+<meta property="og:url" content="http://yoursite.com/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/index.html">
 <meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="通过/proc/meminfo实时获取系统内存使用情况(Linux)linux内核提供了一种通过/proc文件系统来在运行时访问内核内部数据结构，改变内核设置的机制，各种硬件平台上的linux系统的/proc文件系统的基本概念都是相同的。/proc文件系统是一种内核和内核模块用来向进程发送信息的机制。这个伪文件系统可以和内核内部的数据结构进行交互，获取实时的进程信息。注意，/proc文件系统是存储">
+<meta property="og:updated_time" content="2016-12-19T15:44:47.024Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="魏传柳">
+<meta name="twitter:title" content="通过/proc/meminfo实时获取系统内存使用情况">
+<meta name="twitter:description" content="通过/proc/meminfo实时获取系统内存使用情况(Linux)linux内核提供了一种通过/proc文件系统来在运行时访问内核内部数据结构，改变内核设置的机制，各种硬件平台上的linux系统的/proc文件系统的基本概念都是相同的。/proc文件系统是一种内核和内核模块用来向进程发送信息的机制。这个伪文件系统可以和内核内部的数据结构进行交互，获取实时的进程信息。注意，/proc文件系统是存储">
     
     
         
@@ -49,7 +53,7 @@
         
     
 
-<header id="header" data-behavior="1">
+<header id="header" data-behavior="3">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <h1 class="header-title">
         <a class="header-title-link" href="/ ">魏传柳</a>
@@ -73,7 +77,7 @@
         
     
 
-<nav id="sidebar" data-behavior="1">
+<nav id="sidebar" data-behavior="3">
     
         <div class="sidebar-profile">
             <a href="/#about">
@@ -200,28 +204,21 @@
 </nav>
 
             
-            <div id="main" data-behavior="1"
+            <div id="main" data-behavior="3"
                  class="
                         hasCoverMetaIn
                         ">
                 
-    
-
-<section class="postShorten-group main-content-wrap">
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
-                            通过/proc/meminfo实时获取系统内存使用情况
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            通过/proc/meminfo实时获取系统内存使用情况
+        </h1>
+    
+    <div class="post-meta">
     <time itemprop="datePublished" datetime="2016-12-19T23:43:49+08:00">
 	
 		    19 12月 2016
@@ -236,10 +233,11 @@
     
 </div>
 
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="通过-proc-meminfo实时获取系统内存使用情况-Linux"><a href="#通过-proc-meminfo实时获取系统内存使用情况-Linux" class="headerlink" title="通过/proc/meminfo实时获取系统内存使用情况(Linux)"></a>通过/proc/meminfo实时获取系统内存使用情况(Linux)</h1><p>linux内核提供了一种通过/proc文件系统来在运行时访问内核内部数据结构，改变内核设置的机制，各种硬件平台上的linux系统的/proc文件系统的基本概念都是相同的。<br>/proc文件系统是一种内核和内核模块用来向进程发送信息的机制。这个伪文件系统可以和内核内部的数据结构进行交互，获取实时的进程信息。注意，<strong>/proc文件系统是存储与内存而不是硬盘,/proc虚拟文件系统实质是以文件系统的形式访问内核数据的接口</strong>。</p>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="通过-proc-meminfo实时获取系统内存使用情况-Linux"><a href="#通过-proc-meminfo实时获取系统内存使用情况-Linux" class="headerlink" title="通过/proc/meminfo实时获取系统内存使用情况(Linux)"></a>通过/proc/meminfo实时获取系统内存使用情况(Linux)</h1><p>linux内核提供了一种通过/proc文件系统来在运行时访问内核内部数据结构，改变内核设置的机制，各种硬件平台上的linux系统的/proc文件系统的基本概念都是相同的。<br>/proc文件系统是一种内核和内核模块用来向进程发送信息的机制。这个伪文件系统可以和内核内部的数据结构进行交互，获取实时的进程信息。注意，<strong>/proc文件系统是存储与内存而不是硬盘,/proc虚拟文件系统实质是以文件系统的形式访问内核数据的接口</strong>。</p>
 <h2 id="proc-meminfo"><a href="#proc-meminfo" class="headerlink" title="/proc/meminfo"></a>/proc/meminfo</h2><p>linux系统中/proc/meminfo这个文件用来记录了系统内存使用的详细情况。其中top，free命令中的数据是通过这个文件中的信息计算并按照特定的格式进行显示。<br>/proc/meminfo内容详解：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$cat</span> /proc/meminfo</div><div class="line">MemTotal:        <span class="number">8052444</span> kB</div><div class="line">MemFree:         <span class="number">2754588</span> kB</div><div class="line">MemAvailable:    <span class="number">3934252</span> kB</div><div class="line">Buffers:          <span class="number">137128</span> kB</div><div class="line">Cached:          <span class="number">1948128</span> kB</div><div class="line">SwapCached:            <span class="number">0</span> kB</div><div class="line">Active:          <span class="number">3650920</span> kB</div><div class="line">Inactive:        <span class="number">1343420</span> kB</div><div class="line">Active(anon):    <span class="number">2913304</span> kB</div><div class="line">Inactive(anon):   <span class="number">727808</span> kB</div><div class="line">Active(file):     <span class="number">737616</span> kB</div><div class="line">Inactive(file):   <span class="number">615612</span> kB</div><div class="line">Unevictable:         <span class="number">196</span> kB</div><div class="line">Mlocked:             <span class="number">196</span> kB</div><div class="line">SwapTotal:       <span class="number">8265724</span> kB</div><div class="line">SwapFree:        <span class="number">8265724</span> kB</div><div class="line">Dirty:               <span class="number">104</span> kB</div><div class="line">Writeback:             <span class="number">0</span> kB</div><div class="line">AnonPages:       <span class="number">2909332</span> kB</div><div class="line">Mapped:           <span class="number">815524</span> kB</div><div class="line">Shmem:            <span class="number">732032</span> kB</div><div class="line">Slab:             <span class="number">153096</span> kB</div><div class="line">SReclaimable:      <span class="number">99684</span> kB</div><div class="line">SUnreclaim:        <span class="number">53412</span> kB</div><div class="line">KernelStack:       <span class="number">14288</span> kB</div><div class="line">PageTables:        <span class="number">62192</span> kB</div><div class="line">NFS_Unstable:          <span class="number">0</span> kB</div><div class="line">Bounce:                <span class="number">0</span> kB</div><div class="line">WritebackTmp:          <span class="number">0</span> kB</div><div class="line">CommitLimit:    <span class="number">12291944</span> kB</div><div class="line">Committed_AS:   <span class="number">11398920</span> kB</div><div class="line">VmallocTotal:   <span class="number">34359738367</span> kB</div><div class="line">VmallocUsed:           <span class="number">0</span> kB</div><div class="line">VmallocChunk:          <span class="number">0</span> kB</div><div class="line">HardwareCorrupted:     <span class="number">0</span> kB</div><div class="line">AnonHugePages:   <span class="number">1380352</span> kB</div><div class="line">CmaTotal:              <span class="number">0</span> kB</div><div class="line">CmaFree:               <span class="number">0</span> kB</div><div class="line">HugePages_Total:       <span class="number">0</span></div><div class="line">HugePages_Free:        <span class="number">0</span></div><div class="line">HugePages_Rsvd:        <span class="number">0</span></div><div class="line">HugePages_Surp:        <span class="number">0</span></div><div class="line">Hugepagesize:       <span class="number">2048</span> kB</div><div class="line">DirectMap4k:      <span class="number">201472</span> kB</div><div class="line">DirectMap2M:     <span class="number">5967872</span> kB</div><div class="line">DirectMap1G:     <span class="number">3145728</span> kB</div></pre></td></tr></table></figure></p>
 <p>详解：</p>
 <ul>
@@ -272,157 +270,77 @@
 </ul>
 <h2 id="通过-proc-meminfo实时获取系统内存使用情况"><a href="#通过-proc-meminfo实时获取系统内存使用情况" class="headerlink" title="通过/proc/meminfo实时获取系统内存使用情况"></a>通过/proc/meminfo实时获取系统内存使用情况</h2><p>目前我们希望实时获取系统中内存的使用情况，其实目前感兴趣的信息只有MemTotal,MemAvailable,SwapTotalSwapFree,cache(包括buffers,cahed以及swap cache)。<br>所以我们只需要从/proc/meminfo中实时的去读取上述几个信息进行分析即可。</p>
 
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
             
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/">
-                            通过/proc/stat计算linux系统即时CPU使用率
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-19T06:03:09+08:00">
-	
-		    19 12月 2016
-    	
-    </time>
-    
-        <span>en </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/linux/">linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/memory/">memory</a>
 
             </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="通过-proc-stat计算linux系统即时CPU使用率"><a href="#通过-proc-stat计算linux系统即时CPU使用率" class="headerlink" title="通过/proc/stat计算linux系统即时CPU使用率"></a>通过/proc/stat计算linux系统即时CPU使用率</h1><h2 id="proc-stat"><a href="#proc-stat" class="headerlink" title="/proc/stat"></a>/proc/stat</h2><p>/proc文件系统是一个伪文件系统，它存在于内存中，不占用外存空间。它以文件系统的方式为内核与进程提供通信接口。用户和应用程序可以通过/proc得到系统的信息，并可以改变内核的某些参数。由于系统的信息，如进程是动态改变的，所以用户或应用程序读取/proc目录中的文件的时，/proc文件系统是动态从系统内核读出所需信息并提交的。<br>在linux或Ubuntu系统中，/proc/stat文件记录了所有CPU活动的信息，该文件中的所有值都是从系统启动开始累计到当前的值。我们可以通过一个较小的时间段的CPU利用率值来估算某一个时刻的CPU利用率。首先我们先来查看一下/proc/stat中的内容：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ cat /proc/stat</div><div class="line">cpu  <span class="number">15543</span> <span class="number">334</span> <span class="number">4963</span> <span class="number">142337</span> <span class="number">3413</span> <span class="number">0</span> <span class="number">180</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu0 <span class="number">3877</span> <span class="number">142</span> <span class="number">1137</span> <span class="number">35988</span> <span class="number">615</span> <span class="number">0</span> <span class="number">28</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu1 <span class="number">3866</span> <span class="number">23</span> <span class="number">1068</span> <span class="number">35982</span> <span class="number">608</span> <span class="number">0</span> <span class="number">74</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu2 <span class="number">4104</span> <span class="number">159</span> <span class="number">1333</span> <span class="number">35395</span> <span class="number">735</span> <span class="number">0</span> <span class="number">59</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu3 <span class="number">3695</span> <span class="number">9</span> <span class="number">1424</span> <span class="number">34970</span> <span class="number">1454</span> <span class="number">0</span> <span class="number">18</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div></pre></td></tr></table></figure></p>
-<p>上面的信息中前八个是比较重要的。</p>
-<ul>
-<li>user(15543): 从系统启动到当前时刻，处于用户态的时间(用户空间的CPU时间)，不包括nice为负值的进程。</li>
-<li>nice(334): 从系统启动到当前时刻，nice值为负的进程所占的CPU时间。</li>
-<li>system(4963): 从系统启动到当前时刻，处于内核状态的CPU时间。</li>
-<li>idle(142337): 从系统启动到当前时刻，除了I/O等待时间以外的其他等待时间</li>
-<li>iowait(3413): ~，IO等待时间</li>
-<li>irq(0): ~, 硬中断时间</li>
-<li>softrq(180): ~,软中断时间。</li>
-<li>steal: ~,在虚拟环境中运行的时间。</li>
-</ul>
-<blockquote>
-<p>总的CPU时间为：total = user+nice+system+idle+iowait+irq+softrq</p>
-</blockquote>
-<h2 id="计算当前时刻的CPU使用率"><a href="#计算当前时刻的CPU使用率" class="headerlink" title="计算当前时刻的CPU使用率"></a>计算当前时刻的CPU使用率</h2><p>我们使用距离当前时刻较小的间隔的时间段的CPU使用率近似当前时刻的CPU使用率。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CPU Usage=1 - (△idle+△iowait) / △total_time</div><div class="line">		 =1 - (idle2+iowait2 - idle1 - iowait1) / (total_time2 - total_time1)</div></pre></td></tr></table></figure></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
         
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">ANTERIOR</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/" data-tooltip="通过/proc/stat计算linux系统即时CPU使用率">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">SIGUIENTE</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
             
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/19/linux进程nice值及其与优先级的关系/">
-                            linux进程nice值及其与优先级的关系
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-19T04:25:04+08:00">
-	
-		    19 12月 2016
-    	
-    </time>
-    
-        <span>en </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
+                <a class="post-action-btn btn btn--default" href="#">
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="linux进程nice值及其与优先级的关系"><a href="#linux进程nice值及其与优先级的关系" class="headerlink" title="linux进程nice值及其与优先级的关系"></a>linux进程nice值及其与优先级的关系</h1><p>在linux多任务环境的系统中，系统是根据进程的优先级(priority)给进程进行分配资源。优先级越高的进程越有优先执行的权利。配置进程优先权碎玉linux很有用，可以大大改善系统的性能。还可以把指定的进程运行在指定的cpu上。</p>
-<h2 id="nice与priority"><a href="#nice与priority" class="headerlink" title="nice与priority"></a>nice与priority</h2><p>在linux中使用ps 的-l参数可以对进程的优先权信息进行查看：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ ps -l</div><div class="line"><span class="comment">#打印信息:</span></div><div class="line">F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD</div><div class="line"><span class="number">0</span> S  <span class="number">1000</span>  <span class="number">5242</span>  <span class="number">5232</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> -  <span class="number">7461</span> wait   pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> bash</div><div class="line"><span class="number">4</span> T  <span class="number">1000</span>  <span class="number">5881</span>  <span class="number">5242</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> - <span class="number">12247</span> signal pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> top</div><div class="line"><span class="number">4</span> R  <span class="number">1000</span>  <span class="number">6386</span>  <span class="number">5242</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> -  <span class="number">8996</span> -      pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ps</div></pre></td></tr></table></figure></p>
-<p>从上面可以看出,上表中打印出一些有用的信息：</p>
-<ul>
-<li>UID: 进程的user id</li>
-<li>PID: 进程ID</li>
-<li>PPID: 当前进程的父进程的ID</li>
-<li>PRI: 优先级(pri越小优先级越高)</li>
-<li>NI: nice值，当前进程的nice值<br>前三个值比较容易理解，pri和NI的含义，<strong>pri比较好理解，即进程的优先级，pri越小，优先级越高</strong>，那nice值呢？<strong>nice表示进程可被执行的优先级的修正数值。如前面说的，pri越小越优先被执行，那么加入nice之后pri(new)=pri(old)+nice。这样,当nice为负值的时候，该程序的pri变小，优先级越高。</strong><blockquote>
-<p>注意:进程的nice值不是进程的优先级，但是会影响进程优先级的变化。</p>
-</blockquote>
-</li>
-</ul>
-<h2 id="nice相关linux命令nice与renice"><a href="#nice相关linux命令nice与renice" class="headerlink" title="nice相关linux命令nice与renice"></a>nice相关linux命令nice与renice</h2><p>1.nice的作用是启动时设置nice的值<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ice -n -<span class="number">5</span> ./MatrixJudge &amp;</div></pre></td></tr></table></figure></p>
-<p>-n参数用于指定nice值<br>2.renice的作用是修改已经存在的进程的nice值<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">renice -<span class="number">5</span> -p <span class="number">10000</span></div></pre></td></tr></table></figure></p>
-<p>上述的意思是将PID为10000的nice值置为-5,-p参数用于指定PID。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/19/linux进程nice值及其与优先级的关系/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    <div class="pagination-bar">
-    <ul class="pagination">
-        
-        
-        <li class="pagination-number">página 1 de 1</li>
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
     </ul>
 </div>
 
-</section>
+
+        
+            
+        
+    </div>
+</article>
 
 
 
@@ -433,6 +351,83 @@
 </footer>
 
             </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">ANTERIOR</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/" data-tooltip="通过/proc/stat计算linux系统即时CPU使用率">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">SIGUIENTE</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
+                <i class="fa fa-google-plus"></i><span class="">Compartir en Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
+                <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
+                <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
             
         </div>
         
@@ -479,6 +474,8 @@
     <!--SCRIPTS-->
 <script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
 <!--SCRIPTS END-->
+
+    
 
 
 
