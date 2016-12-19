@@ -269,7 +269,7 @@
 <li>VmallocUsed:     已用Vmalloc内存区的大小</li>
 <li>VmallocChunk:  vmalloc区可用的连续最大快的大小</li>
 </ul>
-<h2 id="通过-proc-meminfo实时获取系统内存使用情况"><a href="#通过-proc-meminfo实时获取系统内存使用情况" class="headerlink" title="通过/proc/meminfo实时获取系统内存使用情况"></a>通过/proc/meminfo实时获取系统内存使用情况</h2><p>目前我们希望实时获取系统中内存的使用情况，其实目前感兴趣的信息只有MemTotal,MemAvailable,SwapTotalSwapFree,cache(包括buffers,cahed以及swap cache)。<br>所以我们只需要从/proc/meminfo中实时的去读取上述几个信息进行分析即可。</p>
+<h2 id="通过-proc-meminfo实时获取系统内存使用情况"><a href="#通过-proc-meminfo实时获取系统内存使用情况" class="headerlink" title="通过/proc/meminfo实时获取系统内存使用情况"></a>通过/proc/meminfo实时获取系统内存使用情况</h2><p><a href="http://man.linuxde.net/free" target="_blank" rel="external">http://man.linuxde.net/free</a><br>目前我们希望实时获取系统中内存的使用情况，实际可以挪用的内存数为free+cache+buffer,实际使用的内存数为used-cache-buffer(total-free-cache-buffer),</p>
 
                     
                         
