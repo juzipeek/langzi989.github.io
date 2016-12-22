@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-12-21T12:59:27.376Z</updated>
+  <updated>2016-12-22T16:10:28.499Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,41 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>C++前置声明</title>
+    <link href="http://yoursite.com/2016/12/22/C-%E5%89%8D%E7%BD%AE%E5%A3%B0%E6%98%8E/"/>
+    <id>http://yoursite.com/2016/12/22/C-前置声明/</id>
+    <published>2016-12-22T16:08:31.000Z</published>
+    <updated>2016-12-22T16:10:28.499Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="C-前置声明"><a href="#C-前置声明" class="headerlink" title="C++前置声明"></a>C++前置声明</h1><p>以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。</p>
+<h2 id="实际场景"><a href="#实际场景" class="headerlink" title="实际场景"></a>实际场景</h2><p>我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：<br>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Key.hpp"</span></span></div><div class="line"><span class="keyword">class</span> Lock &#123;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key m_key;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Lock.hpp"</span></span></div><div class="line"><span class="keyword">class</span> Key &#123;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		m_lock;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个时候出现了两个类相互包含的情况，因为在编译Lock.cpp的时候，我们需要去查看Key的定义，于是去定义Key,在Key中需要Lock的定义，于是又去构造Lock,这样下去，就出现了一个无限循环包含的情况，有些编译器会直接编译错误，而其他编译器会无限包含下去。<br>这该怎么办呢？有办法，C++为我们提供了前置声明。前置声明是什么？就这个例子来讲，我们要造一把锁，光有锁不行啊，我们还得有能打开这把锁的钥匙。但是锁还没有造好，总不能先打造钥匙吧，钥匙的形状我定了，改天在造。先把锁造好，造锁的时候我要先给要是留一个位置，等锁造好了，我再决定造什么样的钥匙。<strong>前置声明就是我在声明一个类(Lock)的时候,用到了另外一个类（Key）的定义，但是Key还没定义呢，而且我先不需要Key的定义，只需要直到Key是一个类就好了。那好，我就先声明类Key,告诉编译器Key是一个类(不需要包含Key.hpp)</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Key;</div></pre></td></tr></table></figure></p>
+<p>然后在Lock中用到Key的时候，都用指针或者引用代替(因为指针是固定大小的，但Key的大小只有知道了Key的定义才能确定)。然后上面的代码就可以改造为如下：</p>
+<p>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Key;</div><div class="line"><span class="keyword">class</span> Lock&#123;</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key *mp_key;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Lock;</div><div class="line"><span class="keyword">class</span> Key &#123;</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Lock* mp_lock;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="前置声明注意的问题"><a href="#前置声明注意的问题" class="headerlink" title="前置声明注意的问题"></a>前置声明注意的问题</h2><h3 id="必须使用前置声明的指针或引用形式"><a href="#必须使用前置声明的指针或引用形式" class="headerlink" title="必须使用前置声明的指针或引用形式"></a>必须使用前置声明的指针或引用形式</h3><p>在需要使用前置声明的文件中，不可以使用类的定义式，因为类的定义式只有在类定义之后才能获取，这个时候类还没有定义，所以会出错。另一个类在构造的时候编译器是需要计算该对象所占的字节的大小给其分配内存的，但是如果使用类的定义式，这个时候类还未定义，所以无法计算其大小，所以只能使用指针或者引用的形式进行引用。</p>
+<h3 id="避免在Lock中使用Key的方法"><a href="#避免在Lock中使用Key的方法" class="headerlink" title="避免在Lock中使用Key的方法"></a>避免在Lock中使用Key的方法</h3><h3 id="避免在Key定义之前调用Key的析构函数"><a href="#避免在Key定义之前调用Key的析构函数" class="headerlink" title="避免在Key定义之前调用Key的析构函数"></a>避免在Key定义之前调用Key的析构函数</h3>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;C-前置声明&quot;&gt;&lt;a href=&quot;#C-前置声明&quot; class=&quot;headerlink&quot; title=&quot;C++前置声明&quot;&gt;&lt;/a&gt;C++前置声明&lt;/h1&gt;&lt;p&gt;以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如
+    
+    </summary>
+    
+      <category term="C++学习" scheme="http://yoursite.com/categories/C-%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="C++" scheme="http://yoursite.com/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>条款27:尽量少做转型动作</title>
     <link href="http://yoursite.com/2016/12/21/%E6%9D%A1%E6%AC%BE27-%E5%B0%BD%E9%87%8F%E5%B0%91%E5%81%9A%E8%BD%AC%E5%9E%8B%E5%8A%A8%E4%BD%9C/"/>
     <id>http://yoursite.com/2016/12/21/条款27-尽量少做转型动作/</id>
-    <published>2016-12-21T12:57:15.000Z</published>
-    <updated>2016-12-21T12:59:27.376Z</updated>
+    <published>2016-12-21T14:57:15.000Z</published>
+    <updated>2016-12-21T14:28:46.924Z</updated>
     
     <content type="html"><![CDATA[<h1 id="条款27-尽量少做转型动作-Effective-C"><a href="#条款27-尽量少做转型动作-Effective-C" class="headerlink" title="条款27:尽量少做转型动作(Effective C++)"></a>条款27:尽量少做转型动作(Effective C++)</h1><p>C++规则设计的目标之一是，保证类型错误决不可能发生。理论上如果你的程序很干净的通过编译，就表示它并不企图在任何对象身上执行任何不安全，无意义，愚蠢荒谬的操作。这是一个及其具有价值的保证，不要轻易放弃它。<br>但是在很多种情况下，我们不得不进行转型操作，转型操作破坏了类型系统。这可能会导致任何可能种类的麻烦，有些容易辨识，但是有些可能会很隐晦。所以在需要进行转型操作的时候一定要慎重，尽量通过设计避免不必要的转型操作。</p>
 <h2 id="类型转换的形式"><a href="#类型转换的形式" class="headerlink" title="类型转换的形式"></a>类型转换的形式</h2><p>首先我们回顾一下类型转换的语法，因为通常有三种不同的形式，可写出相同的类型转换动作。</p>
@@ -73,7 +103,7 @@
     <title>通过/proc/meminfo实时获取系统内存使用情况</title>
     <link href="http://yoursite.com/2016/12/19/%E9%80%9A%E8%BF%87-proc-meminfo%E5%AE%9E%E6%97%B6%E8%8E%B7%E5%8F%96%E7%B3%BB%E7%BB%9F%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5/"/>
     <id>http://yoursite.com/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/</id>
-    <published>2016-12-19T15:43:49.000Z</published>
+    <published>2016-12-19T17:43:49.000Z</published>
     <updated>2016-12-19T21:00:44.288Z</updated>
     
     <content type="html"><![CDATA[<h1 id="通过-proc-meminfo实时获取系统内存使用情况-Linux"><a href="#通过-proc-meminfo实时获取系统内存使用情况-Linux" class="headerlink" title="通过/proc/meminfo实时获取系统内存使用情况(Linux)"></a>通过/proc/meminfo实时获取系统内存使用情况(Linux)</h1><p>linux内核提供了一种通过/proc文件系统来在运行时访问内核内部数据结构，改变内核设置的机制，各种硬件平台上的linux系统的/proc文件系统的基本概念都是相同的。<br>/proc文件系统是一种内核和内核模块用来向进程发送信息的机制。这个伪文件系统可以和内核内部的数据结构进行交互，获取实时的进程信息。注意，<strong>/proc文件系统是存储与内存而不是硬盘,/proc虚拟文件系统实质是以文件系统的形式访问内核数据的接口</strong>。</p>
@@ -129,7 +159,7 @@
     <title>通过/proc/stat计算linux系统即时CPU使用率</title>
     <link href="http://yoursite.com/2016/12/19/%E9%80%9A%E8%BF%87-proc-stat%E8%AE%A1%E7%AE%97linux%E7%B3%BB%E7%BB%9F%E5%8D%B3%E6%97%B6CPU%E4%BD%BF%E7%94%A8%E7%8E%87/"/>
     <id>http://yoursite.com/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/</id>
-    <published>2016-12-18T22:03:09.000Z</published>
+    <published>2016-12-19T00:03:09.000Z</published>
     <updated>2016-12-18T22:03:35.949Z</updated>
     
     <content type="html"><![CDATA[<h1 id="通过-proc-stat计算linux系统即时CPU使用率"><a href="#通过-proc-stat计算linux系统即时CPU使用率" class="headerlink" title="通过/proc/stat计算linux系统即时CPU使用率"></a>通过/proc/stat计算linux系统即时CPU使用率</h1><h2 id="proc-stat"><a href="#proc-stat" class="headerlink" title="/proc/stat"></a>/proc/stat</h2><p>/proc文件系统是一个伪文件系统，它存在于内存中，不占用外存空间。它以文件系统的方式为内核与进程提供通信接口。用户和应用程序可以通过/proc得到系统的信息，并可以改变内核的某些参数。由于系统的信息，如进程是动态改变的，所以用户或应用程序读取/proc目录中的文件的时，/proc文件系统是动态从系统内核读出所需信息并提交的。<br>在linux或Ubuntu系统中，/proc/stat文件记录了所有CPU活动的信息，该文件中的所有值都是从系统启动开始累计到当前的值。我们可以通过一个较小的时间段的CPU利用率值来估算某一个时刻的CPU利用率。首先我们先来查看一下/proc/stat中的内容：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ cat /proc/stat</div><div class="line">cpu  <span class="number">15543</span> <span class="number">334</span> <span class="number">4963</span> <span class="number">142337</span> <span class="number">3413</span> <span class="number">0</span> <span class="number">180</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu0 <span class="number">3877</span> <span class="number">142</span> <span class="number">1137</span> <span class="number">35988</span> <span class="number">615</span> <span class="number">0</span> <span class="number">28</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu1 <span class="number">3866</span> <span class="number">23</span> <span class="number">1068</span> <span class="number">35982</span> <span class="number">608</span> <span class="number">0</span> <span class="number">74</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu2 <span class="number">4104</span> <span class="number">159</span> <span class="number">1333</span> <span class="number">35395</span> <span class="number">735</span> <span class="number">0</span> <span class="number">59</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu3 <span class="number">3695</span> <span class="number">9</span> <span class="number">1424</span> <span class="number">34970</span> <span class="number">1454</span> <span class="number">0</span> <span class="number">18</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div></pre></td></tr></table></figure></p>
@@ -167,7 +197,7 @@
     <title>linux进程nice值及其与优先级的关系</title>
     <link href="http://yoursite.com/2016/12/19/linux%E8%BF%9B%E7%A8%8Bnice%E5%80%BC%E5%8F%8A%E5%85%B6%E4%B8%8E%E4%BC%98%E5%85%88%E7%BA%A7%E7%9A%84%E5%85%B3%E7%B3%BB/"/>
     <id>http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/</id>
-    <published>2016-12-18T20:25:04.000Z</published>
+    <published>2016-12-18T22:25:04.000Z</published>
     <updated>2016-12-18T20:26:48.601Z</updated>
     
     <content type="html"><![CDATA[<h1 id="linux进程nice值及其与优先级的关系"><a href="#linux进程nice值及其与优先级的关系" class="headerlink" title="linux进程nice值及其与优先级的关系"></a>linux进程nice值及其与优先级的关系</h1><p>在linux多任务环境的系统中，系统是根据进程的优先级(priority)给进程进行分配资源。优先级越高的进程越有优先执行的权利。配置进程优先权碎玉linux很有用，可以大大改善系统的性能。还可以把指定的进程运行在指定的cpu上。</p>
@@ -207,7 +237,7 @@
     <title>tornado表单与模板</title>
     <link href="http://yoursite.com/2016/12/16/tornado%E8%A1%A8%E5%8D%95%E4%B8%8E%E6%A8%A1%E6%9D%BF/"/>
     <id>http://yoursite.com/2016/12/16/tornado表单与模板/</id>
-    <published>2016-12-16T15:48:06.000Z</published>
+    <published>2016-12-16T17:48:06.000Z</published>
     <updated>2016-12-16T16:03:21.316Z</updated>
     
     <content type="html"><![CDATA[<h1 id="tornado表单和模板"><a href="#tornado表单和模板" class="headerlink" title="tornado表单和模板"></a>tornado表单和模板</h1><p>在第一章中，我们学习了使用tornado创建一个web应用的基础知识。包括处理函数，HTTP方法以及tornado的框架的总体结构。在这一章中，我们学习tornado的更加强大的功能—-表单和模板。<br>和大多数的web框架一样，tornado的一个重要的目标就是帮助你更快地编写程序，尽可能整洁地复用更多的代码。尽管tornado灵活，可以使用几乎所有python支持的模板语言，tornado自身也提供了一个轻量级，快速并且灵活的模板语言，在tornado.template模块中。</p>
@@ -254,7 +284,7 @@
     <title>tornado入门(简单的web服务)</title>
     <link href="http://yoursite.com/2016/12/05/tornado%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95%E7%9A%84web%E6%9C%8D%E5%8A%A1/"/>
     <id>http://yoursite.com/2016/12/05/tornado入门-简单的web服务/</id>
-    <published>2016-12-05T14:18:06.000Z</published>
+    <published>2016-12-05T16:18:06.000Z</published>
     <updated>2016-12-10T16:12:14.591Z</updated>
     
     <content type="html"><![CDATA[<h1 id="tornado入门"><a href="#tornado入门" class="headerlink" title="tornado入门"></a>tornado入门</h1><p>tornado是使用python编写的一个强大的，可扩展的web服务器。它在高并发的网络请求中表现的足够稳定，但是却在创建和编写的过程中有着足够的轻量级，并能够被用在大量的应用和工具中。<br>不同于那些最多只能达到10000个并发连接的传统web服务器，tornado在设计之初就考虑到了性能因素，旨在解决C10K问题，这样的设计使得其成为一个非常<strong>高性能</strong>的框架。此外，它还拥有处理安全性，用户验证，社交网络以及与外部服务进行异步交互的工具。</p>
@@ -309,7 +339,7 @@
     <title>迭代器和简单的生成器</title>
     <link href="http://yoursite.com/2016/12/04/%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%92%8C%E7%AE%80%E5%8D%95%E7%9A%84%E7%94%9F%E6%88%90%E5%99%A8/"/>
     <id>http://yoursite.com/2016/12/04/迭代器和简单的生成器/</id>
-    <published>2016-12-04T12:22:48.000Z</published>
+    <published>2016-12-04T14:22:48.000Z</published>
     <updated>2016-12-04T13:12:12.518Z</updated>
     
     <content type="html"><![CDATA[<h1 id="迭代器和简单的生成器"><a href="#迭代器和简单的生成器" class="headerlink" title="迭代器和简单的生成器"></a>迭代器和简单的生成器</h1><p>摘自: <a href="https://www.ibm.com/developerworks/cn/linux/sdk/python/charm-20/" target="_blank" rel="external">https://www.ibm.com/developerworks/cn/linux/sdk/python/charm-20/</a></p>
@@ -346,7 +376,7 @@
     <title>python yield使用浅析</title>
     <link href="http://yoursite.com/2016/12/03/python-yield%E4%BD%BF%E7%94%A8%E6%B5%85%E6%9E%90/"/>
     <id>http://yoursite.com/2016/12/03/python-yield使用浅析/</id>
-    <published>2016-12-03T14:08:04.000Z</published>
+    <published>2016-12-03T16:08:04.000Z</published>
     <updated>2016-12-04T11:53:12.318Z</updated>
     
     <content type="html"><![CDATA[<h1 id="python-yield使用浅析"><a href="#python-yield使用浅析" class="headerlink" title="python yield使用浅析"></a>python yield使用浅析</h1><p><strong>摘自:<a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-python-yield/" target="_blank" rel="external">https://www.ibm.com/developerworks/cn/opensource/os-cn-python-yield/</a></strong><br>初学python的人经常会发现python函数中使用了很多yield关键字，然而，带有yield关键字的函数的执行流程和普通函数的执行流程不同，yield带来了什么作用，为什么要设计yield?本文将由浅入深地讲解yield的概念和用法，帮助读者体会yield在python中的简单而强大的功能<br>您可能听说过，带有yield的函数在python中称为generator(生成器)，何谓生成器？先抛开generator,以一个常见的编程题目来展示yield的概念。</p>
@@ -393,7 +423,7 @@
     <title>python装饰其入门</title>
     <link href="http://yoursite.com/2016/12/02/python%E8%A3%85%E9%A5%B0%E5%85%B6%E5%85%A5%E9%97%A8/"/>
     <id>http://yoursite.com/2016/12/02/python装饰其入门/</id>
-    <published>2016-12-02T13:43:51.000Z</published>
+    <published>2016-12-02T15:43:51.000Z</published>
     <updated>2016-12-04T11:30:31.762Z</updated>
     
     <content type="html"><![CDATA[<h1 id="python装饰器"><a href="#python装饰器" class="headerlink" title="python装饰器"></a>python装饰器</h1><h2 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h2><h3 id="一级对象"><a href="#一级对象" class="headerlink" title="一级对象"></a>一级对象</h3><p>python将一切（包括函数）视为object的子类，即一切皆为对象，因此函数可以像变量一样被指向和传递，下面我们来看一个例子。</p>
