@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>linux进程nice值及其与优先级的关系 - 魏传柳</title>
+    <title>time命令详解 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,19 +15,19 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="linux进程nice值及其与优先级的关系在linux多任务环境的系统中，系统是根据进程的优先级(priority)给进程进行分配资源。优先级越高的进程越有优先执行的权利。配置进程优先权碎玉linux很有用，可以大大改善系统的性能。还可以把指定的进程运行在指定的cpu上。
-nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息进行查看：123456$ ps -l#打印信">
+    <meta name="description" content="Linux time命令详解参考:http://blog.he96.com/2011/01/linux-timewhat-do-real-user-and-sys.html
+real,user,sys我们常用linux中的time命令计算某个程序的运行耗时，用户态CPU耗时，系统态COU耗时。例如:1234time fooreal	0m0.020suser	0m0.020ssys	0m0.000s">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="linux进程nice值及其与优先级的关系">
-<meta property="og:url" content="http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/index.html">
+<meta property="og:title" content="time命令详解">
+<meta property="og:url" content="http://yoursite.com/2016/12/27/time命令详解/index.html">
 <meta property="og:site_name" content="魏传柳">
-<meta property="og:description" content="linux进程nice值及其与优先级的关系在linux多任务环境的系统中，系统是根据进程的优先级(priority)给进程进行分配资源。优先级越高的进程越有优先执行的权利。配置进程优先权碎玉linux很有用，可以大大改善系统的性能。还可以把指定的进程运行在指定的cpu上。
-nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息进行查看：123456$ ps -l#打印信">
-<meta property="og:updated_time" content="2016-12-18T20:26:48.601Z">
+<meta property="og:description" content="Linux time命令详解参考:http://blog.he96.com/2011/01/linux-timewhat-do-real-user-and-sys.html
+real,user,sys我们常用linux中的time命令计算某个程序的运行耗时，用户态CPU耗时，系统态COU耗时。例如:1234time fooreal	0m0.020suser	0m0.020ssys	0m0.000s">
+<meta property="og:updated_time" content="2016-12-27T15:19:33.189Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="linux进程nice值及其与优先级的关系">
-<meta name="twitter:description" content="linux进程nice值及其与优先级的关系在linux多任务环境的系统中，系统是根据进程的优先级(priority)给进程进行分配资源。优先级越高的进程越有优先执行的权利。配置进程优先权碎玉linux很有用，可以大大改善系统的性能。还可以把指定的进程运行在指定的cpu上。
-nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息进行查看：123456$ ps -l#打印信">
+<meta name="twitter:title" content="time命令详解">
+<meta name="twitter:description" content="Linux time命令详解参考:http://blog.he96.com/2011/01/linux-timewhat-do-real-user-and-sys.html
+real,user,sys我们常用linux中的time命令计算某个程序的运行耗时，用户态CPU耗时，系统态COU耗时。例如:1234time fooreal	0m0.020suser	0m0.020ssys	0m0.000s">
     
     
         
@@ -218,13 +218,13 @@ nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息�
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            linux进程nice值及其与优先级的关系
+            time命令详解
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" datetime="2016-12-19T04:25:04+06:00">
+    <time itemprop="datePublished" datetime="2016-12-27T21:18:33+06:00">
 	
-		    19 12月 2016
+		    27 12月 2016
     	
     </time>
     
@@ -240,22 +240,26 @@ nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息�
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="linux进程nice值及其与优先级的关系"><a href="#linux进程nice值及其与优先级的关系" class="headerlink" title="linux进程nice值及其与优先级的关系"></a>linux进程nice值及其与优先级的关系</h1><p>在linux多任务环境的系统中，系统是根据进程的优先级(priority)给进程进行分配资源。优先级越高的进程越有优先执行的权利。配置进程优先权碎玉linux很有用，可以大大改善系统的性能。还可以把指定的进程运行在指定的cpu上。</p>
-<h2 id="nice与priority"><a href="#nice与priority" class="headerlink" title="nice与priority"></a>nice与priority</h2><p>在linux中使用ps 的-l参数可以对进程的优先权信息进行查看：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ ps -l</div><div class="line"><span class="comment">#打印信息:</span></div><div class="line">F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD</div><div class="line"><span class="number">0</span> S  <span class="number">1000</span>  <span class="number">5242</span>  <span class="number">5232</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> -  <span class="number">7461</span> wait   pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> bash</div><div class="line"><span class="number">4</span> T  <span class="number">1000</span>  <span class="number">5881</span>  <span class="number">5242</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> - <span class="number">12247</span> signal pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> top</div><div class="line"><span class="number">4</span> R  <span class="number">1000</span>  <span class="number">6386</span>  <span class="number">5242</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> -  <span class="number">8996</span> -      pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ps</div></pre></td></tr></table></figure></p>
-<p>从上面可以看出,上表中打印出一些有用的信息：</p>
+            <h1 id="Linux-time命令详解"><a href="#Linux-time命令详解" class="headerlink" title="Linux time命令详解"></a>Linux time命令详解</h1><p>参考:<a href="http://blog.he96.com/2011/01/linux-timewhat-do-real-user-and-sys.html" target="_blank" rel="external">http://blog.he96.com/2011/01/linux-timewhat-do-real-user-and-sys.html</a></p>
+<h2 id="real-user-sys"><a href="#real-user-sys" class="headerlink" title="real,user,sys"></a>real,user,sys</h2><p>我们常用linux中的time命令计算某个程序的运行耗时，用户态CPU耗时，系统态COU耗时。<br>例如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">time foo</div><div class="line">real	0m0.020s</div><div class="line">user	0m0.020s</div><div class="line">sys	0m0.000s</div></pre></td></tr></table></figure></p>
+<p>现在我们探讨一下上述三个时间分别代表的含义:</p>
 <ul>
-<li>UID: 进程的user id</li>
-<li>PID: 进程ID</li>
-<li>PPID: 当前进程的父进程的ID</li>
-<li>PRI: 优先级(pri越小优先级越高)</li>
-<li>NI: nice值，当前进程的nice值<br>前三个值比较容易理解，pri和NI的含义，<strong>pri比较好理解，即进程的优先级，pri越小，优先级越高</strong>，那nice值呢？<strong>nice表示进程可被执行的优先级的修正数值。如前面说的，pri越小越优先被执行，那么加入nice之后pri(new)=pri(old)+nice。这样,当nice为负值的时候，该程序的pri变小，优先级越高。</strong><blockquote>
-<p>注意:进程的nice值不是进程的优先级，但是会影响进程优先级的变化。</p>
-</blockquote>
-</li>
+<li>real: 表示a.out程序的实际的运行耗时，也就是在a.out运行开始时刻你看了一下手表，a.out运行结束时刻看了一眼手表，两次时间的差值就是real的值。例如使用time sleep 2的时候real值为2</li>
+<li>user: a.out运行在用户态CPU的时间</li>
+<li>sys: a.out运行在核心态CPU的时间</li>
 </ul>
-<h2 id="nice相关linux命令nice与renice"><a href="#nice相关linux命令nice与renice" class="headerlink" title="nice相关linux命令nice与renice"></a>nice相关linux命令nice与renice</h2><p>1.nice的作用是启动时设置nice的值<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ice -n -<span class="number">5</span> ./MatrixJudge &amp;</div></pre></td></tr></table></figure></p>
-<p>-n参数用于指定nice值<br>2.renice的作用是修改已经存在的进程的nice值<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">renice -<span class="number">5</span> -p <span class="number">10000</span></div></pre></td></tr></table></figure></p>
-<p>上述的意思是将PID为10000的nice值置为-5,-p参数用于指定PID。</p>
+<h2 id="用户态和核心态"><a href="#用户态和核心态" class="headerlink" title="用户态和核心态"></a>用户态和核心态</h2><p>然后我们讲一下用户态和核心态：</p>
+<ul>
+<li>核心态(kernal mode): 在内核态，代码拥有完全的，不受任何限制的访问底层硬件的能力。可以执行任意的CPU指令，访问任意的内存地址。内核态通常情况下，都是为哪些最底层的，由操作系统提供的，可信可靠耳朵代码来运行的。内核态崩溃将是灾难性的，它会影响到整个系统。</li>
+<li>用户态(User mode):在用户态，代码不具备直接访问底层硬件或者内存的能力，而必须借助操作系统提供的可靠的,底层的API来访问硬件或者内存。由于这种隔离带来的保护作用，用户态代码崩溃，操作系统可以正常恢复。我们大多数代码是运行在用户态。</li>
+</ul>
+<blockquote>
+<p>区分内核态和用户态的<strong>作用</strong>:隔离保护，使得系统更稳定。<br>使用这三个时间我们可以计算当前程序CPU的使用率：<br>CPU Usage = (user + sys) / real_time</p>
+</blockquote>
+<h2 id="常见误区"><a href="#常见误区" class="headerlink" title="常见误区"></a>常见误区</h2><ul>
+<li>realtime = user + sys</li>
+<li>realtime &gt; user + sys<br>由于有一些程序需要等待I/O等导致realtime与user+sys不相等<br>当在多核CPU的情况下第二种情况不成立</li>
+</ul>
 
             
         </div>
@@ -265,7 +269,7 @@ nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息�
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/linux/">linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/shell/">shell</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/linux/">linux</a>
 
             </div>
         
@@ -274,7 +278,7 @@ nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息�
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/"  data-tooltip="通过/proc/stat计算linux系统即时CPU使用率">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">ANTERIOR</span>
@@ -282,7 +286,7 @@ nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息�
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/16/tornado表单与模板/" data-tooltip="tornado表单与模板">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/22/C-前置声明/" data-tooltip="C++前置声明">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">SIGUIENTE</span>
                     <i class="fa fa-angle-right"></i>
@@ -297,17 +301,17 @@ nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息�
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/27/time命令详解/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/27/time命令详解/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/27/time命令详解/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -345,7 +349,7 @@ nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息�
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/"  data-tooltip="通过/proc/stat计算linux系统即时CPU使用率">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">ANTERIOR</span>
@@ -353,7 +357,7 @@ nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息�
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/16/tornado表单与模板/" data-tooltip="tornado表单与模板">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/22/C-前置声明/" data-tooltip="C++前置声明">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">SIGUIENTE</span>
                     <i class="fa fa-angle-right"></i>
@@ -368,17 +372,17 @@ nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息�
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/27/time命令详解/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/27/time命令详解/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/27/time命令详解/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -398,17 +402,17 @@ nice与priority在linux中使用ps 的-l参数可以对进程的优先权信息�
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/27/time命令详解/">
                 <i class="fa fa-google-plus"></i><span class="">Compartir en Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/27/time命令详解/">
                 <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/19/linux进程nice值及其与优先级的关系/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/27/time命令详解/">
                 <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
             </a>
         </li>
