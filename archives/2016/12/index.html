@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archivos: 2016/12 - 魏传柳</title>
+    <title>Archives: 2016/12 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,126 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2016/12/29/docker防止fork炸弹/">
+                            docker防止fork炸弹
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-29T19:00:25+06:00">
+	
+		    12月 29, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/docker技术/">docker技术</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="docker防止fork炸弹"><a href="#docker防止fork炸弹" class="headerlink" title="docker防止fork炸弹"></a>docker防止fork炸弹</h1><p>在开发过程中，我们使用了docker作为容器来进行编程语言代码的评测，以用于防止有害代码破坏宿主物理机器，但是在昨天发现docker还是会受fork炸弹的影响将宿主物理机器挂掉。针对这个问题，我在docker官网找到了相关的解决方法，记录分享并以备之后再次遇到此类问题可以很快找到解决方案。<br>当前解决方案只适用于docker1.1版本及之后(通过docker.io进行安装,sudo apt install docker.io)。<br>解决方案的思想就是:在启动docker的时候给其加上启动选项–pids-limit来限制cgroup中的fork的进程的最大数，我这里限制的30,可以根据自己的需求去限制。<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -it --pids-limit <span class="number">30</span> Ubuntu:<span class="number">14.04</span></div></pre></td></tr></table></figure></p>
+<p>上述方法即可防止fork炸弹。<br>以下内容转载自<a href="http://blog.csdn.net/thinkhy/article/details/50995720" target="_blank" rel="external">http://blog.csdn.net/thinkhy/article/details/50995720</a></p>
+<h2 id="Docker容器与安全"><a href="#Docker容器与安全" class="headerlink" title="Docker容器与安全"></a>Docker容器与安全</h2><p>Docker能否大规模用于生产环境，尤其是公有云环境，就在于Docker是否能提供安全的环境。本文将总结《Docker容器与容器云》一书3.9节『Docker与容器安全』的主要内容，包括Docker现有安全机制、存在的安全问题以及Docker安全增强三个方面。</p>
+<h3 id="1-Docker的安全机制"><a href="#1-Docker的安全机制" class="headerlink" title="1. Docker的安全机制"></a>1. Docker的安全机制</h3><h4 id="1-1-Docker-daemon安全"><a href="#1-1-Docker-daemon安全" class="headerlink" title="1.1 Docker daemon安全"></a>1.1 Docker daemon安全</h4><ul>
+<li>Docker向外界服务提供了四种通信方式，默认是以Unix域套接字的方式来与客户端通信，这种方式较TCP形式更为安全。</li>
+<li>Docker也提供了TLS传输层安全协议，通过–tlsverify(安全传输校验），–tlscacert(信任证书)、–tlskey(服务器或者客户端秘钥）、–tlscert（证书位置）来配置。<h4 id="1-2-镜像安全"><a href="#1-2-镜像安全" class="headerlink" title="1.2 镜像安全"></a>1.2 镜像安全</h4></li>
+<li><p>Docker registry镜像库访问控制</p>
+<ul>
+<li>Docker daemon第一次启动时，通过公网（Amazon CDN）载入official.json包，饮食公共image和用户image的目录以及数字签名信息。</li>
+<li>official.json在Docker daemon启动时加载到MemoryGraph，MemoryGraph用于存储公钥以及命名之间的授权映射，默认授权节点对授权空间有读写权限。</li>
+</ul>
+</li>
+<li><p>镜像校验和</p>
+<ul>
+<li>镜像校验和用来保证镜像的完整性，以预防可能出现的镜像破环。</li>
+<li>目前Docker对于镜像校验和和验证失败不采取任何措施，仅输出警告信息<h4 id="1-3-内核安全"><a href="#1-3-内核安全" class="headerlink" title="1.3 内核安全"></a>1.3 内核安全</h4></li>
+</ul>
+</li>
+<li>内核为容器提供了两种技术cgroup和namespace，分别对容器进行资源限制和资源隔离。<ul>
+<li>容器本质是进程，cgroup用来限制容器的资源使用量，避免单个容器耗尽系统资源。</li>
+</ul>
+</li>
+<li>namespace用来隔离容器与宿主机，以及不同的容器。<ul>
+<li>Docker目前仅完整支持uts、ipc、pid、network、mount这5种ns,user ns尚未完全支持。</li>
+<li>系统资源未进行隔离，如/proc，/sys、SELinux、time、syslog、/dev设备信息等均未进行隔离。<h4 id="1-4-容器之间的网络安全"><a href="#1-4-容器之间的网络安全" class="headerlink" title="1.4 容器之间的网络安全"></a>1.4 容器之间的网络安全</h4></li>
+</ul>
+</li>
+<li>Docker可通过iptabls设定规则实现禁止或允许容器之间的通信。<h4 id="1-5-Docker容器Capability限制"><a href="#1-5-Docker容器Capability限制" class="headerlink" title="1.5 Docker容器Capability限制"></a>1.5 Docker容器Capability限制</h4></li>
+<li>容器的行为通过Linux超级用户分组限制，具体包括了CHOWN、DAC_OVERRIDe、FSETID、FOWNER、MKNOD、NET_RAW、SETGID、SETUID、SETFCAP、SETPCAP、NET_BIND_SERVICE、SYS_CHROOT、KILL和AUDIT_WRITE。</li>
+<li>Docker进程的Capability可通过docker run命令的参数进行配置<h3 id="2-Docker安全问题"><a href="#2-Docker安全问题" class="headerlink" title="2. Docker安全问题"></a>2. Docker安全问题</h3><h4 id="2-1-磁盘资源限制问题"><a href="#2-1-磁盘资源限制问题" class="headerlink" title="2.1 磁盘资源限制问题"></a>2.1 磁盘资源限制问题</h4></li>
+<li>Docker容器通过镜像层叠的方式来构建容器内的文件系统，本质上还是在宿主机文件系统的目录(/var/lib/docker)下存储文件。</li>
+<li>极有可能出现一个容器将宿主机上所有的磁盘空间耗尽，导致其它容器无法存储文件，所以有必要对容器的磁盘使用量进行限制。<h4 id="2-2-容器逃逸问题"><a href="#2-2-容器逃逸问题" class="headerlink" title="2.2 容器逃逸问题"></a>2.2 容器逃逸问题</h4></li>
+<li>Docker使用操作系统进行虚拟化，共享内核、内存、CPU以及磁盘，易造成容器逃逸问题。</li>
+<li>Docker1.0之后采用白名单来限制容器的能力，会给出默认的容器Capability清单，禁止容器拥有清单之外的Capability。<h4 id="2-3-容器DoS攻击与流量限制问题"><a href="#2-3-容器DoS攻击与流量限制问题" class="headerlink" title="2.3 容器DoS攻击与流量限制问题"></a>2.3 容器DoS攻击与流量限制问题</h4></li>
+<li>公有云基于虚拟化技术实现，攻击数据包可能不需要通过物理网卡就可以攻击同一个宿主机下的其他容器，传统Dos预防措施无法适用容器之间的攻击。</li>
+<li>的Docker容器连接在网桥上，通过veth pari技术创建网卡，其一端在容器内命名为eth0，另一张网上驻留在宿主机环境之中。</li>
+<li>同一宿主机下所有容器共用一张物理网卡，如果一个容器抢占大部分带宽，会影响其它容器使用。<h4 id="2-4-超级权限问题"><a href="#2-4-超级权限问题" class="headerlink" title="2.4 超级权限问题"></a>2.4 超级权限问题</h4></li>
+<li>docker run时加入–privileged参数能使容器获得所有的超级用户权限能力，并将所有的宿主机的所有设备挂载到容器内。<h3 id="3-Docker安全的解决方案"><a href="#3-Docker安全的解决方案" class="headerlink" title="3. Docker安全的解决方案"></a>3. Docker安全的解决方案</h3><h4 id="3-1-SELinux"><a href="#3-1-SELinux" class="headerlink" title="3.1 SELinux"></a>3.1 SELinux</h4></li>
+<li>SELinux三种控制方式<ul>
+<li>Type Enforcement: 主要的访问控制机制。</li>
+<li>Role-Based Access Control(RBAC)：基于SELinux用户的权限控制手段。</li>
+<li>Multi-Level Security(MLS): 多级分类安全，指定level标签。</li>
+</ul>
+</li>
+<li>为什么要在Docker中使用SELinux<ul>
+<li>SELinux将所有进程和文件打上标签，而容器以进程方式运行，所以控制进程如何访问资源，也就是限制容器如何去访问资源。</li>
+<li>SELinux策略是全局的，它不是针对具体用户设定，而是强制整个系统遵循。</li>
+<li>减少提权攻击风险。<h4 id="3-2-user-namespace"><a href="#3-2-user-namespace" class="headerlink" title="3.2 user namespace"></a>3.2 user namespace</h4></li>
+</ul>
+</li>
+<li>容器的超级用户权限通过ns映射到宿主机是一个普通用户。</li>
+<li>容器被恶意程序攻击，所做的也就是这个普通用户的权限，而非宿主机的超级权限。<h4 id="3-3-磁盘限额"><a href="#3-3-磁盘限额" class="headerlink" title="3.3 磁盘限额"></a>3.3 磁盘限额</h4></li>
+<li>Docker仅对Device Mapper文件系统的限额提供了–storage-opt参数进行限制。</li>
+<li>cgroup没有对磁盘进行限制，Linux磁盘限额技术主要基于用户和文件系统。</li>
+<li>可能的解决方案<ul>
+<li>所有用户共有宿主机的一块磁盘，限制用户在磁盘上的使用量来限定容器的磁盘使用量。</li>
+<li>选择支持目录限额的文件系统，如XFS。</li>
+<li>Docker定期检查每一个容器磁盘使用量，会对性能造成影响。</li>
+<li>创建虚拟文件系统，些文件系统仅供某一个容器使用。<h4 id="3-4-容器流量限制"><a href="#3-4-容器流量限制" class="headerlink" title="3.4 容器流量限制"></a>3.4 容器流量限制</h4></li>
+</ul>
+</li>
+<li>Docker没对容器的网络带宽做限制。</li>
+<li>可以采用Traffic Controller容器对容器网卡流量进行限制，一定程序上减少容器Dos攻击危害。<h4 id="3-5-GRSecurity内核安全增强工具"><a href="#3-5-GRSecurity内核安全增强工具" class="headerlink" title="3.5 GRSecurity内核安全增强工具"></a>3.5 GRSecurity内核安全增强工具</h4></li>
+<li>Docker容器共享宿主机的内存，在内存安全上存在不少问题，需要针对内存破坏做防御。</li>
+<li>GRSecurity是一个对内核的安全扩展，通过智能访问控制来阻止内存破坏，预防0day漏洞。<h4 id="3-6-fork炸弹"><a href="#3-6-fork炸弹" class="headerlink" title="3.6 fork炸弹"></a>3.6 fork炸弹</h4></li>
+<li>fork炸弹以极快速度创建大量进程，以此消耗系统资源，使系统无法运行新程序，现有进程运行速度放缓。</li>
+<li>容器本身在内核层面隔离性不足，fork bomb会给容器带来灾难性影响。</li>
+<li>fork bomb受到社区关注（Issue 6479），但目前还没有完美解决方案。</li>
+<li>Docker无法使用ulimit来限制forkbomb问题，因为一个宿主机用户可能同时启动多个容器，无法对每个容器做进程数的限制。</li>
+</ul>
+<ol>
+<li>总结<br>Docker自身已经提供了不少安全机制，但Docker目前仍然只适于运行可信应用程序（内部使用），如果需要运行任意代码，安全很难得到保证。在日常应用中，还可以通过SELinux、GRSecurity、seccomp等工具来增强容器安全。</li>
+</ol>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/29/docker防止fork炸弹/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/12/27/time命令详解/">
                             time命令详解
                         </a>
@@ -224,11 +344,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-27T21:18:33+06:00">
 	
-		    27 12月 2016
+		    12月 27, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -266,7 +386,7 @@
                     
                         <p>
                             <a href="/2016/12/27/time命令详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -291,11 +411,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-22T22:08:31+06:00">
 	
-		    22 12月 2016
+		    12月 22, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-学习/">C++学习</a>
 
@@ -321,7 +441,7 @@
                     
                         <p>
                             <a href="/2016/12/22/C-前置声明/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -346,11 +466,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-21T20:57:15+06:00">
 	
-		    21 12月 2016
+		    12月 21, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/effective-C/">effective C++</a>
 
@@ -400,7 +520,7 @@
                     
                         <p>
                             <a href="/2016/12/21/条款27-尽量少做转型动作/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -425,11 +545,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-19T23:43:49+06:00">
 	
-		    19 12月 2016
+		    12月 19, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -479,7 +599,7 @@
                     
                         <p>
                             <a href="/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -504,11 +624,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-19T06:03:09+06:00">
 	
-		    19 12月 2016
+		    12月 19, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -542,7 +662,7 @@
                     
                         <p>
                             <a href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -567,11 +687,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-19T04:25:04+06:00">
 	
-		    19 12月 2016
+		    12月 19, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -605,7 +725,7 @@
                     
                         <p>
                             <a href="/2016/12/19/linux进程nice值及其与优先级的关系/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -630,7 +750,7 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-16T23:48:06+06:00">
 	
-		    16 12月 2016
+		    12月 16, 2016
     	
     </time>
     
@@ -675,7 +795,7 @@
                     
                         <p>
                             <a href="/2016/12/16/tornado表单与模板/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -700,11 +820,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-05T22:18:06+06:00">
 	
-		    05 12月 2016
+		    12月 05, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -753,7 +873,7 @@
                     
                         <p>
                             <a href="/2016/12/05/tornado入门-简单的web服务/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -778,11 +898,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-04T20:22:48+06:00">
 	
-		    04 12月 2016
+		    12月 04, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -813,79 +933,7 @@
                     
                         <p>
                             <a href="/2016/12/04/迭代器和简单的生成器/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/03/python-yield使用浅析/">
-                            python yield使用浅析
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-03T22:08:04+06:00">
-	
-		    03 12月 2016
-    	
-    </time>
-    
-        <span>en </span>
-        
-    <a class="category-link" href="/categories/python学习/">python学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="python-yield使用浅析"><a href="#python-yield使用浅析" class="headerlink" title="python yield使用浅析"></a>python yield使用浅析</h1><p><strong>摘自:<a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-python-yield/" target="_blank" rel="external">https://www.ibm.com/developerworks/cn/opensource/os-cn-python-yield/</a></strong><br>初学python的人经常会发现python函数中使用了很多yield关键字，然而，带有yield关键字的函数的执行流程和普通函数的执行流程不同，yield带来了什么作用，为什么要设计yield?本文将由浅入深地讲解yield的概念和用法，帮助读者体会yield在python中的简单而强大的功能<br>您可能听说过，带有yield的函数在python中称为generator(生成器)，何谓生成器？先抛开generator,以一个常见的编程题目来展示yield的概念。</p>
-<h2 id="如何生成斐波那契数列"><a href="#如何生成斐波那契数列" class="headerlink" title="如何生成斐波那契数列"></a>如何生成斐波那契数列</h2><h3 id="版本1（直接输出斐波那契数列）"><a href="#版本1（直接输出斐波那契数列）" class="headerlink" title="版本1（直接输出斐波那契数列）"></a>版本1（直接输出斐波那契数列）</h3><p>斐波那契额数列的概念搭建应该比较清晰，相信大家能共很轻易的写出如下的算法来计算斐波那契数列:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span></div><div class="line">  n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line">  <span class="keyword">while</span> n &lt; max:</div><div class="line">    <span class="keyword">print</span> b</div><div class="line">    a, b = b, a + b</div><div class="line">    n = n + <span class="number">1</span></div></pre></td></tr></table></figure></p>
-<p>执行fab(5),我们会的到如下的结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; fab(5)</div><div class="line">1</div><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">5</div></pre></td></tr></table></figure></p>
-<p>结果没有问题，但是有经验的开发者会指出，直接在fab函数中 print打印出结果可复用性较差，因为fab返回的结果是None,其他函数无法获取该函数生成的斐波那契数列。所以要提高该函数的可复用性，最好不要直接打印出数列，而是返回一个list</p>
-<h3 id="版本二（返回list）"><a href="#版本二（返回list）" class="headerlink" title="版本二（返回list）"></a>版本二（返回list）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span></div><div class="line">  n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line">  L = []</div><div class="line"></div><div class="line">  <span class="keyword">while</span> n &lt; max:</div><div class="line">    L.append(b)</div><div class="line">    a, b = b, a + b</div><div class="line">    n = n + <span class="number">1</span></div><div class="line">  <span class="keyword">return</span> L</div></pre></td></tr></table></figure>
-<p>使用如下方式打印出斐波那契数列：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> n <span class="keyword">in</span> fab(<span class="number">5</span>):</div><div class="line"><span class="meta">... </span>    <span class="keyword">print</span> =n</div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">2</span></div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">5</span></div></pre></td></tr></table></figure></p>
-<p>上述版本获取了可复用性的要求，但是该函数在运行的过程中占用的内存会随着参数max的增大而增大，如果要控制内存占用，最好不要用list来保存中介按结果，而是通过iterable对象来迭代。例如在python2.x中<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">100</span>)</div><div class="line"></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="number">100</span>)</div></pre></td></tr></table></figure></p>
-<p>前者会生成一个长度为100的list,而后者则不会生成一个100的list，而是在每次迭代中返回下一个数值，内存占用空间很小。因为xrange不返回list,而返回一个iterable的意向，利用iterable我们可以吧fab函数写成一个支持iterable的class</p>
-<h3 id="版本三（实现支持iterable的对象）"><a href="#版本三（实现支持iterable的对象）" class="headerlink" title="版本三（实现支持iterable的对象）"></a>版本三（实现支持iterable的对象）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">fab</span><span class="params">(object)</span>:</span></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, max)</span>:</span></div><div class="line">    self.max = maxself.n, self.a. self.b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="keyword">return</span> self</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">next</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="keyword">if</span> self.n &lt; self.max:</div><div class="line">      r = self.b</div><div class="line">      self.a, self.b = self.b, self.a + self.b</div><div class="line">      self.n = self.n + <span class="number">1</span></div><div class="line">      <span class="keyword">return</span> r</div><div class="line">    <span class="keyword">raise</span> StopIteration</div></pre></td></tr></table></figure>
-<p>Fab函数通过next不断返回数列的下一个数，内存占用始终为常数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt;for n in fab(5):</div><div class="line">...    print n</div><div class="line">1</div><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">5</div></pre></td></tr></table></figure></p>
-<p>上述代码虽然实现了我们版本二的要求，但是代码远远没有第一个版本简洁。如果想要保持第一版的简洁，这个时候就要用上yield</p>
-<h3 id="版本四"><a href="#版本四" class="headerlink" title="版本四"></a>版本四</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span></div><div class="line">  n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line">  <span class="keyword">while</span> n &lt; max:</div><div class="line">    <span class="keyword">yield</span> b</div><div class="line">    a, b = b, a + b</div><div class="line">    n = n + <span class="number">1</span></div></pre></td></tr></table></figure>
-<p>第四个版本和第一个版本相比仅仅把print b该成了yield b,就在保持简洁性的同时获得了iterable的效果。调用第四个版本和第二个版本的fab完全一致:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt;<span class="keyword">for</span> n <span class="keyword">in</span> fab(<span class="number">5</span>):</div><div class="line"><span class="meta">... </span>  <span class="keyword">print</span> n</div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">2</span></div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">5</span></div></pre></td></tr></table></figure></p>
-<p>简单的将,yield的作用就是把一个函数变成了一个generator,带有yield的函数不在是一个普通函数,python解释器会将其视为一个generator,调用fab(5)不会执行fab函数，而是返回一个iterable对象。在for循环执行的时候，每次循环都会执行fab内部的代码，执行到yield b的时候，fab就返回一个迭代之，下次迭代时，代码从yieldb 的下一条语句执行，而函数的本地变量看起来和上次中断执行前是完全一样的，于是函数继续执行，直到再次遇到yield<br>也可以调用fab(5)的next()方法进行回去每次计算的值。</p>
-<h3 id="yield函数的执行流程"><a href="#yield函数的执行流程" class="headerlink" title="yield函数的执行流程"></a>yield函数的执行流程</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>f = fab(<span class="number">5</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">1</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">1</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">2</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">3</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">5</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line">Traceback (most recent call last):</div><div class="line">  File <span class="string">"&lt;stdin&gt;"</span>. line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</div><div class="line"> StopIteration</div></pre></td></tr></table></figure>
-<p>当函数执行结束的时候，generator自动自动抛出StopIteration的异常，表示迭代的结束，而在for循环中，我们不需要手动的进行处理异常，循环会自动的正常结束。</p>
-<blockquote>
-<p>一个带有yield的函数就是一盒generator,它和普通的函数不同，声称一个generator看起来想函数调用，<strong>但是部执行任何函数代码，直到对其调用next()(注意在for循环中会自动调用next)才开始执行</strong>。虽然执行流程和普通函数一样，但是每执行到一个yield语句，就会中断，并返回一个迭代值，下次执行的时候从yield的下一个语句开始执行。看起来像是一个函数在正常执行的过程中被yield中断了数次，每次中断都会通过yield返回当前迭代器的值。<br><strong>yield的好处显而易见，把一个函数该写成generator就获得了迭代能力，比起在类的实例中保存状态计算下一个next的值，更加使代码清洁，而且执行流程非常清晰</strong></p>
-</blockquote>
-<h3 id="判断是否为generator"><a href="#判断是否为generator" class="headerlink" title="判断是否为generator"></a>判断是否为generator</h3><p>方法是使用isgeneratorfunction来进行判断<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> inspect <span class="keyword">import</span> isgeneratorfunction</div><div class="line">isgeneratorfunction(fab)</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p><strong>注意fab不可迭代,而fab(5)可迭代</strong></p>
-</blockquote>
-<h2 id="return的作用"><a href="#return的作用" class="headerlink" title="return的作用"></a>return的作用</h2><p>在一个generator function中，若函数中没有return语句，默认为函数执行到函数结尾，而如果中间遇到return语句，则直接判处StopIteration异常，结束迭代。<br>使用yield进行读取文件的例子<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_file</span><span class="params">(fpath)</span>:</span></div><div class="line">  block_size = <span class="number">1024</span></div><div class="line">  <span class="keyword">with</span> open(fpath, <span class="string">"rb"</span>) <span class="keyword">as</span> f:</div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">      block = f.read(block_size)</div><div class="line">      <span class="keyword">if</span> block:</div><div class="line">        <span class="keyword">yield</span> block</div><div class="line">      <span class="keyword">else</span></div><div class="line">        <span class="keyword">return</span></div></pre></td></tr></table></figure></p>
-<p>上述当文件读取完毕的时候奖直接返回StopIteration异常，结束迭代。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/03/python-yield使用浅析/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -901,12 +949,12 @@
         
         <li class="pagination-next">
             <a class="btn btn--default btn--small" href="/archives/2016/12/page/2/">
-                    <span>ARTÍCULOS ANTERIORES</span>
+                    <span>OLDER POSTS</span>
                 <i class="fa fa-angle-right text-base icon-ml"></i>
             </a>
         </li>
         
-        <li class="pagination-number">página 1 de 2</li>
+        <li class="pagination-number">page 1 of 2</li>
     </ul>
 </div>
 

@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archivos: 2016 - 魏传柳</title>
+    <title>Archives: 2016 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,78 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2016/12/03/python-yield使用浅析/">
+                            python yield使用浅析
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-03T22:08:04+06:00">
+	
+		    12月 03, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/python学习/">python学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="python-yield使用浅析"><a href="#python-yield使用浅析" class="headerlink" title="python yield使用浅析"></a>python yield使用浅析</h1><p><strong>摘自:<a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-python-yield/" target="_blank" rel="external">https://www.ibm.com/developerworks/cn/opensource/os-cn-python-yield/</a></strong><br>初学python的人经常会发现python函数中使用了很多yield关键字，然而，带有yield关键字的函数的执行流程和普通函数的执行流程不同，yield带来了什么作用，为什么要设计yield?本文将由浅入深地讲解yield的概念和用法，帮助读者体会yield在python中的简单而强大的功能<br>您可能听说过，带有yield的函数在python中称为generator(生成器)，何谓生成器？先抛开generator,以一个常见的编程题目来展示yield的概念。</p>
+<h2 id="如何生成斐波那契数列"><a href="#如何生成斐波那契数列" class="headerlink" title="如何生成斐波那契数列"></a>如何生成斐波那契数列</h2><h3 id="版本1（直接输出斐波那契数列）"><a href="#版本1（直接输出斐波那契数列）" class="headerlink" title="版本1（直接输出斐波那契数列）"></a>版本1（直接输出斐波那契数列）</h3><p>斐波那契额数列的概念搭建应该比较清晰，相信大家能共很轻易的写出如下的算法来计算斐波那契数列:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span></div><div class="line">  n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line">  <span class="keyword">while</span> n &lt; max:</div><div class="line">    <span class="keyword">print</span> b</div><div class="line">    a, b = b, a + b</div><div class="line">    n = n + <span class="number">1</span></div></pre></td></tr></table></figure></p>
+<p>执行fab(5),我们会的到如下的结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; fab(5)</div><div class="line">1</div><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">5</div></pre></td></tr></table></figure></p>
+<p>结果没有问题，但是有经验的开发者会指出，直接在fab函数中 print打印出结果可复用性较差，因为fab返回的结果是None,其他函数无法获取该函数生成的斐波那契数列。所以要提高该函数的可复用性，最好不要直接打印出数列，而是返回一个list</p>
+<h3 id="版本二（返回list）"><a href="#版本二（返回list）" class="headerlink" title="版本二（返回list）"></a>版本二（返回list）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span></div><div class="line">  n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line">  L = []</div><div class="line"></div><div class="line">  <span class="keyword">while</span> n &lt; max:</div><div class="line">    L.append(b)</div><div class="line">    a, b = b, a + b</div><div class="line">    n = n + <span class="number">1</span></div><div class="line">  <span class="keyword">return</span> L</div></pre></td></tr></table></figure>
+<p>使用如下方式打印出斐波那契数列：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> n <span class="keyword">in</span> fab(<span class="number">5</span>):</div><div class="line"><span class="meta">... </span>    <span class="keyword">print</span> =n</div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">2</span></div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">5</span></div></pre></td></tr></table></figure></p>
+<p>上述版本获取了可复用性的要求，但是该函数在运行的过程中占用的内存会随着参数max的增大而增大，如果要控制内存占用，最好不要用list来保存中介按结果，而是通过iterable对象来迭代。例如在python2.x中<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">100</span>)</div><div class="line"></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="number">100</span>)</div></pre></td></tr></table></figure></p>
+<p>前者会生成一个长度为100的list,而后者则不会生成一个100的list，而是在每次迭代中返回下一个数值，内存占用空间很小。因为xrange不返回list,而返回一个iterable的意向，利用iterable我们可以吧fab函数写成一个支持iterable的class</p>
+<h3 id="版本三（实现支持iterable的对象）"><a href="#版本三（实现支持iterable的对象）" class="headerlink" title="版本三（实现支持iterable的对象）"></a>版本三（实现支持iterable的对象）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">fab</span><span class="params">(object)</span>:</span></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, max)</span>:</span></div><div class="line">    self.max = maxself.n, self.a. self.b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="keyword">return</span> self</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">next</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="keyword">if</span> self.n &lt; self.max:</div><div class="line">      r = self.b</div><div class="line">      self.a, self.b = self.b, self.a + self.b</div><div class="line">      self.n = self.n + <span class="number">1</span></div><div class="line">      <span class="keyword">return</span> r</div><div class="line">    <span class="keyword">raise</span> StopIteration</div></pre></td></tr></table></figure>
+<p>Fab函数通过next不断返回数列的下一个数，内存占用始终为常数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt;for n in fab(5):</div><div class="line">...    print n</div><div class="line">1</div><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">5</div></pre></td></tr></table></figure></p>
+<p>上述代码虽然实现了我们版本二的要求，但是代码远远没有第一个版本简洁。如果想要保持第一版的简洁，这个时候就要用上yield</p>
+<h3 id="版本四"><a href="#版本四" class="headerlink" title="版本四"></a>版本四</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span></div><div class="line">  n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line">  <span class="keyword">while</span> n &lt; max:</div><div class="line">    <span class="keyword">yield</span> b</div><div class="line">    a, b = b, a + b</div><div class="line">    n = n + <span class="number">1</span></div></pre></td></tr></table></figure>
+<p>第四个版本和第一个版本相比仅仅把print b该成了yield b,就在保持简洁性的同时获得了iterable的效果。调用第四个版本和第二个版本的fab完全一致:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt;<span class="keyword">for</span> n <span class="keyword">in</span> fab(<span class="number">5</span>):</div><div class="line"><span class="meta">... </span>  <span class="keyword">print</span> n</div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">2</span></div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">5</span></div></pre></td></tr></table></figure></p>
+<p>简单的将,yield的作用就是把一个函数变成了一个generator,带有yield的函数不在是一个普通函数,python解释器会将其视为一个generator,调用fab(5)不会执行fab函数，而是返回一个iterable对象。在for循环执行的时候，每次循环都会执行fab内部的代码，执行到yield b的时候，fab就返回一个迭代之，下次迭代时，代码从yieldb 的下一条语句执行，而函数的本地变量看起来和上次中断执行前是完全一样的，于是函数继续执行，直到再次遇到yield<br>也可以调用fab(5)的next()方法进行回去每次计算的值。</p>
+<h3 id="yield函数的执行流程"><a href="#yield函数的执行流程" class="headerlink" title="yield函数的执行流程"></a>yield函数的执行流程</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>f = fab(<span class="number">5</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">1</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">1</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">2</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">3</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">5</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line">Traceback (most recent call last):</div><div class="line">  File <span class="string">"&lt;stdin&gt;"</span>. line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</div><div class="line"> StopIteration</div></pre></td></tr></table></figure>
+<p>当函数执行结束的时候，generator自动自动抛出StopIteration的异常，表示迭代的结束，而在for循环中，我们不需要手动的进行处理异常，循环会自动的正常结束。</p>
+<blockquote>
+<p>一个带有yield的函数就是一盒generator,它和普通的函数不同，声称一个generator看起来想函数调用，<strong>但是部执行任何函数代码，直到对其调用next()(注意在for循环中会自动调用next)才开始执行</strong>。虽然执行流程和普通函数一样，但是每执行到一个yield语句，就会中断，并返回一个迭代值，下次执行的时候从yield的下一个语句开始执行。看起来像是一个函数在正常执行的过程中被yield中断了数次，每次中断都会通过yield返回当前迭代器的值。<br><strong>yield的好处显而易见，把一个函数该写成generator就获得了迭代能力，比起在类的实例中保存状态计算下一个next的值，更加使代码清洁，而且执行流程非常清晰</strong></p>
+</blockquote>
+<h3 id="判断是否为generator"><a href="#判断是否为generator" class="headerlink" title="判断是否为generator"></a>判断是否为generator</h3><p>方法是使用isgeneratorfunction来进行判断<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> inspect <span class="keyword">import</span> isgeneratorfunction</div><div class="line">isgeneratorfunction(fab)</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p><strong>注意fab不可迭代,而fab(5)可迭代</strong></p>
+</blockquote>
+<h2 id="return的作用"><a href="#return的作用" class="headerlink" title="return的作用"></a>return的作用</h2><p>在一个generator function中，若函数中没有return语句，默认为函数执行到函数结尾，而如果中间遇到return语句，则直接判处StopIteration异常，结束迭代。<br>使用yield进行读取文件的例子<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_file</span><span class="params">(fpath)</span>:</span></div><div class="line">  block_size = <span class="number">1024</span></div><div class="line">  <span class="keyword">with</span> open(fpath, <span class="string">"rb"</span>) <span class="keyword">as</span> f:</div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">      block = f.read(block_size)</div><div class="line">      <span class="keyword">if</span> block:</div><div class="line">        <span class="keyword">yield</span> block</div><div class="line">      <span class="keyword">else</span></div><div class="line">        <span class="keyword">return</span></div></pre></td></tr></table></figure></p>
+<p>上述当文件读取完毕的时候奖直接返回StopIteration异常，结束迭代。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/03/python-yield使用浅析/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/12/02/python装饰其入门/">
                             python装饰其入门
                         </a>
@@ -224,11 +296,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-02T21:43:51+06:00">
 	
-		    02 12月 2016
+		    12月 02, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -281,7 +353,7 @@
                     
                         <p>
                             <a href="/2016/12/02/python装饰其入门/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -299,12 +371,12 @@
                 <a class="btn btn--default btn--small" href="/ ">
             
                 <i class="fa fa-angle-left text-base icon-mr"></i>
-                    <span>ARTÍCULOS RECIENTES</span>
+                    <span>NEWER POSTS</span>
             </a>
         </li>
         
         
-        <li class="pagination-number">página 2 de 2</li>
+        <li class="pagination-number">page 2 of 2</li>
     </ul>
 </div>
 

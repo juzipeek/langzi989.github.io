@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-12-27T15:19:33.189Z</updated>
+  <updated>2016-12-29T13:01:08.965Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,103 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>docker防止fork炸弹</title>
+    <link href="http://yoursite.com/2016/12/29/docker%E9%98%B2%E6%AD%A2fork%E7%82%B8%E5%BC%B9/"/>
+    <id>http://yoursite.com/2016/12/29/docker防止fork炸弹/</id>
+    <published>2016-12-29T13:00:25.000Z</published>
+    <updated>2016-12-29T13:01:08.965Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="docker防止fork炸弹"><a href="#docker防止fork炸弹" class="headerlink" title="docker防止fork炸弹"></a>docker防止fork炸弹</h1><p>在开发过程中，我们使用了docker作为容器来进行编程语言代码的评测，以用于防止有害代码破坏宿主物理机器，但是在昨天发现docker还是会受fork炸弹的影响将宿主物理机器挂掉。针对这个问题，我在docker官网找到了相关的解决方法，记录分享并以备之后再次遇到此类问题可以很快找到解决方案。<br>当前解决方案只适用于docker1.1版本及之后(通过docker.io进行安装,sudo apt install docker.io)。<br>解决方案的思想就是:在启动docker的时候给其加上启动选项–pids-limit来限制cgroup中的fork的进程的最大数，我这里限制的30,可以根据自己的需求去限制。<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -it --pids-limit <span class="number">30</span> Ubuntu:<span class="number">14.04</span></div></pre></td></tr></table></figure></p>
+<p>上述方法即可防止fork炸弹。<br>以下内容转载自<a href="http://blog.csdn.net/thinkhy/article/details/50995720" target="_blank" rel="external">http://blog.csdn.net/thinkhy/article/details/50995720</a></p>
+<h2 id="Docker容器与安全"><a href="#Docker容器与安全" class="headerlink" title="Docker容器与安全"></a>Docker容器与安全</h2><p>Docker能否大规模用于生产环境，尤其是公有云环境，就在于Docker是否能提供安全的环境。本文将总结《Docker容器与容器云》一书3.9节『Docker与容器安全』的主要内容，包括Docker现有安全机制、存在的安全问题以及Docker安全增强三个方面。</p>
+<h3 id="1-Docker的安全机制"><a href="#1-Docker的安全机制" class="headerlink" title="1. Docker的安全机制"></a>1. Docker的安全机制</h3><h4 id="1-1-Docker-daemon安全"><a href="#1-1-Docker-daemon安全" class="headerlink" title="1.1 Docker daemon安全"></a>1.1 Docker daemon安全</h4><ul>
+<li>Docker向外界服务提供了四种通信方式，默认是以Unix域套接字的方式来与客户端通信，这种方式较TCP形式更为安全。</li>
+<li>Docker也提供了TLS传输层安全协议，通过–tlsverify(安全传输校验），–tlscacert(信任证书)、–tlskey(服务器或者客户端秘钥）、–tlscert（证书位置）来配置。<h4 id="1-2-镜像安全"><a href="#1-2-镜像安全" class="headerlink" title="1.2 镜像安全"></a>1.2 镜像安全</h4></li>
+<li><p>Docker registry镜像库访问控制</p>
+<ul>
+<li>Docker daemon第一次启动时，通过公网（Amazon CDN）载入official.json包，饮食公共image和用户image的目录以及数字签名信息。</li>
+<li>official.json在Docker daemon启动时加载到MemoryGraph，MemoryGraph用于存储公钥以及命名之间的授权映射，默认授权节点对授权空间有读写权限。</li>
+</ul>
+</li>
+<li><p>镜像校验和</p>
+<ul>
+<li>镜像校验和用来保证镜像的完整性，以预防可能出现的镜像破环。</li>
+<li>目前Docker对于镜像校验和和验证失败不采取任何措施，仅输出警告信息<h4 id="1-3-内核安全"><a href="#1-3-内核安全" class="headerlink" title="1.3 内核安全"></a>1.3 内核安全</h4></li>
+</ul>
+</li>
+<li>内核为容器提供了两种技术cgroup和namespace，分别对容器进行资源限制和资源隔离。<ul>
+<li>容器本质是进程，cgroup用来限制容器的资源使用量，避免单个容器耗尽系统资源。</li>
+</ul>
+</li>
+<li>namespace用来隔离容器与宿主机，以及不同的容器。<ul>
+<li>Docker目前仅完整支持uts、ipc、pid、network、mount这5种ns,user ns尚未完全支持。</li>
+<li>系统资源未进行隔离，如/proc，/sys、SELinux、time、syslog、/dev设备信息等均未进行隔离。<h4 id="1-4-容器之间的网络安全"><a href="#1-4-容器之间的网络安全" class="headerlink" title="1.4 容器之间的网络安全"></a>1.4 容器之间的网络安全</h4></li>
+</ul>
+</li>
+<li>Docker可通过iptabls设定规则实现禁止或允许容器之间的通信。<h4 id="1-5-Docker容器Capability限制"><a href="#1-5-Docker容器Capability限制" class="headerlink" title="1.5 Docker容器Capability限制"></a>1.5 Docker容器Capability限制</h4></li>
+<li>容器的行为通过Linux超级用户分组限制，具体包括了CHOWN、DAC_OVERRIDe、FSETID、FOWNER、MKNOD、NET_RAW、SETGID、SETUID、SETFCAP、SETPCAP、NET_BIND_SERVICE、SYS_CHROOT、KILL和AUDIT_WRITE。</li>
+<li>Docker进程的Capability可通过docker run命令的参数进行配置<h3 id="2-Docker安全问题"><a href="#2-Docker安全问题" class="headerlink" title="2. Docker安全问题"></a>2. Docker安全问题</h3><h4 id="2-1-磁盘资源限制问题"><a href="#2-1-磁盘资源限制问题" class="headerlink" title="2.1 磁盘资源限制问题"></a>2.1 磁盘资源限制问题</h4></li>
+<li>Docker容器通过镜像层叠的方式来构建容器内的文件系统，本质上还是在宿主机文件系统的目录(/var/lib/docker)下存储文件。</li>
+<li>极有可能出现一个容器将宿主机上所有的磁盘空间耗尽，导致其它容器无法存储文件，所以有必要对容器的磁盘使用量进行限制。<h4 id="2-2-容器逃逸问题"><a href="#2-2-容器逃逸问题" class="headerlink" title="2.2 容器逃逸问题"></a>2.2 容器逃逸问题</h4></li>
+<li>Docker使用操作系统进行虚拟化，共享内核、内存、CPU以及磁盘，易造成容器逃逸问题。</li>
+<li>Docker1.0之后采用白名单来限制容器的能力，会给出默认的容器Capability清单，禁止容器拥有清单之外的Capability。<h4 id="2-3-容器DoS攻击与流量限制问题"><a href="#2-3-容器DoS攻击与流量限制问题" class="headerlink" title="2.3 容器DoS攻击与流量限制问题"></a>2.3 容器DoS攻击与流量限制问题</h4></li>
+<li>公有云基于虚拟化技术实现，攻击数据包可能不需要通过物理网卡就可以攻击同一个宿主机下的其他容器，传统Dos预防措施无法适用容器之间的攻击。</li>
+<li>的Docker容器连接在网桥上，通过veth pari技术创建网卡，其一端在容器内命名为eth0，另一张网上驻留在宿主机环境之中。</li>
+<li>同一宿主机下所有容器共用一张物理网卡，如果一个容器抢占大部分带宽，会影响其它容器使用。<h4 id="2-4-超级权限问题"><a href="#2-4-超级权限问题" class="headerlink" title="2.4 超级权限问题"></a>2.4 超级权限问题</h4></li>
+<li>docker run时加入–privileged参数能使容器获得所有的超级用户权限能力，并将所有的宿主机的所有设备挂载到容器内。<h3 id="3-Docker安全的解决方案"><a href="#3-Docker安全的解决方案" class="headerlink" title="3. Docker安全的解决方案"></a>3. Docker安全的解决方案</h3><h4 id="3-1-SELinux"><a href="#3-1-SELinux" class="headerlink" title="3.1 SELinux"></a>3.1 SELinux</h4></li>
+<li>SELinux三种控制方式<ul>
+<li>Type Enforcement: 主要的访问控制机制。</li>
+<li>Role-Based Access Control(RBAC)：基于SELinux用户的权限控制手段。</li>
+<li>Multi-Level Security(MLS): 多级分类安全，指定level标签。</li>
+</ul>
+</li>
+<li>为什么要在Docker中使用SELinux<ul>
+<li>SELinux将所有进程和文件打上标签，而容器以进程方式运行，所以控制进程如何访问资源，也就是限制容器如何去访问资源。</li>
+<li>SELinux策略是全局的，它不是针对具体用户设定，而是强制整个系统遵循。</li>
+<li>减少提权攻击风险。<h4 id="3-2-user-namespace"><a href="#3-2-user-namespace" class="headerlink" title="3.2 user namespace"></a>3.2 user namespace</h4></li>
+</ul>
+</li>
+<li>容器的超级用户权限通过ns映射到宿主机是一个普通用户。</li>
+<li>容器被恶意程序攻击，所做的也就是这个普通用户的权限，而非宿主机的超级权限。<h4 id="3-3-磁盘限额"><a href="#3-3-磁盘限额" class="headerlink" title="3.3 磁盘限额"></a>3.3 磁盘限额</h4></li>
+<li>Docker仅对Device Mapper文件系统的限额提供了–storage-opt参数进行限制。</li>
+<li>cgroup没有对磁盘进行限制，Linux磁盘限额技术主要基于用户和文件系统。</li>
+<li>可能的解决方案<ul>
+<li>所有用户共有宿主机的一块磁盘，限制用户在磁盘上的使用量来限定容器的磁盘使用量。</li>
+<li>选择支持目录限额的文件系统，如XFS。</li>
+<li>Docker定期检查每一个容器磁盘使用量，会对性能造成影响。</li>
+<li>创建虚拟文件系统，些文件系统仅供某一个容器使用。<h4 id="3-4-容器流量限制"><a href="#3-4-容器流量限制" class="headerlink" title="3.4 容器流量限制"></a>3.4 容器流量限制</h4></li>
+</ul>
+</li>
+<li>Docker没对容器的网络带宽做限制。</li>
+<li>可以采用Traffic Controller容器对容器网卡流量进行限制，一定程序上减少容器Dos攻击危害。<h4 id="3-5-GRSecurity内核安全增强工具"><a href="#3-5-GRSecurity内核安全增强工具" class="headerlink" title="3.5 GRSecurity内核安全增强工具"></a>3.5 GRSecurity内核安全增强工具</h4></li>
+<li>Docker容器共享宿主机的内存，在内存安全上存在不少问题，需要针对内存破坏做防御。</li>
+<li>GRSecurity是一个对内核的安全扩展，通过智能访问控制来阻止内存破坏，预防0day漏洞。<h4 id="3-6-fork炸弹"><a href="#3-6-fork炸弹" class="headerlink" title="3.6 fork炸弹"></a>3.6 fork炸弹</h4></li>
+<li>fork炸弹以极快速度创建大量进程，以此消耗系统资源，使系统无法运行新程序，现有进程运行速度放缓。</li>
+<li>容器本身在内核层面隔离性不足，fork bomb会给容器带来灾难性影响。</li>
+<li>fork bomb受到社区关注（Issue 6479），但目前还没有完美解决方案。</li>
+<li>Docker无法使用ulimit来限制forkbomb问题，因为一个宿主机用户可能同时启动多个容器，无法对每个容器做进程数的限制。</li>
+</ul>
+<ol>
+<li>总结<br>Docker自身已经提供了不少安全机制，但Docker目前仍然只适于运行可信应用程序（内部使用），如果需要运行任意代码，安全很难得到保证。在日常应用中，还可以通过SELinux、GRSecurity、seccomp等工具来增强容器安全。</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;docker防止fork炸弹&quot;&gt;&lt;a href=&quot;#docker防止fork炸弹&quot; class=&quot;headerlink&quot; title=&quot;docker防止fork炸弹&quot;&gt;&lt;/a&gt;docker防止fork炸弹&lt;/h1&gt;&lt;p&gt;在开发过程中，我们使用了docker作为容器
+    
+    </summary>
+    
+      <category term="docker技术" scheme="http://yoursite.com/categories/docker%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="docker" scheme="http://yoursite.com/tags/docker/"/>
+    
+      <category term="安全" scheme="http://yoursite.com/tags/%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>time命令详解</title>
