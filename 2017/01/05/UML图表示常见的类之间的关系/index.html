@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>C++前置声明 - 魏传柳</title>
+    <title>UML图表示常见的类之间的关系 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,19 +15,59 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="C++前置声明以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。
-实际场景我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：Lock.hpp12345678#include &quot;Key.hpp&quot;class Lock &amp;#123">
+    <meta name="description" content="UML图表示常见的类之间的关系类之间的关系常见的主要包括以下几种:
+
+继承
+实现
+依赖
+关联
+聚合
+组合
+
+继承（inheritance）继承的概念大家都比较熟悉，他主要指的是派生类继承父类或者接口之间的继承，派生类继承了父类中原有的功能，并在此基础上添加了新的功能。例如public继承实质上是一种is-a的关系,(子类is a 基类)
+图形表示:
+
+实现(implement)实现指的是一个类实现">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="C++前置声明">
-<meta property="og:url" content="http://yoursite.com/2016/12/22/C-前置声明/index.html">
+<meta property="og:title" content="UML图表示常见的类之间的关系">
+<meta property="og:url" content="http://yoursite.com/2017/01/05/UML图表示常见的类之间的关系/index.html">
 <meta property="og:site_name" content="魏传柳">
-<meta property="og:description" content="C++前置声明以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。
-实际场景我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：Lock.hpp12345678#include &quot;Key.hpp&quot;class Lock &amp;#123">
-<meta property="og:updated_time" content="2016-12-22T16:10:28.499Z">
+<meta property="og:description" content="UML图表示常见的类之间的关系类之间的关系常见的主要包括以下几种:
+
+继承
+实现
+依赖
+关联
+聚合
+组合
+
+继承（inheritance）继承的概念大家都比较熟悉，他主要指的是派生类继承父类或者接口之间的继承，派生类继承了父类中原有的功能，并在此基础上添加了新的功能。例如public继承实质上是一种is-a的关系,(子类is a 基类)
+图形表示:
+
+实现(implement)实现指的是一个类实现">
+<meta property="og:image" content="http://yoursite.com/../assets/images/继承.png">
+<meta property="og:image" content="http://yoursite.com/../assets/images/实现.png">
+<meta property="og:image" content="http://yoursite.com/../assets/images/依赖.png">
+<meta property="og:image" content="http://yoursite.com/../assets/images/关联.png">
+<meta property="og:image" content="http://yoursite.com/../assets/images/聚合.png">
+<meta property="og:image" content="http://yoursite.com/../assets/images/组合.png">
+<meta property="og:updated_time" content="2017-01-05T13:16:34.933Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C++前置声明">
-<meta name="twitter:description" content="C++前置声明以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。
-实际场景我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：Lock.hpp12345678#include &quot;Key.hpp&quot;class Lock &amp;#123">
+<meta name="twitter:title" content="UML图表示常见的类之间的关系">
+<meta name="twitter:description" content="UML图表示常见的类之间的关系类之间的关系常见的主要包括以下几种:
+
+继承
+实现
+依赖
+关联
+聚合
+组合
+
+继承（inheritance）继承的概念大家都比较熟悉，他主要指的是派生类继承父类或者接口之间的继承，派生类继承了父类中原有的功能，并在此基础上添加了新的功能。例如public继承实质上是一种is-a的关系,(子类is a 基类)
+图形表示:
+
+实现(implement)实现指的是一个类实现">
+<meta name="twitter:image" content="http://yoursite.com/../assets/images/继承.png">
     
     
         
@@ -218,19 +258,19 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            C++前置声明
+            UML图表示常见的类之间的关系
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" datetime="2016-12-22T22:08:31+08:00">
+    <time itemprop="datePublished" datetime="2017-01-05T21:12:28+08:00">
 	
-		    12月 22, 2016
+		    1月 05, 2017
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/C-学习/">C++学习</a>
+    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
 
 
     
@@ -240,15 +280,35 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="C-前置声明"><a href="#C-前置声明" class="headerlink" title="C++前置声明"></a>C++前置声明</h1><p>以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。</p>
-<h2 id="实际场景"><a href="#实际场景" class="headerlink" title="实际场景"></a>实际场景</h2><p>我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：<br>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Key.hpp"</span></span></div><div class="line"><span class="keyword">class</span> Lock &#123;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key m_key;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Lock.hpp"</span></span></div><div class="line"><span class="keyword">class</span> Key &#123;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		m_lock;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这个时候出现了两个类相互包含的情况，因为在编译Lock.cpp的时候，我们需要去查看Key的定义，于是去定义Key,在Key中需要Lock的定义，于是又去构造Lock,这样下去，就出现了一个无限循环包含的情况，有些编译器会直接编译错误，而其他编译器会无限包含下去。<br>这该怎么办呢？有办法，C++为我们提供了前置声明。前置声明是什么？就这个例子来讲，我们要造一把锁，光有锁不行啊，我们还得有能打开这把锁的钥匙。但是锁还没有造好，总不能先打造钥匙吧，钥匙的形状我定了，改天在造。先把锁造好，造锁的时候我要先给要是留一个位置，等锁造好了，我再决定造什么样的钥匙。<strong>前置声明就是我在声明一个类(Lock)的时候,用到了另外一个类（Key）的定义，但是Key还没定义呢，而且我先不需要Key的定义，只需要直到Key是一个类就好了。那好，我就先声明类Key,告诉编译器Key是一个类(不需要包含Key.hpp)</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Key;</div></pre></td></tr></table></figure></p>
-<p>然后在Lock中用到Key的时候，都用指针或者引用代替(因为指针是固定大小的，但Key的大小只有知道了Key的定义才能确定)。然后上面的代码就可以改造为如下：</p>
-<p>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Key;</div><div class="line"><span class="keyword">class</span> Lock&#123;</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key *mp_key;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Lock;</div><div class="line"><span class="keyword">class</span> Key &#123;</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Lock* mp_lock;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="前置声明注意的问题"><a href="#前置声明注意的问题" class="headerlink" title="前置声明注意的问题"></a>前置声明注意的问题</h2><h3 id="必须使用前置声明的指针或引用形式"><a href="#必须使用前置声明的指针或引用形式" class="headerlink" title="必须使用前置声明的指针或引用形式"></a>必须使用前置声明的指针或引用形式</h3><p>在需要使用前置声明的文件中，不可以使用类的定义式，因为类的定义式只有在类定义之后才能获取，这个时候类还没有定义，所以会出错。另一个类在构造的时候编译器是需要计算该对象所占的字节的大小给其分配内存的，但是如果使用类的定义式，这个时候类还未定义，所以无法计算其大小，所以只能使用指针或者引用的形式进行引用。</p>
-<h3 id="避免在Lock中使用Key的方法"><a href="#避免在Lock中使用Key的方法" class="headerlink" title="避免在Lock中使用Key的方法"></a>避免在Lock中使用Key的方法</h3><h3 id="避免在Key定义之前调用Key的析构函数"><a href="#避免在Key定义之前调用Key的析构函数" class="headerlink" title="避免在Key定义之前调用Key的析构函数"></a>避免在Key定义之前调用Key的析构函数</h3>
+            <h1 id="UML图表示常见的类之间的关系"><a href="#UML图表示常见的类之间的关系" class="headerlink" title="UML图表示常见的类之间的关系"></a>UML图表示常见的类之间的关系</h1><p>类之间的关系常见的主要包括以下几种:</p>
+<ul>
+<li>继承</li>
+<li>实现</li>
+<li>依赖</li>
+<li>关联</li>
+<li>聚合</li>
+<li>组合</li>
+</ul>
+<h2 id="继承（inheritance）"><a href="#继承（inheritance）" class="headerlink" title="继承（inheritance）"></a>继承（inheritance）</h2><p>继承的概念大家都比较熟悉，他主要指的是派生类继承父类或者接口之间的继承，派生类继承了父类中原有的功能，并在此基础上添加了新的功能。例如public继承实质上是一种is-a的关系,(子类is a 基类)</p>
+<p>图形表示:</p>
+<p><img src="../assets/images/继承.png" alt=""></p>
+<h2 id="实现-implement"><a href="#实现-implement" class="headerlink" title="实现(implement)"></a>实现(implement)</h2><p>实现指的是一个类实现一个接口,一个类可以实现一个或者多个接口。实现是类和接口之间常见的一种关系。在java中通常通过implements实现。</p>
+<p>图形表示：</p>
+<p><img src="../assets/images/实现.png" alt=""></p>
+<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>依赖指的是一个类A使用另外一个类B,这种该使用关系是偶然性的，临时的，非常弱的一种关系。但是类B的变化会影响到类A;比如人要使用船过河中，这个时候人和船就是一种依赖关系。具体表现在代码中就是<strong>B是类A中的某个方法的参数。</strong></p>
+<p>图形表示:</p>
+<p><img src="../assets/images/依赖.png" alt=""></p>
+<h2 id="关联"><a href="#关联" class="headerlink" title="关联"></a>关联</h2><p>关联是指俩个类之间的或者类和接口之间的一种强依赖关系。而这种强依赖关系不是偶然性的，而是长期的，而且双方的关系是平等的，关联可以是单向的，也可以是双向的。具体表现在代码中是<strong>(1):B以类属性的方式出现在类A中（２）A引用类型为B的全局变量</strong></p>
+<p>图形表示:</p>
+<p><img src="../assets/images/关联.png" alt=""></p>
+<h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>聚合是关联关系的一种特例，它表现的是一种has-a的关系，即整体与部分的关系，此时整体与部分可以是分离的，他们可以具有各自的声明周期，部分可以属于多个整体对象，也可以被多个整体对象共享；如计算机与CPU的关系<strong>聚合中部分和整体都有各自的生命周期，并且互相影响</strong></p>
+<p>图形表示：</p>
+<p><img src="../assets/images/聚合.png" alt=""></p>
+<h2 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h2><p>组合也是关联的一种特例，它体现的是一种contain-a的关系，这种关系比聚合强；这个时候整体和部分是不可分离的，<strong>整体的声明周期与部分的声明周期相同，当整体的周期结束时，部分的周期也随之结束</strong>。如人和大脑的关系</p>
+<p>图形表示：</p>
+<p><img src="../assets/images/组合.png" alt=""></p>
+<h2 id="依赖性强弱"><a href="#依赖性强弱" class="headerlink" title="依赖性强弱:"></a>依赖性强弱:</h2><p>组合&gt;聚合&gt;关联&gt;依赖</p>
+
             
         </div>
     </div>
@@ -257,7 +317,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/C/">C++</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/UML/">UML</a>
 
             </div>
         
@@ -266,7 +326,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/27/time命令详解/"  data-tooltip="time命令详解">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -274,7 +334,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/21/条款27-尽量少做转型动作/" data-tooltip="条款27:尽量少做转型动作">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/29/docker防止fork炸弹/" data-tooltip="docker防止fork炸弹">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -289,17 +349,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/01/05/UML图表示常见的类之间的关系/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/01/05/UML图表示常见的类之间的关系/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/01/05/UML图表示常见的类之间的关系/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -337,7 +397,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/27/time命令详解/"  data-tooltip="time命令详解">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -345,7 +405,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/21/条款27-尽量少做转型动作/" data-tooltip="条款27:尽量少做转型动作">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/29/docker防止fork炸弹/" data-tooltip="docker防止fork炸弹">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -360,17 +420,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/01/05/UML图表示常见的类之间的关系/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/01/05/UML图表示常见的类之间的关系/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/01/05/UML图表示常见的类之间的关系/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -390,17 +450,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/01/05/UML图表示常见的类之间的关系/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/01/05/UML图表示常见的类之间的关系/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/01/05/UML图表示常见的类之间的关系/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>
