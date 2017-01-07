@@ -215,6 +215,114 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/01/07/UML时序图详解/">
+                            UML时序图详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-01-07T15:17:23+08:00">
+	
+		    1月 07, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="UML时序图详解"><a href="#UML时序图详解" class="headerlink" title="UML时序图详解"></a>UML时序图详解</h1><p>　　这几天在阅读《设计模式》一书，书中总结了前人在面向对象软件设计过程中针对特定的问题提出的简洁而优雅的解决方案。在阅读的过程中，我一边理解书中给出的实例，一边结合自己写过的项目或者用过的框架与当前模式进行对比，发现之前的项目有一些还是有很大的改进空间。在阅读本书的过程中，书中很多例子都是通过UML类图和UML时序图进行说明，所以，理解这些例子的前提是对UML类图以及UML时序图有一定的了解，UML类图在前面的博客(<a href="https://langzi989.github.io/2017/01/05/UML%E5%9B%BE%E8%A1%A8%E7%A4%BA%E5%B8%B8%E8%A7%81%E7%9A%84%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/)中已经讲解，现在我们主要来看一下UML时序图中的重要概念。" target="_blank" rel="external">https://langzi989.github.io/2017/01/05/UML%E5%9B%BE%E8%A1%A8%E7%A4%BA%E5%B8%B8%E8%A7%81%E7%9A%84%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/)中已经讲解，现在我们主要来看一下UML时序图中的重要概念。</a></p>
+<p>　　UML类关系以及时序图在大三上《系统分析与设计》课的时候学过，但是那个时候不知道这东西有什么用，所以没有认真学和理解。随着实战经验的增多，越来越能体会到这些在软件设计的过程中重中之重，不管是描述你的设计思想还是与团队中其他人进行交流。所以还是建议大家在学到这一部分的时候对这门课认真对待。</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>时序图是一种按照时间顺序显示对象之间的交互的图。时序图中显示的是参与交互的对象和对象之间消息传递的顺序。</p>
+<h2 id="基本元素"><a href="#基本元素" class="headerlink" title="基本元素"></a>基本元素</h2><p>时序图中包含的主要的元素有:</p>
+<ul>
+<li>角色(Actor)</li>
+<li>对象(Object)</li>
+<li>生命线(life line)</li>
+<li>控制焦点(focus of control)</li>
+<li>消息(message)</li>
+<li>自关联消息(self-associated message)</li>
+<li>组合片段(combined fragment)</li>
+</ul>
+<h2 id="基本元素详解"><a href="#基本元素详解" class="headerlink" title="基本元素详解"></a>基本元素详解</h2><h3 id="角色-actor"><a href="#角色-actor" class="headerlink" title="角色(actor)"></a>角色(actor)</h3><p>角色指的是系统角色，这个角色可以是人，其他系统或者子系统</p>
+<p>图形表示:</p>
+<p><img src="../assets/images/actor.png" alt=""></p>
+<h3 id="对象-object"><a href="#对象-object" class="headerlink" title="对象(object)"></a>对象(object)</h3><p>对象包括三种:</p>
+<ul>
+<li>指定类名和对象名的对象objectName: className</li>
+<li>指定类名但没有对象名的对象(匿名对象) :className</li>
+<li>指定对象名但不指定类名的对象 objectName</li>
+</ul>
+<p>图形表示：<br>第一类:</p>
+<p><img src="../assets/images/object1.png" alt=""></p>
+<p>第二类:</p>
+<p><img src="../assets/images/object2.png" alt=""></p>
+<p>第三类:</p>
+<p><img src="../assets/images/object3.png" alt=""></p>
+<h3 id="生命线-life-line"><a href="#生命线-life-line" class="headerlink" title="生命线(life line)"></a>生命线(life line)</h3><p>生命线在时序图中使用向下的虚线表示,它指的是其所对应的对象的存活时间。从上到下表示时间的推后。</p>
+<p>图像表示:</p>
+<p><img src="../assets/images/lifeline.png" alt=""></p>
+<h3 id="控制焦点-focus-of-control"><a href="#控制焦点-focus-of-control" class="headerlink" title="控制焦点(focus of control)"></a>控制焦点(focus of control)</h3><p>控制焦点在时序图中以方块的形式出现，它是一种表示时间段的方式，对象在这一时间段中执行相应的操作。</p>
+<p>图像表示:</p>
+<p><img src="../assets/images/control.png" alt=""></p>
+<h3 id="消息-message"><a href="#消息-message" class="headerlink" title="消息(message)"></a>消息(message)</h3><p>消息有三种类型</p>
+<ul>
+<li>同步消息：发送者发送请求后被阻塞，直到接受者返回消息或者做完其他处理之后发送者才能继续执行之后的操作</li>
+<li>异步消息：发送者发送消息给接受者之后不等待接受者返回响应而继续执行下面的操作。</li>
+<li>返回消息:接受者返回消息给发送者</li>
+</ul>
+<p>消息的图形表示：<br>同步消息:</p>
+<p><img src="../assets/images/message1.png" alt=""></p>
+<p>异步消息:</p>
+<p><img src="../assets/images/message2.png" alt=""></p>
+<p>返回消息:</p>
+<p><img src="../assets/images/message3.png" alt=""></p>
+<h3 id="自关联消息-self-associated-message"><a href="#自关联消息-self-associated-message" class="headerlink" title="自关联消息(self-associated message)"></a>自关联消息(self-associated message)</h3><p>自关联消息一般指的是当前类调用自己的函数的情况</p>
+<h3 id="组合片段-combined-fragment"><a href="#组合片段-combined-fragment" class="headerlink" title="组合片段(combined fragment)"></a>组合片段(combined fragment)</h3><p>组合片段中包括四个部分:</p>
+<ul>
+<li><p>Alternative fragment(alt表示):与if…then…else…对应</p>
+</li>
+<li><p>option fragment(opt表示):与switch对应</p>
+</li>
+<li><p>parallel fragment(par表示):表示同时发生</p>
+</li>
+<li><p>Loop Fragment(loop表示):与循环对应</p>
+<p>图形表示:</p>
+<p>alt:</p>
+<p><img src="../assets/images/alt.png" alt=""></p>
+</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/01/07/UML时序图详解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/01/05/UML图表示常见的类之间的关系/">
                             UML图表示常见的类之间的关系
                         </a>
@@ -875,84 +983,6 @@
                     
                         <p>
                             <a href="/2016/12/16/tornado表单与模板/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/05/tornado入门-简单的web服务/">
-                            tornado入门(简单的web服务)
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-05T22:18:06+08:00">
-	
-		    12月 05, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/python学习/">python学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="tornado入门"><a href="#tornado入门" class="headerlink" title="tornado入门"></a>tornado入门</h1><p>tornado是使用python编写的一个强大的，可扩展的web服务器。它在高并发的网络请求中表现的足够稳定，但是却在创建和编写的过程中有着足够的轻量级，并能够被用在大量的应用和工具中。<br>不同于那些最多只能达到10000个并发连接的传统web服务器，tornado在设计之初就考虑到了性能因素，旨在解决C10K问题，这样的设计使得其成为一个非常<strong>高性能</strong>的框架。此外，它还拥有处理安全性，用户验证，社交网络以及与外部服务进行异步交互的工具。</p>
-<h2 id="Hello-tornado"><a href="#Hello-tornado" class="headerlink" title="Hello tornado"></a>Hello tornado</h2><p>tornado是一个编写对HTTP请求响应的框架。作为程序员，你的工作是编写响应特定条件HTTP请求的响应的handler。</p>
-<p>hello.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> tornado.httpserver</div><div class="line"><span class="keyword">import</span> tornado.ioloop</div><div class="line"><span class="keyword">import</span> tornado.options</div><div class="line"><span class="keyword">import</span> tornado.web</div><div class="line"></div><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> define, options</div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, help = <span class="string">"run on the give port"</span>, type = int)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">indexHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        greeting = self.get_argument(<span class="string">"greeting"</span>, <span class="string">"hello"</span>)</div><div class="line">        self.write(greeting + <span class="string">", friend user!"</span>)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application(handlers=[(<span class="string">r"/"</span>, indexHandler)])</div><div class="line">    http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">    http_server.listen(options.port)</div><div class="line">    tornado.ioloop.IOLoop.instance().start()</div></pre></td></tr></table></figure></p>
-<p>编写一个tornado应用中最多的工作是定义继承自tornado.RequestHandler的类。在这个例子中，我们创建了一个简单的应用，在指定的端口监听请求，并在根目录(“/“)下响应请求。<br>执行命令:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python hello.py --port=9999</div></pre></td></tr></table></figure></p>
-<p>使用命令对其访问<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">curl http://localhost:9999</div><div class="line">hello, friend user!</div><div class="line"></div><div class="line">curl http://localhost:9999/?greeting=david</div><div class="line">david, friend user!</div></pre></td></tr></table></figure></p>
-<p>现在tornado程序就已经在localhost:9999处进行监听。我们可以对其进行根目录使用get方法进行那个访问.</p>
-<h3 id="程序分析"><a href="#程序分析" class="headerlink" title="程序分析"></a>程序分析</h3><p>下面我们开始<strong>逐条语句</strong>进行分析：<br>开始的import语句导入了程序所必须的tornado的相关模块。虽然tornado还有其他模块，但是我们在这个程序中只需要这四个模块</p>
-<h4 id="tornado中options模块分析"><a href="#tornado中options模块分析" class="headerlink" title="tornado中options模块分析"></a>tornado中options模块分析</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> define, options</div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, help=<span class="string">"run on the given port"</span>, type=int)</div></pre></td></tr></table></figure>
-<p>tornado包含了一个有用的模块<strong>tornado.options来从命令行读取设置</strong>。我们在这里使用这个模块指定我们监听http请求的端口。它的工作流程是:<br>如果一个与define语句中同名的设置在命令行中给出，那么它将成为<strong>全局options的一个属性</strong>。如果用户程序在运行的时候使用了–help选项，程序将打印出你所定义的选项以及你在define函数的help参数中指定的文本。如果程序没有为这个选项指定值，那么则使用default进行替代。tornado使用type来验证参数的类型，当类型不合适的时候跑出一个异常。因此，我们允许一个整数port作为options.port来访问程序，如果用户没有指定port的值，则默认为9999端口。</p>
-<h4 id="请求处理函数类及方法"><a href="#请求处理函数类及方法" class="headerlink" title="请求处理函数类及方法"></a>请求处理函数类及方法</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">indexHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        greeting = self.get_argument(<span class="string">"greeting"</span>, <span class="string">"hello"</span>)</div><div class="line">        self.write(greeting + <span class="string">", friend user!"</span>)</div></pre></td></tr></table></figure>
-<p>这是tornado请求处理函数类，它继承自tornado.web.RequestHandler,<strong>当处理一个请求的时候，tornado将这个类实例化，并调用http请求方法所对应的方法。</strong>在这个例子中，我们只定义了get方法，也就是说这个类对http的GET请求作出响应。我们稍后将看到实现不止一个http方法的处理函数。</p>
-<h4 id="获取查询参数"><a href="#获取查询参数" class="headerlink" title="获取查询参数"></a>获取查询参数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.get_argument(<span class="string">"greeting"</span>, <span class="string">"hello"</span>)</div></pre></td></tr></table></figure>
-<p>tornado的request类有很多有用的内建函数，包括get_argument()用来用一个查询字符串中获取参数的值。上述的意思是从查询字符串中获取查询参数greeting的值，若查询参数中没有greeting参数，则会其值为”hello”，即为其默认值。</p>
-<h4 id="RequestHandler的write函数"><a href="#RequestHandler的write函数" class="headerlink" title="RequestHandler的write函数"></a>RequestHandler的write函数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.write(greeting + <span class="string">", firendly user"</span>)</div></pre></td></tr></table></figure>
-<p>tornado另一个有用的方法是write,它以一个字符串作为参数，并将其写入到http响应中去。在这里，我们使用请求中greeting的参数提供的值插入到greeting中，并写回到相应中去。</p>
-<h4 id="创建Application实例"><a href="#创建Application实例" class="headerlink" title="创建Application实例"></a>创建Application实例</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application(handlers=[(<span class="string">r"/"</span>, indexHandler)])</div></pre></td></tr></table></figure>
-<p>这里是真正使得tornado运转起来的语句。首先我们使用tornado的options解析命令行。然后我们创建了一个tornado的Application实例。传递给Application的<strong>init</strong>方法的最重要的参数就是handlers。它告诉tornado用那个类来响应特定的请求。</p>
-<h4 id="端口监听"><a href="#端口监听" class="headerlink" title="端口监听"></a>端口监听</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">http_server.listen(options.port)</div><div class="line">tornado.ioloop.IOLoop.instance().start()</div></pre></td></tr></table></figure>
-<p>从这离开始的代码会被反复使用，一旦Application对象被创建，我们可以将其传递给httpServer的对象，然后使用我们在命令行指定的端口进行监听。最后，在程序准备好接收HTTP请求后，我们创建一个tornado的IOLoop的实例进行启动。</p>
-<h2 id="简单字符串服务"><a href="#简单字符串服务" class="headerlink" title="简单字符串服务"></a>简单字符串服务</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> textwrap</div><div class="line"></div><div class="line"><span class="keyword">import</span> tornado.web</div><div class="line"><span class="keyword">import</span> tornado.httpserver</div><div class="line"><span class="keyword">import</span> tornado.ioloop</div><div class="line"><span class="keyword">import</span> tornado.options</div><div class="line"></div><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> define,options</div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, help=<span class="string">"run on the given port"</span>, type=int)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReverseHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, input1, input2)</span>:</span></div><div class="line">        self.write(input1)</div><div class="line">        self.write(input2)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WrapHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self)</span>:</span></div><div class="line">        text =self.get_argument(<span class="string">"text"</span>)</div><div class="line">        width = self.get_argument(<span class="string">"width"</span>, <span class="number">40</span>)</div><div class="line">        self.write(textwrap.fill(text, int(width)))</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application(handlers=[(<span class="string">r"/reverse/([0-9]+)(\w+)"</span>, ReverseHandler),\</div><div class="line">                                            (<span class="string">r"/wrap"</span>, WrapHandler)])</div><div class="line">    http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">    http_server.listen(options.port)</div><div class="line">    tornado.ioloop.IOLoop.instance().start()</div></pre></td></tr></table></figure>
-<p>上述是一个简单的字符串操作的web服务，有两个作用:第一，到/reverse/string的GET请求奖会返回url路径中指定字符串的反转形式。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$curl http://localhost:8000/reverse/123456</div><div class="line">654321</div></pre></td></tr></table></figure></p>
-<p>作用二是，到/wrap的POST请求从参数text中取得指定文本，并返回按照参数width指定宽度装饰的文本。下面的请求指定一个没有宽度的字符串，所以它的输出宽度被指定为程序中的get_argument的默认值40<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$http://localhost:8000/wrap -d text=Lorem+ipsum+dolor+sit+amet,+consectetuer+adipiscing+elit.</div><div class="line">Lorem ipsum dolor sit amet, consectetuer</div><div class="line">adipiscing elit.</div></pre></td></tr></table></figure></p>
-<h2 id="RequestHandler的更多知识"><a href="#RequestHandler的更多知识" class="headerlink" title="RequestHandler的更多知识"></a>RequestHandler的更多知识</h2><h3 id="HTTP方法"><a href="#HTTP方法" class="headerlink" title="HTTP方法"></a>HTTP方法</h3><p>到目前为止我们只用了http中的get,post方法，但tornado支持任何合法的HTTP请求（GET,POST,HEAD,DELETE,OPTIONS）。你可以非常容易的定义上述任何一种方法的行为，只需要在RequestHandler类中使用同名方法。</p>
-<h3 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h3><p>从上面的代码可以看出，你可以使用RequestHandler类的set_status()方法显式的去设置http的状态麻，但是你需要记住在某些情况下，tornado会自动的设置状态码。下面是一种常见的纲要。</p>
-<ul>
-<li>404 Not Found<br>当http请求的路径无法匹配到任何RequestHandler类对应的模式的时候tornado会返回404相应码。</li>
-<li>400 Bad Request<br>如果你调用了一个没有默认值的get_argument()方法，并且没有发现给定名称的参数，tornado将自动返回一个400响应码</li>
-<li>405 Method Not Allowed<br>如果传入的请求使用了RequestHandler中没有定义的http方法，tornado将自动返回一个405响应码。</li>
-<li>500 Internal Server Error<br>当程序遇到任何不能让其退出的错误的时候，tornado自动返回响应码500.代码中任何没有捕获的异常也会返回500.</li>
-<li>200 OK<br>如果相应成功，并没有其他返回码被设置，tornado将默认返回一个200.</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/05/tornado入门-简单的web服务/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
