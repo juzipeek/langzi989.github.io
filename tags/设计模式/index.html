@@ -287,7 +287,7 @@
 <li>然后调用Director的construct()方法，进行构造Product,</li>
 <li>最后客户通过concreteBuilder的getResult()方法取回生成的Product</li>
 </ul>
-<h2 id="builder模式中一个较好的实例"><a href="#builder模式中一个较好的实例" class="headerlink" title="builder模式中一个较好的实例"></a>builder模式中一个较好的实例</h2><p>两个实例来自网络对两本书籍实例的纠正,改编(<a href="http://www.cnblogs.com/happyhippy/archive/2010/09/01/1814287.html" target="_blank" rel="external">http://www.cnblogs.com/happyhippy/archive/2010/09/01/1814287.html</a>)</p>
+<h2 id="builder模式中一个较好的实例"><a href="#builder模式中一个较好的实例" class="headerlink" title="builder模式中一个较好的实例"></a>builder模式中一个较好的实例</h2><p>两个实例来自网络对两本书籍实例的纠正,改编</p>
 <p>上面这篇文章深刻的分析了builder模式的本质以及诸多误区的分析，收益颇多，在此感谢博主分享。</p>
 <p>在本例中,设备(Equipment)是一个复杂对象，由一个machine和一个或多个输入端口(InputPort)或者输出端口(outputPort)组成；其中输入或输出端口可能有不同的类型(ordinary和super)。现在要你设计一个生成不同型号的产品，要求产品可能包含一进一出(普通或super)，一进两出(普通或super)。</p>
 <p>　　在设计中,我们首先定义一个LCDFactory对象充当director，一个设备生成器(EQPBuilder),相当于Builder。</p>
