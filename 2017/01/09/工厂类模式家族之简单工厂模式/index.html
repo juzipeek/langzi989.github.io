@@ -1,0 +1,497 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="魏传柳">
+    <title>工厂类模式家族之简单工厂模式 - 魏传柳</title>
+    <meta name="author" content="魏传柳(langzi989)">
+    
+        <meta name="keywords" content="hexo,javascript,">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="工厂类模式家族之简单工厂模式在面向对象编程的领域，设计模式给我们提供了适合特定场景的软件设计思想，不过大多设计模式都可以通过一般的设计进行替代，但我们为什么还有费工夫去遵循设计模式呢？这就要说到设计模式的精髓了，我们通过对软件系统进行良好的设计，不但可以提高代码的可重用性，增强系统的可扩展性，给客户提供良好的接口，还可以减少编码过程中因代码组织太乱扩展过程中需要修改旧代码而带来的一连串的错误，降低">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="工厂类模式家族之简单工厂模式">
+<meta property="og:url" content="http://yoursite.com/2017/01/09/工厂类模式家族之简单工厂模式/index.html">
+<meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="工厂类模式家族之简单工厂模式在面向对象编程的领域，设计模式给我们提供了适合特定场景的软件设计思想，不过大多设计模式都可以通过一般的设计进行替代，但我们为什么还有费工夫去遵循设计模式呢？这就要说到设计模式的精髓了，我们通过对软件系统进行良好的设计，不但可以提高代码的可重用性，增强系统的可扩展性，给客户提供良好的接口，还可以减少编码过程中因代码组织太乱扩展过程中需要修改旧代码而带来的一连串的错误，降低">
+<meta property="og:image" content="http://yoursite.com/../assets/images/simpleFactoryclassDiagram.png">
+<meta property="og:image" content="http://yoursite.com/../assets/images/simplefactorysequence.png">
+<meta property="og:image" content="http://yoursite.com/../assets/images/simplefactory2.png">
+<meta property="og:updated_time" content="2017-01-09T09:01:14.162Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="工厂类模式家族之简单工厂模式">
+<meta name="twitter:description" content="工厂类模式家族之简单工厂模式在面向对象编程的领域，设计模式给我们提供了适合特定场景的软件设计思想，不过大多设计模式都可以通过一般的设计进行替代，但我们为什么还有费工夫去遵循设计模式呢？这就要说到设计模式的精髓了，我们通过对软件系统进行良好的设计，不但可以提高代码的可重用性，增强系统的可扩展性，给客户提供良好的接口，还可以减少编码过程中因代码组织太乱扩展过程中需要修改旧代码而带来的一连串的错误，降低">
+<meta name="twitter:image" content="http://yoursite.com/../assets/images/simpleFactoryclassDiagram.png">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://yoursite.com/assets/images/avar.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-nuvue6sithwirecbhvw3dkaobiojqvtadsnhguwi7k04xklybw5djl1smadp.min.css">
+    <!--STYLES END-->
+    
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">魏传柳</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="/assets/images/avar.jpg"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/avar.jpg"/>
+            </a>
+            <span class="sidebar-profile-name">魏传柳(langzi989)</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">home</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">search</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">about</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/langzi989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://blog.csdn.net/u014630623" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-csdn"></i>
+                    <span class="sidebar-button-desc">CSDN</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            工厂类模式家族之简单工厂模式
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" datetime="2017-01-09T16:57:04+08:00">
+	
+		    1月 09, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
+
+
+    
+</div>
+
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="工厂类模式家族之简单工厂模式"><a href="#工厂类模式家族之简单工厂模式" class="headerlink" title="工厂类模式家族之简单工厂模式"></a>工厂类模式家族之简单工厂模式</h1><p>在面向对象编程的领域，设计模式给我们提供了适合特定场景的软件设计思想，不过大多设计模式都可以通过一般的设计进行替代，但我们为什么还有费工夫去遵循设计模式呢？这就要说到设计模式的精髓了，我们通过对软件系统进行良好的设计，不但可以提高代码的可重用性，增强系统的可扩展性，给客户提供良好的接口，还可以减少编码过程中因代码组织太乱扩展过程中需要修改旧代码而带来的一连串的错误，降低维护成本。软件设计过程我们应该尽量追求符合软件设计的开闭原则。</p>
+<blockquote>
+<p> 开闭原则:在面向对象编程领域中，开闭原则规定“软件中的对象(类，模块，函数)应该<strong>对于扩展是开放的，但是对于修改是封闭的</strong>”。该特性在产品化的环境中是特别有价值的，在这种环境中我们认为一旦类完成，我们可以对它进行扩展改变其行为，但是不允许修改类。也就是说一个<strong>类的实现只应该因错误而修改</strong>。－－by wiki</p>
+</blockquote>
+<p>工厂模式家族包括三种重要的模式，分别是简单工厂模式，工厂模式以及抽象工厂模式。他们都属于类的创建型模式。创建型模式包括两种，分别是<strong>类的创建型模式</strong>和<strong>对象的创建型模式</strong>。类的创建型模式通常<strong>使用继承关系</strong>，将类的创建交由其具体的子类完成，这样就向外界隐藏了如何得到具体类的实现细节，以及这个类的实例是如何被创建或者组织在一起的。；对象创建型模式通常<strong>把一个类的创建委托给另一个对象完成</strong>，可以根据语境动态地决定生成哪个具体类的实例。</p>
+<p>本节我们来讲解工厂模式中的简单工厂模式。主要包括以下几个部分：</p>
+<ul>
+<li>简单工厂模式的实质</li>
+<li>简单工厂模式的适用性</li>
+<li>简单工厂模式的结构</li>
+<li>简单工厂模式的参与者</li>
+<li>简单工厂模式各成分之间的交互</li>
+<li>实际应用</li>
+<li>简单工厂模式的优缺点</li>
+<li>简单工厂模式实例代码</li>
+</ul>
+<h2 id="简单工厂模式的实质"><a href="#简单工厂模式的实质" class="headerlink" title="简单工厂模式的实质"></a>简单工厂模式的实质</h2><p>简单工厂模式又称为静态工厂模式。 <strong>它的实质是根据客户传递的信息，工厂类通过该信息制造出相应的产品的实例返回给客户。这样我们就做到了客户只是产品的消费者，而真正的创建者是工厂类。</strong> 在简单工厂模式中，待被创建的产品通常继承自同一个类。而这个类中包含了具体产品的所有的公共成员和方法。</p>
+<h2 id="简单工厂模式的适用性"><a href="#简单工厂模式的适用性" class="headerlink" title="简单工厂模式的适用性"></a>简单工厂模式的适用性</h2><p>简单工厂模式将对象的创建和对象本身的业务分离开来，降低了系统的耦合度，当维护期间需要对客户代码或者产品代码进行修改的时候，修改其中之一不会影响另一个。</p>
+<h2 id="简单工厂模式的结构"><a href="#简单工厂模式的结构" class="headerlink" title="简单工厂模式的结构"></a>简单工厂模式的结构</h2><p><img src="../assets/images/simpleFactoryclassDiagram.png" alt=""></p>
+<h2 id="简单工厂模式的参与者"><a href="#简单工厂模式的参与者" class="headerlink" title="简单工厂模式的参与者"></a>简单工厂模式的参与者</h2><p>简单工厂模式中一般有以下几个部分:</p>
+<ul>
+<li>工厂类：简单工厂模式的核心，它的作用是根据客户提供的信息创建相应的具体产品</li>
+<li>抽象产品：所有具体产品的父类，其中主要包含所有具体产品共有的方法或对象</li>
+<li>具体产品：工厂类创建的具体实例。</li>
+</ul>
+<h2 id="简单工厂模式各成分之间的交互"><a href="#简单工厂模式各成分之间的交互" class="headerlink" title="简单工厂模式各成分之间的交互"></a>简单工厂模式各成分之间的交互</h2><p><img src="../assets/images/simplefactorysequence.png" alt=""></p>
+<ul>
+<li>客户首先创建factory类(一般为单例模式)，</li>
+<li>factory类创建成功后，客户调用其createProduct方法，并传入相关信息，</li>
+<li>具体产品实例被创建并返回给client,开始进行使用concreteProduct</li>
+</ul>
+<h2 id="简单工厂模式的实际应用"><a href="#简单工厂模式的实际应用" class="headerlink" title="简单工厂模式的实际应用"></a>简单工厂模式的实际应用</h2><p>在实际开发中使用简单工厂模式中，我们可以进行变通的使用。</p>
+<p>在实际情况种可能会出现比较复杂的抽象产品和和具体产品之间的关系，这个时候我们依然也可以使用抽象工厂模式:</p>
+<p><img src="../assets/images/simplefactory2.png" alt=""></p>
+<h2 id="简单工厂模式的优缺点"><a href="#简单工厂模式的优缺点" class="headerlink" title="简单工厂模式的优缺点"></a>简单工厂模式的优缺点</h2><p>简单工厂模式的优点: 通过在中间添加一个工厂类，降低产品类和客户代码之间的耦合度；客户在获取产品的时候无需记住所有产品的构造方法，只需要通过同意的工厂类接口进行创建产品，大大提高了效率准确率。</p>
+<p>简单工厂模式的缺点：所有的产品实例化的逻辑都在工厂类的一个创建方法中，当需要添加新产品的时候，不得不进行修改factory类，这样就违背了设计的开闭原则(对扩展开放，对修改封闭)；另外当产品类别过多的时候，会出现这个函数冗杂的问题，增加维护成本。最重要的是这个工厂类是所有产品的入口，当它不能工作的时候，所有的产品将陷入瘫痪状态。</p>
+<h2 id="简单工厂的实例"><a href="#简单工厂的实例" class="headerlink" title="简单工厂的实例"></a>简单工厂的实例</h2><p>下面通过形状shape,circle以及rectangle来实现一个简单的简单工厂模式(如有问题，欢迎指正)：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//factory.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> FACTORY_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> FACTORY_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"circle.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rectangle.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="keyword">class</span> Factory &#123;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">  Factory() &#123;&#125;</div><div class="line">  Factory(<span class="keyword">const</span> Factory &amp;) = <span class="keyword">delete</span>;</div><div class="line">  Factory &amp;<span class="keyword">operator</span>=(<span class="keyword">const</span> Factory &amp;) = <span class="keyword">delete</span>;</div><div class="line"></div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="keyword">static</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Factory&gt; m_factory;</div><div class="line">  <span class="keyword">static</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Factory&gt; getInstance();</div><div class="line">  <span class="keyword">static</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt; getShape(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;flag);</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//factory.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"factory.hpp"</span></span></div><div class="line"></div><div class="line"><span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Factory&gt; Factory::m_factory = <span class="literal">nullptr</span>;</div><div class="line"></div><div class="line"><span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Factory&gt; Factory::getInstance() &#123;</div><div class="line">  <span class="keyword">if</span> (m_factory == <span class="literal">nullptr</span>) &#123;</div><div class="line">    m_factory = <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;Factory&gt;(<span class="keyword">new</span> Factory());</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> m_factory;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt; Factory::getShape(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;flag) &#123;</div><div class="line">  <span class="keyword">if</span> (<span class="number">0</span> == flag.compare(<span class="string">"circle"</span>)) &#123;</div><div class="line">    <span class="keyword">return</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt;(<span class="keyword">new</span> Circle());</div><div class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">0</span> == flag.compare(<span class="string">"rectangle"</span>)) &#123;</div><div class="line">    <span class="keyword">return</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt;(<span class="keyword">new</span> Rectangle());</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//shape.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> SHAPE_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> SHAPE_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="keyword">class</span> Shape &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">double</span> <span class="title">getArea</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//circle.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> CIRCLE_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> CIRCLE_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"shape.hpp"</span></span></div><div class="line"><span class="keyword">class</span> Circle : <span class="keyword">public</span> Shape &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  Circle(<span class="keyword">double</span> t_radius = <span class="number">0</span>) : m_radius(t_radius) &#123;&#125;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"this is a circle, the radius is : "</span> &lt;&lt; m_radius &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  &#125;;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">double</span> <span class="title">getArea</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> m_radius * m_radius * <span class="number">3.14</span>; &#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="keyword">double</span> m_radius;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//rectangle.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> RECTANGLE_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> RECTANGLE_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"shape.hpp"</span></span></div><div class="line"><span class="keyword">class</span> Rectangle : <span class="keyword">public</span> Shape &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  Rectangle(<span class="keyword">int</span> a = <span class="number">0</span>, <span class="keyword">int</span> b = <span class="number">0</span>) : m_height(a), m_width(b) &#123;&#125;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"this is a rectangle\n height: "</span> &lt;&lt; m_height</div><div class="line">              &lt;&lt; <span class="string">"\nwidth:"</span> &lt;&lt; m_width &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">double</span> <span class="title">getArea</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> m_height * m_width; &#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="keyword">int</span> m_height;</div><div class="line">  <span class="keyword">int</span> m_width;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//main.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"circle.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"factory.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rectangle.hpp"</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Factory&gt; t = Factory::getInstance();</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt; c = t-&gt;getShape(<span class="string">"circle"</span>);</div><div class="line">  c-&gt;draw();</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"the area is: "</span> &lt;&lt; c-&gt;getArea() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt; r = t-&gt;getShape(<span class="string">"rectangle"</span>);</div><div class="line">  r-&gt;draw();</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"the area is :"</span> &lt;&lt; r-&gt;getArea() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/简单工厂方法/">简单工厂方法</a> <a class="tag tag--primary tag--small t-link" href="/tags/设计模式/">设计模式</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/01/08/GRASP设计原则（职责分配原则）/" data-tooltip="GRASP设计原则（职责分配原则）">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/01/09/工厂类模式家族之简单工厂模式/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/01/09/工厂类模式家族之简单工厂模式/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/01/09/工厂类模式家族之简单工厂模式/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 魏传柳(langzi989). All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/01/08/GRASP设计原则（职责分配原则）/" data-tooltip="GRASP设计原则（职责分配原则）">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/01/09/工厂类模式家族之简单工厂模式/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/01/09/工厂类模式家族之简单工厂模式/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/01/09/工厂类模式家族之简单工厂模式/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/01/09/工厂类模式家族之简单工厂模式/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/01/09/工厂类模式家族之简单工厂模式/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/01/09/工厂类模式家族之简单工厂模式/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/avar.jpg"/>
+        
+            <h4 id="about-card-name">魏传柳(langzi989)</h4>
+        
+            <h5 id="about-card-bio"><p>author.bio</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Guangzhou,China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+</html>
