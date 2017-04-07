@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>free如何知道要free多大的空间 - 魏传柳</title>
+    <title>C语言free如何知道要free多大的空间 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -18,14 +18,14 @@
     <meta name="description" content="在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。
 malloc函数的实现是以块分配内存，在被分">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="free如何知道要free多大的空间">
+<meta property="og:title" content="C语言free如何知道要free多大的空间">
 <meta property="og:url" content="http://yoursite.com/2017/04/07/free如何知道要free多大的空间/index.html">
 <meta property="og:site_name" content="魏传柳">
 <meta property="og:description" content="在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。
 malloc函数的实现是以块分配内存，在被分">
-<meta property="og:updated_time" content="2017-04-07T03:46:23.402Z">
+<meta property="og:updated_time" content="2017-04-07T03:47:13.773Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="free如何知道要free多大的空间">
+<meta name="twitter:title" content="C语言free如何知道要free多大的空间">
 <meta name="twitter:description" content="在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。
 malloc函数的实现是以块分配内存，在被分">
     
@@ -218,7 +218,7 @@ malloc函数的实现是以块分配内存，在被分">
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            free如何知道要free多大的空间
+            C语言free如何知道要free多大的空间
         </h1>
     
     <div class="post-meta">
