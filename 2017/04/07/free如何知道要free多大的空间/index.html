@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Category: C++学习 - 魏传柳</title>
+    <title>free如何知道要free多大的空间 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,12 +15,19 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta property="og:type" content="blog">
-<meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/categories/C-学习/index.html">
+    <meta name="description" content="在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。
+malloc函数的实现是以块分配内存，在被分">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="free如何知道要free多大的空间">
+<meta property="og:url" content="http://yoursite.com/2017/04/07/free如何知道要free多大的空间/index.html">
 <meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。
+malloc函数的实现是以块分配内存，在被分">
+<meta property="og:updated_time" content="2017-04-07T03:46:23.402Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="魏传柳">
+<meta name="twitter:title" content="free如何知道要free多大的空间">
+<meta name="twitter:description" content="在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。
+malloc函数的实现是以块分配内存，在被分">
     
     
         
@@ -49,7 +56,7 @@
         
     
 
-<header id="header" data-behavior="1">
+<header id="header" data-behavior="3">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <h1 class="header-title">
         <a class="header-title-link" href="/ ">魏传柳</a>
@@ -73,7 +80,7 @@
         
     
 
-<nav id="sidebar" data-behavior="1">
+<nav id="sidebar" data-behavior="3">
     
         <div class="sidebar-profile">
             <a href="/#about">
@@ -200,28 +207,21 @@
 </nav>
 
             
-            <div id="main" data-behavior="1"
+            <div id="main" data-behavior="3"
                  class="
                         hasCoverMetaIn
                         ">
                 
-    
-
-<section class="postShorten-group main-content-wrap">
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/04/07/free如何知道要free多大的空间/">
-                            free如何知道要free多大的空间
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            free如何知道要free多大的空间
+        </h1>
+    
+    <div class="post-meta">
     <time itemprop="datePublished" datetime="2017-04-07T10:50:31+08:00">
 	
 		    4月 07, 2017
@@ -236,10 +236,11 @@
     
 </div>
 
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。</p>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。</p>
 <p>malloc函数的实现是以块分配内存，在被分配的块中包括两部分。<strong>第一部分中存储含有报头的元数据，它其中包含有分配块的大小信息，是一个常量；第二部分中存储实际用户数据</strong>。而使用malloc分配内存返回的是第二部分用户数据的地址。而块的两个部分在内存中的存储取决有编译器的实现，一般有两种情况，第一种是最常见的，即元数据和用户数据是连续的，存储在连续空间位置。第二种是两部分分开存储。</p>
 <p>对于第一种情况，malloc分配内存的空间图如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">____ The allocated block ____</div><div class="line">/                             \</div><div class="line">+--------+--------------------+</div><div class="line">| Header | Your data area ... |</div><div class="line">+--------+--------------------+</div><div class="line">         ^</div><div class="line">         |</div><div class="line">         +-- The address you are given</div></pre></td></tr></table></figure>
@@ -249,86 +250,77 @@
 <p>同时，我们通过实验可以推测，标准库对void*的operator=做了重载。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  int *a = (int*)malloc(sizeof(int));</div><div class="line">  int *b = (int*)malloc(sizeof(int));</div><div class="line">  short *c = (short*)malloc(sizeof(short));</div><div class="line">  std::cout &lt;&lt; a &lt;&lt; std::endl</div><div class="line">            &lt;&lt; b &lt;&lt; std::endl</div><div class="line">            &lt;&lt; c &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; b - a &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; reinterpret_cast&lt;size_t&gt;(b) - reinterpret_cast&lt;size_t&gt;(a) &lt;&lt; std::endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>输出结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">0x10b5c20</div><div class="line">0x10b5c40</div><div class="line">0x10b5c60</div><div class="line">8</div><div class="line">32</div></pre></td></tr></table></figure></p>
 
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/04/07/free如何知道要free多大的空间/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
             
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/22/C-前置声明/">
-                            C++前置声明
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-22T22:08:31+08:00">
-	
-		    12月 22, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-学习/">C++学习</a>
-
-
-    
-</div>
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/C/">C++</a>
 
             </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/03/21/why-assigment-operator-can-not-be-frined-function/" data-tooltip="why assigment operator can not be frined function">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C-前置声明"><a href="#C-前置声明" class="headerlink" title="C++前置声明"></a>C++前置声明</h1><p>以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。</p>
-<h2 id="实际场景"><a href="#实际场景" class="headerlink" title="实际场景"></a>实际场景</h2><p>我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：<br>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Key.hpp"</span></span></div><div class="line"><span class="keyword">class</span> Lock &#123;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key m_key;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Lock.hpp"</span></span></div><div class="line"><span class="keyword">class</span> Key &#123;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		m_lock;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这个时候出现了两个类相互包含的情况，因为在编译Lock.cpp的时候，我们需要去查看Key的定义，于是去定义Key,在Key中需要Lock的定义，于是又去构造Lock,这样下去，就出现了一个无限循环包含的情况，有些编译器会直接编译错误，而其他编译器会无限包含下去。<br>这该怎么办呢？有办法，C++为我们提供了前置声明。前置声明是什么？就这个例子来讲，我们要造一把锁，光有锁不行啊，我们还得有能打开这把锁的钥匙。但是锁还没有造好，总不能先打造钥匙吧，钥匙的形状我定了，改天在造。先把锁造好，造锁的时候我要先给要是留一个位置，等锁造好了，我再决定造什么样的钥匙。<strong>前置声明就是我在声明一个类(Lock)的时候,用到了另外一个类（Key）的定义，但是Key还没定义呢，而且我先不需要Key的定义，只需要直到Key是一个类就好了。那好，我就先声明类Key,告诉编译器Key是一个类(不需要包含Key.hpp)</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Key;</div></pre></td></tr></table></figure></p>
-<p>然后在Lock中用到Key的时候，都用指针或者引用代替(因为指针是固定大小的，但Key的大小只有知道了Key的定义才能确定)。然后上面的代码就可以改造为如下：</p>
-<p>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Key;</div><div class="line"><span class="keyword">class</span> Lock&#123;</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key *mp_key;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Lock;</div><div class="line"><span class="keyword">class</span> Key &#123;</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Lock* mp_lock;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="前置声明注意的问题"><a href="#前置声明注意的问题" class="headerlink" title="前置声明注意的问题"></a>前置声明注意的问题</h2><h3 id="必须使用前置声明的指针或引用形式"><a href="#必须使用前置声明的指针或引用形式" class="headerlink" title="必须使用前置声明的指针或引用形式"></a>必须使用前置声明的指针或引用形式</h3><p>在需要使用前置声明的文件中，不可以使用类的定义式，因为类的定义式只有在类定义之后才能获取，这个时候类还没有定义，所以会出错。另一个类在构造的时候编译器是需要计算该对象所占的字节的大小给其分配内存的，但是如果使用类的定义式，这个时候类还未定义，所以无法计算其大小，所以只能使用指针或者引用的形式进行引用。</p>
-<h3 id="避免在Lock中使用Key的方法"><a href="#避免在Lock中使用Key的方法" class="headerlink" title="避免在Lock中使用Key的方法"></a>避免在Lock中使用Key的方法</h3><h3 id="避免在Key定义之前调用Key的析构函数"><a href="#避免在Key定义之前调用Key的析构函数" class="headerlink" title="避免在Key定义之前调用Key的析构函数"></a>避免在Key定义之前调用Key的析构函数</h3>
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/22/C-前置声明/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
+                <a class="post-action-btn btn btn--default" href="#">
             
-        </div>
-        
-    </article>
-    
-    <div class="pagination-bar">
-    <ul class="pagination">
-        
-        
-        <li class="pagination-number">page 1 of 1</li>
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
     </ul>
 </div>
 
-</section>
+
+        
+            
+        
+    </div>
+</article>
 
 
 
@@ -339,6 +331,83 @@
 </footer>
 
             </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/03/21/why-assigment-operator-can-not-be-frined-function/" data-tooltip="why assigment operator can not be frined function">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
             
         </div>
         
@@ -385,6 +454,8 @@
     <!--SCRIPTS-->
 <script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
 <!--SCRIPTS END-->
+
+    
 
 
 
