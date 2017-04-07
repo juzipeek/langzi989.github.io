@@ -23,7 +23,7 @@ malloc函数的实现是以块分配内存，在被分">
 <meta property="og:site_name" content="魏传柳">
 <meta property="og:description" content="在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。
 malloc函数的实现是以块分配内存，在被分">
-<meta property="og:updated_time" content="2017-04-07T03:47:13.773Z">
+<meta property="og:updated_time" content="2017-04-07T04:48:27.464Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C语言free如何知道要free多大的空间">
 <meta name="twitter:description" content="在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。
@@ -224,11 +224,11 @@ malloc函数的实现是以块分配内存，在被分">
     <div class="post-meta">
     <time itemprop="datePublished" datetime="2017-04-07T10:50:31+08:00">
 	
-		    4月 07, 2017
+		    07 4月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/C-学习/">C++学习</a>
 
@@ -249,6 +249,9 @@ malloc函数的实现是以块分配内存，在被分">
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span>* mem)</span> </span>&#123;</div><div class="line">  p = mem2chunk(mem);</div><div class="line">  <span class="comment">// Now that you know how large is chunk "p", go ahead and free the chunk.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>同时，我们通过实验可以推测，标准库对void*的operator=做了重载。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  int *a = (int*)malloc(sizeof(int));</div><div class="line">  int *b = (int*)malloc(sizeof(int));</div><div class="line">  short *c = (short*)malloc(sizeof(short));</div><div class="line">  std::cout &lt;&lt; a &lt;&lt; std::endl</div><div class="line">            &lt;&lt; b &lt;&lt; std::endl</div><div class="line">            &lt;&lt; c &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; b - a &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; reinterpret_cast&lt;size_t&gt;(b) - reinterpret_cast&lt;size_t&gt;(a) &lt;&lt; std::endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>输出结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">0x10b5c20</div><div class="line">0x10b5c40</div><div class="line">0x10b5c60</div><div class="line">8</div><div class="line">32</div></pre></td></tr></table></figure></p>
+<p>参考:</p>
+<p><a href="https://www.quora.com/How-does-free-function-in-C-knows-how-much-memory-to-be-released-deallocate" target="_blank" rel="external">https://www.quora.com/How-does-free-function-in-C-knows-how-much-memory-to-be-released-deallocate</a></p>
+<p><a href="http://stackoverflow.com/questions/1518711/how-does-free-know-how-much-to-free" target="_blank" rel="external">http://stackoverflow.com/questions/1518711/how-does-free-know-how-much-to-free</a></p>
 
             
         </div>
@@ -256,7 +259,7 @@ malloc函数的实现是以块分配内存，在被分">
     <div id="post-footer" class="post-footer main-content-wrap">
         
             <div class="post-footer-tags">
-                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
                 
     <a class="tag tag--primary tag--small t-link" href="/tags/C/">C++</a>
 
@@ -270,14 +273,14 @@ malloc函数的实现是以块分配内存，在被分">
                     <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">ANTERIOR</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     <a class="post-action-btn btn btn--default tooltip--top" href="/2017/03/21/why-assigment-operator-can-not-be-frined-function/" data-tooltip="why assigment operator can not be frined function">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">SIGUIENTE</span>
                     <i class="fa fa-angle-right"></i>
                 </a>
             </li>
@@ -341,14 +344,14 @@ malloc函数的实现是以块分配内存，在被分">
                     <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    <span class="hide-xs hide-sm text-small icon-ml">ANTERIOR</span>
                 </a>
             </li>
             <li class="post-action">
                 
                     <a class="post-action-btn btn btn--default tooltip--top" href="/2017/03/21/why-assigment-operator-can-not-be-frined-function/" data-tooltip="why assigment operator can not be frined function">
                 
-                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <span class="hide-xs hide-sm text-small icon-mr">SIGUIENTE</span>
                     <i class="fa fa-angle-right"></i>
                 </a>
             </li>
@@ -392,17 +395,17 @@ malloc函数的实现是以块分配内存，在被分">
     <ul class="share-options">
         <li class="share-option">
             <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
-                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+                <i class="fa fa-google-plus"></i><span class="">Compartir en Google Plus</span>
             </a>
         </li>
         <li class="share-option">
             <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
-                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+                <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
             </a>
         </li>
         <li class="share-option">
             <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/04/07/free如何知道要free多大的空间/">
-                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+                <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
             </a>
         </li>
     </ul>

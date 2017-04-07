@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-04-07T03:47:13.773Z</updated>
+  <updated>2017-04-07T04:48:27.464Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/04/07/free%E5%A6%82%E4%BD%95%E7%9F%A5%E9%81%93%E8%A6%81free%E5%A4%9A%E5%A4%A7%E7%9A%84%E7%A9%BA%E9%97%B4/"/>
     <id>http://yoursite.com/2017/04/07/free如何知道要free多大的空间/</id>
     <published>2017-04-07T02:50:31.000Z</published>
-    <updated>2017-04-07T03:47:13.773Z</updated>
+    <updated>2017-04-07T04:48:27.464Z</updated>
     
     <content type="html"><![CDATA[<p>在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。</p>
 <p>malloc函数的实现是以块分配内存，在被分配的块中包括两部分。<strong>第一部分中存储含有报头的元数据，它其中包含有分配块的大小信息，是一个常量；第二部分中存储实际用户数据</strong>。而使用malloc分配内存返回的是第二部分用户数据的地址。而块的两个部分在内存中的存储取决有编译器的实现，一般有两种情况，第一种是最常见的，即元数据和用户数据是连续的，存储在连续空间位置。第二种是两部分分开存储。</p>
@@ -31,6 +31,9 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span>* mem)</span> </span>&#123;</div><div class="line">  p = mem2chunk(mem);</div><div class="line">  <span class="comment">// Now that you know how large is chunk "p", go ahead and free the chunk.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>同时，我们通过实验可以推测，标准库对void*的operator=做了重载。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  int *a = (int*)malloc(sizeof(int));</div><div class="line">  int *b = (int*)malloc(sizeof(int));</div><div class="line">  short *c = (short*)malloc(sizeof(short));</div><div class="line">  std::cout &lt;&lt; a &lt;&lt; std::endl</div><div class="line">            &lt;&lt; b &lt;&lt; std::endl</div><div class="line">            &lt;&lt; c &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; b - a &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; reinterpret_cast&lt;size_t&gt;(b) - reinterpret_cast&lt;size_t&gt;(a) &lt;&lt; std::endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>输出结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">0x10b5c20</div><div class="line">0x10b5c40</div><div class="line">0x10b5c60</div><div class="line">8</div><div class="line">32</div></pre></td></tr></table></figure></p>
+<p>参考:</p>
+<p><a href="https://www.quora.com/How-does-free-function-in-C-knows-how-much-memory-to-be-released-deallocate" target="_blank" rel="external">https://www.quora.com/How-does-free-function-in-C-knows-how-much-memory-to-be-released-deallocate</a></p>
+<p><a href="http://stackoverflow.com/questions/1518711/how-does-free-know-how-much-to-free" target="_blank" rel="external">http://stackoverflow.com/questions/1518711/how-does-free-know-how-much-to-free</a></p>
 ]]></content>
     
     <summary type="html">
