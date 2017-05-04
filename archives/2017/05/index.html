@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archives: 2017/4 - 魏传柳</title>
+    <title>Archives: 2017/5 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -17,7 +17,7 @@
     
     <meta property="og:type" content="blog">
 <meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/archives/2017/04/index.html">
+<meta property="og:url" content="http://yoursite.com/archives/2017/05/index.html">
 <meta property="og:site_name" content="魏传柳">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="魏传柳">
@@ -216,48 +216,189 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/04/07/free如何知道要free多大的空间/">
-                            C语言free如何知道要free多大的空间
+                        <a class="link-unstyled" href="/2017/05/04/cgi原理/">
+                            cgi原理
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-04-07T10:50:31+08:00">
+    <time itemprop="datePublished" datetime="2017-05-04T20:36:55+08:00">
 	
-		    4月 07, 2017
+		    5月 04, 2017
     	
     </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-学习/">C++学习</a>
-
-
     
 </div>
 
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <p>在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。</p>
-<p>malloc函数的实现是以块分配内存，在被分配的块中包括两部分。<strong>第一部分中存储含有报头的元数据，它其中包含有分配块的大小信息，是一个常量；第二部分中存储实际用户数据</strong>。而使用malloc分配内存返回的是第二部分用户数据的地址。而块的两个部分在内存中的存储取决有编译器的实现，一般有两种情况，第一种是最常见的，即元数据和用户数据是连续的，存储在连续空间位置。第二种是两部分分开存储。</p>
-<p>对于第一种情况，malloc分配内存的空间图如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">____ The allocated block ____</div><div class="line">/                             \</div><div class="line">+--------+--------------------+</div><div class="line">| Header | Your data area ... |</div><div class="line">+--------+--------------------+</div><div class="line">         ^</div><div class="line">         |</div><div class="line">         +-- The address you are given</div></pre></td></tr></table></figure>
-<p>对于上述情况，malloc中内存转换实现方式为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* The corresponding word size */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> SIZE_SZ                (sizeof(INTERNAL_SIZE_T))</span></div><div class="line">...</div><div class="line"><span class="comment">/* conversion from malloc headers to user pointers, and back */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> chunk2mem(p) ((void*)((char*)(p) + 2*SIZE_SZ))</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> mem2chunk(mem) ((mchunkptr)((char*)(mem) - 2*SIZE_SZ))</span></div></pre></td></tr></table></figure></p>
-<p>如上源码我们可以看出来，chunk2mem将原始指针转换为user_data的指针，mem2chunk做了相反的转换。这个时候free的实现为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span>* mem)</span> </span>&#123;</div><div class="line">  p = mem2chunk(mem);</div><div class="line">  <span class="comment">// Now that you know how large is chunk "p", go ahead and free the chunk.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>同时，我们通过实验可以推测，标准库对void*的operator=做了重载。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  int *a = (int*)malloc(sizeof(int));</div><div class="line">  int *b = (int*)malloc(sizeof(int));</div><div class="line">  short *c = (short*)malloc(sizeof(short));</div><div class="line">  std::cout &lt;&lt; a &lt;&lt; std::endl</div><div class="line">            &lt;&lt; b &lt;&lt; std::endl</div><div class="line">            &lt;&lt; c &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; b - a &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; reinterpret_cast&lt;size_t&gt;(b) - reinterpret_cast&lt;size_t&gt;(a) &lt;&lt; std::endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>输出结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">0x10b5c20</div><div class="line">0x10b5c40</div><div class="line">0x10b5c60</div><div class="line">8</div><div class="line">32</div></pre></td></tr></table></figure></p>
-<p>参考:</p>
-<p><a href="https://www.quora.com/How-does-free-function-in-C-knows-how-much-memory-to-be-released-deallocate" target="_blank" rel="external">https://www.quora.com/How-does-free-function-in-C-knows-how-much-memory-to-be-released-deallocate</a></p>
-<p><a href="http://stackoverflow.com/questions/1518711/how-does-free-know-how-much-to-free" target="_blank" rel="external">http://stackoverflow.com/questions/1518711/how-does-free-know-how-much-to-free</a></p>
+                    <h1 id="CGI原理"><a href="#CGI原理" class="headerlink" title="CGI原理"></a>CGI原理</h1><p>CGI（Common Gateway Interface）通用网关接口，CGI描述了服务器和请求处理程序之间传输数据局的<br>一种标准。在理解的过程中我们需要区分CGI和CGI程序，CGI是一种数据传输的标准，而CGI程序是实际处理<br>业务的一个程序。webserver每请求一次，CGI程序就会fork出一个子进程进行处理。CGI程序的参数通过环境<br>变量和标准输入获得，它的相应通过标准输出传递给webServer。</p>
+<h2 id="CGI的工作原理是："><a href="#CGI的工作原理是：" class="headerlink" title="CGI的工作原理是："></a>CGI的工作原理是：</h2><ul>
+<li>客户端通过http将请求发送到web服务器</li>
+<li>web服务器接收并收集用户请求，然后交给CGI程序进行处理</li>
+<li>CGI程序把处理后的结果发送给服务器</li>
+<li>服务器将结果传送给浏览器</li>
+</ul>
+<p>其中上述第二步web服务器通过环境变量或标准输入将请求发送给CGI程序，第三步CGI通过标准输出将结果<br>发送给webServer</p>
+<h2 id="CGI接口标准：标准输入-环境变量以及标准输出"><a href="#CGI接口标准：标准输入-环境变量以及标准输出" class="headerlink" title="CGI接口标准：标准输入,环境变量以及标准输出"></a>CGI接口标准：标准输入,环境变量以及标准输出</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">借口标准</th>
+<th style="text-align:right">介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">标准输入</td>
+<td style="text-align:right">CGI程序像其他可执行程序一样,可通过标准输入(stdin)从Web服务器得到输入信息,如Form中的数据,这就是所谓的向CGI程序传递数据的POST方法。这意味着在操作系统命令行状态可执行CGI程序,对CGI程序进行调试。POST方法是常用的方法。</td>
+</tr>
+<tr>
+<td style="text-align:center">环境变量</td>
+<td style="text-align:right">操作系统提供了许多环境变量,它们定义了程序的执行环境,应用程序可以存取它们。Web服务器和CGI接口又另外设置了自己的一些环境变量,用来向CGI程序传递一些重要的参数。CGI的GET方法还通过环境变量QUERY-STRING向CGI程序传递Form中的数据。</td>
+</tr>
+<tr>
+<td style="text-align:center">标准输出</td>
+<td style="text-align:right">CGI程序通过标准输出(stdout)将输出信息传送给Web服务器。传送给Web服务器的信息可以用各种格式,通常是以纯文本或者HTML文本的形式,这样我们就可以在命令行状态调试CGI程序,并且得到它们的输出。</td>
+</tr>
+</tbody>
+</table>
+<p>###常用的环境变量<br>Linux中的环境变量是一系列的键值对集合，它们的值可以通过shell设置，也可以被其他进程或程序设置和访问，它们是web服务器传递给CGI程序的一种最简单的方式，之所以叫做环境变量是因为它们是全局变量，任何程序都可以存取它们。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">key</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">SERVER_NAME</td>
+<td>CGI脚本运行时的主机名和IP地址</td>
+</tr>
+<tr>
+<td style="text-align:center">SERVER_SOFTWARE</td>
+<td>你的服务器的类型如： CERN/3.0 或 NCSA/1.3.</td>
+</tr>
+<tr>
+<td style="text-align:center">GATEWAY_INTERFACE</td>
+<td>运行的CGI版本. 对于UNIX服务器, 这是CGI/1.1</td>
+</tr>
+<tr>
+<td style="text-align:center">SERVER_PROTOCOL</td>
+<td>服务器运行的HTTP协议. 这里当是HTTP/1.0.</td>
+</tr>
+<tr>
+<td style="text-align:center">SERVER_PORT</td>
+<td>服务器运行的TCP口，通常Web服务器是80.</td>
+</tr>
+<tr>
+<td style="text-align:center">REQUEST_METHOD</td>
+<td>POST 或 GET, 取决于你的表单是怎样递交的</td>
+</tr>
+<tr>
+<td style="text-align:center">HTTP_ACCEPT</td>
+<td>浏览器能直接接收的Content-types, 可以有HTTP Accept header定义.</td>
+</tr>
+<tr>
+<td style="text-align:center">HTTP_USER_AGENT</td>
+<td>递交表单的浏览器的名称、版本 和其他平台性的附加信息。</td>
+</tr>
+<tr>
+<td style="text-align:center">HTTP_REFERER</td>
+<td>递交表单的文本的 URL，不是所有的浏览器都发出这个信息，不要依赖它</td>
+</tr>
+<tr>
+<td style="text-align:center">PATH_INFO</td>
+<td>附加的路径信息, 由浏览器通过GET方法发出.</td>
+</tr>
+<tr>
+<td style="text-align:center">PATH_TRANSLATED</td>
+<td>在PATH_INFO中系统规定的路径信息.</td>
+</tr>
+<tr>
+<td style="text-align:center">SCRIPT_NAME</td>
+<td>指向这个CGI脚本的路径, 是在URL中显示的(如, /cgi-bin/thescript).</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>QUERY_STRING</strong></td>
+<td><strong>脚本参数或者表单输入项(如果是用GET递交). QUERY_STRING包含URL中问号后面的参数</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">REMOTE_HOST</td>
+<td>递交脚本的主机名，这个值不能被设置.</td>
+</tr>
+<tr>
+<td style="text-align:center">REMOTE_ADDR</td>
+<td>递交脚本的主机IP地址.</td>
+</tr>
+<tr>
+<td style="text-align:center">REMOTE_USER</td>
+<td>递交脚本的用户名. 如果服务器的authentication被激活，这个值可以设置。</td>
+</tr>
+<tr>
+<td style="text-align:center">REMOTE_IDENT</td>
+<td>如果Web服务器是在ident (一种确认用户连接你的协议)运行, 递交表单的系统也在运行ident, 这个变量就含有ident返回值.</td>
+</tr>
+<tr>
+<td style="text-align:center">CONTENT_TYPE</td>
+<td>如果表单是用POST递交, 这个值将是 application/x-www-form-urlencoded. 在上载文件的表单中, content-type 是个 multipart/form-data.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>CONTENT_LENGTH</strong></td>
+<td><strong>对于用POST递交的表单,标准输入口的字节数.</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="CGI的工作原理图"><a href="#CGI的工作原理图" class="headerlink" title="CGI的工作原理图"></a>CGI的工作原理图</h2><p><img src="/home/weichuanliu/workspace/blog/source/assets/images/CGI" alt=""></p>
 
                     
                         
                     
                     
                         <p>
-                            <a href="/2017/04/07/free如何知道要free多大的空间/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2017/05/04/cgi原理/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/04/Linux相关常用函数总结/">
+                            Linux相关常用函数总结
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-04T15:40:48+08:00">
+	
+		    5月 04, 2017
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/04/Linux相关常用函数总结/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

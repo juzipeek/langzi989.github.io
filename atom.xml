@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-04-07T04:48:27.464Z</updated>
+  <updated>2017-05-04T13:21:49.027Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,156 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>cgi原理</title>
+    <link href="http://yoursite.com/2017/05/04/cgi%E5%8E%9F%E7%90%86/"/>
+    <id>http://yoursite.com/2017/05/04/cgi原理/</id>
+    <published>2017-05-04T12:36:55.000Z</published>
+    <updated>2017-05-04T13:21:49.027Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="CGI原理"><a href="#CGI原理" class="headerlink" title="CGI原理"></a>CGI原理</h1><p>CGI（Common Gateway Interface）通用网关接口，CGI描述了服务器和请求处理程序之间传输数据局的<br>一种标准。在理解的过程中我们需要区分CGI和CGI程序，CGI是一种数据传输的标准，而CGI程序是实际处理<br>业务的一个程序。webserver每请求一次，CGI程序就会fork出一个子进程进行处理。CGI程序的参数通过环境<br>变量和标准输入获得，它的相应通过标准输出传递给webServer。</p>
+<h2 id="CGI的工作原理是："><a href="#CGI的工作原理是：" class="headerlink" title="CGI的工作原理是："></a>CGI的工作原理是：</h2><ul>
+<li>客户端通过http将请求发送到web服务器</li>
+<li>web服务器接收并收集用户请求，然后交给CGI程序进行处理</li>
+<li>CGI程序把处理后的结果发送给服务器</li>
+<li>服务器将结果传送给浏览器</li>
+</ul>
+<p>其中上述第二步web服务器通过环境变量或标准输入将请求发送给CGI程序，第三步CGI通过标准输出将结果<br>发送给webServer</p>
+<h2 id="CGI接口标准：标准输入-环境变量以及标准输出"><a href="#CGI接口标准：标准输入-环境变量以及标准输出" class="headerlink" title="CGI接口标准：标准输入,环境变量以及标准输出"></a>CGI接口标准：标准输入,环境变量以及标准输出</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">借口标准</th>
+<th style="text-align:right">介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">标准输入</td>
+<td style="text-align:right">CGI程序像其他可执行程序一样,可通过标准输入(stdin)从Web服务器得到输入信息,如Form中的数据,这就是所谓的向CGI程序传递数据的POST方法。这意味着在操作系统命令行状态可执行CGI程序,对CGI程序进行调试。POST方法是常用的方法。</td>
+</tr>
+<tr>
+<td style="text-align:center">环境变量</td>
+<td style="text-align:right">操作系统提供了许多环境变量,它们定义了程序的执行环境,应用程序可以存取它们。Web服务器和CGI接口又另外设置了自己的一些环境变量,用来向CGI程序传递一些重要的参数。CGI的GET方法还通过环境变量QUERY-STRING向CGI程序传递Form中的数据。</td>
+</tr>
+<tr>
+<td style="text-align:center">标准输出</td>
+<td style="text-align:right">CGI程序通过标准输出(stdout)将输出信息传送给Web服务器。传送给Web服务器的信息可以用各种格式,通常是以纯文本或者HTML文本的形式,这样我们就可以在命令行状态调试CGI程序,并且得到它们的输出。</td>
+</tr>
+</tbody>
+</table>
+<p>###常用的环境变量<br>Linux中的环境变量是一系列的键值对集合，它们的值可以通过shell设置，也可以被其他进程或程序设置和访问，它们是web服务器传递给CGI程序的一种最简单的方式，之所以叫做环境变量是因为它们是全局变量，任何程序都可以存取它们。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">key</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">SERVER_NAME</td>
+<td>CGI脚本运行时的主机名和IP地址</td>
+</tr>
+<tr>
+<td style="text-align:center">SERVER_SOFTWARE</td>
+<td>你的服务器的类型如： CERN/3.0 或 NCSA/1.3.</td>
+</tr>
+<tr>
+<td style="text-align:center">GATEWAY_INTERFACE</td>
+<td>运行的CGI版本. 对于UNIX服务器, 这是CGI/1.1</td>
+</tr>
+<tr>
+<td style="text-align:center">SERVER_PROTOCOL</td>
+<td>服务器运行的HTTP协议. 这里当是HTTP/1.0.</td>
+</tr>
+<tr>
+<td style="text-align:center">SERVER_PORT</td>
+<td>服务器运行的TCP口，通常Web服务器是80.</td>
+</tr>
+<tr>
+<td style="text-align:center">REQUEST_METHOD</td>
+<td>POST 或 GET, 取决于你的表单是怎样递交的</td>
+</tr>
+<tr>
+<td style="text-align:center">HTTP_ACCEPT</td>
+<td>浏览器能直接接收的Content-types, 可以有HTTP Accept header定义.</td>
+</tr>
+<tr>
+<td style="text-align:center">HTTP_USER_AGENT</td>
+<td>递交表单的浏览器的名称、版本 和其他平台性的附加信息。</td>
+</tr>
+<tr>
+<td style="text-align:center">HTTP_REFERER</td>
+<td>递交表单的文本的 URL，不是所有的浏览器都发出这个信息，不要依赖它</td>
+</tr>
+<tr>
+<td style="text-align:center">PATH_INFO</td>
+<td>附加的路径信息, 由浏览器通过GET方法发出.</td>
+</tr>
+<tr>
+<td style="text-align:center">PATH_TRANSLATED</td>
+<td>在PATH_INFO中系统规定的路径信息.</td>
+</tr>
+<tr>
+<td style="text-align:center">SCRIPT_NAME</td>
+<td>指向这个CGI脚本的路径, 是在URL中显示的(如, /cgi-bin/thescript).</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>QUERY_STRING</strong></td>
+<td><strong>脚本参数或者表单输入项(如果是用GET递交). QUERY_STRING包含URL中问号后面的参数</strong></td>
+</tr>
+<tr>
+<td style="text-align:center">REMOTE_HOST</td>
+<td>递交脚本的主机名，这个值不能被设置.</td>
+</tr>
+<tr>
+<td style="text-align:center">REMOTE_ADDR</td>
+<td>递交脚本的主机IP地址.</td>
+</tr>
+<tr>
+<td style="text-align:center">REMOTE_USER</td>
+<td>递交脚本的用户名. 如果服务器的authentication被激活，这个值可以设置。</td>
+</tr>
+<tr>
+<td style="text-align:center">REMOTE_IDENT</td>
+<td>如果Web服务器是在ident (一种确认用户连接你的协议)运行, 递交表单的系统也在运行ident, 这个变量就含有ident返回值.</td>
+</tr>
+<tr>
+<td style="text-align:center">CONTENT_TYPE</td>
+<td>如果表单是用POST递交, 这个值将是 application/x-www-form-urlencoded. 在上载文件的表单中, content-type 是个 multipart/form-data.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>CONTENT_LENGTH</strong></td>
+<td><strong>对于用POST递交的表单,标准输入口的字节数.</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="CGI的工作原理图"><a href="#CGI的工作原理图" class="headerlink" title="CGI的工作原理图"></a>CGI的工作原理图</h2><p><img src="/home/weichuanliu/workspace/blog/source/assets/images/CGI" alt=""></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;CGI原理&quot;&gt;&lt;a href=&quot;#CGI原理&quot; class=&quot;headerlink&quot; title=&quot;CGI原理&quot;&gt;&lt;/a&gt;CGI原理&lt;/h1&gt;&lt;p&gt;CGI（Common Gateway Interface）通用网关接口，CGI描述了服务器和请求处理程序之间传输数据
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux相关常用函数总结</title>
+    <link href="http://yoursite.com/2017/05/04/Linux%E7%9B%B8%E5%85%B3%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0%E6%80%BB%E7%BB%93/"/>
+    <id>http://yoursite.com/2017/05/04/Linux相关常用函数总结/</id>
+    <published>2017-05-04T07:40:48.000Z</published>
+    <updated>2017-05-04T07:40:55.271Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>C语言free如何知道要free多大的空间</title>
@@ -1021,63 +1171,6 @@
     
     
       <category term="yield" scheme="http://yoursite.com/tags/yield/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>python装饰其入门</title>
-    <link href="http://yoursite.com/2016/12/02/python%E8%A3%85%E9%A5%B0%E5%85%B6%E5%85%A5%E9%97%A8/"/>
-    <id>http://yoursite.com/2016/12/02/python装饰其入门/</id>
-    <published>2016-12-02T13:43:51.000Z</published>
-    <updated>2016-12-04T11:30:31.762Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="python装饰器"><a href="#python装饰器" class="headerlink" title="python装饰器"></a>python装饰器</h1><h2 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h2><h3 id="一级对象"><a href="#一级对象" class="headerlink" title="一级对象"></a>一级对象</h3><p>python将一切（包括函数）视为object的子类，即一切皆为对象，因此函数可以像变量一样被指向和传递，下面我们来看一个例子。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"><span class="comment">#注意issubclass是python的一个内置函数,用于判断两个类是不是子类关系</span></div><div class="line"><span class="keyword">print</span> issubclass(foo.__class__, object)</div></pre></td></tr></table></figure>
-<p>输出结果:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">True</div></pre></td></tr></table></figure>
-<p>上述代码说明了python中的函数都是object的子类，下面我们看一下函数被当做参数传递的效果</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(func)</span>:</span></div><div class="line"></div><div class="line">    func()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">bar</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">print</span> <span class="string">"bar"</span></div><div class="line">foo(bar)</div></pre></td></tr></table></figure>
-<p>运行结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bar</div></pre></td></tr></table></figure></p>
-<h3 id="python中的作用域-namespace"><a href="#python中的作用域-namespace" class="headerlink" title="python中的作用域 namespace"></a>python中的作用域 namespace</h3><p>python 提供namespace来重新实现函数/方法，变量等信息的区别，七一共有三种作用域:</p>
-<ul>
-<li>local namespace:作用范围为当前函数或者类方法</li>
-<li>global namespace:作用范围为当前模块</li>
-<li>build-in namespace:作用范围为所有模块</li>
-</ul>
-<blockquote>
-<p>当变量或者方法出现重名的情况时，python会按照local-&gt;global-&gt;build-in的顺序去搜索,并以第一个找到的元素为当前的namespace，此种做法与C/C++中的相似</p>
-</blockquote>
-<h3 id="args和-kwargs"><a href="#args和-kwargs" class="headerlink" title="*args和**kwargs"></a>*args和**kwargs</h3><p>在python中我们使用*args和kwargs传递可变长参数,*args用作传递非命名键值可变长参数列表(位置参数)；**kwargs用作传递键值可变长参数</p>
-<ul>
-<li>*args：把所有的参数按照出现顺序打包成一个list</li>
-<li>**kwargs：把所有的key-value形式的参数打包成一个dict</li>
-</ul>
-<p>例子：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(x, y)</span>:</span></div><div class="line">    <span class="keyword">print</span> x + y</div><div class="line">params_list = (<span class="number">1</span>, <span class="number">2</span>)</div><div class="line">dict_list = &#123;<span class="string">"x"</span>:<span class="number">1</span>, <span class="string">"y"</span>:<span class="number">2</span>&#125;</div><div class="line">add(*params_list)</div><div class="line">add(**dict_list)</div></pre></td></tr></table></figure>
-<p>打印结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">3</div><div class="line">3</div></pre></td></tr></table></figure></p>
-<h2 id="python装饰器入门"><a href="#python装饰器入门" class="headerlink" title="python装饰器入门"></a>python装饰器入门</h2><p>python允许你，作为程序员，使用函数完成一些很酷的事情。在python中，函数是一级对象(first-class)，这就意味着你可以像使用字符串，整数，或者其他对象一样使用函数。例如，你可以将函数赋值给变量：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">square</span><span class="params">(n)</span>:</span></div><div class="line">    <span class="keyword">return</span> n * n</div><div class="line"><span class="keyword">print</span> square(<span class="number">4</span>) <span class="comment">#16</span></div><div class="line">alias = square</div><div class="line"><span class="keyword">print</span> alias(<span class="number">5</span>) <span class="comment">#25</span></div></pre></td></tr></table></figure></p>
-<p>然而一等函数的真正威力在于你可以把函数传给其他函数，或者从其他函数中返回函数。函数的内值函数map利用了这种能力：给map传一个函数以及一个列表，他会依次以列表中的每个元素作为参数调用你传给它的函数，从而生成一个新的列表。如下所示的例子中应用了上面的square函数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">number = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</div><div class="line"><span class="keyword">print</span> map(square, number) <span class="comment">#[1,4,9,16]</span></div></pre></td></tr></table></figure>
-<p>如果一个函数接受一个函数作为参数或者返回一个函数，则这个函数被称为高阶函数虽然map简单使用了我们传给它的函数，而没有改变这个函数，但我们也可以使用高阶函数去改变其他函数的行为。<br>例如：<br>假设有这样一个函数，会被调用很多次，以致运行待解非常昂贵:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></div><div class="line">    <span class="keyword">return</span> n <span class="keyword">if</span> n <span class="keyword">in</span> [<span class="number">0</span>,<span class="number">1</span>] <span class="keyword">else</span> fib(n - <span class="number">2</span>) + fib(n - <span class="number">1</span>)</div></pre></td></tr></table></figure></p>
-<p>为了提高这个函数的效率，我们一般会保存计算过程中得出的中间结果，这样对于函数调用树中经常出现某个n，当需要计算n对应的结果时，就不需要重复计算了。有很多种方式可以实现这一点。例如我们可以将这些结果存在一个字典中，当某个值为参数调用fib函数的时候，首先去字典中查一下结果是否已经计算出来，如果计算出来直接返回反之计算。<br>但是这样的话，每次我们想调用fib函数，都需要重复那段相同的字典检查样板式代码。相反，如果让fib函数自己在内部负责存储结果，那么在其他代码中调用fib，就非常方便，只要简单的调用它就好了。这种技术被称为memoization<br>当然我们可以把这种memozition代码直接放入fib函数中，但是python给我们提供了一种更加优雅的选择因为可以编写修改其他函数的函数，那么我们就可以便携一个通用的memozation函数，以一个函数作为参考，并返回这个函数的memozation版本。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">memoze</span><span class="params">(fn)</span>:</span></div><div class="line">    store_results = &#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">memoized</span><span class="params">(args)</span>:</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            <span class="keyword">return</span> store_results[args]</div><div class="line">        <span class="keyword">except</span>:</div><div class="line">            result = store_result[args] = fn(args)</div><div class="line">            <span class="keyword">return</span> result</div><div class="line">    <span class="keyword">return</span> memoized</div></pre></td></tr></table></figure></p>
-<p>如上，momoize函数以另一个函数作为参数，函数体中创建了一个字典对象来存储函数调用结果：键为被memoized包含后的函数的参数，值为以键为参数调用函数的返回值。memoize函数返回一个新的函数，这个函数会首先检查store_results中是否存在与当前参数对应的条目，如果有则直接返回，如果没有，则使用原始函数进行计算。memoize返回的这种新的函数常被称为包装器函数。因为它只是另外一个真正起作用的函数外面的一个薄层。<br>很好，我们现在有了memoize函数，现在将fib函数传给它，从而得到了一个经过包装的fib，这个版本的fib函数不需要重复以前的那样繁重的工作：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></div><div class="line">    <span class="keyword">return</span> n <span class="keyword">if</span> n <span class="keyword">in</span> [<span class="number">0</span>, <span class="number">1</span>] <span class="keyword">else</span> fib(n - <span class="number">2</span>) + fib(n - <span class="number">1</span>)</div><div class="line">fib = memoize(fib)</div></pre></td></tr></table></figure></p>
-<p>通过高阶函数memoize，我们获得了memoization带来的好处，并不需要对fib函数自己做出任何的改变，以免夹杂着memoization的代码而模糊了函数的实质工作。但是，你也许注意到上面的代码看着还是有点别扭，因为我们必须写三遍fib。由于这种模式(传递一个函数给另一个函数，然后将结果返回给与原来那个函数同名的函数变量，在使用包装器函数的代码中极为常见)，python提供了一种特殊的愈发：装饰器<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@memoize</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></div><div class="line">    <span class="keyword">return</span> n <span class="keyword">if</span> n <span class="keyword">in</span> [<span class="number">0</span>, <span class="number">1</span>] <span class="keyword">else</span> fib(n - <span class="number">2</span>) + fib(n - <span class="number">1</span>)</div></pre></td></tr></table></figure></p>
-<p>这里我们说memoize函数装饰了fib函数。需要注意的是这仅是语法上的简便写法（被称为“语法糖”）。这段代码与前面的代码片段做的是同样的事情：定义一个名为fib的函数，把它传给memoize函数，将返回结果存为名为fib的函数变量。特殊的(看起来有点奇怪的)@语法只是减少了冗余。</p>
-<p>你可以使用多个装饰器，它会自底向上逐个起作用，例如假如有另外一个装饰器函数decorate<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@memoize</span></div><div class="line"><span class="meta">@decorate</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></div><div class="line">    <span class="keyword">return</span> n <span class="keyword">if</span> n <span class="keyword">in</span> [<span class="number">0</span>, <span class="number">1</span>] <span class="keyword">else</span> fib(n - <span class="number">2</span>) + fib(n - <span class="number">1</span>)</div></pre></td></tr></table></figure></p>
-<p>等价于：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></div><div class="line">    <span class="keyword">return</span> n <span class="keyword">if</span> n <span class="keyword">in</span> [<span class="number">0</span>, <span class="number">1</span>] <span class="keyword">else</span> fib(n - <span class="number">2</span>) + fib(n - <span class="number">1</span>)</div><div class="line">fib = memoize(decorator(fib))</div></pre></td></tr></table></figure></p>
-<p>当装饰器函数含有参数的时候，方法是<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@mimoize("172.168.1.1")</span></div><div class="line">fib(n):</div><div class="line">    <span class="keyword">return</span> n <span class="keyword">if</span> n <span class="keyword">in</span> [<span class="number">0</span>, <span class="number">1</span>] <span class="keyword">else</span> fib(n - <span class="number">2</span>) + fib(n - <span class="number">1</span>)</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;python装饰器&quot;&gt;&lt;a href=&quot;#python装饰器&quot; class=&quot;headerlink&quot; title=&quot;python装饰器&quot;&gt;&lt;/a&gt;python装饰器&lt;/h1&gt;&lt;h2 id=&quot;预备知识&quot;&gt;&lt;a href=&quot;#预备知识&quot; class=&quot;headerli
-    
-    </summary>
-    
-      <category term="python学习" scheme="http://yoursite.com/categories/python%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-      <category term="装饰器" scheme="http://yoursite.com/tags/%E8%A3%85%E9%A5%B0%E5%99%A8/"/>
     
   </entry>
   
