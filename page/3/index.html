@@ -215,6 +215,148 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
+                            通过/proc/meminfo实时获取系统内存使用情况
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-19T23:43:49+08:00">
+	
+		    12月 19, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="通过-proc-meminfo实时获取系统内存使用情况-Linux"><a href="#通过-proc-meminfo实时获取系统内存使用情况-Linux" class="headerlink" title="通过/proc/meminfo实时获取系统内存使用情况(Linux)"></a>通过/proc/meminfo实时获取系统内存使用情况(Linux)</h1><p>linux内核提供了一种通过/proc文件系统来在运行时访问内核内部数据结构，改变内核设置的机制，各种硬件平台上的linux系统的/proc文件系统的基本概念都是相同的。<br>/proc文件系统是一种内核和内核模块用来向进程发送信息的机制。这个伪文件系统可以和内核内部的数据结构进行交互，获取实时的进程信息。注意，<strong>/proc文件系统是存储与内存而不是硬盘,/proc虚拟文件系统实质是以文件系统的形式访问内核数据的接口</strong>。</p>
+<h2 id="proc-meminfo"><a href="#proc-meminfo" class="headerlink" title="/proc/meminfo"></a>/proc/meminfo</h2><p>linux系统中/proc/meminfo这个文件用来记录了系统内存使用的详细情况。其中top，free命令中的数据是通过这个文件中的信息计算并按照特定的格式进行显示。<br>/proc/meminfo内容详解：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$cat</span> /proc/meminfo</div><div class="line">MemTotal:        <span class="number">8052444</span> kB</div><div class="line">MemFree:         <span class="number">2754588</span> kB</div><div class="line">MemAvailable:    <span class="number">3934252</span> kB</div><div class="line">Buffers:          <span class="number">137128</span> kB</div><div class="line">Cached:          <span class="number">1948128</span> kB</div><div class="line">SwapCached:            <span class="number">0</span> kB</div><div class="line">Active:          <span class="number">3650920</span> kB</div><div class="line">Inactive:        <span class="number">1343420</span> kB</div><div class="line">Active(anon):    <span class="number">2913304</span> kB</div><div class="line">Inactive(anon):   <span class="number">727808</span> kB</div><div class="line">Active(file):     <span class="number">737616</span> kB</div><div class="line">Inactive(file):   <span class="number">615612</span> kB</div><div class="line">Unevictable:         <span class="number">196</span> kB</div><div class="line">Mlocked:             <span class="number">196</span> kB</div><div class="line">SwapTotal:       <span class="number">8265724</span> kB</div><div class="line">SwapFree:        <span class="number">8265724</span> kB</div><div class="line">Dirty:               <span class="number">104</span> kB</div><div class="line">Writeback:             <span class="number">0</span> kB</div><div class="line">AnonPages:       <span class="number">2909332</span> kB</div><div class="line">Mapped:           <span class="number">815524</span> kB</div><div class="line">Shmem:            <span class="number">732032</span> kB</div><div class="line">Slab:             <span class="number">153096</span> kB</div><div class="line">SReclaimable:      <span class="number">99684</span> kB</div><div class="line">SUnreclaim:        <span class="number">53412</span> kB</div><div class="line">KernelStack:       <span class="number">14288</span> kB</div><div class="line">PageTables:        <span class="number">62192</span> kB</div><div class="line">NFS_Unstable:          <span class="number">0</span> kB</div><div class="line">Bounce:                <span class="number">0</span> kB</div><div class="line">WritebackTmp:          <span class="number">0</span> kB</div><div class="line">CommitLimit:    <span class="number">12291944</span> kB</div><div class="line">Committed_AS:   <span class="number">11398920</span> kB</div><div class="line">VmallocTotal:   <span class="number">34359738367</span> kB</div><div class="line">VmallocUsed:           <span class="number">0</span> kB</div><div class="line">VmallocChunk:          <span class="number">0</span> kB</div><div class="line">HardwareCorrupted:     <span class="number">0</span> kB</div><div class="line">AnonHugePages:   <span class="number">1380352</span> kB</div><div class="line">CmaTotal:              <span class="number">0</span> kB</div><div class="line">CmaFree:               <span class="number">0</span> kB</div><div class="line">HugePages_Total:       <span class="number">0</span></div><div class="line">HugePages_Free:        <span class="number">0</span></div><div class="line">HugePages_Rsvd:        <span class="number">0</span></div><div class="line">HugePages_Surp:        <span class="number">0</span></div><div class="line">Hugepagesize:       <span class="number">2048</span> kB</div><div class="line">DirectMap4k:      <span class="number">201472</span> kB</div><div class="line">DirectMap2M:     <span class="number">5967872</span> kB</div><div class="line">DirectMap1G:     <span class="number">3145728</span> kB</div></pre></td></tr></table></figure></p>
+<p>详解：</p>
+<ul>
+<li>MemTotal: 所有内存(RAM)大小,减去一些预留空间和内核的大小。</li>
+<li>MemFree: 完全没有用到的物理内存，lowFree+highFree</li>
+<li>MemAvailable: 在不使用交换空间的情况下，启动一个新的应用最大可用内存的大小，计算方式：MemFree+Active(file)+Inactive(file)-(watermark+min(watermark,Active(file)+Inactive(file)/2))</li>
+<li>Buffers:  块设备所占用的缓存页，包括：直接读写块设备以及文件系统元数据(metadata)，比如superblock使用的缓存页。</li>
+<li>Cached:  表示普通文件数据所占用的缓存页。</li>
+<li>SwapCached:  swap cache中包含的是被确定要swapping换页，但是尚未写入物理交换区的匿名内存页。那些匿名内存页，比如用户进程malloc申请的内存页是没有关联任何文件的，如果发生swapping换页，这类内存会被写入到交换区。</li>
+<li>Active:  active包含active anon和active file</li>
+<li>Inactive:  inactive包含inactive anon和inactive file</li>
+<li>Active(anon):  anonymous pages（匿名页），用户进程的内存页分为两种：与文件关联的内存页(比如程序文件,数据文件对应的内存页)和与内存无关的内存页（比如进程的堆栈，用malloc申请的内存），前者称为file pages或mapped pages,后者称为匿名页。</li>
+<li>Inactive(anon):   见上</li>
+<li>Active(file):  见上</li>
+<li>Inactive(file): 见上</li>
+<li>SwapTotal:  可用的swap空间的总的大小(swap分区在物理内存不够的情况下，把硬盘空间的一部分释放出来，以供当前程序使用)</li>
+<li>SwapFree:   当前剩余的swap的大小</li>
+<li>Dirty:   需要写入磁盘的内存去的大小</li>
+<li>Writeback:  正在被写回的内存区的大小</li>
+<li>AnonPages:  未映射页的内存的大小</li>
+<li>Mapped:   设备和文件等映射的大小</li>
+<li>Slab:  内核数据结构slab的大小</li>
+<li>SReclaimable:  可回收的slab的大小</li>
+<li>SUnreclaim:   不可回收的slab的大小</li>
+<li>PageTables:   管理内存页页面的大小</li>
+<li>NFS_Unstable:   不稳定页表的大小</li>
+<li>VmallocTotal:   Vmalloc内存区的大小</li>
+<li>VmallocUsed:     已用Vmalloc内存区的大小</li>
+<li>VmallocChunk:  vmalloc区可用的连续最大快的大小</li>
+</ul>
+<h2 id="通过-proc-meminfo实时获取系统内存使用情况"><a href="#通过-proc-meminfo实时获取系统内存使用情况" class="headerlink" title="通过/proc/meminfo实时获取系统内存使用情况"></a>通过/proc/meminfo实时获取系统内存使用情况</h2><p><a href="http://man.linuxde.net/free" target="_blank" rel="external">http://man.linuxde.net/free</a><br>目前我们希望实时获取系统中内存的使用情况，实际可以挪用的内存数为free+cache+buffer,实际使用的内存数为used-cache-buffer(total-free-cache-buffer),</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/">
+                            通过/proc/stat计算linux系统即时CPU使用率
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-19T06:03:09+08:00">
+	
+		    12月 19, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="通过-proc-stat计算linux系统即时CPU使用率"><a href="#通过-proc-stat计算linux系统即时CPU使用率" class="headerlink" title="通过/proc/stat计算linux系统即时CPU使用率"></a>通过/proc/stat计算linux系统即时CPU使用率</h1><h2 id="proc-stat"><a href="#proc-stat" class="headerlink" title="/proc/stat"></a>/proc/stat</h2><p>/proc文件系统是一个伪文件系统，它存在于内存中，不占用外存空间。它以文件系统的方式为内核与进程提供通信接口。用户和应用程序可以通过/proc得到系统的信息，并可以改变内核的某些参数。由于系统的信息，如进程是动态改变的，所以用户或应用程序读取/proc目录中的文件的时，/proc文件系统是动态从系统内核读出所需信息并提交的。<br>在linux或Ubuntu系统中，/proc/stat文件记录了所有CPU活动的信息，该文件中的所有值都是从系统启动开始累计到当前的值。我们可以通过一个较小的时间段的CPU利用率值来估算某一个时刻的CPU利用率。首先我们先来查看一下/proc/stat中的内容：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ cat /proc/stat</div><div class="line">cpu  <span class="number">15543</span> <span class="number">334</span> <span class="number">4963</span> <span class="number">142337</span> <span class="number">3413</span> <span class="number">0</span> <span class="number">180</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu0 <span class="number">3877</span> <span class="number">142</span> <span class="number">1137</span> <span class="number">35988</span> <span class="number">615</span> <span class="number">0</span> <span class="number">28</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu1 <span class="number">3866</span> <span class="number">23</span> <span class="number">1068</span> <span class="number">35982</span> <span class="number">608</span> <span class="number">0</span> <span class="number">74</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu2 <span class="number">4104</span> <span class="number">159</span> <span class="number">1333</span> <span class="number">35395</span> <span class="number">735</span> <span class="number">0</span> <span class="number">59</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu3 <span class="number">3695</span> <span class="number">9</span> <span class="number">1424</span> <span class="number">34970</span> <span class="number">1454</span> <span class="number">0</span> <span class="number">18</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div></pre></td></tr></table></figure></p>
+<p>上面的信息中前八个是比较重要的。</p>
+<ul>
+<li>user(15543): 从系统启动到当前时刻，处于用户态的时间(用户空间的CPU时间)，不包括nice为负值的进程。</li>
+<li>nice(334): 从系统启动到当前时刻，nice值为负的进程所占的CPU时间。</li>
+<li>system(4963): 从系统启动到当前时刻，处于内核状态的CPU时间。</li>
+<li>idle(142337): 从系统启动到当前时刻，除了I/O等待时间以外的其他等待时间</li>
+<li>iowait(3413): ~，IO等待时间</li>
+<li>irq(0): ~, 硬中断时间</li>
+<li>softrq(180): ~,软中断时间。</li>
+<li>steal: ~,在虚拟环境中运行的时间。</li>
+</ul>
+<blockquote>
+<p>总的CPU时间为：total = user+nice+system+idle+iowait+irq+softrq</p>
+</blockquote>
+<h2 id="计算当前时刻的CPU使用率"><a href="#计算当前时刻的CPU使用率" class="headerlink" title="计算当前时刻的CPU使用率"></a>计算当前时刻的CPU使用率</h2><p>我们使用距离当前时刻较小的间隔的时间段的CPU使用率近似当前时刻的CPU使用率。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CPU Usage=1 - (△idle+△iowait) / △total_time</div><div class="line">		 =1 - (idle2+iowait2 - idle1 - iowait1) / (total_time2 - total_time1)</div></pre></td></tr></table></figure></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/12/19/linux进程nice值及其与优先级的关系/">
                             linux进程nice值及其与优先级的关系
                         </a>

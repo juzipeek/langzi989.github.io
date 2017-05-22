@@ -216,6 +216,76 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/22/Unix环境变量/">
+                            Unix环境变量
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-22T23:53:53+08:00">
+	
+		    5月 22, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix环境变量"><a href="#Unix环境变量" class="headerlink" title="Unix环境变量"></a>Unix环境变量</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在Unix中，<strong>每个进程都有自己的一组环境变量</strong>，这些环境变量，要么是一组全局字符串，要么是子进程从父进程继承而来的,如果子进程不对其修改则与父进程的环境变量一模一样。<br>Unix内核并不查看这些字符串，它们的解释权完全取决于各个应用程序。例如shell是Unix中一个可执行程序，通常shell的启动文件中<br>会对环境变量进行设置。所以当我们进入shell之后可以查看path等环境变量。环境变量可以在登录的时候自动设置，也可以由用户自行设置。</p>
+<h2 id="环境变量相关变量"><a href="#环境变量相关变量" class="headerlink" title="环境变量相关变量"></a>环境变量相关变量</h2><p>每个程序都会接收到一张环境表。与参数表一样，环境表也是一个字符指针数组。其中每个指针都包含一个以NULL结尾的字符串的地址。全局变量<br>environ指向了这个数组的地址。</p>
+<p>代码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">extern char **environ;</div><div class="line">if (environ!= NULL) &#123;</div><div class="line">        for (i = 0; environ[i] != NULL; i++) &#123;</div><div class="line">            printf(&quot;env: %s\n&quot;, environ[i]);</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="环境变量相关的函数"><a href="#环境变量相关的函数" class="headerlink" title="环境变量相关的函数"></a>环境变量相关的函数</h2><p>与环境变量相关的函数包括以下几种：取环境变量的值，添加环境变量、修改环境变量、以及删除环境变量.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">//获取环境变量的值</div><div class="line">char* getenv(const char* name); //若包含此key返回对应的值，否则返回NULL</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 修改环境变量的值 前面两个分别为键值对，最后一个表示是否需要删除原有的定义重写。</div><div class="line">* params：键没有存在，则创建此键值对。若键已经存在：rewrite=0时不覆盖原来的值；rewrite!=0覆盖原来的值</div><div class="line">* return：成功返回0， 出错返回非0。</div><div class="line">*/</div><div class="line">int setenv(const char* name, const char* value, int rewrite);</div><div class="line"></div><div class="line">/*</div><div class="line">* function： 添加环境变量，若存在则删除原有的，添加新的，不存在则直接添加</div><div class="line">* params:  参数为一个键值对字符串，如&quot;name=test&quot;</div><div class="line">* return: 成功返回0,不成功返回-1</div><div class="line">*/</div><div class="line">int putenv(char *str);</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 删除name的定义，即使不存在也不出错。</div><div class="line">* params: 参数为键</div><div class="line">* return：出错返回-1,不出错返回0</div><div class="line">*/</div><div class="line">int unsetenv(const char*name);</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 清除所有的环境变量</div><div class="line">* return: 成功返回0, 失败返回-1。</div><div class="line">*/</div><div class="line">int clearenv();</div></pre></td></tr></table></figure>
+<h3 id="putenv和setenv的区别"><a href="#putenv和setenv的区别" class="headerlink" title="putenv和setenv的区别"></a>putenv和setenv的区别</h3><p>putenv可以使用程序中已经定义的且形如”name=value”的字符串作为参数。此时<strong>系统不再为该环境变量分配内存</strong>，环境变量将使用程序中定义变量的内存。<br>并将该字符串的地址保存在环境变量中。所以要<strong>使用putenv一定要用全局变量作为参数</strong>，否则程序退出栈内存被释放，再次访问环境变量将会出现未定义行为，<br>导致环境变量不可用。</p>
+<p>putenv也可用字符串常量做参数，这个时候系统将为其分配内存。</p>
+<p>但是setenv去设置环境变量系统将会先malloc出一块内存给环境变量使用，所以此时不需要担心环境不可用的情况。</p>
+<h2 id="环境变量在进程空间中的存储位置"><a href="#环境变量在进程空间中的存储位置" class="headerlink" title="环境变量在进程空间中的存储位置"></a>环境变量在进程空间中的存储位置</h2><p><strong>环境变量和环境字符串通常放在进程存储空间的顶部，也就是栈内存之上</strong>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">extern char **environ;</div><div class="line">int main() &#123;</div><div class="line">    int i;</div><div class="line">    printf(&quot;the address of the environment: %p\n&quot;, environ);</div><div class="line">    printf(&quot;the adress of first i: %p\n&quot;, &amp;i);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="环境变量中进行增删改操作的实现机制"><a href="#环境变量中进行增删改操作的实现机制" class="headerlink" title="环境变量中进行增删改操作的实现机制"></a>环境变量中进行增删改操作的实现机制</h2><p>删除环境变量比较容易，当增加或者修改环境变量的时候由于环境表和环境字符串通常占用的是进程地址空间的顶部，所以它不能再向<br>高地址（向上）扩展，同时也不能在移动在它之下的各栈帧，所以也不能向下扩展。两者的组合使得该空间的长度不能再增加。</p>
+<ul>
+<li><strong>删除环境变量</strong>：删除环境变量时只需要先找到该指针，然后将所有后续指针都向环境表的首部顺序移一个位置。</li>
+<li><strong>修改环境变量</strong>:<ul>
+<li>若新的环境变量value长度小于或者等于原有的值，则直接将其复制到旧值。</li>
+<li>否则，先调用malloc在堆上分配一块内存，然后将新字符串指向该空间，接着使环境变量表中针对name的指针指向新分区。</li>
+</ul>
+</li>
+<li><strong>增加环境变量</strong>： 增加新环境变量比较复杂。必须首先通过调用malloc为新的name=value分配内存空间，然后将字符串复制到此空间中。<ul>
+<li>如果该name是第一次增加，则必须调用malloc为<strong>新的指针表</strong>分配内存空间，然后将原来的环境表复制到新的内存，并将指向新的name=value字符串<br>的指针存放在该指针表的表尾，然后将空指针放在其后面。最后<strong>使environ指向新的环境表</strong>。这样就导致原来位于栈顶之上的环境表移到了堆内存中。<br>但是大多数的环境指针仍然指向栈顶之上的name=value字符串。</li>
+<li>如果不是第一次新增加一个name，可知之前已经将环境表迁移到堆内存中，所以只需要调用realloc，以分配比原空间多存放一个指针的空间。然后将指针指向name=value<br>字符串的指针，最后是一个NULL指针。</li>
+</ul>
+</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/22/Unix环境变量/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/22/文件IO相关函数/">
                             文件IO相关函数
                         </a>
