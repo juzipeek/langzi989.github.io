@@ -21,12 +21,12 @@
 <meta property="og:url" content="http://yoursite.com/2017/05/04/cgi原理/index.html">
 <meta property="og:site_name" content="魏传柳">
 <meta property="og:description" content="CGI原理CGI（Common Gateway Interface）通用网关接口，CGI描述了服务器和请求处理程序之间传输数据局的一种标准。在理解的过程中我们需要区分CGI和CGI程序，CGI是一种数据传输的标准，而CGI程序是实际处理业务的一个程序。webserver每请求一次，CGI程序就会fork出一个子进程进行处理。CGI程序的参数通过环境变量和标准输入获得，它的相应通过标准输出传递给we">
-<meta property="og:image" content="http://yoursite.com/home/weichuanliu/workspace/blog/source/assets/images/CGI">
-<meta property="og:updated_time" content="2017-05-04T13:21:49.027Z">
+<meta property="og:image" content="http://yoursite.com/../assets/images/CGI">
+<meta property="og:updated_time" content="2017-05-22T15:34:49.401Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="cgi原理">
 <meta name="twitter:description" content="CGI原理CGI（Common Gateway Interface）通用网关接口，CGI描述了服务器和请求处理程序之间传输数据局的一种标准。在理解的过程中我们需要区分CGI和CGI程序，CGI是一种数据传输的标准，而CGI程序是实际处理业务的一个程序。webserver每请求一次，CGI程序就会fork出一个子进程进行处理。CGI程序的参数通过环境变量和标准输入获得，它的相应通过标准输出传递给we">
-<meta name="twitter:image" content="http://yoursite.com/home/weichuanliu/workspace/blog/source/assets/images/CGI">
+<meta name="twitter:image" content="http://yoursite.com/../assets/images/CGI">
     
     
         
@@ -227,6 +227,12 @@
     	
     </time>
     
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
 </div>
 
 </div>
@@ -244,22 +250,22 @@
 <h2 id="CGI接口标准：标准输入-环境变量以及标准输出"><a href="#CGI接口标准：标准输入-环境变量以及标准输出" class="headerlink" title="CGI接口标准：标准输入,环境变量以及标准输出"></a>CGI接口标准：标准输入,环境变量以及标准输出</h2><table>
 <thead>
 <tr>
-<th style="text-align:center">借口标准</th>
-<th style="text-align:right">介绍</th>
+<th style="text-align:left">借口标准</th>
+<th>介绍</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">标准输入</td>
-<td style="text-align:right">CGI程序像其他可执行程序一样,可通过标准输入(stdin)从Web服务器得到输入信息,如Form中的数据,这就是所谓的向CGI程序传递数据的POST方法。这意味着在操作系统命令行状态可执行CGI程序,对CGI程序进行调试。POST方法是常用的方法。</td>
+<td style="text-align:left">标准输入</td>
+<td>CGI程序像其他可执行程序一样,可通过标准输入(stdin)从Web服务器得到输入信息,如Form中的数据,这就是所谓的向CGI程序传递数据的POST方法。这意味着在操作系统命令行状态可执行CGI程序,对CGI程序进行调试。POST方法是常用的方法。</td>
 </tr>
 <tr>
-<td style="text-align:center">环境变量</td>
-<td style="text-align:right">操作系统提供了许多环境变量,它们定义了程序的执行环境,应用程序可以存取它们。Web服务器和CGI接口又另外设置了自己的一些环境变量,用来向CGI程序传递一些重要的参数。CGI的GET方法还通过环境变量QUERY-STRING向CGI程序传递Form中的数据。</td>
+<td style="text-align:left">环境变量</td>
+<td>操作系统提供了许多环境变量,它们定义了程序的执行环境,应用程序可以存取它们。Web服务器和CGI接口又另外设置了自己的一些环境变量,用来向CGI程序传递一些重要的参数。CGI的GET方法还通过环境变量QUERY-STRING向CGI程序传递Form中的数据。</td>
 </tr>
 <tr>
-<td style="text-align:center">标准输出</td>
-<td style="text-align:right">CGI程序通过标准输出(stdout)将输出信息传送给Web服务器。传送给Web服务器的信息可以用各种格式,通常是以纯文本或者HTML文本的形式,这样我们就可以在命令行状态调试CGI程序,并且得到它们的输出。</td>
+<td style="text-align:left">标准输出</td>
+<td>CGI程序通过标准输出(stdout)将输出信息传送给Web服务器。传送给Web服务器的信息可以用各种格式,通常是以纯文本或者HTML文本的形式,这样我们就可以在命令行状态调试CGI程序,并且得到它们的输出。</td>
 </tr>
 </tbody>
 </table>
@@ -350,19 +356,26 @@
 </tr>
 </tbody>
 </table>
-<h2 id="CGI的工作原理图"><a href="#CGI的工作原理图" class="headerlink" title="CGI的工作原理图"></a>CGI的工作原理图</h2><p><img src="/home/weichuanliu/workspace/blog/source/assets/images/CGI" alt=""></p>
+<h2 id="CGI的工作原理图"><a href="#CGI的工作原理图" class="headerlink" title="CGI的工作原理图"></a>CGI的工作原理图</h2><p><img src="../assets/images/CGI" alt=""></p>
 
             
         </div>
     </div>
     <div id="post-footer" class="post-footer main-content-wrap">
         
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Linux/">Linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/cgi/">cgi</a>
+
+            </div>
+        
         <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/21/函数dup/"  data-tooltip="函数dup与dup2">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -370,7 +383,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/04/Linux相关常用函数总结/" data-tooltip="Linux相关常用函数总结">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/04/Wait函数详解/" data-tooltip="Wait函数详解">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -433,7 +446,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/21/函数dup/"  data-tooltip="函数dup与dup2">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -441,7 +454,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/04/Linux相关常用函数总结/" data-tooltip="Linux相关常用函数总结">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/04/Wait函数详解/" data-tooltip="Wait函数详解">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>

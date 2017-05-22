@@ -216,6 +216,444 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/22/文件IO相关函数/">
+                            文件IO相关函数
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-22T23:31:31+08:00">
+	
+		    5月 22, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="文件IO相关函数"><a href="#文件IO相关函数" class="headerlink" title="文件IO相关函数"></a>文件IO相关函数</h1><p>Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。</p>
+<h2 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h2><p>对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回<br>一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用于IO的数据结构一章中讲了STDIN_FILENO、STDOUT_FILENO以及STDERR_FILENO所对应的文件描述符。</p>
+<p>为了保证系统资源的合理使用和安全性，Unix系统对于系统和用户能打开的文件描述符的格式都做了一定的限制。通过一下命令我们可以进行查看：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sysctl -a | grep fs.file-max //查看系统级限制的文件描述符的个数</div><div class="line">ulimit -n //查看用户（进程）级别限制的文件描述符的个数，</div></pre></td></tr></table></figure>
+<h3 id="文件描述符与文件指针的关系"><a href="#文件描述符与文件指针的关系" class="headerlink" title="文件描述符与文件指针的关系"></a>文件描述符与文件指针的关系</h3><p>文件描述符：内核会为每一个运行中的进程在进程控制块(pcb)中维护一个打开文件的记录表，每个表项都有一个指针指向打开的文件，文件描述符就是记录表的索引。</p>
+<p>文件指针：C语言使用文件指针而不是文件描述符作为文件IO的句柄，文件指针是指向进程的用户空间中的一个FILE结构的数据结构，FILE结构中包括一个IO缓冲区和一个文件描述符，而文件描述符是<br>文件描述符表的一个索引，从某种意义上可以将文件指针理解为文件句柄的句柄。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</div><div class="line">  <span class="keyword">char</span>*	_ptr;</div><div class="line">  <span class="keyword">int</span>	_cnt;</div><div class="line">  <span class="keyword">char</span>*	_base;</div><div class="line">  <span class="keyword">int</span>	_flag;</div><div class="line">  <span class="keyword">int</span>	_file;</div><div class="line">  <span class="keyword">int</span>	_charbuf;</div><div class="line">  <span class="keyword">int</span>	_bufsiz;</div><div class="line">  <span class="keyword">char</span>*	_tmpfname;</div><div class="line">&#125; FILE;</div></pre></td></tr></table></figure>
+<ul>
+<li>文件指针相比于文件描述符是高级的接口.</li>
+<li>文件指针使用fread()和fwrite()函数进行操作,文件描述符使用write()和read()函数进行操作</li>
+<li>文件指针具有缓冲区，是较高级别的IO，读写时具有缓冲，具有错误指示和EOF检测；文件描述符没有</li>
+<li>文件指针具有移植性，文件描述符不能移植到除Unix之外的系统。</li>
+<li>fopen在stdio.h中，open在fcntl.h中</li>
+<li>fopen是标准C中定义的，而open是posix中定义的。</li>
+<li>fwrite/fread处理的速度快于read/write，但是在内存方面read/write性能较好。</li>
+</ul>
+<h2 id="函数open-和openat"><a href="#函数open-和openat" class="headerlink" title="函数open()和openat()"></a>函数open()和openat()</h2><h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* path, <span class="keyword">int</span> oflag, ...<span class="comment">/*mode_t mode*/</span>)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">openat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* path, <span class="keyword">int</span> oflag, ...<span class="comment">/*mode_t mode*/</span>)</span></span></div></pre></td></tr></table></figure>
+<h3 id="返回值说明"><a href="#返回值说明" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若文件打开失败返回-1，打开失败原因可以通过errno或者strerror(errno)查看;</p>
+<p>若成功将返回最小的未用的文件描述符的值。</p>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li>path为要打开的文件的文件路径</li>
+<li>oflag为文件打开模式.</li>
+<li>…为可变参数，可以视情况添加</li>
+</ul>
+<h4 id="文件打开模式"><a href="#文件打开模式" class="headerlink" title="文件打开模式"></a>文件打开模式</h4><p>文件打开模式标识当前进程对打开文件的操作权限。通常用一个或者多个权限的或来表示。权限列表如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">flag</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">O_RDONLY</td>
+<td>只读权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_WRONLY</td>
+<td>只写权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_RDWR</td>
+<td>读写权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_EXEC</td>
+<td>可执行权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_SEARCH</td>
+<td>搜索权限(针对目录)</td>
+</tr>
+<tr>
+<td style="text-align:center">O_APPEND</td>
+<td>每次写都追加到文件的末端</td>
+</tr>
+<tr>
+<td style="text-align:center">O_CLOEXEC</td>
+<td>把close_on_exec设置为文件描述符标识</td>
+</tr>
+<tr>
+<td style="text-align:center">O_CREATE</td>
+<td>若文件不存在，则创建它。使用此选项的时候，需要使用第三个参数指定该新文件的访问权限位</td>
+</tr>
+<tr>
+<td style="text-align:center">O_DIRECTORY</td>
+<td>如果path不是目录则出错</td>
+</tr>
+<tr>
+<td style="text-align:center">O_EXCL</td>
+<td>若同时执行了O_CREATE，若文件存在则出错，可以用此选项测试文件是否存在</td>
+</tr>
+<tr>
+<td style="text-align:center">O_NOCTTY</td>
+<td>如果PATH引用的是终端设备，则不将该终端设备作为该进程的控制终端</td>
+</tr>
+<tr>
+<td style="text-align:center">O_NOFOLLOW</td>
+<td>若PATH引用的是符号链接，则出错</td>
+</tr>
+<tr>
+<td style="text-align:center">O_NONBLOCK</td>
+<td>如果path引用的是FIFO,一个块特殊文件或者一个字符特殊文件，则将文本打开操作和后续的IO设置为非阻塞模式</td>
+</tr>
+<tr>
+<td style="text-align:center">O_SYNC</td>
+<td>使每次write等待物理IO完成，包括该write属性引起的文件属性更新需要的IO</td>
+</tr>
+<tr>
+<td style="text-align:center">O_TRUNC</td>
+<td>如果文件存在，且打开模式为只写或者读写，则将文件内容截断为0</td>
+</tr>
+<tr>
+<td style="text-align:center">O_TTY_INIT</td>
+<td>如果打开一个还未打开的终端设备，设置非标准termios参数值，使其符合Single Unix Specification</td>
+</tr>
+<tr>
+<td style="text-align:center">O_DSYNC</td>
+<td>每次write要等待物理IO操作完成，但是如果该写操作并不影响读取刚写入的数据，则不需要等待文件属性被更新</td>
+</tr>
+<tr>
+<td style="text-align:center">O_RSYNC</td>
+<td>使每一个以文件描述符作为参数进行的read操作等待，直至所有对文件同一部分挂起的写操作完成</td>
+</tr>
+</tbody>
+</table>
+<h4 id="文件访问权限mode-t"><a href="#文件访问权限mode-t" class="headerlink" title="文件访问权限mode_t"></a>文件访问权限mode_t</h4><p>mode的值表示了对文件的访问权限。这个访问权限与使用shell命令chmod去修改文件的权限的含义相同，文件的权限包括三大类，分别是当前文件对于文件所有者(u)，文件所有者所在的组(g)以及其他<br>用户(o)而言,对这三种角色又分别具有读写可执行的权限。所以这个参数只有在创建文件的时候才用到，用来指定当前创建的文件所对应的权限。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">mode</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">S_IRUSR</td>
+<td>用户读</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IWUSR</td>
+<td>用户写</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IXUSR</td>
+<td>用户可执行</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IRGRP</td>
+<td>组读</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IWGRP</td>
+<td>组写</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IXGRP</td>
+<td>组可执行</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IROTH</td>
+<td>其他读</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IWOTH</td>
+<td>其他写</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IXOTH</td>
+<td>其他可执行</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>需要注意的是，目录的可执行权限以及读权限与文件的相应权限完全不同。目录的可执行权限表示搜索位，即可搜索权限，若目录不具有可执行权限则不能cd进入文件；<br>目录的读权限是可以查看目录中文件内容的权限，若文件夹不具有读权限，则ls不能显示目录内的内容。</p>
+</blockquote>
+<h3 id="open与openat的区别"><a href="#open与openat的区别" class="headerlink" title="open与openat的区别"></a>open与openat的区别</h3><p>open和openat的区别主要在fd上</p>
+<ul>
+<li>path参数指定的是绝对路径名，在这种情况下，open与openat相同，fd忽略.</li>
+<li>path参数是相对路径名，fd参数指出了相对路径名在文件系统中的开始地址。fd参数通过打开相对路径名所在的文件目录获取。即此时fd为打开相对路径所获取的文件描述符。</li>
+<li>path参数为相对路径，fd参数为AT_FDCWD，此时相对路径为当前目录，作用于open相同。</li>
+</ul>
+<h2 id="函数create"><a href="#函数create" class="headerlink" title="函数create()"></a>函数create()</h2><h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">create</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">mode_t</span> mode)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="返回值说明-1"><a href="#返回值说明-1" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若文件创建失败返回-1;<br>若创建成功返回当前创建文件的文件描述符。</p>
+<h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><p>参数与open中对应的参数含义相同</p>
+<h3 id="函数功能说明"><a href="#函数功能说明" class="headerlink" title="函数功能说明"></a>函数功能说明</h3><p>create(path, mode)函数功能为创建新文件，与open(path, O_CREATE|O_TRUNC|O_WRONLY)功能相同。</p>
+<h2 id="函数close"><a href="#函数close" class="headerlink" title="函数close()"></a>函数close()</h2><h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="返回值说明-2"><a href="#返回值说明-2" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>文件关闭成功返回0,关闭失败返回-1.</p>
+<h3 id="函数功能介绍"><a href="#函数功能介绍" class="headerlink" title="函数功能介绍"></a>函数功能介绍</h3><p>该函数的作用是关闭指定文件描述符的文件，关闭文件时还会释放该进程加在该文件上的所有的记录锁。当一个进程终止时，内核自动关闭它所有打开的文件。很多程序都是利用这一功能而不是close<br>函数关闭打开的文件。但是对于长期运行的函数，最好还是使用close关闭打开的文件。</p>
+<h2 id="lseek-函数"><a href="#lseek-函数" class="headerlink" title="lseek()函数"></a>lseek()函数</h2><p>每个打开的文件在文件表项中存在着对应的当前文件的偏移量(current file offset)，通常为非负整数。文件的读写操作都是从当前偏移量开始，并在操作后将偏移量增加相应的字节数。当打开文件<br>模式为O_APPEND时，该文件的offset是文件末尾，除此之外，其他情况都被初始化为0.</p>
+<h3 id="函数原型-3"><a href="#函数原型-3" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lseek</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">off_t</span> offset, <span class="keyword">int</span> whence)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="返回值说明-3"><a href="#返回值说明-3" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>成功则返回新的文件的偏移量；<br>失败则返回-1.</p>
+<h3 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h3><p>使用lseek()函数显式的为一个打开的文件设置偏移量。lseek仅将文件的偏移量记录在内核中，并不引起IO开销。</p>
+<h3 id="参数说明-2"><a href="#参数说明-2" class="headerlink" title="参数说明"></a>参数说明</h3><p>参数offset的解释与whence相关。</p>
+<ul>
+<li>若whence为SEEK_SET，则将该文件的偏移量设置为距离<strong>当前文件开始处offset</strong>字节。</li>
+<li>若whence为SEEK_CUR，则将该文件的偏移量设置为距离<strong>当前偏移量加offset</strong>个字节,此时offset可正可负。</li>
+<li>若whence为SEEK_END，则将该文件的偏移量设置为<strong>当前文件长度加offser</strong>个字节，此时offset可正可负。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> fd = open(<span class="string">"./data"</span>, O_WRONLY | O_CREAT | O_TRUNC);</div><div class="line">    lseek(fd, <span class="number">20</span>, SEEK_END);</div><div class="line">    write(fd, <span class="string">"haha"</span>, <span class="number">4</span>);</div><div class="line"></div><div class="line">    <span class="comment">//可以用这种方法查看打开文件的当前偏移量。</span></div><div class="line">    <span class="comment">//这种方法可以用来确定当前文件是否可以设置偏移量</span></div><div class="line">    <span class="comment">//若文件是管道、FIFO或者网络套接字，则lseek返回-1，并将errno设置为ESPIPE</span></div><div class="line">    <span class="keyword">off_t</span> currpos;</div><div class="line">    currpos = lseek(fd, <span class="number">0</span>, SEEK_CUR);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意一般情况下文件的偏移量不能为负值，但是一些特殊的文件允许偏移量为负值，如在FreeBSD上运行的设备/dev/kmem支持负的偏移量。<br>因为偏移量可能为负值，所以在比较偏移量的时候不能直接判断其是否小于0，而是要判断其是否等于-1.</p>
+<p>文件的偏移量允许大于文件的长度，这时会在文件中出现一些空洞，但是是被允许的。文件中的空洞并不在文件中占磁盘块（block）。</p>
+</blockquote>
+<h2 id="read-函数"><a href="#read-函数" class="headerlink" title="read()函数"></a>read()函数</h2><h3 id="函数原型-4"><a href="#函数原型-4" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> read(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes);</div></pre></td></tr></table></figure>
+<h3 id="返回值说明-4"><a href="#返回值说明-4" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若读取成功，读到文件末尾返回0，未读到文件末尾返回当前读的字节数。<br>若读取失败，返回-1。</p>
+<h3 id="参数说明-3"><a href="#参数说明-3" class="headerlink" title="参数说明"></a>参数说明</h3><p>fd为要读取文件的文件描述符。buf为读取文件数据缓冲区，nbytes为期待读取的字节数，通常为sizeof(buf)。</p>
+<blockquote>
+<p>注意read函数默认读入多行，遇到换行不会停止读入，直到读到文件末尾，下一次读取返回值为0.</p>
+</blockquote>
+<h2 id="write-函数"><a href="#write-函数" class="headerlink" title="write()函数"></a>write()函数</h2><h3 id="函数原型-5"><a href="#函数原型-5" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> write(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span>* buf, <span class="keyword">size_t</span> ntyes);</div></pre></td></tr></table></figure>
+<h3 id="返回值说明-5"><a href="#返回值说明-5" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若写入成功则返回写入的字节数；失败返回-1.</p>
+<h3 id="参数说明-4"><a href="#参数说明-4" class="headerlink" title="参数说明"></a>参数说明</h3><p>buf为写入内容的缓冲区，ntyes为期待写入的字节数，通常为sizeof(buf)。一般情况下返回值与ntypes相等，否则写入失败。</p>
+<blockquote>
+<p>当指定O_APPEND选项，内容将从文件末尾写入，否则从文件开始写入。一般情况下将缓冲区的长度设置为磁盘块的大小可以最大程度的提升程序读写的性能。</p>
+</blockquote>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/22/文件IO相关函数/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/22/Unix错误处理/">
+                            Unix错误处理
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-22T23:24:40+08:00">
+	
+		    5月 22, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix错误处理"><a href="#Unix错误处理" class="headerlink" title="Unix错误处理"></a>Unix错误处理</h1><p>当Unix系统函数出错的时候，通常会返回一个负值，同时整型变量errno通常被设置为具有特定信息的值。例如当使用open打开文件的时候，若当前文件不存在，此时open的返回值为-1,errno被设置为2(ENOENT)。<br>系统函数出错的返回值不一定为负数，是根据具体函数具体定义的，如当系统函数返回一个指针时，若出错，将会返回NULL。</p>
+<p>Linux系统中errno.h中定义了一系列的错误宏，他们之处了不同错误对应的错误ID，为整型变量，可被赋值。</p>
+<blockquote>
+<p>关于errno需要注意的两点：</p>
+<ul>
+<li>如果没出错，errno将不会被进程设置，所以一般当利用函数返回值确认已经出错的时候，再去查看相应的errno</li>
+<li>任何函数不会讲errno的值设置为0,而且在errno.h中定义的所有宏定义都不为0</li>
+</ul>
+</blockquote>
+<h2 id="Unix错误处理的两个相关函数"><a href="#Unix错误处理的两个相关函数" class="headerlink" title="Unix错误处理的两个相关函数"></a>Unix错误处理的两个相关函数</h2><h3 id="strerror函数"><a href="#strerror函数" class="headerlink" title="strerror函数"></a>strerror函数</h3><h4 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span>* <span class="title">strerror</span><span class="params">(<span class="keyword">int</span> errno)</span></span>;</div></pre></td></tr></table></figure>
+<h4 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h4><p>此函数的功能为将errno转化为其对应的具体错误信息。</p>
+<h4 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">   <span class="keyword">int</span> fd = open(<span class="string">"data"</span>);</div><div class="line"></div><div class="line">   <span class="keyword">if</span> (fd == <span class="number">-1</span>) &#123;</div><div class="line">       <span class="built_in">printf</span>(<span class="string">"%s"</span>, strerror(errno));</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="perror函数"><a href="#perror函数" class="headerlink" title="perror函数"></a>perror函数</h3><h4 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">perror</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* msg)</span></span>;</div></pre></td></tr></table></figure>
+<h4 id="函数功能-1"><a href="#函数功能-1" class="headerlink" title="函数功能"></a>函数功能</h4><p>perror基于当前errno的值，在标准错误流上输出一个出错信息。输出内容首先输出msg所指的字符串，然后一个冒号，空格，接着是errno对应的错误字符串，最后是一个换行符。</p>
+<h4 id="示例代码-1"><a href="#示例代码-1" class="headerlink" title="示例代码"></a>示例代码</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</div><div class="line">   <span class="keyword">int</span> fd = open(<span class="string">"data"</span>);</div><div class="line"></div><div class="line">   <span class="keyword">if</span> (fd == <span class="number">-1</span>) &#123;</div><div class="line">       <span class="built_in">printf</span>(<span class="string">"%s"</span>, strerror(errno));</div><div class="line">       perror(argv[<span class="number">0</span>]);</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="一些特殊的错误"><a href="#一些特殊的错误" class="headerlink" title="一些特殊的错误"></a>一些特殊的错误</h2><p>EAGAIN，EWOULDBLOCK和EINTR</p>
+<p>在Linux环境下开发经常会碰到很多错误(设置errno)，其中EAGAIN是其中比较常见的一个错误(比如用在非阻塞操作中)。</p>
+<p>从字面上来看，是提示再试一次。这个错误经常出现在当应用程序进行一些非阻塞(non-blocking)操作(对文件或socket)的时候。</p>
+<p>　　例如，以 O_NONBLOCK的标志打开文件/socket/FIFO，如果你连续做read操作而没有数据可读。此时程序不会阻塞起来等待数据准备就绪返 回，</p>
+<p>read函数会返回一个错误EAGAIN，提示你的应用程序现在没有数据可读请稍后再试。</p>
+<p>　　又例如，当一个系统调用(比如fork)因为没有足够的资源(比如虚拟内存)而执行失败，返回EAGAIN提示其再调用一次(也许下次就能成功)。</p>
+<p>EAGAIN：Linux - 非阻塞socket编程处理EAGAIN错误</p>
+<p>　　在linux进行非阻塞的socket接收数据时经常出现Resource temporarily unavailable，errno代码为11(EAGAIN)，这是什么意思？</p>
+<p>这表明你在非阻塞模式下调用了阻塞操作，在该操作没有完成就返回这个错误，这个错误不会破坏socket的同步，不用管它，下次循环接着recv就可以。</p>
+<p>对非阻塞socket而言，EAGAIN不是一种错误。在VxWorks和Windows上，EAGAIN的名字叫做EWOULDBLOCK。</p>
+<p>另外，如果出现EINTR即errno为4，错误描述Interrupted system call，操作也应该继续。</p>
+<p>最后，如果recv的返回值为0，那表明连接已经断开，我们的接收操作也应该结束。</p>
+<h2 id="错误恢复"><a href="#错误恢复" class="headerlink" title="错误恢复"></a>错误恢复</h2><p>我们可以将errno.h中定义的错误分为两种，分别是致命的和非致命的，对于致命性错误，无法执行恢复操作。对于非致命性错误，大多数来说是暂时的。</p>
+<p>对于非致命性错误，最常用的做法就是延迟一段时间，然后重试。例如当错误表示网络不可用，这时我们将可以通过延迟一段时间，进行重新连接。</p>
+<h2 id="errno宏定义及相应解释"><a href="#errno宏定义及相应解释" class="headerlink" title="errno宏定义及相应解释"></a>errno宏定义及相应解释</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div></pre></td><td class="code"><pre><div class="line"><span class="number">124</span> EMEDIUMTYPE   Wrong medium type</div><div class="line">　　<span class="number">123</span> ENOMEDIUM     No medium found</div><div class="line">　　<span class="number">122</span> EDQUOT        Disk quota exceeded</div><div class="line">　　<span class="number">121</span> EREMOTEIO     Remote I/O error</div><div class="line">　　<span class="number">120</span> EISNAM        Is a named type file</div><div class="line">　　<span class="number">119</span> ENAVAIL       No XENIX semaphores available</div><div class="line">　　<span class="number">118</span> ENOTNAM       Not a XENIX named type file</div><div class="line">　　<span class="number">117</span> EUCLEAN       Structure needs cleaning</div><div class="line">　　<span class="number">116</span> ESTALE        Stale NFS file handle</div><div class="line">　　<span class="number">115</span> EINPROGRESS  +Operation now in progress</div><div class="line">　　<span class="number">114</span> EALREADY      Operation already in progress</div><div class="line">　　<span class="number">113</span> EHOSTUNREACH  No route to host</div><div class="line">　　<span class="number">112</span> EHOSTDOWN     Host is down</div><div class="line">　　<span class="number">111</span> ECONNREFUSED  Connection refused</div><div class="line">　　<span class="number">110</span> ETIMEDOUT    +Connection timed out</div><div class="line">　　<span class="number">109</span> ETOOMANYREFS  Too many references: cannot splice</div><div class="line">　　<span class="number">108</span> ESHUTDOWN     Cannot send after transport endpoint shutdown</div><div class="line">　　<span class="number">107</span> ENOTCONN      Transport endpoint is not connected</div><div class="line">　　<span class="number">106</span> EISCONN       Transport endpoint is already connected</div><div class="line">　　<span class="number">105</span> ENOBUFS       No buffer space available</div><div class="line">　　<span class="number">104</span> ECONNRESET    Connection reset by peer</div><div class="line">　　<span class="number">103</span> ECONNABORTED  Software caused connection <span class="built_in">abort</span></div><div class="line">　　<span class="number">102</span> ENETRESET     Network dropped connection on reset</div><div class="line">　　<span class="number">101</span> ENETUNREACH   Network is unreachable</div><div class="line">　　<span class="number">100</span> ENETDOWN      Network is down</div><div class="line">　　<span class="number">99</span> EADDRNOTAVAIL Cannot assign requested address</div><div class="line">　　<span class="number">98</span> EADDRINUSE    Address already in use</div><div class="line">　　<span class="number">97</span> EAFNOSUPPORT  Address family not supported by protocol</div><div class="line">　　<span class="number">96</span> EPFNOSUPPORT  Protocol family not supported</div><div class="line">　　<span class="number">95</span> EOPNOTSUPP    Operation not supported</div><div class="line">　　<span class="number">94</span> ESOCKTNOSUPPORT Socket type not supported</div><div class="line">　　<span class="number">93</span> EPROTONOSUPPORT Protocol not supported</div><div class="line">　　<span class="number">92</span> ENOPROTOOPT   Protocol not available</div><div class="line">　　<span class="number">91</span> EPROTOTYPE    Protocol wrong type <span class="keyword">for</span> socket</div><div class="line">　　<span class="number">90</span> EMSGSIZE     +Message too <span class="keyword">long</span></div><div class="line">　　<span class="number">89</span> EDESTADDRREQ  Destination address required</div><div class="line">　　<span class="number">88</span> ENOTSOCK      Socket operation on non-socket</div><div class="line">　　<span class="number">87</span> EUSERS        Too many users</div><div class="line">　　<span class="number">86</span> ESTRPIPE      Streams pipe error</div><div class="line">　　<span class="number">85</span> ERESTART      Interrupted system call should be restarted</div><div class="line">　　<span class="number">84</span> EILSEQ        Invalid or incomplete multibyte or wide character</div><div class="line">　　<span class="number">83</span> ELIBEXEC      Cannot exec a shared library directly</div><div class="line">　　<span class="number">82</span> ELIBMAX       Attempting to link in too many shared libraries</div><div class="line">　　<span class="number">81</span> ELIBSCN       .lib section in a.out corrupted</div><div class="line">　　<span class="number">80</span> ELIBBAD       Accessing a corrupted shared library</div><div class="line">　　<span class="number">79</span> ELIBACC       Can not access a needed shared library</div><div class="line">　　<span class="number">78</span> EREMCHG       Remote address changed</div><div class="line">　　<span class="number">77</span> EBADFD        File descriptor in bad state</div><div class="line">　　<span class="number">76</span> ENOTUNIQ      Name not unique on network</div><div class="line">　　<span class="number">75</span> EOVERFLOW     Value too large <span class="keyword">for</span> defined data type</div><div class="line">　　<span class="number">74</span> EBADMSG      +Bad message</div><div class="line">　　<span class="number">73</span> EDOTDOT       RFS specific error</div><div class="line">　　<span class="number">72</span> EMULTIHOP     Multihop attempted</div><div class="line">　　<span class="number">71</span> EPROTO        Protocol error</div><div class="line">　　<span class="number">70</span> ECOMM         Communication error on send</div><div class="line">　　<span class="number">69</span> ESRMNT        Srmount error</div><div class="line">　　<span class="number">68</span> EADV          Advertise error</div><div class="line">　　<span class="number">67</span> ENOLINK       Link has been severed</div><div class="line">　　<span class="number">66</span> EREMOTE       Object is remote</div><div class="line">　　<span class="number">65</span> ENOPKG        Package not installed</div><div class="line">　　<span class="number">64</span> ENONET        Machine is not on the network</div><div class="line">　　<span class="number">63</span> ENOSR         Out of streams resources</div><div class="line">　　<span class="number">62</span> ETIME         Timer expired</div><div class="line">　　<span class="number">61</span> ENODATA       No data available</div><div class="line">　　<span class="number">60</span> ENOSTR        Device not a stream</div><div class="line">　　<span class="number">59</span> EBFONT        Bad font file format</div><div class="line">　　<span class="number">57</span> EBADSLT       Invalid slot</div><div class="line">　　<span class="number">56</span> EBADRQC       Invalid request code</div><div class="line">　　<span class="number">55</span> ENOANO        No anode</div><div class="line">　　<span class="number">54</span> EXFULL        Exchange full</div><div class="line">　　<span class="number">53</span> EBADR         Invalid request descriptor</div><div class="line">　　<span class="number">52</span> EBADE         Invalid exchange</div><div class="line">　　<span class="number">51</span> EL2HLT        Level <span class="number">2</span> halted</div><div class="line">　　<span class="number">50</span> ENOCSI        No CSI structure available</div><div class="line">　　<span class="number">49</span> EUNATCH       Protocol driver not attached</div><div class="line">　　<span class="number">48</span> ELNRNG        Link number out of range</div><div class="line">　　<span class="number">47</span> EL3RST        Level <span class="number">3</span> reset</div><div class="line">　　<span class="number">46</span> EL3HLT        Level <span class="number">3</span> halted</div><div class="line">　　<span class="number">45</span> EL2NSYNC      Level <span class="number">2</span> not synchronized</div><div class="line">　　<span class="number">44</span> ECHRNG        Channel number out of range</div><div class="line">　　<span class="number">43</span> EIDRM         Identifier removed</div><div class="line">　　<span class="number">42</span> ENOMSG        No message of desired type</div><div class="line">　　<span class="number">40</span> ELOOP         Too many levels of symbolic links</div><div class="line">　　<span class="number">39</span> ENOTEMPTY    +Directory not empty</div><div class="line">　　<span class="number">38</span> ENOSYS       +Function not implemented</div><div class="line">　　<span class="number">37</span> ENOLCK       +No locks available</div><div class="line">　　<span class="number">36</span> ENAMETOOLONG +File name too <span class="keyword">long</span></div><div class="line">　　<span class="number">35</span> EDEADLK      +Resource deadlock avoided</div><div class="line">　　<span class="number">34</span> ERANGE       +Numerical result out of range</div><div class="line">　　<span class="number">33</span> EDOM         +Numerical argument out of domain</div><div class="line">　　<span class="number">32</span> EPIPE        +Broken pipe</div><div class="line">　　<span class="number">31</span> EMLINK       +Too many links</div><div class="line">　　<span class="number">30</span> EROFS        +Read-only file system</div><div class="line">　　<span class="number">29</span> ESPIPE       +Illegal seek</div><div class="line">　　<span class="number">28</span> ENOSPC       +No space left on device</div><div class="line">　　<span class="number">27</span> EFBIG        +File too large</div><div class="line">　　<span class="number">26</span> ETXTBSY       Text file busy</div><div class="line">　　<span class="number">25</span> ENOTTY       +Inappropriate ioctl <span class="keyword">for</span> device</div><div class="line">　　<span class="number">24</span> EMFILE       +Too many open files</div><div class="line">　　<span class="number">23</span> ENFILE       +Too many open files in system</div><div class="line">　　<span class="number">22</span> EINVAL       +Invalid argument</div><div class="line">　　<span class="number">21</span> EISDIR       +Is a directory</div><div class="line">　　<span class="number">20</span> ENOTDIR      +Not a directory</div><div class="line">　　<span class="number">19</span> ENODEV       +No such device</div><div class="line">　　<span class="number">18</span> EXDEV        +Invalid cross-device link</div><div class="line">　　<span class="number">17</span> EEXIST       +File exists</div><div class="line">　　<span class="number">16</span> EBUSY        +Device or resource busy</div><div class="line">　　<span class="number">15</span> ENOTBLK       Block device required</div><div class="line">　　<span class="number">14</span> EFAULT       +Bad address</div><div class="line">　　<span class="number">13</span> EACCES       +Permission denied</div><div class="line">　　<span class="number">12</span> ENOMEM       +Cannot allocate memory</div><div class="line">　　<span class="number">11</span> EAGAIN       +Resource temporarily unavailable</div><div class="line">　　<span class="number">10</span> ECHILD       +No child processes</div><div class="line">　　<span class="number">9</span> EBADF        +Bad file descriptor</div><div class="line">　　<span class="number">8</span> ENOEXEC      +Exec format error</div><div class="line">　　<span class="number">7</span> E2BIG        +Argument <span class="built_in">list</span> too <span class="keyword">long</span></div><div class="line">　　<span class="number">6</span> ENXIO        +No such device or address</div><div class="line">　　<span class="number">5</span> EIO          +Input/output error</div><div class="line">　　<span class="number">4</span> EINTR        +Interrupted system call</div><div class="line">　　<span class="number">3</span> ESRCH        +No such process</div><div class="line">　　<span class="number">2</span> ENOENT       +No such file or directory</div><div class="line">　　<span class="number">1</span> EPERM        +Operation not permitted</div><div class="line">　　<span class="number">0</span>                    Success</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/22/Unix错误处理/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/22/Unix基础知识/">
+                            Unix体系结构
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-22T23:18:36+08:00">
+	
+		    5月 22, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix基础知识"><a href="#Unix基础知识" class="headerlink" title="Unix基础知识"></a>Unix基础知识</h1><h2 id="Unix体系结构"><a href="#Unix体系结构" class="headerlink" title="Unix体系结构"></a>Unix体系结构</h2><p>从严格意义上讲，可以将操作系统定义为一种软件，它相当于一种控制计算机硬件资源，为程序提供运行环境的软件。我们通常将这种软件叫做内核，因为它相对比较小，并且位于环境的核心。Unix体系结构如下图:<br><img src="../assets/images/Unix体系结构.png" alt=""></p>
+<p>内核的接口被称为系统调用（system Call），公共库函数建立在系统调用接口之上，<strong>应用程序既可以使用公共函数库，也可以使用系统调用。</strong>shell是一个特殊的应用程序，为运行其他应用程序提供了接口。</p>
+<h2 id="Unix文件和目录"><a href="#Unix文件和目录" class="headerlink" title="Unix文件和目录"></a>Unix文件和目录</h2><h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><p>Unix文件系统是文件和目录的一种层次结构，所有文件的起点都是<strong>根目录(root)</strong>，名称为”/“.</p>
+<p>目录是一个包含目录项的文件。逻辑上，可以认为每个目录项都包含一个文件，同时还说明该文件属性的信息。<strong>文件属性包括文件类型(普通文件还是目录)、文件权限、；链接到改文件的进程数、文件所有者、文件所有者所在的组 文件大小以及文件最后修改的时间等</strong>。stat和fstat函数返回一个文件属性的信息结构。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//通过文件名获取文件信息，并保存在buf所指的结构体stat中</span></div><div class="line"><span class="comment">//返回值：成功返回0，失败-1，错误码存在errno中</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">stat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* file_name, <span class="keyword">struct</span> stat* buf)</span></span>;</div><div class="line"></div><div class="line">数据类型：</div><div class="line"><span class="keyword">struct</span> stat &#123;</div><div class="line"><span class="keyword">dev_t</span>       st_dev;     <span class="comment">/* ID of device containing file -文件所在设备的ID*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">ino_t</span>       st_ino;     <span class="comment">/* inode number -inode节点号*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">mode_t</span>      st_mode;    <span class="comment">/* protection -保护模式?*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">nlink_t</span>     st_nlink;   <span class="comment">/* number of hard links -链向此文件的连接数(硬连接)*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">uid_t</span>       st_uid;     <span class="comment">/* user ID of owner -user id*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">gid_t</span>       st_gid;     <span class="comment">/* group ID of owner - group id*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">dev_t</span>       st_rdev;    <span class="comment">/* device ID (if special file) -设备号，针对设备文件*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">off_t</span>       st_size;    <span class="comment">/* total size, in bytes -文件大小，字节为单位*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">blksize_t</span>   st_blksize; <span class="comment">/* blocksize for filesystem I/O -系统块的大小*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">blkcnt_t</span>    st_blocks;  <span class="comment">/* number of blocks allocated -文件所占块数*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">time_t</span>      st_atime;   <span class="comment">/* time of last access -最近存取时间*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">time_t</span>      st_mtime;   <span class="comment">/* time of last modification -最近修改时间*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">time_t</span>      st_ctime;   <span class="comment">/* time of last status change - */</span>  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用C语言实现ls功能</p>
+<p>涉及到的相关函数：</p>
+<ul>
+<li>文件夹操作函数opendir，readdir,closedir</li>
+<li>opendir返回指向dir结构的指针，将该指针传递给readdir,无需关心dir结构中存在什么数据，直接读取即可。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">err_quit</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* message)</span> </span>&#123;</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, message);</div><div class="line">  <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">if</span> (argc &lt; <span class="number">2</span>)</div><div class="line">  &#123;</div><div class="line">    err_quit(<span class="string">"usage: ls directory_name\n"</span>);</div><div class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  DIR *dp;</div><div class="line">  <span class="keyword">struct</span> dirent *dirp;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> ((dp = opendir(argv[<span class="number">1</span>])) == <span class="literal">NULL</span>)</div><div class="line">    err_quit(<span class="string">"can not open file\n"</span>);</div><div class="line"></div><div class="line">  <span class="keyword">while</span> ((dirp = readdir(dp)) != <span class="literal">NULL</span>)</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, dirp-&gt;d_name);</div><div class="line">  closedir(dp);</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="输入和输出"><a href="#输入和输出" class="headerlink" title="输入和输出"></a>输入和输出</h2><h3 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h3><p>文件描述符是一个很小的非负整数，<strong>内核用文件描述符来标识一个特定进程正在访问的文件</strong>。当内核打开或创建文件时，他都会返回一个文件描述符。在读写文件时，都可以使用这个描述符（根据打开时的模式赋予权限）.</p>
+<h3 id="标准输入、标准输出和标准错误流"><a href="#标准输入、标准输出和标准错误流" class="headerlink" title="标准输入、标准输出和标准错误流"></a>标准输入、标准输出和标准错误流</h3><p>按照惯例，每当运行一个新程序的时候，所有的shell都会为改程序默认打开三个文件描述符，即标准输入，标准输出和标注错误。如果不做特殊处理，这三个描述符都连接到终端，也可以将其重定向到文件。如ls &gt; test.data</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/22/Unix基础知识/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/21/函数dup/">
+                            函数dup与dup2
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-21T23:31:31+08:00">
+	
+		    5月 21, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="函数dup与dup2"><a href="#函数dup与dup2" class="headerlink" title="函数dup与dup2"></a>函数dup与dup2</h1><h2 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup2</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> fd2)</span></span>;</div></pre></td></tr></table></figure>
+<h2 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h2><p>这两个函数的功能都是用来复制一个现有的文件描述符。返回的文件描述符与原有的文件描述符共用同一个文件表项，但是文件描述符标志将被清除，即当进程调用exec时文件描述符将不会被关闭。</p>
+<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><p>dup返回当前可用的最小的文件描述符。dup2返回fd2，若fd2所表示的文件已经打开，则将该文件描述符先关闭，然后再将fd复制到fd2上返回。若fd2与fd相同，则直接返回fd、.</p>
+<h2 id="等效函数"><a href="#等效函数" class="headerlink" title="等效函数"></a>等效函数</h2><p>dup函数与fcntl的F_DUPFD功能相同。</p>
+<p>dup(fd)等效于fcntl(fd, F_DUPFD, 0)</p>
+<p>dup2(fd, fd2)等效于close(fd), fcntl(fd, F_DUPFD, fd2)</p>
+<p>但是dup2是原子的上述先关闭然后在复制不是原子操作。</p>
+<h2 id="作用及用途"><a href="#作用及用途" class="headerlink" title="作用及用途"></a>作用及用途</h2><p>dup函数常用来重定向进程的stdin、stdout以及stderr。原理与CGI类似，即将标准输入标准输出重定向到一个文件或者socket流等。</p>
+<h2 id="重定向标准输出"><a href="#重定向标准输出" class="headerlink" title="重定向标准输出"></a>重定向标准输出</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> fd = dup(STDIN_FILENO);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"dup error\n"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">char</span> buf[] = <span class="string">"this is a test of dup\n"</span>;</div><div class="line">    write(fd, buf, <span class="keyword">sizeof</span>(buf));</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/21/函数dup/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/04/cgi原理/">
                             cgi原理
                         </a>
@@ -227,6 +665,12 @@
 		    5月 04, 2017
     	
     </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
     
 </div>
 
@@ -244,22 +688,22 @@
 <h2 id="CGI接口标准：标准输入-环境变量以及标准输出"><a href="#CGI接口标准：标准输入-环境变量以及标准输出" class="headerlink" title="CGI接口标准：标准输入,环境变量以及标准输出"></a>CGI接口标准：标准输入,环境变量以及标准输出</h2><table>
 <thead>
 <tr>
-<th style="text-align:center">借口标准</th>
-<th style="text-align:right">介绍</th>
+<th style="text-align:left">借口标准</th>
+<th>介绍</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">标准输入</td>
-<td style="text-align:right">CGI程序像其他可执行程序一样,可通过标准输入(stdin)从Web服务器得到输入信息,如Form中的数据,这就是所谓的向CGI程序传递数据的POST方法。这意味着在操作系统命令行状态可执行CGI程序,对CGI程序进行调试。POST方法是常用的方法。</td>
+<td style="text-align:left">标准输入</td>
+<td>CGI程序像其他可执行程序一样,可通过标准输入(stdin)从Web服务器得到输入信息,如Form中的数据,这就是所谓的向CGI程序传递数据的POST方法。这意味着在操作系统命令行状态可执行CGI程序,对CGI程序进行调试。POST方法是常用的方法。</td>
 </tr>
 <tr>
-<td style="text-align:center">环境变量</td>
-<td style="text-align:right">操作系统提供了许多环境变量,它们定义了程序的执行环境,应用程序可以存取它们。Web服务器和CGI接口又另外设置了自己的一些环境变量,用来向CGI程序传递一些重要的参数。CGI的GET方法还通过环境变量QUERY-STRING向CGI程序传递Form中的数据。</td>
+<td style="text-align:left">环境变量</td>
+<td>操作系统提供了许多环境变量,它们定义了程序的执行环境,应用程序可以存取它们。Web服务器和CGI接口又另外设置了自己的一些环境变量,用来向CGI程序传递一些重要的参数。CGI的GET方法还通过环境变量QUERY-STRING向CGI程序传递Form中的数据。</td>
 </tr>
 <tr>
-<td style="text-align:center">标准输出</td>
-<td style="text-align:right">CGI程序通过标准输出(stdout)将输出信息传送给Web服务器。传送给Web服务器的信息可以用各种格式,通常是以纯文本或者HTML文本的形式,这样我们就可以在命令行状态调试CGI程序,并且得到它们的输出。</td>
+<td style="text-align:left">标准输出</td>
+<td>CGI程序通过标准输出(stdout)将输出信息传送给Web服务器。传送给Web服务器的信息可以用各种格式,通常是以纯文本或者HTML文本的形式,这样我们就可以在命令行状态调试CGI程序,并且得到它们的输出。</td>
 </tr>
 </tbody>
 </table>
@@ -350,7 +794,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="CGI的工作原理图"><a href="#CGI的工作原理图" class="headerlink" title="CGI的工作原理图"></a>CGI的工作原理图</h2><p><img src="/home/weichuanliu/workspace/blog/source/assets/images/CGI" alt=""></p>
+<h2 id="CGI的工作原理图"><a href="#CGI的工作原理图" class="headerlink" title="CGI的工作原理图"></a>CGI的工作原理图</h2><p><img src="../assets/images/CGI" alt=""></p>
 
                     
                         
@@ -375,8 +819,8 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/05/04/Linux相关常用函数总结/">
-                            Linux相关常用函数总结
+                        <a class="link-unstyled" href="/2017/05/04/Wait函数详解/">
+                            Wait函数详解
                         </a>
                     
                 </h1>
@@ -509,7 +953,197 @@
                     
                     
                         <p>
-                            <a href="/2017/05/04/Linux相关常用函数总结/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2017/05/04/Wait函数详解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/01/Linux用于IO的数据结构及fcntl函数详解/">
+                            Linux用于IO的数据结构及fcntl函数详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-01T23:31:31+08:00">
+	
+		    5月 01, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Linux用于I-O的数据结构及fcntl函数详解"><a href="#Linux用于I-O的数据结构及fcntl函数详解" class="headerlink" title="Linux用于I/O的数据结构及fcntl函数详解"></a>Linux用于I/O的数据结构及fcntl函数详解</h1><h2 id="Linux内核用于IO的数据结构"><a href="#Linux内核用于IO的数据结构" class="headerlink" title="Linux内核用于IO的数据结构"></a>Linux内核用于IO的数据结构</h2><p>内核使用<strong>三种数据结构</strong>表示打开的文件，它们之间的关系决定了在文件共享方面一个进程对另一个进程可能产生的影响.</p>
+<ul>
+<li>进程表项 每个进程在记录表中都有一个记录项，记录项中包含一张打开的文件描述符表，可将其视为一个矢量，每个描述符占用一项。与每个文件描述符相关联的是：<ul>
+<li>文件描述符标志(close_on_exec,close_on_exec是一个进程所有文件描述符的标记位图，每个比特位代表一个打开的文件描述符，用于确定在系统调用execve()时需要关闭的文件句柄)。</li>
+<li>指向一个文件表项的指针</li>
+</ul>
+</li>
+<li>文件表项 内核为所有打开文件维护一张文件表（<strong>不同进程打开相同文件将有两条记录</strong>），每个文件表项中包括：<ul>
+<li>文件状态标志(read,write,append,async,nonblock等)</li>
+<li>当前文件偏移量</li>
+<li>指向该文件v(i)节点表项的指针</li>
+</ul>
+</li>
+<li>节点表项。每个打开的文件都有一个v-node结构，v-node中包含了文件类型和对此文件进行各种操作函数的指针。对于大多数文件，V-node中还包含了文件inode节点信息，这些信息是打开文件时从磁盘上读入内存的，所以文件所有信息都是随时可用的。<ul>
+<li>v节点的信息</li>
+<li>当前文件的长度</li>
+<li>i节点的信息</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>close_on_exec是一个进程所有文件描述符（文件句柄）的位图标志，<strong>每个bit代表一个打开的文件描述符，用于<br>确定在系统调用execve()时是否需要关闭文件句柄。</strong>当一个进程fork出一个子进程时，通常会在子进程中调用execve()函数<br>加载执行另一个新程序。此时子进程将完全被新程序替换掉，并在子进程中执行新程序。若一个文件描述符在close_on_exec中对应的<br>bit被设置，那么在执行execve()时该文件描述符将被关闭，否则该文件描述符将始终处于打开状态。<br>当打开一个文件的时候，默认情况下文件句柄在子进程中也处于打开状态。<br>注意文件描述符和文件描述符标志的区别，文件描述符是文件进程打开文件时的文件句柄，文件描述符标志为close_on_exec。</p>
+</blockquote>
+<p>下图显示了一个进程打开两个不同文件时三张表对应的关系：</p>
+<p><img src="../assets/images/singleProcessmultifile.png" alt=""></p>
+<p>如果两个独立的进程同时打开同一个文件，三张表之间的对应关系如下：</p>
+<p><img src="../assets/images/multiProcesssinglefile.png" alt=""><br>从上面可以看出，不同进程打开相同的文件时每个进程将获得各自的文件表项，这是因为不同的进程都有各自的文件偏移量。<br>当我们对文件进行操作的时候，上面三种表项之间的变化关系如下：</p>
+<ul>
+<li>当对文件进行写操作时（write），在文件表项中的文件偏移量将增加写入的字节数。如果此时文件偏移量超过了文件长度，更新文件长度为当前的文件偏移量</li>
+<li>当用O_APPEND标志打开一个文件，则相应的标志也被设置到文件表项的文件标志状态中。每次对这种具有追加标志的文件进行写操作时，<strong>首先将当前文件偏移量设置为文件文件长度</strong>，这就使得每次增加的内容都会写到文件末尾。</li>
+<li>若使用lseek定位到文件末尾，则文件表项中偏移量被设置为文件长度</li>
+<li>lseek函数只修改文件表项中的偏移量，不进行任何IO操作。</li>
+</ul>
+<p><strong>注意问题：</strong></p>
+<ul>
+<li>可能有多个文件描述符指向同一个文件表项，如在fork的时候就有可能发生</li>
+<li>注意文件描述符和文件状态标志在作用范围方面的区别。前者只用于一个进程的描述符，而后者则应用于指向该给定文件表项的任何进程中的所有描述符。</li>
+</ul>
+<h2 id="函数fcntl功能及用法"><a href="#函数fcntl功能及用法" class="headerlink" title="函数fcntl功能及用法"></a>函数fcntl功能及用法</h2><p><strong>函数原型</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> cmd, ...<span class="comment">/*int args or lock args*/</span>)</span></span>;</div></pre></td></tr></table></figure>
+<p><strong>函数功能</strong>:<br>fcntl的作用是改变已经打开的文件属性。</p>
+<p><strong>参数说明</strong>:</p>
+<ul>
+<li>fd 为file descriptor,即文件打开之后的文件描述符</li>
+<li>cmd为命令，即需要对fd操作的命令,一般为几个宏定义中的其中一个</li>
+<li>args 参数，此参数为执行cmd命令所需要的参数</li>
+</ul>
+<p><strong>cmd参数命令及功能</strong>:</p>
+<p>fcntl的功能可以分为5种:</p>
+<ul>
+<li>复制一个已有的文件描述符<ul>
+<li>cmd = F_DUPFD，此功能<strong>返回一个文件描述符，新的描述符的值为大于或等于args的可用的<br>（尚未打开）文件描述符的最小值，新描述符与fd共用一个文件表项</strong>。但是新的文件描述符有<br> 它自己的一套文件描述符标志.</li>
+<li>cmd = F_DUPFD_CLOEXEC.与上述功能一致，唯一不同的是使用此命令会设置CLOSE_ON_EXEC，<br>即当执行execve的时候，文件描述符将被关闭。</li>
+</ul>
+</li>
+<li>获取或设置文件描述符标志<ul>
+<li>cmd = F_GETFD <strong>返回与fd关联的close_on_exec标志</strong>，第三个参数被忽略。</li>
+<li>cnd = F_SETFD <strong>将文件描述符标志close_on_exec设置为第三个参数</strong>。</li>
+</ul>
+</li>
+<li>获取或设置文件状态标志<ul>
+<li>cmd = F_GETFL <strong>获取fd对应的文件的状态标志（存储于文件表项）</strong></li>
+<li>cmd = F_SETFL <strong>设置fd对应文件的状态标志</strong></li>
+</ul>
+</li>
+<li>获取或设置异步IO所有权<ul>
+<li>cmd = F_GETOWN 获取当前接受SIGIO和SIGURG信号的进程IO或者进程组ID。</li>
+<li>cmd = F_SETOWN 设置接受SIGIO和SIGURG信号的进程ID或进程组ID。返回值为正则为进程，返回值为负数即为进程组。</li>
+</ul>
+</li>
+<li>获取或记录锁（cmd=F_GETLK、F_SETLK、F_SETLKW），此处不详解</li>
+</ul>
+<p><strong>文件状态标志说明</strong>：</p>
+<p>文件状态标志存储与文件表项中，它用于说明进程对当前文件的可操作权限。文件的<br>操作权限说明如下图表所示，权限设置可使用|或者&amp;进行设置.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">文件状态标志</th>
+<th style="text-align:left">功能说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">O_RDONLY</td>
+<td style="text-align:left">只读权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_WRONLY</td>
+<td style="text-align:left">只写权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_RDWR</td>
+<td style="text-align:left">读写权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_EXEC</td>
+<td style="text-align:left">可执行权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_SEARCH</td>
+<td style="text-align:left">只搜索打开权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_APPEND</td>
+<td style="text-align:left">追加写</td>
+</tr>
+<tr>
+<td style="text-align:center">O_NONBLOCK</td>
+<td style="text-align:left">非阻塞模式</td>
+</tr>
+<tr>
+<td style="text-align:center">O_SYNC</td>
+<td style="text-align:left">等待写完成（数据和属性）</td>
+</tr>
+<tr>
+<td style="text-align:center">O_DSYNC</td>
+<td style="text-align:left">等待写完成（仅数据）</td>
+</tr>
+<tr>
+<td style="text-align:center">O_RSYNC</td>
+<td style="text-align:left">同步读写</td>
+</tr>
+<tr>
+<td style="text-align:center">O_FSYNC</td>
+<td style="text-align:left">等待写完成</td>
+</tr>
+<tr>
+<td style="text-align:center">O_ASYNC</td>
+<td style="text-align:left">异步IO</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>注意O_RDONLY、O_WRONLY、O_RDWR、O_EXEC、O_SEARCH这个五个标志并不各占<br>一位，一个文件的访问方式只能取这五个里面的一个。因此检查当前文件的是这<br>五个标志中的哪一个需要使用屏蔽字O_ACCMODE取得当问方式位，在于这五个标志<br>进行对比。</p>
+</blockquote>
+<p><strong>代码示例说明</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">int</span> test;</div><div class="line">  <span class="comment">//返回结果：test = 10，返回大于等于第三个参数可用的fd(10)。</span></div><div class="line">  test = fcntl(STDIN_FILENO, F_DUPFD, <span class="number">10</span>);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"result of fcntl(STDIN_FILENO, F_DUPFD, 10) is:%d\n"</span>, test);</div><div class="line"></div><div class="line">  <span class="comment">//返回结果：test=11,与上一个函数功能相同</span></div><div class="line">  <span class="comment">//不同之处在于其设置了close_on_exec,当执行exec时关闭响应的文件描述符</span></div><div class="line">  <span class="comment">//注意有一些版本的系统上没有定义这个宏</span></div><div class="line">  <span class="comment">//test = fcntl(STDIN_FILENO, F_DUPFD_CLOEXEC, 10);</span></div><div class="line"></div><div class="line">  <span class="comment">//返回结果 test = 0. 标准输入的文件描述符标志(即关闭标志)为0，</span></div><div class="line">  <span class="comment">//意思是执行exec时关联的文件描述符不关闭</span></div><div class="line">  test = fcntl(STDIN_FILENO, F_GETFD);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"the result of fcntl(STDIN_FILENO, F_GETFD) is:%d\n"</span>, test);</div><div class="line"></div><div class="line">  <span class="comment">//将文件描述符标志设置为0</span></div><div class="line">  fcntl(STDIN_FILENO, F_SETFD, <span class="number">0</span>);</div><div class="line"></div><div class="line">  <span class="comment">//返回结果 test = 32270</span></div><div class="line">  test = fcntl(STDIN_FILENO, F_GETFL);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"the result of fcntl(STDIN_FILENO, F_GETFL) is:%d\n"</span>, test);</div><div class="line"></div><div class="line">  <span class="comment">//给STDIN_FILENO对应的IO添加非阻塞权限</span></div><div class="line">  test |= O_NONBLOCK;</div><div class="line">  fcntl(STDIN_FILENO, F_SETFL, test);</div><div class="line"></div><div class="line">  test = fcntl(STDIN_FILENO, F_GETFL);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"the result of fcntl(STDIN_FILENO, F_GETFL) is:%d\n"</span>, test);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="STDIN-FILENO，STDOUT-FILENO以及STDERR-FILENO"><a href="#STDIN-FILENO，STDOUT-FILENO以及STDERR-FILENO" class="headerlink" title="STDIN_FILENO，STDOUT_FILENO以及STDERR_FILENO"></a>STDIN_FILENO，STDOUT_FILENO以及STDERR_FILENO</h2><p>STDIN_FILENO等是系统API接口库中<unistd.h>的宏定义，它是一个int类型的值，是打开文件的句柄，<br>对应的主要函数有open,read,write和close等。<br>STDIN_FILENO的含义是标准输入（键盘）的文件描述符，STDOUT_FILENO是标准输出流的文件描述符，STDERR_FILENO<br>是标准错误流的文件描述符。</unistd.h></p>
+<h3 id="STDIN-FILENO与stdin的区别"><a href="#STDIN-FILENO与stdin的区别" class="headerlink" title="STDIN_FILENO与stdin的区别"></a>STDIN_FILENO与stdin的区别</h3><ul>
+<li>数据类型不同 stdin的数据类型为FILE*，STDIN_NO的数据类型为int</li>
+<li>可用的函数不同 stdin主要用的函数有fread,fwrite,fclose，STDIN_FILENO可用的函数为write，read和close</li>
+<li>stdin属于标准IO，高级的输入输出函数，在stdio.h中定义;STDIN_FILENO是文件描述符，一般定义为0,1,2,属于没有buffer的IO,直接调用系统调用，定义在unistd.h中</li>
+<li>层次不同，stdin属于标注库处理的输入流，其声明为FILE*型，对应的函数前面都有f开头；而STDIN_FILENO属于系统API接口，对用的函数是一些系统级的调用</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/01/Linux用于IO的数据结构及fcntl函数详解/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
