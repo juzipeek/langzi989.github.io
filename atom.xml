@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-05-26T11:51:55.083Z</updated>
+  <updated>2017-05-27T01:40:41.516Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,129 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>rapidjson Stream</title>
+    <link href="http://yoursite.com/2017/05/27/rapidJsonStream/"/>
+    <id>http://yoursite.com/2017/05/27/rapidJsonStream/</id>
+    <published>2017-05-27T01:36:00.000Z</published>
+    <updated>2017-05-27T01:40:41.516Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="rapidjson-Stream-待更新"><a href="#rapidjson-Stream-待更新" class="headerlink" title="rapidjson Stream(待更新)"></a>rapidjson Stream(待更新)</h1><blockquote>
+<p>本系列文章以例子的方式进行呈现。</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include "rapidjson/rapidjson.h"</div><div class="line">#include "rapidjson/document.h"</div><div class="line">#include "rapidjson/stringbuffer.h"</div><div class="line">#include "rapidjson/writer.h"</div><div class="line">#include "rapidjson/filereadstream.h"</div><div class="line">#include "cstdio"</div><div class="line"></div><div class="line">using namespace std;</div><div class="line">using namespace rapidjson;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  const char json[] = "[1, 2, 3]";</div><div class="line">  StringStream s(json);</div><div class="line">  Document document;</div><div class="line">  document.ParseStream(s);</div><div class="line"></div><div class="line">  for (int i = 0; i &lt; 3; i++)</div><div class="line">    std::cout &lt;&lt; document[i].GetInt() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  StringBuffer SB;</div><div class="line">  Writer&lt;StringBuffer&gt; writer(SB);</div><div class="line">  document.Accept(writer);</div><div class="line">  std::cout &lt;&lt; SB.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  FILE* fp = fopen("test.json", "rb");</div><div class="line"></div><div class="line">  char readBuffer[65535];</div><div class="line">  FileReadStream is(fp, readBuffer, sizeof(readBuffer));</div><div class="line"></div><div class="line">  document.ParseStream(is);</div><div class="line">  fclose(fp);</div><div class="line">  for (Value::ConstMemberIterator it = document.MemberBegin();</div><div class="line">        it != document.MemberEnd(); it++)</div><div class="line">        std::cout &lt;&lt; (it-&gt;name).GetString() &lt;&lt; std::endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;rapidjson-Stream-待更新&quot;&gt;&lt;a href=&quot;#rapidjson-Stream-待更新&quot; class=&quot;headerlink&quot; title=&quot;rapidjson Stream(待更新)&quot;&gt;&lt;/a&gt;rapidjson Stream(待更新)&lt;/h1
+    
+    </summary>
+    
+      <category term="rapidjson学习" scheme="http://yoursite.com/categories/rapidjson%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="rapidjson" scheme="http://yoursite.com/tags/rapidjson/"/>
+    
+      <category term="json" scheme="http://yoursite.com/tags/json/"/>
+    
+      <category term="stream" scheme="http://yoursite.com/tags/stream/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>rapidjson Schema</title>
+    <link href="http://yoursite.com/2017/05/27/rapidjsonSchema/"/>
+    <id>http://yoursite.com/2017/05/27/rapidjsonSchema/</id>
+    <published>2017-05-27T01:35:00.000Z</published>
+    <updated>2017-05-27T01:41:30.650Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="rapidjson-Schema"><a href="#rapidjson-Schema" class="headerlink" title="rapidjson Schema"></a>rapidjson Schema</h1><blockquote>
+<p>本系列文章以例子的方式进行呈现。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line">* JsonSchema本质上是一个json，其作用是用于校验Json，使用schema对json进行校验，</div><div class="line">* 可以让代码安全的去当问DOM，而不需要去检查类型或者键值的存在等等。这也能确保输</div><div class="line">* 出的json符合特定的schema。</div><div class="line">*/</div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/schema.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/stringbuffer.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*使用JsonSchema校校验json格式的流程:</span></div><div class="line">*       1. 将schema(模板)解析成一个Document</div><div class="line">*       2. 然后将Document编译成一个SchemaDocument</div><div class="line">*       3. 通过上述SchemaDocument创建一个SchemaValidator。</div><div class="line">*       4. 然后通过document.Accept(validator)去校验一个json，获取校验结果。</div><div class="line">*注意：</div><div class="line">*       1. 一个SchemaDocument能被多个SchemaValidator引用，他不会被SchemaValidator修改。</div><div class="line">*       2. 可以重复使用SchemaValidator校验多个文件。在校验其他文件之前，必须先调用validator.Reset()。</div><div class="line">*JsonSchema的格式：</div><div class="line">*       1. JsonSchema实质上是一个json数据。</div><div class="line">*       2. JsonSchema与其他json数据不同的是它在每一个对象和元素中定义了他们的类型type，属性(如object的properties，以及integer的minimum等等)，</div><div class="line">*           同时，我们可以通过JsonSchema对json的值的类型以及取值范围等进行限定。schema中必须的值需要显示的声明在required中。</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ValidateJson</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> testSchema = <span class="string">"&#123;\"type\":\"object\", \"properties\":&#123;\"code\":&#123;\"type\":\"string\"&#125;, \"int\":&#123;\"type\":\"integer\", \"minimum\":0&#125;&#125;, \"required\":[\"int\",\"code\"]&#125;"</span>;</div><div class="line">  Document sd;</div><div class="line">  <span class="keyword">if</span> (sd.Parse(testSchema.c_str()).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"jsonSchema is not valid : %s"</span>, testSchema.c_str());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//创建SchemaDocument</span></div><div class="line">  <span class="function">SchemaDocument <span class="title">schema</span><span class="params">(sd)</span></span>;</div><div class="line"></div><div class="line">  Document d;</div><div class="line">  <span class="keyword">if</span> (d.Parse(<span class="string">"&#123;\"code\":123, \"int\":1&#125;"</span>).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Document is not a valid json"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">SchemaValidator <span class="title">validator</span><span class="params">(schema)</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!d.Accept(validator)) &#123;</div><div class="line">    StringBuffer sb;</div><div class="line">    validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid schema: %s\n"</span>, sb.GetString());</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid keyword: %s\n"</span>, validator.GetInvalidSchemaKeyword());</div><div class="line">    sb.Clear();</div><div class="line">    validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid document:%s\n "</span>, sb.GetString());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"符合schemas模式\n"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  ValidateJson();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;rapidjson-Schema&quot;&gt;&lt;a href=&quot;#rapidjson-Schema&quot; class=&quot;headerlink&quot; title=&quot;rapidjson Schema&quot;&gt;&lt;/a&gt;rapidjson Schema&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;本
+    
+    </summary>
+    
+      <category term="rapidjson学习" scheme="http://yoursite.com/categories/rapidjson%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="rapidjson" scheme="http://yoursite.com/tags/rapidjson/"/>
+    
+      <category term="json" scheme="http://yoursite.com/tags/json/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>rapidjson指针</title>
+    <link href="http://yoursite.com/2017/05/27/rapidjson%E6%8C%87%E9%92%88/"/>
+    <id>http://yoursite.com/2017/05/27/rapidjson指针/</id>
+    <published>2017-05-27T01:35:00.000Z</published>
+    <updated>2017-05-27T01:41:40.054Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="rapidjson指针"><a href="#rapidjson指针" class="headerlink" title="rapidjson指针"></a>rapidjson指针</h1><blockquote>
+<p>本系列文章以例子的方式进行呈现。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/document.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/pointer.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">*     Json Pointer</div><div class="line">*     一个Json Pointer有一串（0至多个）token所组成，每个token之前都有/前缀。每个token</div><div class="line">*     可以是字符串或者数字。例如，给定一个json:&#123;</div><div class="line">*                                            "foo":["bar", "baz"],</div><div class="line">*                                            "pi":3.414</div><div class="line">*                                           &#125;</div><div class="line">*                               JsonPointer解析为:</div><div class="line">*                               1. "/foo"-&gt;["bar", "baz"]</div><div class="line">*                               2."/foo/0"-&gt;"bar"</div><div class="line">*                               3."/foo/1"-&gt;"baz"</div><div class="line">*                               4."pi"-&gt;3.414</div><div class="line">*       特别注意：一个空Json Pointer""解析为整个json</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  Document d;</div><div class="line"></div><div class="line">  <span class="comment">/*          创建、修改、访问dom元素</span></div><div class="line">  *           创建dom元素的方法: (两种都可以自动生成父值，可以同时创建几级)</div><div class="line">  *               1.Pointer("/Key").Set(document, "value"); key对应值为value</div><div class="line">  *               2.Pointer("/Key").Create(document). 此时创建出来的key对应的值为null</div><div class="line">  *           获取Dom元素的pointer：</div><div class="line">  *                1.Value* vptr = Pointer("/Key").Get(document)</div><div class="line">  *                2.Value&amp; vref = Pointer("/Key").GetWithDefault(document, "defaultValue");</div><div class="line">  *                       注意返回的是引用，如值不存在，则创建此键并深拷贝默认值。</div><div class="line">  *           交换:</div><div class="line">  *                 Pointer("/Key").Swap(document, value); //注意交换的是Value，不能为其他类型</div><div class="line">  *            删除：</div><div class="line">  *                 Pointer("/Key").Erase(document);</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*            针对上述函数的辅助函数</span></div><div class="line">  *           SetValueByPointer(document, "/Key", "KeyValue");</div><div class="line">  *           CreateValueByPointer(document, "/Key");</div><div class="line">  *           GetValueByPointer(document, "/Key");</div><div class="line">  *           GetValueByPointerWithDefault(document, "/default", "defaultValue");</div><div class="line">  *           SwapValueByPointer(document, "/Key", Value); //必须为Value</div><div class="line">  *           EraseValueByPointer(document, "/Key");</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*          Pointer相关函数说明</span></div><div class="line">  *           1.Pointer::Get() 或 GetValueByPointer() 函数并不修改 DOM。</div><div class="line">  *                  若那些 token 不能匹配 DOM 里的值，这些函数便返回 nullptr。</div><div class="line">  *                  使用者可利用这个方法来检查一个值是否存在。</div><div class="line">  *           2. Create()、GetWithDefault()、Set()、Swap()都会改变Dom.</div><div class="line">  *                  若一些父值不存在，就会创建它们。若父值类型不匹配 token，</div><div class="line">  *                   也会强行改变其类型。改变类型也意味着完全移除其 DOM 子树的内容</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*</span></div><div class="line">  *         Pointer中负号解析</div><div class="line">  *         1.在Get中,负号永远都是Key的名字</div><div class="line">  *         2.在Set中，若负号在数组的后面，则表示数组最后一个元素的下一个</div><div class="line">  *                   否则表示数组名。例：</div><div class="line">  *         d.Parse("&#123;\"foo\":[123]&#125;");</div><div class="line">  *         SetValueByPointer(d, "/foo/-", 456); // &#123; "foo" : [123, 456] &#125;</div><div class="line">  *         SetValueByPointer(d, "/-", 789);    // &#123; "foo" : [123, 456], "-" : 789 &#125;</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*      字符串化</span></div><div class="line">  *     可以将一个Pointe字符串化，存储于字符串或者其他输出流。</div><div class="line">  *     如：</div><div class="line">  *     Pointer p(...);</div><div class="line">  *     StringBuffer sb;</div><div class="line">  *     p.StringFy(sb);</div><div class="line">  *     std::cout &lt;&lt; sb.GetString() &lt;&lt; std::endl;</div><div class="line">  */</div><div class="line"></div><div class="line"></div><div class="line">  Pointer(<span class="string">"/project"</span>).Set(d, <span class="string">"RapidJson"</span>);</div><div class="line">  Pointer(<span class="string">"/stars"</span>).Set(d, <span class="number">10</span>);</div><div class="line"></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"project"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"stars"</span>].GetInt() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">if</span> (Value* stars = Pointer(<span class="string">"/stars"</span>).Get(d))</div><div class="line">  &#123;</div><div class="line">    stars-&gt;SetInt(stars-&gt;GetInt() + <span class="number">1</span>);</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"stars"</span>].GetInt() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  Pointer(<span class="string">"/default"</span>).GetWithDefault(d, <span class="string">"defaultValue"</span>);</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (d.HasMember(<span class="string">"default"</span>))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"default"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="function">Value <span class="title">swapValue</span><span class="params">(<span class="string">"SwapValue"</span>)</span></span>;</div><div class="line">  Pointer(<span class="string">"/default"</span>).Swap(d, swapValue);</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"default"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  Pointer(<span class="string">"/default"</span>).Erase(d);</div><div class="line">  <span class="keyword">if</span> (!d.HasMember(<span class="string">"default"</span>))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"d Erase default successful"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;rapidjson指针&quot;&gt;&lt;a href=&quot;#rapidjson指针&quot; class=&quot;headerlink&quot; title=&quot;rapidjson指针&quot;&gt;&lt;/a&gt;rapidjson指针&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;本系列文章以例子的方式进行呈现。&lt;/p&gt;
+
+    
+    </summary>
+    
+      <category term="rapidjson学习" scheme="http://yoursite.com/categories/rapidjson%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="rapidjson" scheme="http://yoursite.com/tags/rapidjson/"/>
+    
+      <category term="json" scheme="http://yoursite.com/tags/json/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>rapidjson基本用法</title>
+    <link href="http://yoursite.com/2017/05/27/rapidjson%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/"/>
+    <id>http://yoursite.com/2017/05/27/rapidjson基本用法/</id>
+    <published>2017-05-27T01:32:00.000Z</published>
+    <updated>2017-05-27T01:40:59.443Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="rapidjson基本用法"><a href="#rapidjson基本用法" class="headerlink" title="rapidjson基本用法"></a>rapidjson基本用法</h1><blockquote>
+<p>本系列文章以例子的方式进行呈现。</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div></pre></td><td class="code"><pre><div class="line">#include "rapidjson/document.h"</div><div class="line">#include &lt;iostream&gt;</div><div class="line"></div><div class="line">int main()</div><div class="line">&#123;</div><div class="line">  const char* test = "&#123;\"num\":123, \"hello\":null, \"type\": \"object\",\"properties\": &#123;\"oid\": &#123;\"type\": \"string\"&#125;, \"username\": &#123;\"type\": \"string\"&#125;,\"creid\": &#123;\"type\": \"string\"&#125;&#125;,\"required\": [\"oid\", \"username\",\"creid\"]&#125;";</div><div class="line">  rapidjson::Document document;</div><div class="line">  //Parse(const char*). 从c-string解析为Document json格式</div><div class="line">  document.Parse(test);</div><div class="line"></div><div class="line">  //GetString().从Document json中取出string</div><div class="line">  std::cout &lt;&lt; "type = " &lt;&lt; document["type"].GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*  函数原型          函数功能</div><div class="line">  *   IsNull()       判断当前键对应的值是不是null</div><div class="line">  *   IsNumber()     判断当前键对应的值是不是number</div><div class="line">  *   IsInt()        判断当前键对应的值是不是int</div><div class="line">  *   IsDouble()     判断当前键对应的值是不是double</div><div class="line">  *   IsString()     判断当前键对应的值是不是string</div><div class="line">  *   IsBool()       判断当前键对应的值是不是bool</div><div class="line">  *   IsArray()      判断当前键对应的值是不是array</div><div class="line">  *   ...</div><div class="line">  */</div><div class="line">  std::cout &lt;&lt; "hello is " &lt;&lt; (document["hello"].IsNull() ? "null" : "not null") &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "num is " &lt;&lt; (document["num"].IsNumber() ? "number" : "not number") &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "required is " &lt;&lt; (document["required"].IsArray()? "array" : "not array") &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*      访问Array的两种方法</div><div class="line">  *    1. 通过下标访问    //使用引用来连续访问，方便之余还更高效。</div><div class="line">  *    2. 通过迭代器访问</div><div class="line">  *        注意问题</div><div class="line">  *    1.索引使用SizeType类型，而不是size_t类型，缺省情况下，SizeType是unsigned的typedef</div><div class="line">  *    2.对于String类型使用GetInt是非法的，这个时候会导致程序崩溃</div><div class="line">  */</div><div class="line">  const rapidjson::Value &amp;a = document["required"];</div><div class="line">  assert(a.IsArray());</div><div class="line">  for (rapidjson::SizeType i = 0; i &lt; a.Size(); i++)</div><div class="line">    std::cout &lt;&lt; a[i].GetString() &lt;&lt; std::endl;</div><div class="line">  for (rapidjson::Value::ConstValueIterator it = a.Begin(); it != a.End(); it++) &#123;</div><div class="line">    std::cout &lt;&lt; it-&gt;GetString() &lt;&lt; std::endl;</div><div class="line">    std::cout &lt;&lt; it-&gt;GetStringLength() &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*        访问object的方法</div><div class="line">  *    1.使用迭代器进行访问</div><div class="line">  *    2.使用键对应的下标进行当问 如:document["required"]</div><div class="line">  *          注意问题</div><div class="line">  *    1.在使用下标访问之前，最好先调用HasMember()检查一下当前键是否存在，若存在再往下继续。否则会出现段错误。</div><div class="line">  */</div><div class="line">  static const char* kTypeNames[] = &#123;"Null", "False", "True", "Object", "Array", "String", "Number"&#125;;</div><div class="line">  for (rapidjson::Value::ConstMemberIterator it = document.MemberBegin();</div><div class="line">        it != document.MemberEnd(); it++) &#123;</div><div class="line">        std::cout &lt;&lt; it-&gt;name.GetString() &lt;&lt; " is type : " &lt;&lt; kTypeNames[it-&gt;value.GetType()] &lt;&lt; std::endl;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*        查询Number</div><div class="line">  *      说明:Json只提供一种数值类型---Number。Number可以是实数也可以是整数</div><div class="line">  *           Dom提供了5中数值类型。包括unsigned,int,uint_64,int_64,double</div><div class="line">  *         类型检查          数值提取</div><div class="line">  *        IsUint()          GetUint()</div><div class="line">  *        IsInt()           GetInt()</div><div class="line">  *        IsUint64()        GetUint64()</div><div class="line">  *        IsInt64()         GetInt64()</div><div class="line">  *        IsDouble()        GetDouble()</div><div class="line">  *</div><div class="line">  *       查询String</div><div class="line">  *     说明：除了getString(), Value类也有一个GetStringLength();原因是rapidjson的String需要支持Unicode字符，如\u0000.问题是C/C++字符串是</div><div class="line">  *         空字符结尾的字符串，，这种字符串会把'\0'作为结束符号。为了符合RFC4627，若要处理这些带有unicode的字符串，</div><div class="line">  *         需要使用GetStringLength获取正确的字符串长度</div><div class="line">  *       函数                                功能</div><div class="line">  *     const char* getString()             获取C字符串</div><div class="line">  *     SizeType GetStringLength()const     获取字符串的长度,</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Document d1;</div><div class="line">  d1.Parse("&#123;\"s\":\"a\\u0000b\", \"num\":123&#125;");</div><div class="line">  std::cout &lt;&lt; d1["s"].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; d1["s"].GetStringLength() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; strlen(d1["s"].GetString()) &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *       比较两个Value的值</div><div class="line">  *     1.使用==和!=比较两Value的值，当且仅当两个Value的类型和内容相等才算相等。</div><div class="line">  *     2.可以将Value与原始值进行比较</div><div class="line">  *     3.若被比较的两个Value的类型不同，直接返回false。</div><div class="line">  *     4.可以比较不同Object的值</div><div class="line">  */</div><div class="line"></div><div class="line">  std::cout &lt;&lt; (document["num"] == document["hello"]) &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; (document["num"] == d1["num"]) &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *           创建/修改值</div><div class="line">  *       1.改变Value的类型:当使用默认构造函数创建一个Value或者Document的时候，它的类型默认为</div><div class="line">  *         NULL,要改变其类型，使用SetXXX()。如</div><div class="line">  *                             rapidjsons::Document d;</div><div class="line">  *                             d.SetObject()； //将d的类型修改为Object</div><div class="line">  *                             rapidjson::Value v;</div><div class="line">  *                             v.SetInt(1); //或者v = 1;</div><div class="line">  *       2.构造函数的重载</div><div class="line">  *                              rapidjson::Value b(false);</div><div class="line">  *                              rapidjson::Value n(10);</div><div class="line">  *</div><div class="line">  *       3.特别注意Value的转移语义。 Value重载operator=()时使用了转移语义。</div><div class="line">  *                              rapidjson::Value a(123);</div><div class="line">  *                              rapidjson::Value b(456);</div><div class="line">  *                              a = b; //此时b变为null,a为456</div><div class="line">  *       4.使用move()函数实现函数参数中的转移语义</div><div class="line">  *                              rapidjson::Value a(0);</div><div class="line">  *                               test(a.move());</div><div class="line">  *</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testa(10);</div><div class="line">  rapidjson::Value testb(10);</div><div class="line">  testa = testb;</div><div class="line">  std::cout &lt;&lt; testa.GetInt() &lt;&lt; std::endl;</div><div class="line">  if (testb.IsNull())</div><div class="line">  &#123;</div><div class="line">    std::cout &lt;&lt; "testb is moved to a, and now testb is null" &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line">  else</div><div class="line">  &#123;</div><div class="line">    std::cout &lt;&lt; testb.GetInt() &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *                创建String</div><div class="line">  *         rapidjson提供两种string的存储策略:</div><div class="line">  *                       1.copy-string(深拷贝)：分配缓冲区，然后把来源数据复制至它</div><div class="line">  *                       2.const-string(浅拷贝)：简单的存储字符串指针</div><div class="line">  *          说明：</div><div class="line">  *               1.copy-string总是安全的,因为它拥有数据的克隆</div><div class="line">  *               2.当数据源发生改变，const-string中的数据也会受到影响</div><div class="line">  *         上面两种字符串的创建方式:</div><div class="line">  *               1.copy-string创建方式需要给API传递一个Allocator参数,这个做法避免了给每一个</div><div class="line">  *                             Value都保存一个Allocator。另外还需要一个length参数，保存长度信息，故</div><div class="line">  *                             此函数可以处理带有空字符的字符串。</div><div class="line">  *               2.const-string创建方式不需要长度信息和Allocator参数，它默认字符串以\0结束.</div><div class="line">  *                              一般用于常量字符串或者具有安全生存周期的字符串上</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value autor;</div><div class="line">  char buffer[50];</div><div class="line">  int len = sprintf(buffer, "%s %s", "Milo", "Yip");</div><div class="line">  autor.SetString(buffer,len, document.GetAllocator());</div><div class="line">  memset(buffer, 0x0, sizeof(buffer));</div><div class="line">  std::cout &lt;&lt; autor.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  rapidjson::Value testString;</div><div class="line">  testString = "testString";</div><div class="line">  std::cout &lt;&lt; testString.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /**                   修改Array</div><div class="line">  *           函数                                                              功能</div><div class="line">  *        clear()                                                      清空Array中的内容</div><div class="line">  *        Reserve(SizeType, Allocator&amp;)                                申请指定大小空间，单不插入数据</div><div class="line">  *        Value&amp; PushBack(Value&amp;, Allocator&amp;)                          添加元素</div><div class="line">  *        template &lt;typename T&gt; GenericValue&amp; PushBack(T, Allocator&amp;)  添加元素</div><div class="line">  *        Value&amp; PopBack()                                             删除最后一个元素</div><div class="line">  *        ValueIterator Erase(ConstValueIterator pos)                  删除指定位置元素</div><div class="line">  *        ValueIterator Erase(ConstValueIterator first, ConstValueIterator last) 删除指定范围元素</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testArray(rapidjson::kArrayType);</div><div class="line">  rapidjson::Document::AllocatorType&amp; testAllocator = document.GetAllocator();</div><div class="line"></div><div class="line">  for (int i = 0; i &lt; 5; i++)</div><div class="line">  &#123;</div><div class="line">    testArray.PushBack(i, testAllocator);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  testArray.PushBack("lua", testAllocator).PushBack("Mio", testAllocator);</div><div class="line"></div><div class="line">  for (rapidjson::SizeType i = 0;i &lt; 5; i++)</div><div class="line">    std::cout &lt;&lt;  testArray[i].GetInt() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; testArray[5].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; testArray[6].GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*                      修改Object</div><div class="line">  *     说明：每个Object都是键值对的集合。每个键必须为String。</div><div class="line">  *     添加成员的函数：</div><div class="line">  *                   1.Value&amp; AddMember(Value&amp;, Value&amp;, Allocator&amp; allocator)</div><div class="line">  *                   2.Value&amp; AddMember(StringRefType, Value&amp;, Allocator&amp;)</div><div class="line">  *                   3.template &lt;typename T&gt; Value&amp; AddMember(StringRefType, T value, Allocator&amp;)</div><div class="line">  *</div><div class="line">  *     补充说明：1.使用StingRefType作为name参数的重载版本与字符串的SetString()类似。这些重载是为了避免复制name字符串</div><div class="line">  *               因为jsonObject中经常会使常数键名。</div><div class="line">  *              2.如果你需要从非常数字符串或者生命周期不足的字符串创建键名，需要使用copy-string API。</div><div class="line">  *                 为了避免中间变量，可以使用临时值</div><div class="line">  *</div><div class="line">  *     移除成员函数：</div><div class="line">  *             1.bool RemoveMember(const Ch* name)：使用键名来移除成员（线性时间复杂度）。</div><div class="line">  *             2.bool RemoveMember(const Value&amp; name)：除了 name 是一个 Value，和上一行相同。</div><div class="line">  *             3.MemberIterator RemoveMember(MemberIterator)：使用迭代器移除成员（_ 常数 _ 时间复杂度）。</div><div class="line">  *             4.MemberIterator EraseMember(MemberIterator)：和上行相似但维持成员次序（线性时间复杂度）。</div><div class="line">  *             5.MemberIterator EraseMember(MemberIterator first, MemberIterator last)：移除一个范围内的成员，维持次序（线性时间复杂度）。</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value contact(rapidjson::kObjectType);</div><div class="line">  contact.AddMember("name", "milo", document.GetAllocator());</div><div class="line">  contact.AddMember("married", false, document.GetAllocator());</div><div class="line"></div><div class="line">  std::cout &lt;&lt; "contact[name] is:"&lt;&lt;contact["name"].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "contact[married] is:" &lt;&lt; contact["married"].GetBool() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  contact.AddMember(rapidjson::Value("copy", document.GetAllocator()).Move(), // copy string</div><div class="line">                  rapidjson::Value().Move(),                                // null value</div><div class="line">                  document.GetAllocator());</div><div class="line"></div><div class="line">  /*                        深复制Value</div><div class="line">  *           方法：</div><div class="line">  *                   1.含有Allocator的构造函数</div><div class="line">  *                   2.含有Allocator的CopyFrom</div><div class="line">  *                           交换Value</div><div class="line">  *            方法：  Swap() 无论两颗Dom树多复杂，交换时间为常数</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testCopy1(123);</div><div class="line">  rapidjson::Value testCopy2(testCopy1, document.GetAllocator());</div><div class="line">  rapidjson::Value testCopy3;</div><div class="line">  testCopy3.CopyFrom(testCopy1, document.GetAllocator());</div><div class="line"></div><div class="line">  testCopy1.Swap(testCopy3);</div><div class="line">&#125;</div><div class="line">`</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;rapidjson基本用法&quot;&gt;&lt;a href=&quot;#rapidjson基本用法&quot; class=&quot;headerlink&quot; title=&quot;rapidjson基本用法&quot;&gt;&lt;/a&gt;rapidjson基本用法&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;本系列文章以例子的方式进行
+    
+    </summary>
+    
+      <category term="rapidjson学习" scheme="http://yoursite.com/categories/rapidjson%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="rapidjson" scheme="http://yoursite.com/tags/rapidjson/"/>
+    
+      <category term="json" scheme="http://yoursite.com/tags/json/"/>
+    
+  </entry>
+  
+  <entry>
     <title>protobuffer学习总结</title>
     <link href="http://yoursite.com/2017/05/26/protobuffer%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/"/>
     <id>http://yoursite.com/2017/05/26/protobuffer学习总结/</id>
     <published>2017-05-26T11:48:59.000Z</published>
-    <updated>2017-05-26T11:51:55.083Z</updated>
+    <updated>2017-05-26T12:07:32.356Z</updated>
     
     <content type="html"><![CDATA[<h1 id="protobuffer学习总结"><a href="#protobuffer学习总结" class="headerlink" title="protobuffer学习总结"></a>protobuffer学习总结</h1><p>protobuffer是google开发的一种数据描述语言，它能够将结构化的数据序列化，并切可以将序列化的数据进行反序列化恢复原有的数据结构。一般用于数据存储以及通信协议方面。</p>
 <p>如果是第一次使用protobuffer,我们可以将其与json或者xml进行类比，其实它与json或xml类似都可以作为数据的存储方式，不同的是json和xml是文本格式，而protobuffer是二进制格式。二进制格式不利于使用者直观的阅读，但是与json以及xml相比它有更多的优点。</p>
@@ -1455,333 +1573,6 @@
       <category term="设计模式" scheme="http://yoursite.com/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
       <category term="grasp" scheme="http://yoursite.com/tags/grasp/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>创建型设计模式之build模式</title>
-    <link href="http://yoursite.com/2017/01/08/%E5%88%9B%E5%BB%BA%E5%9E%8B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8Bbuild%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://yoursite.com/2017/01/08/创建型设计模式之build模式/</id>
-    <published>2017-01-07T17:36:19.000Z</published>
-    <updated>2017-01-08T03:38:06.169Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="创建型设计模式之build模式"><a href="#创建型设计模式之build模式" class="headerlink" title="创建型设计模式之build模式"></a>创建型设计模式之build模式</h1><p>最近在读《设计模式-可复用面向对象软件设计的基础》一书，在阅读的过程中我会结合书中的相关知识和实例以及在网络上的博客对相关的模式的理解进行总结，并在此基础上加入自己的一些理解，总结模式中需要注意的一些点，记录在此博客，以供大家交流分享，同时防止自己对内容遗忘，如有不正确指出，欢迎批评指正。</p>
-<p>本节的主要内容是设计模式中的创建型模式之一:builder模式</p>
-<p>要用好builder模式，必须对其机制了解透彻，将该模式用在合适的软件中才能显出它真正的威力，第五部分中实例将为您展示它的真正威力。</p>
-<p>本文内容分为以下几个方面:</p>
-<ul>
-<li>builder模式的意图</li>
-<li>builder模式的适用性</li>
-<li>builder模式的结构(通用UML类图)及详解</li>
-<li>builder模式中的参与者</li>
-<li>builder模式中各个成分之间的交互</li>
-<li>builder模式比较好的一个实例</li>
-<li>builder模式使用过程中注意的点</li>
-<li>KFC套餐实例代码</li>
-</ul>
-<p><strong>builder模式的精髓都隐藏于builder模式的意图和实用性中，让你真正理解这两个方面，可以说你已经掌握了builder模式（以下意图和模式都摘自《设计模式》书中）</strong></p>
-<h2 id="builder模式的意图"><a href="#builder模式的意图" class="headerlink" title="builder模式的意图"></a>builder模式的意图</h2><p>builder模式的意图是将一个<strong>复杂对象的构建</strong>与它的<strong>表示</strong>分离，使得同样的构建过程可以创建不同的表示。</p>
-<h2 id="builder模式的适用性"><a href="#builder模式的适用性" class="headerlink" title="builder模式的适用性"></a>builder模式的适用性</h2><ul>
-<li>当<strong>创建复杂对象的算法</strong>应该独立于<strong>该对象的组成部分</strong>以及<strong>它们的装配方式</strong>时。</li>
-<li>当构造过程必须<strong>允许被构造的对象有不同的表示</strong>时。</li>
-</ul>
-<p>提前记录一下:装配的工作是由导向器(director)完成的，复杂对象的创建是由具体的建造器完成(concreteBuilder)，这里不明白没问题，等你看完全文再过来看这里你就理解了。</p>
-<blockquote>
-<p> 当且仅当上面两个条件均满足的情况下我们要使用builder模式（完全理解这两条不一件重要的事情，但是不要着急,当你读完这篇文章的时候就会拨开它的庐山真面目了）</p>
-</blockquote>
-<h2 id="builder模式的结构-UML类图-及详解"><a href="#builder模式的结构-UML类图-及详解" class="headerlink" title="builder模式的结构(UML类图)及详解"></a>builder模式的结构(UML类图)及详解</h2><p>builder模式的UML类图关系如下:</p>
-<p><img src="../assets/images/build_diagram.png" alt=""></p>
-<p>注意的问题:</p>
-<ul>
-<li>在builder中一般不声明纯虚函数，而是把它们定义为空方法，这使客户只重定义他们感兴趣的操作。</li>
-<li>在director中，注意我们不是把所有的buildPart都去执行一次，而是根据需要的客户的需求，进行定制的去buildPart部分构建，可以构建一次，也可以构建多次。</li>
-<li>一般将m_product声明为protected成员，因为这样既保证了封装性，又能使得concreteBuilder能够正常操作product；</li>
-</ul>
-<h2 id="builder模式种的参与者"><a href="#builder模式种的参与者" class="headerlink" title="builder模式种的参与者"></a>builder模式种的参与者</h2><p>从上面的类图中我们也可以看出,在builder模式中的参与者有以下四种,以及他们的职责分别是:(此处为个人理解，与书中内容可能不一致,如果有问题欢迎指正)</p>
-<ul>
-<li>Director: 负责装配product的各个部件，使用Builder的类方法进行实现。它的作用是隔离了客户与product的具体生产过程；并负责控制product的生产过程。</li>
-<li>Builder: 为创建一个product对象的各个部件指定抽象接口。一般情况下默认builderPart的操作默认为空。</li>
-<li>concreteBuilder: 具体实现每一个部件的具体的复杂生产过程，如buildPartA()的具体实现，并提供一个检索产品的接口。</li>
-<li>Product: 这个争议不大，即为被构造的复杂对象。此类对象会有不同的表示。</li>
-</ul>
-<h2 id="builder模式各个成分之间的交互方式"><a href="#builder模式各个成分之间的交互方式" class="headerlink" title="builder模式各个成分之间的交互方式"></a>builder模式各个成分之间的交互方式</h2><p>先上一张时序图:</p>
-<p><img src="../assets/images/builder_sequence.png" alt=""></p>
-<p>从上面的时序图可以分析出，各个成分之间的交互方式如下:</p>
-<ul>
-<li>客户首先创建一个concreteBuilder对象,然后创建一个Director,</li>
-<li>创建结束之后，使用concreteBuilder修饰对象Director,</li>
-<li>然后调用Director的construct()方法，进行构造Product,</li>
-<li>最后客户通过concreteBuilder的getResult()方法取回生成的Product</li>
-</ul>
-<h2 id="builder模式中一个较好的实例"><a href="#builder模式中一个较好的实例" class="headerlink" title="builder模式中一个较好的实例"></a>builder模式中一个较好的实例</h2><p>两个实例来自网络对两本书籍实例的纠正,改编</p>
-<p>上面这篇文章深刻的分析了builder模式的本质以及诸多误区的分析，收益颇多，在此感谢博主分享。</p>
-<p>在本例中,设备(Equipment)是一个复杂对象，由一个machine和一个或多个输入端口(InputPort)或者输出端口(outputPort)组成；其中输入或输出端口可能有不同的类型(ordinary和super)。现在要你设计一个生成不同型号的产品，要求产品可能包含一进一出(普通或super)，一进两出(普通或super)。</p>
-<p>　　在设计中,我们首先定义一个LCDFactory对象充当director，一个设备生成器(EQPBuilder),相当于Builder。</p>
-<p>​    首先ordinary和super是port的内部实现方式不同，所以我们需要定义两个具体类，即 ordinaryEQPBuilder和superEQPBuilder。</p>
-<p>​    在EQPbuilder中，我们将定义四个函数，分别是:buildMachine(), addInputPort(), addOutputPort()和getEQP()。两个concrete类继承EQPBuilder。</p>
-<p>​    当我们需要获取不同数目的port的设备，这属于组装方面的范畴，所以我们将在LCDFactory中的createEQP中做。其UML类图如下:</p>
-<p><img src="../assets/images/BuilderEquipment_thumb.jpg" alt=""></p>
-<h2 id="builder模式在使用的过程中需要注意的问题"><a href="#builder模式在使用的过程中需要注意的问题" class="headerlink" title="builder模式在使用的过程中需要注意的问题"></a>builder模式在使用的过程中需要注意的问题</h2><p>这里所说的注意的问题可能上面已经提到了，但是这里还是要着重强调一下，因为我们稍不注意，就可能将模式滥用，导致系统设计的失败。</p>
-<ul>
-<li>在builder模式中Builder一定不要定义纯虚函数成员函数，而是定义为空方法的虚函数，这样就可以使得客户可以只定义他们感兴趣的操作。</li>
-<li>Director负责<strong>装配产品</strong>，concreteBuilder负责实现<strong>复杂产品部件的具体实现</strong></li>
-<li>在Director中调用Builder的buildPart函数的时候，并不是每个函数都被调用，而是根据要生成的product对其选择性调用，可能调用零次，也可能调用多次。</li>
-<li>Builder中的m_product声明为protected,即保证对象的封装性，又能让具体类方便的使用。(这是我在写代码的时候的解决方法，如果有更好的将m_product声明为private的解决方法欢迎交流2824759538@qq.com)</li>
-</ul>
-<h2 id="KFC套餐实例代码"><a href="#KFC套餐实例代码" class="headerlink" title="KFC套餐实例代码"></a>KFC套餐实例代码</h2><p>这是本人使用KFC服务员生成套餐时的一种模拟，其实实际情况中并不需要使用builder模式，但是这里为了练手强行写成了builder模式，希望大家不要吐槽。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//KFCWaiter.hpp 注意此处water相当于Director的作用</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> KFCWAITER_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> KFCWAITER_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line"></div><div class="line"><span class="keyword">class</span> KFCWaiter &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">setMealBuilder</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; t_builder)</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">construct</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; m_builder;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//KFCWaiter.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"KFCWaiter.hpp"</span></span></div><div class="line"><span class="keyword">void</span> KFCWaiter::setMealBuilder(<span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; t_builder) &#123;</div><div class="line">  m_builder = t_builder;</div><div class="line">&#125;</div><div class="line"><span class="keyword">void</span> KFCWaiter::construct() &#123;</div><div class="line">  m_builder-&gt;buildFood();</div><div class="line">  m_builder-&gt;buildDrink();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Meal.hpp Meal相当于Product</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MEAL_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MEAL_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="keyword">class</span> Meal &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  Meal(<span class="built_in">std</span>::<span class="built_in">string</span> t_food = <span class="string">"hanbao"</span>, <span class="built_in">std</span>::<span class="built_in">string</span> t_drink = <span class="string">"kele"</span>);</div><div class="line">  ~Meal();</div><div class="line">  <span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">getFood</span><span class="params">()</span> <span class="keyword">const</span></span>;</div><div class="line">  <span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">getDrink</span><span class="params">()</span> <span class="keyword">const</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">getMeal</span><span class="params">()</span> <span class="keyword">const</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">buildFood</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_food)</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_drink)</span></span>;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> m_food;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> m_drink;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Meal.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Meal.hpp"</span></span></div><div class="line">Meal::Meal(<span class="built_in">std</span>::<span class="built_in">string</span> t_food, <span class="built_in">std</span>::<span class="built_in">string</span> t_drink)</div><div class="line">    : m_food(t_food), m_drink(t_drink) &#123;&#125;</div><div class="line">Meal::~Meal() &#123;&#125;</div><div class="line"><span class="built_in">std</span>::<span class="built_in">string</span> Meal::getFood() <span class="keyword">const</span> &#123; <span class="keyword">return</span> m_food; &#125;</div><div class="line"><span class="built_in">std</span>::<span class="built_in">string</span> Meal::getDrink() <span class="keyword">const</span> &#123; <span class="keyword">return</span> m_drink; &#125;</div><div class="line"><span class="keyword">void</span> Meal::getMeal() <span class="keyword">const</span> &#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"套餐为:"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"食物:"</span> &lt;&lt; m_food &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"饮料:"</span> &lt;&lt; m_drink &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"><span class="keyword">void</span> Meal::buildFood(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_food) &#123; m_food = t_food; &#125;</div><div class="line"><span class="keyword">void</span> Meal::buildDrink(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_drink) &#123; m_drink = t_drink; &#125;</div></pre></td></tr></table></figure>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilder.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> BUILDER_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BUILDER_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Meal.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="keyword">class</span> MealBuilder &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  MealBuilder();</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildFood</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; getResult();</div><div class="line">  <span class="keyword">virtual</span> ~MealBuilder()&#123;&#125;;</div><div class="line"></div><div class="line"><span class="keyword">protected</span>:</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; m_meal;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilder.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line">MealBuilder::MealBuilder() : m_meal(<span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt;(<span class="keyword">new</span> Meal())) &#123;&#125;</div><div class="line"><span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; MealBuilder::getResult() &#123; <span class="keyword">return</span> m_meal; &#125;</div></pre></td></tr></table></figure>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderA.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MEALBUILDERA_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MEALBUILDERA_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line"><span class="keyword">class</span> MealBuilderA : <span class="keyword">public</span> MealBuilder &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildFood</span><span class="params">()</span></span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">()</span></span>;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderA.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderA.hpp"</span></span></div><div class="line"><span class="keyword">void</span> MealBuilderA::buildFood() &#123; m_meal-&gt;buildFood(<span class="string">"套餐A食物"</span>); &#125;</div><div class="line"></div><div class="line"><span class="keyword">void</span> MealBuilderA::buildDrink() &#123; m_meal-&gt;buildDrink(<span class="string">"套餐A饮料"</span>); &#125;</div></pre></td></tr></table></figure>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderB.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MEALBUILDERB_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MEALBUILDERB_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line"><span class="keyword">class</span> MealBuilderB : <span class="keyword">public</span> MealBuilder &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildFood</span><span class="params">()</span></span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">()</span></span>;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderB.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderB.hpp"</span></span></div><div class="line"><span class="keyword">void</span> MealBuilderB::buildFood() &#123; m_meal-&gt;buildFood(<span class="string">"套餐B食物"</span>); &#125;</div><div class="line"></div><div class="line"><span class="keyword">void</span> MealBuilderB::buildDrink() &#123; m_meal-&gt;buildDrink(<span class="string">"套餐B饮料"</span>); &#125;</div></pre></td></tr></table></figure>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//main.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"KFCWaiter.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderA.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderB.hpp"</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; Aptr =</div><div class="line">      <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt;(<span class="keyword">new</span> MealBuilderA());</div><div class="line">  KFCWaiter k;</div><div class="line">  k.setMealBuilder(Aptr);</div><div class="line">  k.construct();</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; current_meal = Aptr-&gt;getResult();</div><div class="line"></div><div class="line">  current_meal-&gt;getMeal();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;创建型设计模式之build模式&quot;&gt;&lt;a href=&quot;#创建型设计模式之build模式&quot; class=&quot;headerlink&quot; title=&quot;创建型设计模式之build模式&quot;&gt;&lt;/a&gt;创建型设计模式之build模式&lt;/h1&gt;&lt;p&gt;最近在读《设计模式-可复用面向对象软
-    
-    </summary>
-    
-      <category term="设计模式之路" scheme="http://yoursite.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%B7%AF/"/>
-    
-    
-      <category term="设计模式" scheme="http://yoursite.com/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>UML时序图详解</title>
-    <link href="http://yoursite.com/2017/01/07/UML%E6%97%B6%E5%BA%8F%E5%9B%BE%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://yoursite.com/2017/01/07/UML时序图详解/</id>
-    <published>2017-01-07T07:17:23.000Z</published>
-    <updated>2017-01-07T07:25:30.165Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="UML时序图详解"><a href="#UML时序图详解" class="headerlink" title="UML时序图详解"></a>UML时序图详解</h1><p>　　这几天在阅读《设计模式》一书，书中总结了前人在面向对象软件设计过程中针对特定的问题提出的简洁而优雅的解决方案。在阅读的过程中，我一边理解书中给出的实例，一边结合自己写过的项目或者用过的框架与当前模式进行对比，发现之前的项目有一些还是有很大的改进空间。在阅读本书的过程中，书中很多例子都是通过UML类图和UML时序图进行说明，所以，理解这些例子的前提是对UML类图以及UML时序图有一定的了解，UML类图在前面的博客(<a href="https://langzi989.github.io/2017/01/05/UML%E5%9B%BE%E8%A1%A8%E7%A4%BA%E5%B8%B8%E8%A7%81%E7%9A%84%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/)中已经讲解，现在我们主要来看一下UML时序图中的重要概念。" target="_blank" rel="external">https://langzi989.github.io/2017/01/05/UML%E5%9B%BE%E8%A1%A8%E7%A4%BA%E5%B8%B8%E8%A7%81%E7%9A%84%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/)中已经讲解，现在我们主要来看一下UML时序图中的重要概念。</a></p>
-<p>　　UML类关系以及时序图在大三上《系统分析与设计》课的时候学过，但是那个时候不知道这东西有什么用，所以没有认真学和理解。随着实战经验的增多，越来越能体会到这些在软件设计的过程中重中之重，不管是描述你的设计思想还是与团队中其他人进行交流。所以还是建议大家在学到这一部分的时候对这门课认真对待。</p>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>时序图是一种按照时间顺序显示对象之间的交互的图。时序图中显示的是参与交互的对象和对象之间消息传递的顺序。</p>
-<h2 id="基本元素"><a href="#基本元素" class="headerlink" title="基本元素"></a>基本元素</h2><p>时序图中包含的主要的元素有:</p>
-<ul>
-<li>角色(Actor)</li>
-<li>对象(Object)</li>
-<li>生命线(life line)</li>
-<li>控制焦点(focus of control)</li>
-<li>消息(message)</li>
-<li>自关联消息(self-associated message)</li>
-<li>组合片段(combined fragment)</li>
-</ul>
-<h2 id="基本元素详解"><a href="#基本元素详解" class="headerlink" title="基本元素详解"></a>基本元素详解</h2><h3 id="角色-actor"><a href="#角色-actor" class="headerlink" title="角色(actor)"></a>角色(actor)</h3><p>角色指的是系统角色，这个角色可以是人，其他系统或者子系统</p>
-<p>图形表示:</p>
-<p><img src="../assets/images/actor.png" alt=""></p>
-<h3 id="对象-object"><a href="#对象-object" class="headerlink" title="对象(object)"></a>对象(object)</h3><p>对象包括三种:</p>
-<ul>
-<li>指定类名和对象名的对象objectName: className</li>
-<li>指定类名但没有对象名的对象(匿名对象) :className</li>
-<li>指定对象名但不指定类名的对象 objectName</li>
-</ul>
-<p>图形表示：<br>第一类:</p>
-<p><img src="../assets/images/object1.png" alt=""></p>
-<p>第二类:</p>
-<p><img src="../assets/images/object2.png" alt=""></p>
-<p>第三类:</p>
-<p><img src="../assets/images/object3.png" alt=""></p>
-<h3 id="生命线-life-line"><a href="#生命线-life-line" class="headerlink" title="生命线(life line)"></a>生命线(life line)</h3><p>生命线在时序图中使用向下的虚线表示,它指的是其所对应的对象的存活时间。从上到下表示时间的推后。</p>
-<p>图像表示:</p>
-<p><img src="../assets/images/lifeline.png" alt=""></p>
-<h3 id="控制焦点-focus-of-control"><a href="#控制焦点-focus-of-control" class="headerlink" title="控制焦点(focus of control)"></a>控制焦点(focus of control)</h3><p>控制焦点在时序图中以方块的形式出现，它是一种表示时间段的方式，对象在这一时间段中执行相应的操作。</p>
-<p>图像表示:</p>
-<p><img src="../assets/images/control.png" alt=""></p>
-<h3 id="消息-message"><a href="#消息-message" class="headerlink" title="消息(message)"></a>消息(message)</h3><p>消息有三种类型</p>
-<ul>
-<li>同步消息：发送者发送请求后被阻塞，直到接受者返回消息或者做完其他处理之后发送者才能继续执行之后的操作</li>
-<li>异步消息：发送者发送消息给接受者之后不等待接受者返回响应而继续执行下面的操作。</li>
-<li>返回消息:接受者返回消息给发送者</li>
-</ul>
-<p>消息的图形表示：<br>同步消息:</p>
-<p><img src="../assets/images/message1.png" alt=""></p>
-<p>异步消息:</p>
-<p><img src="../assets/images/message2.png" alt=""></p>
-<p>返回消息:</p>
-<p><img src="../assets/images/message3.png" alt=""></p>
-<h3 id="自关联消息-self-associated-message"><a href="#自关联消息-self-associated-message" class="headerlink" title="自关联消息(self-associated message)"></a>自关联消息(self-associated message)</h3><p>自关联消息一般指的是当前类调用自己的函数的情况</p>
-<h3 id="组合片段-combined-fragment"><a href="#组合片段-combined-fragment" class="headerlink" title="组合片段(combined fragment)"></a>组合片段(combined fragment)</h3><p>组合片段中包括四个部分:</p>
-<ul>
-<li><p>Alternative fragment(alt表示):与if…then…else…对应</p>
-</li>
-<li><p>option fragment(opt表示):与switch对应</p>
-</li>
-<li><p>parallel fragment(par表示):表示同时发生</p>
-</li>
-<li><p>Loop Fragment(loop表示):与循环对应</p>
-<p>图形表示:</p>
-<p>alt:</p>
-<p><img src="../assets/images/alt.png" alt=""></p>
-</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;UML时序图详解&quot;&gt;&lt;a href=&quot;#UML时序图详解&quot; class=&quot;headerlink&quot; title=&quot;UML时序图详解&quot;&gt;&lt;/a&gt;UML时序图详解&lt;/h1&gt;&lt;p&gt;　　这几天在阅读《设计模式》一书，书中总结了前人在面向对象软件设计过程中针对特定的问题提出的
-    
-    </summary>
-    
-      <category term="设计模式之路" scheme="http://yoursite.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%B7%AF/"/>
-    
-    
-      <category term="UML" scheme="http://yoursite.com/tags/UML/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>UML图表示常见的类之间的关系</title>
-    <link href="http://yoursite.com/2017/01/05/UML%E5%9B%BE%E8%A1%A8%E7%A4%BA%E5%B8%B8%E8%A7%81%E7%9A%84%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/"/>
-    <id>http://yoursite.com/2017/01/05/UML图表示常见的类之间的关系/</id>
-    <published>2017-01-05T13:12:28.000Z</published>
-    <updated>2017-01-05T13:16:34.933Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="UML图表示常见的类之间的关系"><a href="#UML图表示常见的类之间的关系" class="headerlink" title="UML图表示常见的类之间的关系"></a>UML图表示常见的类之间的关系</h1><p>类之间的关系常见的主要包括以下几种:</p>
-<ul>
-<li>继承</li>
-<li>实现</li>
-<li>依赖</li>
-<li>关联</li>
-<li>聚合</li>
-<li>组合</li>
-</ul>
-<h2 id="继承（inheritance）"><a href="#继承（inheritance）" class="headerlink" title="继承（inheritance）"></a>继承（inheritance）</h2><p>继承的概念大家都比较熟悉，他主要指的是派生类继承父类或者接口之间的继承，派生类继承了父类中原有的功能，并在此基础上添加了新的功能。例如public继承实质上是一种is-a的关系,(子类is a 基类)</p>
-<p>图形表示:</p>
-<p><img src="../assets/images/继承.png" alt=""></p>
-<h2 id="实现-implement"><a href="#实现-implement" class="headerlink" title="实现(implement)"></a>实现(implement)</h2><p>实现指的是一个类实现一个接口,一个类可以实现一个或者多个接口。实现是类和接口之间常见的一种关系。在java中通常通过implements实现。</p>
-<p>图形表示：</p>
-<p><img src="../assets/images/实现.png" alt=""></p>
-<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>依赖指的是一个类A使用另外一个类B,这种该使用关系是偶然性的，临时的，非常弱的一种关系。但是类B的变化会影响到类A;比如人要使用船过河中，这个时候人和船就是一种依赖关系。具体表现在代码中就是<strong>B是类A中的某个方法的参数。</strong></p>
-<p>图形表示:</p>
-<p><img src="../assets/images/依赖.png" alt=""></p>
-<h2 id="关联"><a href="#关联" class="headerlink" title="关联"></a>关联</h2><p>关联是指俩个类之间的或者类和接口之间的一种强依赖关系。而这种强依赖关系不是偶然性的，而是长期的，而且双方的关系是平等的，关联可以是单向的，也可以是双向的。具体表现在代码中是<strong>(1):B以类属性的方式出现在类A中（２）A引用类型为B的全局变量</strong></p>
-<p>图形表示:</p>
-<p><img src="../assets/images/关联.png" alt=""></p>
-<h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>聚合是关联关系的一种特例，它表现的是一种has-a的关系，即整体与部分的关系，此时整体与部分可以是分离的，他们可以具有各自的声明周期，部分可以属于多个整体对象，也可以被多个整体对象共享；如计算机与CPU的关系<strong>聚合中部分和整体都有各自的生命周期，并且互相影响</strong></p>
-<p>图形表示：</p>
-<p><img src="../assets/images/聚合.png" alt=""></p>
-<h2 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h2><p>组合也是关联的一种特例，它体现的是一种contain-a的关系，这种关系比聚合强；这个时候整体和部分是不可分离的，<strong>整体的声明周期与部分的声明周期相同，当整体的周期结束时，部分的周期也随之结束</strong>。如人和大脑的关系</p>
-<p>图形表示：</p>
-<p><img src="../assets/images/组合.png" alt=""></p>
-<h2 id="依赖性强弱"><a href="#依赖性强弱" class="headerlink" title="依赖性强弱:"></a>依赖性强弱:</h2><p>组合&gt;聚合&gt;关联&gt;依赖</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;UML图表示常见的类之间的关系&quot;&gt;&lt;a href=&quot;#UML图表示常见的类之间的关系&quot; class=&quot;headerlink&quot; title=&quot;UML图表示常见的类之间的关系&quot;&gt;&lt;/a&gt;UML图表示常见的类之间的关系&lt;/h1&gt;&lt;p&gt;类之间的关系常见的主要包括以下几种:
-    
-    </summary>
-    
-      <category term="设计模式之路" scheme="http://yoursite.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%B7%AF/"/>
-    
-    
-      <category term="UML" scheme="http://yoursite.com/tags/UML/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>docker防止fork炸弹</title>
-    <link href="http://yoursite.com/2016/12/29/docker%E9%98%B2%E6%AD%A2fork%E7%82%B8%E5%BC%B9/"/>
-    <id>http://yoursite.com/2016/12/29/docker防止fork炸弹/</id>
-    <published>2016-12-29T11:00:25.000Z</published>
-    <updated>2016-12-29T13:01:08.965Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="docker防止fork炸弹"><a href="#docker防止fork炸弹" class="headerlink" title="docker防止fork炸弹"></a>docker防止fork炸弹</h1><p>在开发过程中，我们使用了docker作为容器来进行编程语言代码的评测，以用于防止有害代码破坏宿主物理机器，但是在昨天发现docker还是会受fork炸弹的影响将宿主物理机器挂掉。针对这个问题，我在docker官网找到了相关的解决方法，记录分享并以备之后再次遇到此类问题可以很快找到解决方案。<br>当前解决方案只适用于docker1.1版本及之后(通过docker.io进行安装,sudo apt install docker.io)。<br>解决方案的思想就是:在启动docker的时候给其加上启动选项–pids-limit来限制cgroup中的fork的进程的最大数，我这里限制的30,可以根据自己的需求去限制。<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -it --pids-limit <span class="number">30</span> Ubuntu:<span class="number">14.04</span></div></pre></td></tr></table></figure></p>
-<p>上述方法即可防止fork炸弹。<br>以下内容转载自<a href="http://blog.csdn.net/thinkhy/article/details/50995720" target="_blank" rel="external">http://blog.csdn.net/thinkhy/article/details/50995720</a></p>
-<h2 id="Docker容器与安全"><a href="#Docker容器与安全" class="headerlink" title="Docker容器与安全"></a>Docker容器与安全</h2><p>Docker能否大规模用于生产环境，尤其是公有云环境，就在于Docker是否能提供安全的环境。本文将总结《Docker容器与容器云》一书3.9节『Docker与容器安全』的主要内容，包括Docker现有安全机制、存在的安全问题以及Docker安全增强三个方面。</p>
-<h3 id="1-Docker的安全机制"><a href="#1-Docker的安全机制" class="headerlink" title="1. Docker的安全机制"></a>1. Docker的安全机制</h3><h4 id="1-1-Docker-daemon安全"><a href="#1-1-Docker-daemon安全" class="headerlink" title="1.1 Docker daemon安全"></a>1.1 Docker daemon安全</h4><ul>
-<li>Docker向外界服务提供了四种通信方式，默认是以Unix域套接字的方式来与客户端通信，这种方式较TCP形式更为安全。</li>
-<li>Docker也提供了TLS传输层安全协议，通过–tlsverify(安全传输校验），–tlscacert(信任证书)、–tlskey(服务器或者客户端秘钥）、–tlscert（证书位置）来配置。<h4 id="1-2-镜像安全"><a href="#1-2-镜像安全" class="headerlink" title="1.2 镜像安全"></a>1.2 镜像安全</h4></li>
-<li><p>Docker registry镜像库访问控制</p>
-<ul>
-<li>Docker daemon第一次启动时，通过公网（Amazon CDN）载入official.json包，饮食公共image和用户image的目录以及数字签名信息。</li>
-<li>official.json在Docker daemon启动时加载到MemoryGraph，MemoryGraph用于存储公钥以及命名之间的授权映射，默认授权节点对授权空间有读写权限。</li>
-</ul>
-</li>
-<li><p>镜像校验和</p>
-<ul>
-<li>镜像校验和用来保证镜像的完整性，以预防可能出现的镜像破环。</li>
-<li>目前Docker对于镜像校验和和验证失败不采取任何措施，仅输出警告信息<h4 id="1-3-内核安全"><a href="#1-3-内核安全" class="headerlink" title="1.3 内核安全"></a>1.3 内核安全</h4></li>
-</ul>
-</li>
-<li>内核为容器提供了两种技术cgroup和namespace，分别对容器进行资源限制和资源隔离。<ul>
-<li>容器本质是进程，cgroup用来限制容器的资源使用量，避免单个容器耗尽系统资源。</li>
-</ul>
-</li>
-<li>namespace用来隔离容器与宿主机，以及不同的容器。<ul>
-<li>Docker目前仅完整支持uts、ipc、pid、network、mount这5种ns,user ns尚未完全支持。</li>
-<li>系统资源未进行隔离，如/proc，/sys、SELinux、time、syslog、/dev设备信息等均未进行隔离。<h4 id="1-4-容器之间的网络安全"><a href="#1-4-容器之间的网络安全" class="headerlink" title="1.4 容器之间的网络安全"></a>1.4 容器之间的网络安全</h4></li>
-</ul>
-</li>
-<li>Docker可通过iptabls设定规则实现禁止或允许容器之间的通信。<h4 id="1-5-Docker容器Capability限制"><a href="#1-5-Docker容器Capability限制" class="headerlink" title="1.5 Docker容器Capability限制"></a>1.5 Docker容器Capability限制</h4></li>
-<li>容器的行为通过Linux超级用户分组限制，具体包括了CHOWN、DAC_OVERRIDe、FSETID、FOWNER、MKNOD、NET_RAW、SETGID、SETUID、SETFCAP、SETPCAP、NET_BIND_SERVICE、SYS_CHROOT、KILL和AUDIT_WRITE。</li>
-<li>Docker进程的Capability可通过docker run命令的参数进行配置<h3 id="2-Docker安全问题"><a href="#2-Docker安全问题" class="headerlink" title="2. Docker安全问题"></a>2. Docker安全问题</h3><h4 id="2-1-磁盘资源限制问题"><a href="#2-1-磁盘资源限制问题" class="headerlink" title="2.1 磁盘资源限制问题"></a>2.1 磁盘资源限制问题</h4></li>
-<li>Docker容器通过镜像层叠的方式来构建容器内的文件系统，本质上还是在宿主机文件系统的目录(/var/lib/docker)下存储文件。</li>
-<li>极有可能出现一个容器将宿主机上所有的磁盘空间耗尽，导致其它容器无法存储文件，所以有必要对容器的磁盘使用量进行限制。<h4 id="2-2-容器逃逸问题"><a href="#2-2-容器逃逸问题" class="headerlink" title="2.2 容器逃逸问题"></a>2.2 容器逃逸问题</h4></li>
-<li>Docker使用操作系统进行虚拟化，共享内核、内存、CPU以及磁盘，易造成容器逃逸问题。</li>
-<li>Docker1.0之后采用白名单来限制容器的能力，会给出默认的容器Capability清单，禁止容器拥有清单之外的Capability。<h4 id="2-3-容器DoS攻击与流量限制问题"><a href="#2-3-容器DoS攻击与流量限制问题" class="headerlink" title="2.3 容器DoS攻击与流量限制问题"></a>2.3 容器DoS攻击与流量限制问题</h4></li>
-<li>公有云基于虚拟化技术实现，攻击数据包可能不需要通过物理网卡就可以攻击同一个宿主机下的其他容器，传统Dos预防措施无法适用容器之间的攻击。</li>
-<li>的Docker容器连接在网桥上，通过veth pari技术创建网卡，其一端在容器内命名为eth0，另一张网上驻留在宿主机环境之中。</li>
-<li>同一宿主机下所有容器共用一张物理网卡，如果一个容器抢占大部分带宽，会影响其它容器使用。<h4 id="2-4-超级权限问题"><a href="#2-4-超级权限问题" class="headerlink" title="2.4 超级权限问题"></a>2.4 超级权限问题</h4></li>
-<li>docker run时加入–privileged参数能使容器获得所有的超级用户权限能力，并将所有的宿主机的所有设备挂载到容器内。<h3 id="3-Docker安全的解决方案"><a href="#3-Docker安全的解决方案" class="headerlink" title="3. Docker安全的解决方案"></a>3. Docker安全的解决方案</h3><h4 id="3-1-SELinux"><a href="#3-1-SELinux" class="headerlink" title="3.1 SELinux"></a>3.1 SELinux</h4></li>
-<li>SELinux三种控制方式<ul>
-<li>Type Enforcement: 主要的访问控制机制。</li>
-<li>Role-Based Access Control(RBAC)：基于SELinux用户的权限控制手段。</li>
-<li>Multi-Level Security(MLS): 多级分类安全，指定level标签。</li>
-</ul>
-</li>
-<li>为什么要在Docker中使用SELinux<ul>
-<li>SELinux将所有进程和文件打上标签，而容器以进程方式运行，所以控制进程如何访问资源，也就是限制容器如何去访问资源。</li>
-<li>SELinux策略是全局的，它不是针对具体用户设定，而是强制整个系统遵循。</li>
-<li>减少提权攻击风险。<h4 id="3-2-user-namespace"><a href="#3-2-user-namespace" class="headerlink" title="3.2 user namespace"></a>3.2 user namespace</h4></li>
-</ul>
-</li>
-<li>容器的超级用户权限通过ns映射到宿主机是一个普通用户。</li>
-<li>容器被恶意程序攻击，所做的也就是这个普通用户的权限，而非宿主机的超级权限。<h4 id="3-3-磁盘限额"><a href="#3-3-磁盘限额" class="headerlink" title="3.3 磁盘限额"></a>3.3 磁盘限额</h4></li>
-<li>Docker仅对Device Mapper文件系统的限额提供了–storage-opt参数进行限制。</li>
-<li>cgroup没有对磁盘进行限制，Linux磁盘限额技术主要基于用户和文件系统。</li>
-<li>可能的解决方案<ul>
-<li>所有用户共有宿主机的一块磁盘，限制用户在磁盘上的使用量来限定容器的磁盘使用量。</li>
-<li>选择支持目录限额的文件系统，如XFS。</li>
-<li>Docker定期检查每一个容器磁盘使用量，会对性能造成影响。</li>
-<li>创建虚拟文件系统，些文件系统仅供某一个容器使用。<h4 id="3-4-容器流量限制"><a href="#3-4-容器流量限制" class="headerlink" title="3.4 容器流量限制"></a>3.4 容器流量限制</h4></li>
-</ul>
-</li>
-<li>Docker没对容器的网络带宽做限制。</li>
-<li>可以采用Traffic Controller容器对容器网卡流量进行限制，一定程序上减少容器Dos攻击危害。<h4 id="3-5-GRSecurity内核安全增强工具"><a href="#3-5-GRSecurity内核安全增强工具" class="headerlink" title="3.5 GRSecurity内核安全增强工具"></a>3.5 GRSecurity内核安全增强工具</h4></li>
-<li>Docker容器共享宿主机的内存，在内存安全上存在不少问题，需要针对内存破坏做防御。</li>
-<li>GRSecurity是一个对内核的安全扩展，通过智能访问控制来阻止内存破坏，预防0day漏洞。<h4 id="3-6-fork炸弹"><a href="#3-6-fork炸弹" class="headerlink" title="3.6 fork炸弹"></a>3.6 fork炸弹</h4></li>
-<li>fork炸弹以极快速度创建大量进程，以此消耗系统资源，使系统无法运行新程序，现有进程运行速度放缓。</li>
-<li>容器本身在内核层面隔离性不足，fork bomb会给容器带来灾难性影响。</li>
-<li>fork bomb受到社区关注（Issue 6479），但目前还没有完美解决方案。</li>
-<li>Docker无法使用ulimit来限制forkbomb问题，因为一个宿主机用户可能同时启动多个容器，无法对每个容器做进程数的限制。</li>
-</ul>
-<ol>
-<li>总结<br>Docker自身已经提供了不少安全机制，但Docker目前仍然只适于运行可信应用程序（内部使用），如果需要运行任意代码，安全很难得到保证。在日常应用中，还可以通过SELinux、GRSecurity、seccomp等工具来增强容器安全。</li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;docker防止fork炸弹&quot;&gt;&lt;a href=&quot;#docker防止fork炸弹&quot; class=&quot;headerlink&quot; title=&quot;docker防止fork炸弹&quot;&gt;&lt;/a&gt;docker防止fork炸弹&lt;/h1&gt;&lt;p&gt;在开发过程中，我们使用了docker作为容器
-    
-    </summary>
-    
-      <category term="docker技术" scheme="http://yoursite.com/categories/docker%E6%8A%80%E6%9C%AF/"/>
-    
-    
-      <category term="docker" scheme="http://yoursite.com/tags/docker/"/>
-    
-      <category term="安全" scheme="http://yoursite.com/tags/%E5%AE%89%E5%85%A8/"/>
     
   </entry>
   

@@ -216,6 +216,431 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/01/08/创建型设计模式之build模式/">
+                            创建型设计模式之build模式
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-01-08T01:36:19+08:00">
+	
+		    1月 08, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="创建型设计模式之build模式"><a href="#创建型设计模式之build模式" class="headerlink" title="创建型设计模式之build模式"></a>创建型设计模式之build模式</h1><p>最近在读《设计模式-可复用面向对象软件设计的基础》一书，在阅读的过程中我会结合书中的相关知识和实例以及在网络上的博客对相关的模式的理解进行总结，并在此基础上加入自己的一些理解，总结模式中需要注意的一些点，记录在此博客，以供大家交流分享，同时防止自己对内容遗忘，如有不正确指出，欢迎批评指正。</p>
+<p>本节的主要内容是设计模式中的创建型模式之一:builder模式</p>
+<p>要用好builder模式，必须对其机制了解透彻，将该模式用在合适的软件中才能显出它真正的威力，第五部分中实例将为您展示它的真正威力。</p>
+<p>本文内容分为以下几个方面:</p>
+<ul>
+<li>builder模式的意图</li>
+<li>builder模式的适用性</li>
+<li>builder模式的结构(通用UML类图)及详解</li>
+<li>builder模式中的参与者</li>
+<li>builder模式中各个成分之间的交互</li>
+<li>builder模式比较好的一个实例</li>
+<li>builder模式使用过程中注意的点</li>
+<li>KFC套餐实例代码</li>
+</ul>
+<p><strong>builder模式的精髓都隐藏于builder模式的意图和实用性中，让你真正理解这两个方面，可以说你已经掌握了builder模式（以下意图和模式都摘自《设计模式》书中）</strong></p>
+<h2 id="builder模式的意图"><a href="#builder模式的意图" class="headerlink" title="builder模式的意图"></a>builder模式的意图</h2><p>builder模式的意图是将一个<strong>复杂对象的构建</strong>与它的<strong>表示</strong>分离，使得同样的构建过程可以创建不同的表示。</p>
+<h2 id="builder模式的适用性"><a href="#builder模式的适用性" class="headerlink" title="builder模式的适用性"></a>builder模式的适用性</h2><ul>
+<li>当<strong>创建复杂对象的算法</strong>应该独立于<strong>该对象的组成部分</strong>以及<strong>它们的装配方式</strong>时。</li>
+<li>当构造过程必须<strong>允许被构造的对象有不同的表示</strong>时。</li>
+</ul>
+<p>提前记录一下:装配的工作是由导向器(director)完成的，复杂对象的创建是由具体的建造器完成(concreteBuilder)，这里不明白没问题，等你看完全文再过来看这里你就理解了。</p>
+<blockquote>
+<p> 当且仅当上面两个条件均满足的情况下我们要使用builder模式（完全理解这两条不一件重要的事情，但是不要着急,当你读完这篇文章的时候就会拨开它的庐山真面目了）</p>
+</blockquote>
+<h2 id="builder模式的结构-UML类图-及详解"><a href="#builder模式的结构-UML类图-及详解" class="headerlink" title="builder模式的结构(UML类图)及详解"></a>builder模式的结构(UML类图)及详解</h2><p>builder模式的UML类图关系如下:</p>
+<p><img src="../assets/images/build_diagram.png" alt=""></p>
+<p>注意的问题:</p>
+<ul>
+<li>在builder中一般不声明纯虚函数，而是把它们定义为空方法，这使客户只重定义他们感兴趣的操作。</li>
+<li>在director中，注意我们不是把所有的buildPart都去执行一次，而是根据需要的客户的需求，进行定制的去buildPart部分构建，可以构建一次，也可以构建多次。</li>
+<li>一般将m_product声明为protected成员，因为这样既保证了封装性，又能使得concreteBuilder能够正常操作product；</li>
+</ul>
+<h2 id="builder模式种的参与者"><a href="#builder模式种的参与者" class="headerlink" title="builder模式种的参与者"></a>builder模式种的参与者</h2><p>从上面的类图中我们也可以看出,在builder模式中的参与者有以下四种,以及他们的职责分别是:(此处为个人理解，与书中内容可能不一致,如果有问题欢迎指正)</p>
+<ul>
+<li>Director: 负责装配product的各个部件，使用Builder的类方法进行实现。它的作用是隔离了客户与product的具体生产过程；并负责控制product的生产过程。</li>
+<li>Builder: 为创建一个product对象的各个部件指定抽象接口。一般情况下默认builderPart的操作默认为空。</li>
+<li>concreteBuilder: 具体实现每一个部件的具体的复杂生产过程，如buildPartA()的具体实现，并提供一个检索产品的接口。</li>
+<li>Product: 这个争议不大，即为被构造的复杂对象。此类对象会有不同的表示。</li>
+</ul>
+<h2 id="builder模式各个成分之间的交互方式"><a href="#builder模式各个成分之间的交互方式" class="headerlink" title="builder模式各个成分之间的交互方式"></a>builder模式各个成分之间的交互方式</h2><p>先上一张时序图:</p>
+<p><img src="../assets/images/builder_sequence.png" alt=""></p>
+<p>从上面的时序图可以分析出，各个成分之间的交互方式如下:</p>
+<ul>
+<li>客户首先创建一个concreteBuilder对象,然后创建一个Director,</li>
+<li>创建结束之后，使用concreteBuilder修饰对象Director,</li>
+<li>然后调用Director的construct()方法，进行构造Product,</li>
+<li>最后客户通过concreteBuilder的getResult()方法取回生成的Product</li>
+</ul>
+<h2 id="builder模式中一个较好的实例"><a href="#builder模式中一个较好的实例" class="headerlink" title="builder模式中一个较好的实例"></a>builder模式中一个较好的实例</h2><p>两个实例来自网络对两本书籍实例的纠正,改编</p>
+<p>上面这篇文章深刻的分析了builder模式的本质以及诸多误区的分析，收益颇多，在此感谢博主分享。</p>
+<p>在本例中,设备(Equipment)是一个复杂对象，由一个machine和一个或多个输入端口(InputPort)或者输出端口(outputPort)组成；其中输入或输出端口可能有不同的类型(ordinary和super)。现在要你设计一个生成不同型号的产品，要求产品可能包含一进一出(普通或super)，一进两出(普通或super)。</p>
+<p>　　在设计中,我们首先定义一个LCDFactory对象充当director，一个设备生成器(EQPBuilder),相当于Builder。</p>
+<p>​    首先ordinary和super是port的内部实现方式不同，所以我们需要定义两个具体类，即 ordinaryEQPBuilder和superEQPBuilder。</p>
+<p>​    在EQPbuilder中，我们将定义四个函数，分别是:buildMachine(), addInputPort(), addOutputPort()和getEQP()。两个concrete类继承EQPBuilder。</p>
+<p>​    当我们需要获取不同数目的port的设备，这属于组装方面的范畴，所以我们将在LCDFactory中的createEQP中做。其UML类图如下:</p>
+<p><img src="../assets/images/BuilderEquipment_thumb.jpg" alt=""></p>
+<h2 id="builder模式在使用的过程中需要注意的问题"><a href="#builder模式在使用的过程中需要注意的问题" class="headerlink" title="builder模式在使用的过程中需要注意的问题"></a>builder模式在使用的过程中需要注意的问题</h2><p>这里所说的注意的问题可能上面已经提到了，但是这里还是要着重强调一下，因为我们稍不注意，就可能将模式滥用，导致系统设计的失败。</p>
+<ul>
+<li>在builder模式中Builder一定不要定义纯虚函数成员函数，而是定义为空方法的虚函数，这样就可以使得客户可以只定义他们感兴趣的操作。</li>
+<li>Director负责<strong>装配产品</strong>，concreteBuilder负责实现<strong>复杂产品部件的具体实现</strong></li>
+<li>在Director中调用Builder的buildPart函数的时候，并不是每个函数都被调用，而是根据要生成的product对其选择性调用，可能调用零次，也可能调用多次。</li>
+<li>Builder中的m_product声明为protected,即保证对象的封装性，又能让具体类方便的使用。(这是我在写代码的时候的解决方法，如果有更好的将m_product声明为private的解决方法欢迎交流2824759538@qq.com)</li>
+</ul>
+<h2 id="KFC套餐实例代码"><a href="#KFC套餐实例代码" class="headerlink" title="KFC套餐实例代码"></a>KFC套餐实例代码</h2><p>这是本人使用KFC服务员生成套餐时的一种模拟，其实实际情况中并不需要使用builder模式，但是这里为了练手强行写成了builder模式，希望大家不要吐槽。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//KFCWaiter.hpp 注意此处water相当于Director的作用</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> KFCWAITER_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> KFCWAITER_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line"></div><div class="line"><span class="keyword">class</span> KFCWaiter &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">setMealBuilder</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; t_builder)</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">construct</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; m_builder;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//KFCWaiter.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"KFCWaiter.hpp"</span></span></div><div class="line"><span class="keyword">void</span> KFCWaiter::setMealBuilder(<span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; t_builder) &#123;</div><div class="line">  m_builder = t_builder;</div><div class="line">&#125;</div><div class="line"><span class="keyword">void</span> KFCWaiter::construct() &#123;</div><div class="line">  m_builder-&gt;buildFood();</div><div class="line">  m_builder-&gt;buildDrink();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Meal.hpp Meal相当于Product</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MEAL_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MEAL_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="keyword">class</span> Meal &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  Meal(<span class="built_in">std</span>::<span class="built_in">string</span> t_food = <span class="string">"hanbao"</span>, <span class="built_in">std</span>::<span class="built_in">string</span> t_drink = <span class="string">"kele"</span>);</div><div class="line">  ~Meal();</div><div class="line">  <span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">getFood</span><span class="params">()</span> <span class="keyword">const</span></span>;</div><div class="line">  <span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">getDrink</span><span class="params">()</span> <span class="keyword">const</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">getMeal</span><span class="params">()</span> <span class="keyword">const</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">buildFood</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_food)</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_drink)</span></span>;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> m_food;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> m_drink;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Meal.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Meal.hpp"</span></span></div><div class="line">Meal::Meal(<span class="built_in">std</span>::<span class="built_in">string</span> t_food, <span class="built_in">std</span>::<span class="built_in">string</span> t_drink)</div><div class="line">    : m_food(t_food), m_drink(t_drink) &#123;&#125;</div><div class="line">Meal::~Meal() &#123;&#125;</div><div class="line"><span class="built_in">std</span>::<span class="built_in">string</span> Meal::getFood() <span class="keyword">const</span> &#123; <span class="keyword">return</span> m_food; &#125;</div><div class="line"><span class="built_in">std</span>::<span class="built_in">string</span> Meal::getDrink() <span class="keyword">const</span> &#123; <span class="keyword">return</span> m_drink; &#125;</div><div class="line"><span class="keyword">void</span> Meal::getMeal() <span class="keyword">const</span> &#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"套餐为:"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"食物:"</span> &lt;&lt; m_food &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"饮料:"</span> &lt;&lt; m_drink &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"><span class="keyword">void</span> Meal::buildFood(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_food) &#123; m_food = t_food; &#125;</div><div class="line"><span class="keyword">void</span> Meal::buildDrink(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_drink) &#123; m_drink = t_drink; &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilder.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> BUILDER_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BUILDER_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Meal.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="keyword">class</span> MealBuilder &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  MealBuilder();</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildFood</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; getResult();</div><div class="line">  <span class="keyword">virtual</span> ~MealBuilder()&#123;&#125;;</div><div class="line"></div><div class="line"><span class="keyword">protected</span>:</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; m_meal;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilder.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line">MealBuilder::MealBuilder() : m_meal(<span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt;(<span class="keyword">new</span> Meal())) &#123;&#125;</div><div class="line"><span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; MealBuilder::getResult() &#123; <span class="keyword">return</span> m_meal; &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderA.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MEALBUILDERA_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MEALBUILDERA_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line"><span class="keyword">class</span> MealBuilderA : <span class="keyword">public</span> MealBuilder &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildFood</span><span class="params">()</span></span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">()</span></span>;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderA.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderA.hpp"</span></span></div><div class="line"><span class="keyword">void</span> MealBuilderA::buildFood() &#123; m_meal-&gt;buildFood(<span class="string">"套餐A食物"</span>); &#125;</div><div class="line"></div><div class="line"><span class="keyword">void</span> MealBuilderA::buildDrink() &#123; m_meal-&gt;buildDrink(<span class="string">"套餐A饮料"</span>); &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderB.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MEALBUILDERB_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MEALBUILDERB_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line"><span class="keyword">class</span> MealBuilderB : <span class="keyword">public</span> MealBuilder &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildFood</span><span class="params">()</span></span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">()</span></span>;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderB.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderB.hpp"</span></span></div><div class="line"><span class="keyword">void</span> MealBuilderB::buildFood() &#123; m_meal-&gt;buildFood(<span class="string">"套餐B食物"</span>); &#125;</div><div class="line"></div><div class="line"><span class="keyword">void</span> MealBuilderB::buildDrink() &#123; m_meal-&gt;buildDrink(<span class="string">"套餐B饮料"</span>); &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//main.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"KFCWaiter.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderA.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderB.hpp"</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; Aptr =</div><div class="line">      <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt;(<span class="keyword">new</span> MealBuilderA());</div><div class="line">  KFCWaiter k;</div><div class="line">  k.setMealBuilder(Aptr);</div><div class="line">  k.construct();</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; current_meal = Aptr-&gt;getResult();</div><div class="line"></div><div class="line">  current_meal-&gt;getMeal();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/01/08/创建型设计模式之build模式/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/01/07/UML时序图详解/">
+                            UML时序图详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-01-07T15:17:23+08:00">
+	
+		    1月 07, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="UML时序图详解"><a href="#UML时序图详解" class="headerlink" title="UML时序图详解"></a>UML时序图详解</h1><p>　　这几天在阅读《设计模式》一书，书中总结了前人在面向对象软件设计过程中针对特定的问题提出的简洁而优雅的解决方案。在阅读的过程中，我一边理解书中给出的实例，一边结合自己写过的项目或者用过的框架与当前模式进行对比，发现之前的项目有一些还是有很大的改进空间。在阅读本书的过程中，书中很多例子都是通过UML类图和UML时序图进行说明，所以，理解这些例子的前提是对UML类图以及UML时序图有一定的了解，UML类图在前面的博客(<a href="https://langzi989.github.io/2017/01/05/UML%E5%9B%BE%E8%A1%A8%E7%A4%BA%E5%B8%B8%E8%A7%81%E7%9A%84%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/)中已经讲解，现在我们主要来看一下UML时序图中的重要概念。" target="_blank" rel="external">https://langzi989.github.io/2017/01/05/UML%E5%9B%BE%E8%A1%A8%E7%A4%BA%E5%B8%B8%E8%A7%81%E7%9A%84%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/)中已经讲解，现在我们主要来看一下UML时序图中的重要概念。</a></p>
+<p>　　UML类关系以及时序图在大三上《系统分析与设计》课的时候学过，但是那个时候不知道这东西有什么用，所以没有认真学和理解。随着实战经验的增多，越来越能体会到这些在软件设计的过程中重中之重，不管是描述你的设计思想还是与团队中其他人进行交流。所以还是建议大家在学到这一部分的时候对这门课认真对待。</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>时序图是一种按照时间顺序显示对象之间的交互的图。时序图中显示的是参与交互的对象和对象之间消息传递的顺序。</p>
+<h2 id="基本元素"><a href="#基本元素" class="headerlink" title="基本元素"></a>基本元素</h2><p>时序图中包含的主要的元素有:</p>
+<ul>
+<li>角色(Actor)</li>
+<li>对象(Object)</li>
+<li>生命线(life line)</li>
+<li>控制焦点(focus of control)</li>
+<li>消息(message)</li>
+<li>自关联消息(self-associated message)</li>
+<li>组合片段(combined fragment)</li>
+</ul>
+<h2 id="基本元素详解"><a href="#基本元素详解" class="headerlink" title="基本元素详解"></a>基本元素详解</h2><h3 id="角色-actor"><a href="#角色-actor" class="headerlink" title="角色(actor)"></a>角色(actor)</h3><p>角色指的是系统角色，这个角色可以是人，其他系统或者子系统</p>
+<p>图形表示:</p>
+<p><img src="../assets/images/actor.png" alt=""></p>
+<h3 id="对象-object"><a href="#对象-object" class="headerlink" title="对象(object)"></a>对象(object)</h3><p>对象包括三种:</p>
+<ul>
+<li>指定类名和对象名的对象objectName: className</li>
+<li>指定类名但没有对象名的对象(匿名对象) :className</li>
+<li>指定对象名但不指定类名的对象 objectName</li>
+</ul>
+<p>图形表示：<br>第一类:</p>
+<p><img src="../assets/images/object1.png" alt=""></p>
+<p>第二类:</p>
+<p><img src="../assets/images/object2.png" alt=""></p>
+<p>第三类:</p>
+<p><img src="../assets/images/object3.png" alt=""></p>
+<h3 id="生命线-life-line"><a href="#生命线-life-line" class="headerlink" title="生命线(life line)"></a>生命线(life line)</h3><p>生命线在时序图中使用向下的虚线表示,它指的是其所对应的对象的存活时间。从上到下表示时间的推后。</p>
+<p>图像表示:</p>
+<p><img src="../assets/images/lifeline.png" alt=""></p>
+<h3 id="控制焦点-focus-of-control"><a href="#控制焦点-focus-of-control" class="headerlink" title="控制焦点(focus of control)"></a>控制焦点(focus of control)</h3><p>控制焦点在时序图中以方块的形式出现，它是一种表示时间段的方式，对象在这一时间段中执行相应的操作。</p>
+<p>图像表示:</p>
+<p><img src="../assets/images/control.png" alt=""></p>
+<h3 id="消息-message"><a href="#消息-message" class="headerlink" title="消息(message)"></a>消息(message)</h3><p>消息有三种类型</p>
+<ul>
+<li>同步消息：发送者发送请求后被阻塞，直到接受者返回消息或者做完其他处理之后发送者才能继续执行之后的操作</li>
+<li>异步消息：发送者发送消息给接受者之后不等待接受者返回响应而继续执行下面的操作。</li>
+<li>返回消息:接受者返回消息给发送者</li>
+</ul>
+<p>消息的图形表示：<br>同步消息:</p>
+<p><img src="../assets/images/message1.png" alt=""></p>
+<p>异步消息:</p>
+<p><img src="../assets/images/message2.png" alt=""></p>
+<p>返回消息:</p>
+<p><img src="../assets/images/message3.png" alt=""></p>
+<h3 id="自关联消息-self-associated-message"><a href="#自关联消息-self-associated-message" class="headerlink" title="自关联消息(self-associated message)"></a>自关联消息(self-associated message)</h3><p>自关联消息一般指的是当前类调用自己的函数的情况</p>
+<h3 id="组合片段-combined-fragment"><a href="#组合片段-combined-fragment" class="headerlink" title="组合片段(combined fragment)"></a>组合片段(combined fragment)</h3><p>组合片段中包括四个部分:</p>
+<ul>
+<li><p>Alternative fragment(alt表示):与if…then…else…对应</p>
+</li>
+<li><p>option fragment(opt表示):与switch对应</p>
+</li>
+<li><p>parallel fragment(par表示):表示同时发生</p>
+</li>
+<li><p>Loop Fragment(loop表示):与循环对应</p>
+<p>图形表示:</p>
+<p>alt:</p>
+<p><img src="../assets/images/alt.png" alt=""></p>
+</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/01/07/UML时序图详解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/01/05/UML图表示常见的类之间的关系/">
+                            UML图表示常见的类之间的关系
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-01-05T21:12:28+08:00">
+	
+		    1月 05, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="UML图表示常见的类之间的关系"><a href="#UML图表示常见的类之间的关系" class="headerlink" title="UML图表示常见的类之间的关系"></a>UML图表示常见的类之间的关系</h1><p>类之间的关系常见的主要包括以下几种:</p>
+<ul>
+<li>继承</li>
+<li>实现</li>
+<li>依赖</li>
+<li>关联</li>
+<li>聚合</li>
+<li>组合</li>
+</ul>
+<h2 id="继承（inheritance）"><a href="#继承（inheritance）" class="headerlink" title="继承（inheritance）"></a>继承（inheritance）</h2><p>继承的概念大家都比较熟悉，他主要指的是派生类继承父类或者接口之间的继承，派生类继承了父类中原有的功能，并在此基础上添加了新的功能。例如public继承实质上是一种is-a的关系,(子类is a 基类)</p>
+<p>图形表示:</p>
+<p><img src="../assets/images/继承.png" alt=""></p>
+<h2 id="实现-implement"><a href="#实现-implement" class="headerlink" title="实现(implement)"></a>实现(implement)</h2><p>实现指的是一个类实现一个接口,一个类可以实现一个或者多个接口。实现是类和接口之间常见的一种关系。在java中通常通过implements实现。</p>
+<p>图形表示：</p>
+<p><img src="../assets/images/实现.png" alt=""></p>
+<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>依赖指的是一个类A使用另外一个类B,这种该使用关系是偶然性的，临时的，非常弱的一种关系。但是类B的变化会影响到类A;比如人要使用船过河中，这个时候人和船就是一种依赖关系。具体表现在代码中就是<strong>B是类A中的某个方法的参数。</strong></p>
+<p>图形表示:</p>
+<p><img src="../assets/images/依赖.png" alt=""></p>
+<h2 id="关联"><a href="#关联" class="headerlink" title="关联"></a>关联</h2><p>关联是指俩个类之间的或者类和接口之间的一种强依赖关系。而这种强依赖关系不是偶然性的，而是长期的，而且双方的关系是平等的，关联可以是单向的，也可以是双向的。具体表现在代码中是<strong>(1):B以类属性的方式出现在类A中（２）A引用类型为B的全局变量</strong></p>
+<p>图形表示:</p>
+<p><img src="../assets/images/关联.png" alt=""></p>
+<h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>聚合是关联关系的一种特例，它表现的是一种has-a的关系，即整体与部分的关系，此时整体与部分可以是分离的，他们可以具有各自的声明周期，部分可以属于多个整体对象，也可以被多个整体对象共享；如计算机与CPU的关系<strong>聚合中部分和整体都有各自的生命周期，并且互相影响</strong></p>
+<p>图形表示：</p>
+<p><img src="../assets/images/聚合.png" alt=""></p>
+<h2 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h2><p>组合也是关联的一种特例，它体现的是一种contain-a的关系，这种关系比聚合强；这个时候整体和部分是不可分离的，<strong>整体的声明周期与部分的声明周期相同，当整体的周期结束时，部分的周期也随之结束</strong>。如人和大脑的关系</p>
+<p>图形表示：</p>
+<p><img src="../assets/images/组合.png" alt=""></p>
+<h2 id="依赖性强弱"><a href="#依赖性强弱" class="headerlink" title="依赖性强弱:"></a>依赖性强弱:</h2><p>组合&gt;聚合&gt;关联&gt;依赖</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/01/05/UML图表示常见的类之间的关系/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/12/29/docker防止fork炸弹/">
+                            docker防止fork炸弹
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-29T19:00:25+08:00">
+	
+		    12月 29, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/docker技术/">docker技术</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="docker防止fork炸弹"><a href="#docker防止fork炸弹" class="headerlink" title="docker防止fork炸弹"></a>docker防止fork炸弹</h1><p>在开发过程中，我们使用了docker作为容器来进行编程语言代码的评测，以用于防止有害代码破坏宿主物理机器，但是在昨天发现docker还是会受fork炸弹的影响将宿主物理机器挂掉。针对这个问题，我在docker官网找到了相关的解决方法，记录分享并以备之后再次遇到此类问题可以很快找到解决方案。<br>当前解决方案只适用于docker1.1版本及之后(通过docker.io进行安装,sudo apt install docker.io)。<br>解决方案的思想就是:在启动docker的时候给其加上启动选项–pids-limit来限制cgroup中的fork的进程的最大数，我这里限制的30,可以根据自己的需求去限制。<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker run -it --pids-limit <span class="number">30</span> Ubuntu:<span class="number">14.04</span></div></pre></td></tr></table></figure></p>
+<p>上述方法即可防止fork炸弹。<br>以下内容转载自<a href="http://blog.csdn.net/thinkhy/article/details/50995720" target="_blank" rel="external">http://blog.csdn.net/thinkhy/article/details/50995720</a></p>
+<h2 id="Docker容器与安全"><a href="#Docker容器与安全" class="headerlink" title="Docker容器与安全"></a>Docker容器与安全</h2><p>Docker能否大规模用于生产环境，尤其是公有云环境，就在于Docker是否能提供安全的环境。本文将总结《Docker容器与容器云》一书3.9节『Docker与容器安全』的主要内容，包括Docker现有安全机制、存在的安全问题以及Docker安全增强三个方面。</p>
+<h3 id="1-Docker的安全机制"><a href="#1-Docker的安全机制" class="headerlink" title="1. Docker的安全机制"></a>1. Docker的安全机制</h3><h4 id="1-1-Docker-daemon安全"><a href="#1-1-Docker-daemon安全" class="headerlink" title="1.1 Docker daemon安全"></a>1.1 Docker daemon安全</h4><ul>
+<li>Docker向外界服务提供了四种通信方式，默认是以Unix域套接字的方式来与客户端通信，这种方式较TCP形式更为安全。</li>
+<li>Docker也提供了TLS传输层安全协议，通过–tlsverify(安全传输校验），–tlscacert(信任证书)、–tlskey(服务器或者客户端秘钥）、–tlscert（证书位置）来配置。<h4 id="1-2-镜像安全"><a href="#1-2-镜像安全" class="headerlink" title="1.2 镜像安全"></a>1.2 镜像安全</h4></li>
+<li><p>Docker registry镜像库访问控制</p>
+<ul>
+<li>Docker daemon第一次启动时，通过公网（Amazon CDN）载入official.json包，饮食公共image和用户image的目录以及数字签名信息。</li>
+<li>official.json在Docker daemon启动时加载到MemoryGraph，MemoryGraph用于存储公钥以及命名之间的授权映射，默认授权节点对授权空间有读写权限。</li>
+</ul>
+</li>
+<li><p>镜像校验和</p>
+<ul>
+<li>镜像校验和用来保证镜像的完整性，以预防可能出现的镜像破环。</li>
+<li>目前Docker对于镜像校验和和验证失败不采取任何措施，仅输出警告信息<h4 id="1-3-内核安全"><a href="#1-3-内核安全" class="headerlink" title="1.3 内核安全"></a>1.3 内核安全</h4></li>
+</ul>
+</li>
+<li>内核为容器提供了两种技术cgroup和namespace，分别对容器进行资源限制和资源隔离。<ul>
+<li>容器本质是进程，cgroup用来限制容器的资源使用量，避免单个容器耗尽系统资源。</li>
+</ul>
+</li>
+<li>namespace用来隔离容器与宿主机，以及不同的容器。<ul>
+<li>Docker目前仅完整支持uts、ipc、pid、network、mount这5种ns,user ns尚未完全支持。</li>
+<li>系统资源未进行隔离，如/proc，/sys、SELinux、time、syslog、/dev设备信息等均未进行隔离。<h4 id="1-4-容器之间的网络安全"><a href="#1-4-容器之间的网络安全" class="headerlink" title="1.4 容器之间的网络安全"></a>1.4 容器之间的网络安全</h4></li>
+</ul>
+</li>
+<li>Docker可通过iptabls设定规则实现禁止或允许容器之间的通信。<h4 id="1-5-Docker容器Capability限制"><a href="#1-5-Docker容器Capability限制" class="headerlink" title="1.5 Docker容器Capability限制"></a>1.5 Docker容器Capability限制</h4></li>
+<li>容器的行为通过Linux超级用户分组限制，具体包括了CHOWN、DAC_OVERRIDe、FSETID、FOWNER、MKNOD、NET_RAW、SETGID、SETUID、SETFCAP、SETPCAP、NET_BIND_SERVICE、SYS_CHROOT、KILL和AUDIT_WRITE。</li>
+<li>Docker进程的Capability可通过docker run命令的参数进行配置<h3 id="2-Docker安全问题"><a href="#2-Docker安全问题" class="headerlink" title="2. Docker安全问题"></a>2. Docker安全问题</h3><h4 id="2-1-磁盘资源限制问题"><a href="#2-1-磁盘资源限制问题" class="headerlink" title="2.1 磁盘资源限制问题"></a>2.1 磁盘资源限制问题</h4></li>
+<li>Docker容器通过镜像层叠的方式来构建容器内的文件系统，本质上还是在宿主机文件系统的目录(/var/lib/docker)下存储文件。</li>
+<li>极有可能出现一个容器将宿主机上所有的磁盘空间耗尽，导致其它容器无法存储文件，所以有必要对容器的磁盘使用量进行限制。<h4 id="2-2-容器逃逸问题"><a href="#2-2-容器逃逸问题" class="headerlink" title="2.2 容器逃逸问题"></a>2.2 容器逃逸问题</h4></li>
+<li>Docker使用操作系统进行虚拟化，共享内核、内存、CPU以及磁盘，易造成容器逃逸问题。</li>
+<li>Docker1.0之后采用白名单来限制容器的能力，会给出默认的容器Capability清单，禁止容器拥有清单之外的Capability。<h4 id="2-3-容器DoS攻击与流量限制问题"><a href="#2-3-容器DoS攻击与流量限制问题" class="headerlink" title="2.3 容器DoS攻击与流量限制问题"></a>2.3 容器DoS攻击与流量限制问题</h4></li>
+<li>公有云基于虚拟化技术实现，攻击数据包可能不需要通过物理网卡就可以攻击同一个宿主机下的其他容器，传统Dos预防措施无法适用容器之间的攻击。</li>
+<li>的Docker容器连接在网桥上，通过veth pari技术创建网卡，其一端在容器内命名为eth0，另一张网上驻留在宿主机环境之中。</li>
+<li>同一宿主机下所有容器共用一张物理网卡，如果一个容器抢占大部分带宽，会影响其它容器使用。<h4 id="2-4-超级权限问题"><a href="#2-4-超级权限问题" class="headerlink" title="2.4 超级权限问题"></a>2.4 超级权限问题</h4></li>
+<li>docker run时加入–privileged参数能使容器获得所有的超级用户权限能力，并将所有的宿主机的所有设备挂载到容器内。<h3 id="3-Docker安全的解决方案"><a href="#3-Docker安全的解决方案" class="headerlink" title="3. Docker安全的解决方案"></a>3. Docker安全的解决方案</h3><h4 id="3-1-SELinux"><a href="#3-1-SELinux" class="headerlink" title="3.1 SELinux"></a>3.1 SELinux</h4></li>
+<li>SELinux三种控制方式<ul>
+<li>Type Enforcement: 主要的访问控制机制。</li>
+<li>Role-Based Access Control(RBAC)：基于SELinux用户的权限控制手段。</li>
+<li>Multi-Level Security(MLS): 多级分类安全，指定level标签。</li>
+</ul>
+</li>
+<li>为什么要在Docker中使用SELinux<ul>
+<li>SELinux将所有进程和文件打上标签，而容器以进程方式运行，所以控制进程如何访问资源，也就是限制容器如何去访问资源。</li>
+<li>SELinux策略是全局的，它不是针对具体用户设定，而是强制整个系统遵循。</li>
+<li>减少提权攻击风险。<h4 id="3-2-user-namespace"><a href="#3-2-user-namespace" class="headerlink" title="3.2 user namespace"></a>3.2 user namespace</h4></li>
+</ul>
+</li>
+<li>容器的超级用户权限通过ns映射到宿主机是一个普通用户。</li>
+<li>容器被恶意程序攻击，所做的也就是这个普通用户的权限，而非宿主机的超级权限。<h4 id="3-3-磁盘限额"><a href="#3-3-磁盘限额" class="headerlink" title="3.3 磁盘限额"></a>3.3 磁盘限额</h4></li>
+<li>Docker仅对Device Mapper文件系统的限额提供了–storage-opt参数进行限制。</li>
+<li>cgroup没有对磁盘进行限制，Linux磁盘限额技术主要基于用户和文件系统。</li>
+<li>可能的解决方案<ul>
+<li>所有用户共有宿主机的一块磁盘，限制用户在磁盘上的使用量来限定容器的磁盘使用量。</li>
+<li>选择支持目录限额的文件系统，如XFS。</li>
+<li>Docker定期检查每一个容器磁盘使用量，会对性能造成影响。</li>
+<li>创建虚拟文件系统，些文件系统仅供某一个容器使用。<h4 id="3-4-容器流量限制"><a href="#3-4-容器流量限制" class="headerlink" title="3.4 容器流量限制"></a>3.4 容器流量限制</h4></li>
+</ul>
+</li>
+<li>Docker没对容器的网络带宽做限制。</li>
+<li>可以采用Traffic Controller容器对容器网卡流量进行限制，一定程序上减少容器Dos攻击危害。<h4 id="3-5-GRSecurity内核安全增强工具"><a href="#3-5-GRSecurity内核安全增强工具" class="headerlink" title="3.5 GRSecurity内核安全增强工具"></a>3.5 GRSecurity内核安全增强工具</h4></li>
+<li>Docker容器共享宿主机的内存，在内存安全上存在不少问题，需要针对内存破坏做防御。</li>
+<li>GRSecurity是一个对内核的安全扩展，通过智能访问控制来阻止内存破坏，预防0day漏洞。<h4 id="3-6-fork炸弹"><a href="#3-6-fork炸弹" class="headerlink" title="3.6 fork炸弹"></a>3.6 fork炸弹</h4></li>
+<li>fork炸弹以极快速度创建大量进程，以此消耗系统资源，使系统无法运行新程序，现有进程运行速度放缓。</li>
+<li>容器本身在内核层面隔离性不足，fork bomb会给容器带来灾难性影响。</li>
+<li>fork bomb受到社区关注（Issue 6479），但目前还没有完美解决方案。</li>
+<li>Docker无法使用ulimit来限制forkbomb问题，因为一个宿主机用户可能同时启动多个容器，无法对每个容器做进程数的限制。</li>
+</ul>
+<ol>
+<li>总结<br>Docker自身已经提供了不少安全机制，但Docker目前仍然只适于运行可信应用程序（内部使用），如果需要运行任意代码，安全很难得到保证。在日常应用中，还可以通过SELinux、GRSecurity、seccomp等工具来增强容器安全。</li>
+</ol>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/29/docker防止fork炸弹/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/12/27/time命令详解/">
                             time命令详解
                         </a>
@@ -605,292 +1030,6 @@
                     
                         <p>
                             <a href="/2016/12/19/linux进程nice值及其与优先级的关系/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/16/tornado表单与模板/">
-                            tornado表单与模板
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-16T23:48:06+08:00">
-	
-		    12月 16, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/python学习/">python学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="tornado表单和模板"><a href="#tornado表单和模板" class="headerlink" title="tornado表单和模板"></a>tornado表单和模板</h1><p>在第一章中，我们学习了使用tornado创建一个web应用的基础知识。包括处理函数，HTTP方法以及tornado的框架的总体结构。在这一章中，我们学习tornado的更加强大的功能—-表单和模板。<br>和大多数的web框架一样，tornado的一个重要的目标就是帮助你更快地编写程序，尽可能整洁地复用更多的代码。尽管tornado灵活，可以使用几乎所有python支持的模板语言，tornado自身也提供了一个轻量级，快速并且灵活的模板语言，在tornado.template模块中。</p>
-<h2 id="简单示例-Poem-Maker-Pro"><a href="#简单示例-Poem-Maker-Pro" class="headerlink" title="简单示例 Poem Maker Pro"></a>简单示例 Poem Maker Pro</h2><p>poemmaker.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> os.path</div><div class="line"></div><div class="line"><span class="keyword">import</span> tornado.httpserver</div><div class="line"><span class="keyword">import</span> tornado.options</div><div class="line"><span class="keyword">import</span> tornado.web</div><div class="line"><span class="keyword">import</span> tornado.ioloop</div><div class="line"></div><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> define, options</div><div class="line"></div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, help=<span class="string">"run on the given port"</span>, type=int)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IndexHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        self.render(<span class="string">"index.html"</span>)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">PoemPageHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self)</span>:</span></div><div class="line">        noun1 = self.get_argument(<span class="string">"noun1"</span>)</div><div class="line">        noun2 = self.get_argument(<span class="string">"noun2"</span>)</div><div class="line">        verb = self.get_argument(<span class="string">"verb"</span>)</div><div class="line">        noun3 = self.get_argument(<span class="string">"noun3"</span>)</div><div class="line">        self.render(<span class="string">"poem.html"</span>, roads=noun1, wood=noun2, made = verb, difference=noun3)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application(handlers=[(<span class="string">r"/"</span>, IndexHandler),</div><div class="line">                                            (<span class="string">r"/poem"</span>, PoemPageHandler)],</div><div class="line">                                            template_path = os.path.join(os.path.dirname(__file__), <span class="string">"templates"</span>),</div><div class="line">                                            static_path = os.path.join(os.path.dirname(__file__), <span class="string">"static"</span>)，</div><div class="line">                                            debug=<span class="keyword">True</span>)</div><div class="line">    http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">    http_server.listen(options.port)</div><div class="line">    tornado.ioloop.IOLoop.instance().start()</div></pre></td></tr></table></figure></p>
-<p>除了上述poemmaker.py，还需要在文件夹templates下添加以下两个文件。<br>/templates/index.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">  &lt;head&gt;&lt;title&gt;Poem Maker Pro&lt;/title&gt;&lt;/head&gt;</div><div class="line">  &lt;body&gt;</div><div class="line">    &lt;h1&gt;Enter terms below.&lt;/h1&gt;</div><div class="line"></div><div class="line">    &lt;form method=&quot;post&quot; action=&quot;/poem&quot;&gt;</div><div class="line">      &lt;p&gt;Plural noun &lt;br/&gt; &lt;input type=&quot;text&quot; name=&quot;noun1&quot; /&gt;&lt;/p&gt;</div><div class="line">      &lt;p&gt;Singular noun&lt;br/&gt; &lt;input type=&quot;text&quot; name=&quot;noun2&quot; /&gt;&lt;/p&gt;</div><div class="line">      &lt;p&gt;Verb (haha)&lt;br /&gt; &lt;input type=&quot;text&quot; name=&quot;verb&quot; /&gt;&lt;/p&gt;</div><div class="line">      &lt;p&gt;Noun&lt;br/&gt; &lt;input type=&quot;text&quot; name=&quot;noun3&quot; /&gt; &lt;/p&gt;</div><div class="line">      &lt;input type=&quot;submit&quot;/&gt;</div><div class="line">    &lt;/form&gt;</div><div class="line">  &lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
-<p>/templates/poem.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">  &lt;head&gt;&lt;title&gt;this is the poem&lt;/title&gt;&lt;/head&gt;</div><div class="line"></div><div class="line">  &lt;body&gt;</div><div class="line">    &lt;h1&gt;Your poem&lt;/h1&gt;</div><div class="line"></div><div class="line">    &lt;p&gt;Two &#123;&#123;roads&#125;&#125; diverged in a &#123;&#123;wood&#125;&#125;, and I—&lt;br/&gt;</div><div class="line">    I took the one less tracelled by, &lt;br/&gt;</div><div class="line">    and that has &#123;&#123;made&#125;&#125; all the &#123;&#123;difference&#125;&#125;.&lt;/p&gt;</div><div class="line">  &lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
-<p>运行python文件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python poemmaker.py</div></pre></td></tr></table></figure></p>
-<p>此时访问8000端口会出现首页上包括多个表单等待用户输入。这个表单包括多个文本域(命名为noun1, noun2等)，其中内容将在用户点击“submit”按钮时以post请求的方式发送到/poem。<br>当点击submit按钮之后，tornado应用跳转到poem.html，插入你在表单中填写的值。结果是显示的一首诗。</p>
-<p>下面我们逐条讲述当前示例中的每一个涉及到的知识点：</p>
-<h3 id="2-1-1渲染模板"><a href="#2-1-1渲染模板" class="headerlink" title="2.1.1渲染模板"></a>2.1.1渲染模板</h3><p>从结构上讲，poemmaker和第一章的例子很相似。我们定义了几个RequestHandler子类并把它们传递给tornado.web.Application对象。那么有什么不一样的地方呢？首先我们向Application对象的<strong>init</strong>方法传递了一个template参数。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">template_path = os.path.join(os.path.dirname(__file__), <span class="string">"templates"</span>)</div></pre></td></tr></table></figure></p>
-<p><strong>template_path参数告诉tornado在哪里寻找模板文件</strong>。我们将在第三章中讲解其确切的用法和性质。而它的基本要点是：<strong>模板是一个允许你嵌入python代码片段的html文件</strong>。上面的代码告诉python在你的tornado应用文件相同目录下的templates文件夹下寻找模板文件。<br>一旦我们告诉tornado在哪里寻找模板，我们就可以<strong>使用RequestHandlser类的render方法来告诉tornado读入模板文件，插入其中的模板代码，并将结果返回给浏览器。</strong>比如，在IndexHandler中，我们可以发现语句：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.render(<span class="string">"index.html"</span>)</div></pre></td></tr></table></figure></p>
-<p>这段代码告诉tornado载templates文件夹下找到一个名字为index.html的文件，读取其中的内容，并发送给浏览器。</p>
-<h3 id="2-12-填充"><a href="#2-12-填充" class="headerlink" title="2.12 填充"></a>2.12 填充</h3><p>实际上index.html完全不能称之为模板，因为它所包含的完全是已经编写好的html标记。这可以是模板一个不错的使用方式。但是在通常情况下我们更希望<strong>html输出可以结合我们的程序传入给模板的值</strong>。模板poem.html使用PoemPageMaker渲染，它是一个模板。<br>我们可以看到，在poem.html中，它可以看到模板中有一些被双大括号括起来的字符串，就像这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;p&gt;Two &#123;&#123;roads&#125;&#125; diverged in a &#123;&#123;wood&#125;&#125;, and I—&lt;br/&gt;</div><div class="line">I took the one less tracelled by, &lt;br/&gt;</div><div class="line">and that has &#123;&#123;made&#125;&#125; all the &#123;&#123;difference&#125;&#125;.&lt;/p&gt;</div></pre></td></tr></table></figure></p>
-<p>在双大括号中的单词是占位符，当我们渲染模板时希望以实际值代替。我们可以使用render函数中传递关键字参数的方法    指定什么值将被填充到html文件中的对应位置，其中关键字对应模板文件中占位符的名字。下面是在poemPageMaker中相应的代码部分：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">noun1 = self.get_argument(<span class="string">"noun1"</span>)</div><div class="line">noun2 = self.get_argument(<span class="string">"noun2"</span>)</div><div class="line">verb = self.get_argument(<span class="string">"verb"</span>)</div><div class="line">noun3 = self.get_argument(<span class="string">"noun3"</span>)</div><div class="line">self.render(<span class="string">"poem.html"</span>, roads=noun1, wood=noun2, made = verb, difference=noun3)</div></pre></td></tr></table></figure></p>
-<p>在这里，我们告诉模板使用变量noun1作为模板中roads的值，以此类推。</p>
-<h3 id="2-13-设置静态路径"><a href="#2-13-设置静态路径" class="headerlink" title="2.13 设置静态路径"></a>2.13 设置静态路径</h3><p>你可以通过向Application类的构造函数传递一个名为static_path的参数来告诉tornado从文件系统一个特定的位置提供静态文件。<br>在上述代码中如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">static_path = os.path.join(os.path.dirname(__file__), <span class="string">"static"</span>))</div></pre></td></tr></table></figure></p>
-<p>在这里，我们设置了一个当前应用目录下名为static的子目录作为static_path的参数。应用将读取static中的文件作为静态文件</p>
-<h3 id="2-1-4使用static-url生成url"><a href="#2-1-4使用static-url生成url" class="headerlink" title="2.1.4使用static_url生成url"></a>2.1.4使用static_url生成url</h3><p>tornado模板提供了一个叫做static_url的函数生成static目录下文件的url.让我们来看看在index.html中static_url的调用代码的示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;link rel=&quot;stylesheet&quot; href=&quot;&#123;&#123;static_url(&quot;style.css&quot;)&#125;&#125;&quot;&gt;</div></pre></td></tr></table></figure></p>
-<p>这个对static_url的调用生成了url的值，并渲染出类似下面的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;link rel=&quot;stylesheet&quot; href=&quot;/static/style.css?v=ab12&gt;</div></pre></td></tr></table></figure></p>
-<p>那么为什么使用static_url而不是在你的模板中硬编码呢？原因有以下两点：<br>第一，static_url函数创建了一个<strong>基于文件内容的hash值</strong>，并将其添加到url末尾(查询字符串的参数是v).这个hash值确保浏览器总是加载一个文件的最新版本而不是以前的缓存版本。无论是在开发阶段还是部署到生产环境，都非常有用，因为用户不必为了可到你的静态内容去清除浏览器的缓存了。<br>第二，你可以改变你的url结构，而不用改变模板中的代码。例如，你可以配置tornado响应来自路径/s/filename的请求时提供静态内容，而不是默认的/static路径。如果你使用static_url而不是硬编码，这个时候你不需要改变代码中的值。</p>
-<h3 id="debug参数"><a href="#debug参数" class="headerlink" title="debug参数"></a>debug参数</h3><p>在这个例子中，你可能注意到了debug=True的使用。它调用了一个便利的测试模块:tornado.autoreload模块，此时，一旦主要的python文件被修改，tornado会尝试重启服务器，而且载模板改变的时候会自动刷新。对于快速改变和实时更新这非常棒，但不要在生产上使用它，因为他将防止tornado缓存模板。</p>
-<h2 id="2-2模板语法"><a href="#2-2模板语法" class="headerlink" title="2.2模板语法"></a>2.2模板语法</h2><p>既然我们已经看到了一个模板在实际应用中的例子，哪买让我们深入了解它们是如何工作的。tornado模板是被python表达式和控制语句标记的简单文本文件。tornado的语法非常直接。在2.1节中，我们展示了如何在一个web应用中使用render方法传送html给浏览器。你可以在tornado应用之外使用python解释器导入模块尝试模板系统，此时结果会被直接输出出来。<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from tornado.template import Template</div><div class="line">&gt;&gt;&gt; content = Template(<span class="string">"&lt;html&gt;&lt;body&gt;&lt;h1&gt;&#123;&#123;header&#125;&#125;&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;"</span>)</div><div class="line">&gt;&gt;&gt; print content.generate(header=<span class="string">"Welcome!"</span>)</div><div class="line">&lt;html&gt;&lt;body&gt;&lt;h1&gt;Welcome!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;</div></pre></td></tr></table></figure></p>
-<h3 id="2-21填充表达式"><a href="#2-21填充表达式" class="headerlink" title="2.21填充表达式"></a>2.21填充表达式</h3><p>上面的演示我们也可以看出，向html中填充python变量的值，我们可以使用双大括号；其实我们可以在双大括号中插入python表达式，它会自动计算出其实际值：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from tornado.template import Template</div><div class="line">&gt;&gt;&gt; print Template(<span class="string">"&#123;&#123; 1+1 &#125;&#125;"</span>).generate()</div><div class="line"><span class="number">2</span></div><div class="line">&gt;&gt;&gt; print Template(<span class="string">"&#123;&#123; 'scrambled eggs'[-4:] &#125;&#125;"</span>).generate()</div><div class="line">eggs</div><div class="line">&gt;&gt;&gt; print Template(<span class="string">"&#123;&#123; ', '.join([str(x*x) for x in range(10)]) &#125;&#125;"</span>).generate()</div><div class="line"><span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">25</span>, <span class="number">36</span>, <span class="number">49</span>, <span class="number">64</span>, <span class="number">81</span></div></pre></td></tr></table></figure></p>
-<h3 id="2-22-控制流语句"><a href="#2-22-控制流语句" class="headerlink" title="2.22 控制流语句"></a>2.22 控制流语句</h3><p>同样也可以在tornado模板中使用python条件和循环语句。控制与句以{ %和% }包围，并以类似下面形式使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123;% if page is None %&#125;</div><div class="line">或</div><div class="line">&#123;% if len(entrise) == 3 %&#125;</div></pre></td></tr></table></figure></p>
-<p>控制语句的大部分就像对应的python语句一样工作，支持if,for,wihle,try。在这些情况下，语句块以{ %开始，以 % }结束</p>
-<p>模板:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">  &lt;head&gt;&lt;title&gt;&#123;&#123;title&#125;&#125;&lt;/title&gt;&lt;/head&gt;</div><div class="line"></div><div class="line">  &lt;body&gt;</div><div class="line">    &lt;h1&gt;&#123;&#123;header&#125;&#125;&lt;/h1&gt;</div><div class="line">    &lt;ul&gt;</div><div class="line">      &#123;%for book in books%&#125;</div><div class="line">        &lt;li&gt;&#123;&#123;book&#125;&#125;&lt;/li&gt;</div><div class="line">      &#123;% end %&#125;</div><div class="line">    &lt;/ul&gt;</div><div class="line">  &lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
-<p>处理函数:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BookHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        self.render(<span class="string">"books.html"</span>, title=<span class="string">"Home Page"</span>, header=<span class="string">"Books that are great"</span>,\</div><div class="line">                    books=[<span class="string">"python"</span>, <span class="string">"c++"</span>, <span class="string">"pascal"</span>])</div></pre></td></tr></table></figure></p>
-<p>这个时候将渲染出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">  &lt;head&gt;&lt;title&gt;&#123;&#123;title&#125;&#125;&lt;/title&gt;&lt;/head&gt;</div><div class="line"></div><div class="line">  &lt;body&gt;</div><div class="line">    &lt;h1&gt;&#123;&#123;header&#125;&#125;&lt;/h1&gt;</div><div class="line">    &lt;ul&gt;</div><div class="line">        &lt;li&gt;python&lt;/li&gt;</div><div class="line">        &lt;li&gt;C++&lt;/li&gt;</div><div class="line">        &lt;li&gt;pascal&lt;/li&gt;</div><div class="line">      &#123;% end %&#125;</div><div class="line">    &lt;/ul&gt;</div><div class="line">  &lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
-<p>不像其他的python模板渲染系统，tornado模板语言的一个最好的东西是在<strong>if和for语句块中可以使用的表达式没有限制</strong>.因此，你可以在你的模板中执行所有的python代码。<br>同样，你也可以在你的控制语句块中间使用{ % set foo = “bar” % }来设置变量的值。你还有很多可以在控制语句块中做的事情，但是，在大多数情况下，你最好使用UI模块来做更复杂的划分。我们稍后会更详细的看到这一点。</p>
-<h3 id="2-2-3在模板中使用函数"><a href="#2-2-3在模板中使用函数" class="headerlink" title="2.2.3在模板中使用函数"></a>2.2.3在模板中使用函数</h3><p>tornado在所有模板中默认提供了一些遍历的函数。他们包括：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#替换字符串s中的&amp;,&lt;,&gt;为他们对应的html字符</span></div><div class="line">escape(s)</div><div class="line"><span class="comment"># 使用urllib.quote_plus替换字符串s中的字符为URL编码形式</span></div><div class="line">url_escape(s)</div><div class="line"><span class="comment">#将val编码成json格式，底层使用json.dumps()</span></div><div class="line">json_encode(val)</div><div class="line"><span class="comment">#过滤字符串s,把连续的多个空白字符替换成一个空格</span></div><div class="line">squeeze(s)</div></pre></td></tr></table></figure></p>
-<p>在模板中使用一个你自己编写的函数也很简单：<strong>只需要将函数名作为模板的参数传递即可，就像其他的变量。</strong><br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&gt;&gt;&gt; from tornado.template import Template</div><div class="line">&gt;&gt;&gt; def disemvowel(s):</div><div class="line">...     <span class="keyword">return</span> <span class="string">''</span>.join([x <span class="keyword">for</span> x <span class="keyword">in</span> s <span class="keyword">if</span> x not <span class="keyword">in</span> <span class="string">'aeiou'</span>])</div><div class="line">...</div><div class="line">&gt;&gt;&gt; disemvowel(<span class="string">"george"</span>)</div><div class="line"><span class="string">'grg'</span></div><div class="line">&gt;&gt;&gt; print Template(<span class="string">"my name is &#123;&#123;d('mortimer')&#125;&#125;"</span>).generate(d=disemvowel)</div><div class="line">my name is mrtmr</div></pre></td></tr></table></figure></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/16/tornado表单与模板/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/05/tornado入门-简单的web服务/">
-                            tornado入门(简单的web服务)
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-05T22:18:06+08:00">
-	
-		    12月 05, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/python学习/">python学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="tornado入门"><a href="#tornado入门" class="headerlink" title="tornado入门"></a>tornado入门</h1><p>tornado是使用python编写的一个强大的，可扩展的web服务器。它在高并发的网络请求中表现的足够稳定，但是却在创建和编写的过程中有着足够的轻量级，并能够被用在大量的应用和工具中。<br>不同于那些最多只能达到10000个并发连接的传统web服务器，tornado在设计之初就考虑到了性能因素，旨在解决C10K问题，这样的设计使得其成为一个非常<strong>高性能</strong>的框架。此外，它还拥有处理安全性，用户验证，社交网络以及与外部服务进行异步交互的工具。</p>
-<h2 id="Hello-tornado"><a href="#Hello-tornado" class="headerlink" title="Hello tornado"></a>Hello tornado</h2><p>tornado是一个编写对HTTP请求响应的框架。作为程序员，你的工作是编写响应特定条件HTTP请求的响应的handler。</p>
-<p>hello.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> tornado.httpserver</div><div class="line"><span class="keyword">import</span> tornado.ioloop</div><div class="line"><span class="keyword">import</span> tornado.options</div><div class="line"><span class="keyword">import</span> tornado.web</div><div class="line"></div><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> define, options</div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, help = <span class="string">"run on the give port"</span>, type = int)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">indexHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        greeting = self.get_argument(<span class="string">"greeting"</span>, <span class="string">"hello"</span>)</div><div class="line">        self.write(greeting + <span class="string">", friend user!"</span>)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application(handlers=[(<span class="string">r"/"</span>, indexHandler)])</div><div class="line">    http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">    http_server.listen(options.port)</div><div class="line">    tornado.ioloop.IOLoop.instance().start()</div></pre></td></tr></table></figure></p>
-<p>编写一个tornado应用中最多的工作是定义继承自tornado.RequestHandler的类。在这个例子中，我们创建了一个简单的应用，在指定的端口监听请求，并在根目录(“/“)下响应请求。<br>执行命令:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python hello.py --port=9999</div></pre></td></tr></table></figure></p>
-<p>使用命令对其访问<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">curl http://localhost:9999</div><div class="line">hello, friend user!</div><div class="line"></div><div class="line">curl http://localhost:9999/?greeting=david</div><div class="line">david, friend user!</div></pre></td></tr></table></figure></p>
-<p>现在tornado程序就已经在localhost:9999处进行监听。我们可以对其进行根目录使用get方法进行那个访问.</p>
-<h3 id="程序分析"><a href="#程序分析" class="headerlink" title="程序分析"></a>程序分析</h3><p>下面我们开始<strong>逐条语句</strong>进行分析：<br>开始的import语句导入了程序所必须的tornado的相关模块。虽然tornado还有其他模块，但是我们在这个程序中只需要这四个模块</p>
-<h4 id="tornado中options模块分析"><a href="#tornado中options模块分析" class="headerlink" title="tornado中options模块分析"></a>tornado中options模块分析</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> define, options</div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, help=<span class="string">"run on the given port"</span>, type=int)</div></pre></td></tr></table></figure>
-<p>tornado包含了一个有用的模块<strong>tornado.options来从命令行读取设置</strong>。我们在这里使用这个模块指定我们监听http请求的端口。它的工作流程是:<br>如果一个与define语句中同名的设置在命令行中给出，那么它将成为<strong>全局options的一个属性</strong>。如果用户程序在运行的时候使用了–help选项，程序将打印出你所定义的选项以及你在define函数的help参数中指定的文本。如果程序没有为这个选项指定值，那么则使用default进行替代。tornado使用type来验证参数的类型，当类型不合适的时候跑出一个异常。因此，我们允许一个整数port作为options.port来访问程序，如果用户没有指定port的值，则默认为9999端口。</p>
-<h4 id="请求处理函数类及方法"><a href="#请求处理函数类及方法" class="headerlink" title="请求处理函数类及方法"></a>请求处理函数类及方法</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">indexHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        greeting = self.get_argument(<span class="string">"greeting"</span>, <span class="string">"hello"</span>)</div><div class="line">        self.write(greeting + <span class="string">", friend user!"</span>)</div></pre></td></tr></table></figure>
-<p>这是tornado请求处理函数类，它继承自tornado.web.RequestHandler,<strong>当处理一个请求的时候，tornado将这个类实例化，并调用http请求方法所对应的方法。</strong>在这个例子中，我们只定义了get方法，也就是说这个类对http的GET请求作出响应。我们稍后将看到实现不止一个http方法的处理函数。</p>
-<h4 id="获取查询参数"><a href="#获取查询参数" class="headerlink" title="获取查询参数"></a>获取查询参数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.get_argument(<span class="string">"greeting"</span>, <span class="string">"hello"</span>)</div></pre></td></tr></table></figure>
-<p>tornado的request类有很多有用的内建函数，包括get_argument()用来用一个查询字符串中获取参数的值。上述的意思是从查询字符串中获取查询参数greeting的值，若查询参数中没有greeting参数，则会其值为”hello”，即为其默认值。</p>
-<h4 id="RequestHandler的write函数"><a href="#RequestHandler的write函数" class="headerlink" title="RequestHandler的write函数"></a>RequestHandler的write函数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.write(greeting + <span class="string">", firendly user"</span>)</div></pre></td></tr></table></figure>
-<p>tornado另一个有用的方法是write,它以一个字符串作为参数，并将其写入到http响应中去。在这里，我们使用请求中greeting的参数提供的值插入到greeting中，并写回到相应中去。</p>
-<h4 id="创建Application实例"><a href="#创建Application实例" class="headerlink" title="创建Application实例"></a>创建Application实例</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application(handlers=[(<span class="string">r"/"</span>, indexHandler)])</div></pre></td></tr></table></figure>
-<p>这里是真正使得tornado运转起来的语句。首先我们使用tornado的options解析命令行。然后我们创建了一个tornado的Application实例。传递给Application的<strong>init</strong>方法的最重要的参数就是handlers。它告诉tornado用那个类来响应特定的请求。</p>
-<h4 id="端口监听"><a href="#端口监听" class="headerlink" title="端口监听"></a>端口监听</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">http_server.listen(options.port)</div><div class="line">tornado.ioloop.IOLoop.instance().start()</div></pre></td></tr></table></figure>
-<p>从这离开始的代码会被反复使用，一旦Application对象被创建，我们可以将其传递给httpServer的对象，然后使用我们在命令行指定的端口进行监听。最后，在程序准备好接收HTTP请求后，我们创建一个tornado的IOLoop的实例进行启动。</p>
-<h2 id="简单字符串服务"><a href="#简单字符串服务" class="headerlink" title="简单字符串服务"></a>简单字符串服务</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> textwrap</div><div class="line"></div><div class="line"><span class="keyword">import</span> tornado.web</div><div class="line"><span class="keyword">import</span> tornado.httpserver</div><div class="line"><span class="keyword">import</span> tornado.ioloop</div><div class="line"><span class="keyword">import</span> tornado.options</div><div class="line"></div><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> define,options</div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, help=<span class="string">"run on the given port"</span>, type=int)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ReverseHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, input1, input2)</span>:</span></div><div class="line">        self.write(input1)</div><div class="line">        self.write(input2)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WrapHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self)</span>:</span></div><div class="line">        text =self.get_argument(<span class="string">"text"</span>)</div><div class="line">        width = self.get_argument(<span class="string">"width"</span>, <span class="number">40</span>)</div><div class="line">        self.write(textwrap.fill(text, int(width)))</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application(handlers=[(<span class="string">r"/reverse/([0-9]+)(\w+)"</span>, ReverseHandler),\</div><div class="line">                                            (<span class="string">r"/wrap"</span>, WrapHandler)])</div><div class="line">    http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">    http_server.listen(options.port)</div><div class="line">    tornado.ioloop.IOLoop.instance().start()</div></pre></td></tr></table></figure>
-<p>上述是一个简单的字符串操作的web服务，有两个作用:第一，到/reverse/string的GET请求奖会返回url路径中指定字符串的反转形式。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$curl http://localhost:8000/reverse/123456</div><div class="line">654321</div></pre></td></tr></table></figure></p>
-<p>作用二是，到/wrap的POST请求从参数text中取得指定文本，并返回按照参数width指定宽度装饰的文本。下面的请求指定一个没有宽度的字符串，所以它的输出宽度被指定为程序中的get_argument的默认值40<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$http://localhost:8000/wrap -d text=Lorem+ipsum+dolor+sit+amet,+consectetuer+adipiscing+elit.</div><div class="line">Lorem ipsum dolor sit amet, consectetuer</div><div class="line">adipiscing elit.</div></pre></td></tr></table></figure></p>
-<h2 id="RequestHandler的更多知识"><a href="#RequestHandler的更多知识" class="headerlink" title="RequestHandler的更多知识"></a>RequestHandler的更多知识</h2><h3 id="HTTP方法"><a href="#HTTP方法" class="headerlink" title="HTTP方法"></a>HTTP方法</h3><p>到目前为止我们只用了http中的get,post方法，但tornado支持任何合法的HTTP请求（GET,POST,HEAD,DELETE,OPTIONS）。你可以非常容易的定义上述任何一种方法的行为，只需要在RequestHandler类中使用同名方法。</p>
-<h3 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h3><p>从上面的代码可以看出，你可以使用RequestHandler类的set_status()方法显式的去设置http的状态麻，但是你需要记住在某些情况下，tornado会自动的设置状态码。下面是一种常见的纲要。</p>
-<ul>
-<li>404 Not Found<br>当http请求的路径无法匹配到任何RequestHandler类对应的模式的时候tornado会返回404相应码。</li>
-<li>400 Bad Request<br>如果你调用了一个没有默认值的get_argument()方法，并且没有发现给定名称的参数，tornado将自动返回一个400响应码</li>
-<li>405 Method Not Allowed<br>如果传入的请求使用了RequestHandler中没有定义的http方法，tornado将自动返回一个405响应码。</li>
-<li>500 Internal Server Error<br>当程序遇到任何不能让其退出的错误的时候，tornado自动返回响应码500.代码中任何没有捕获的异常也会返回500.</li>
-<li>200 OK<br>如果相应成功，并没有其他返回码被设置，tornado将默认返回一个200.</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/05/tornado入门-简单的web服务/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/04/迭代器和简单的生成器/">
-                            迭代器和简单的生成器
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-04T20:22:48+08:00">
-	
-		    12月 04, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/python学习/">python学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="迭代器和简单的生成器"><a href="#迭代器和简单的生成器" class="headerlink" title="迭代器和简单的生成器"></a>迭代器和简单的生成器</h1><p>摘自: <a href="https://www.ibm.com/developerworks/cn/linux/sdk/python/charm-20/" target="_blank" rel="external">https://www.ibm.com/developerworks/cn/linux/sdk/python/charm-20/</a></p>
-<blockquote>
-<p>python2.2引进了一种带有新型关键字的新型构造。这个构造是生成器；关键字是yield.生成器使几个新型，强大和富有表现力的编程习惯成为可能，但初看，要理解生成器，还是有一点难度。本文由浅入深的介绍了生成器，同时还介绍了迭代器的相关问题。</p>
-</blockquote>
-<p>由于迭代器比较容易理解，让我们先看它。基本上迭代器是含有.next方法的对象。这样定义不十分正确但非常接近。事实上，当迭代器应用新的iter()内置函数的时候，大多数迭代器的上下文希望返回迭代器，需要使<strong>iter</strong>()方法返回self.本文的示例将会说明清楚这一点。如果迭代有一个逻辑的终止，则迭代器的.next()方法可能决定抛出StopIteration异常。<br>生成器要稍微复杂化和一般化一点。但生成器典型的用途是用来定义迭代器；所以不值得总是为一些细微之处而担心，生成器是这样一个函数<strong>它记住上一次返回时在函数体中的位置，对于生成器函数的第二次调用跳转到该函数的中间，而上次调用的所有的局部变量都被记住</strong></p>
-<h2 id="随机遍历"><a href="#随机遍历" class="headerlink" title="随机遍历"></a>随机遍历</h2><p>让我们考虑一个简单的问题，可以使用很多方法解决它。假设我们想要一串正的随机数字流，这个数字流的要求是每一个数字不允许小于0.1,且相邻两个数字之间的大小相差绝对值不小于0.4</p>
-<h3 id="版本一"><a href="#版本一" class="headerlink" title="版本一"></a>版本一</h3><p>版本一是比较传统的做法,我们直接写一个随机产生一串数字流的函数，并将他保存在一个list中返回:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_random</span><span class="params">()</span>:</span></div><div class="line">    last, rand = <span class="number">1</span>, random.random()</div><div class="line">    num = []</div><div class="line">    <span class="keyword">while</span> rand &gt; <span class="number">0.1</span>:</div><div class="line">        <span class="keyword">if</span> abs(last - rand) &gt;= <span class="number">0.4</span>:</div><div class="line">            last = rand</div><div class="line">            num.append(rand)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="keyword">print</span> <span class="string">"invalid"</span></div><div class="line">            rand = random.random()</div><div class="line">    num.append(rand)</div><div class="line">    <span class="keyword">return</span> num</div><div class="line"></div><div class="line"><span class="keyword">for</span> item <span class="keyword">in</span> generate_random():</div><div class="line">    <span class="keyword">print</span> item</div></pre></td></tr></table></figure></p>
-<p>从上面可以产出，这种方法有很大的局限性。首先这个示例中不可能产生庞大的数字列表，通过对数字的大小限制进行终结随机数的产生，我们可以通过限制进行预测此数列的大小。另一方面，在内存和性能方面使这种方法变得不切实际，以及没有必要。同样是这个问题，使得python较早的版本中添加了xrange()和xreadlines()。重要的是，许多流取决于外部事件，并且当每个元素可用时，才处理这些流。<br>在python2.1和较早的版本中，我们的诀窍是使用静态函数局部变量来记住函数上一次调用的事情。显而易见，全局变量可以用来做同样的工作，但是它会带来大家熟知的问题：命名空间污染问题</p>
-<p>###版本二 使用静态成员解决上述问题<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_random_static</span><span class="params">(last = [<span class="number">1</span>])</span>:</span></div><div class="line">    rand = random.random()</div><div class="line">    <span class="keyword">if</span> rand &lt; <span class="number">0.1</span>:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    <span class="keyword">while</span> abs(rand - last[<span class="number">0</span>]) &lt; <span class="number">0.4</span>:</div><div class="line">        <span class="keyword">print</span> <span class="string">"invalid"</span></div><div class="line">        rand = random.random()</div><div class="line">    last[<span class="number">0</span>] = rand</div><div class="line">    <span class="keyword">return</span> rand</div><div class="line"></div><div class="line">num = generate_random_static()</div><div class="line"><span class="keyword">while</span> num <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">    <span class="keyword">print</span> num</div><div class="line">    num = generate_random_static()</div></pre></td></tr></table></figure></p>
-<p>这个函数是一个很好的存储器，它只需要记住上一次的的值，返回一个单一的数字。而不需要存储一整个列表。并且与此类似的函数可以返回却绝育外部事件的连续的值。不方便的是使用这个函数不够方便，且想当不灵活</p>
-<h3 id="版本三-定义迭代器类"><a href="#版本三-定义迭代器类" class="headerlink" title="版本三 定义迭代器类"></a>版本三 定义迭代器类</h3><p>实质上python2.2的序列都是迭代器，python常见的习惯用法for elem in lst:而实际上是让;lst差生一个迭代器。然后for循环调用这个迭代器的.next()方法，直到遇到StopIteration为止。幸运的是，由于常见的内置类型自动产生它们的迭代器，所以python程序员不需要直到这里发生了什么。实际上，现在字典里有.iterkeys(),.iteritems(),.itervalues()方法产生迭代器。定制类支持直接使用randomwalk_list()以及一次一个元素这种极度节省的randomwalk_static,这是简单易懂的。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">generate_random_class</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self.last = <span class="number">1</span></div><div class="line">        self.rand = random.random()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> self</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">next</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">if</span> self.rand &lt; <span class="number">0.1</span>:</div><div class="line">            <span class="keyword">raise</span> StopIteration</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="keyword">while</span> abs(self.last - self.rand) &lt; <span class="number">0.4</span>:</div><div class="line">                <span class="keyword">print</span> <span class="string">"invalid"</span></div><div class="line">                self.rand = random.random()</div><div class="line">            self.last = self.rand</div><div class="line">            <span class="keyword">return</span> self.rand</div><div class="line"></div><div class="line"><span class="keyword">for</span> item <span class="keyword">in</span> generate_random_class():</div><div class="line">    <span class="keyword">print</span> item</div></pre></td></tr></table></figure></p>
-<h3 id="版本四-生成器版本"><a href="#版本四-生成器版本" class="headerlink" title="版本四 生成器版本"></a>版本四 生成器版本</h3><p>上述方法也会产生较多的问题，虽然它避免了产生整个list,大量局部变量的情况，但是当迭代器类或者函数取决于多个数据状态的时候，就需要记录多个数据的状态，这种情况下出现错误的记录较大。所以也不是一种较好的解决方法。使用python自带的生成器yield关键字<br>在 Python 2.2+ 中，不直接 写生成器。 相反，编写一个函数，当调用它时，返回生成器。这可能看起来有点古怪，但“函数工厂”是 Python 的常见特性，并且“生成器工厂”明显是这个概念性扩展。在 Python 2.2+ 中使函数成为生成器工厂是它主体某处的一个或多个 yield 语句。如果 yield 发生， return 一定只发生在没有伴随任何返回值的情况中。 然而，一个较好的选择是，安排函数体以便于完成所有 yield 之后，执行就“跳转到结束”。但如果遇到 return ，它导致产生的生成器抛出 StopIteration 异常，而不是进一步生成值。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_random_yield</span><span class="params">()</span>:</span></div><div class="line">    last, rand = <span class="number">1</span>, random.random()</div><div class="line">    <span class="keyword">while</span> rand &gt; <span class="number">0.1</span>:</div><div class="line">        <span class="keyword">if</span> abs(last - rand) &gt;= <span class="number">0.4</span>:</div><div class="line">            last = rand</div><div class="line">            <span class="keyword">yield</span> rand</div><div class="line">        rand = random.random()</div><div class="line">    <span class="keyword">yield</span> rand</div><div class="line"></div><div class="line"><span class="keyword">for</span> item <span class="keyword">in</span> generate_random_yield():</div><div class="line">    <span class="keyword">print</span> item</div></pre></td></tr></table></figure></p>
-<p>上述做法的好处是逻辑简洁，与正常写法无意，也保证了通用性。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/04/迭代器和简单的生成器/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/03/python-yield使用浅析/">
-                            python yield使用浅析
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-03T22:08:04+08:00">
-	
-		    12月 03, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/python学习/">python学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="python-yield使用浅析"><a href="#python-yield使用浅析" class="headerlink" title="python yield使用浅析"></a>python yield使用浅析</h1><p><strong>摘自:<a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-python-yield/" target="_blank" rel="external">https://www.ibm.com/developerworks/cn/opensource/os-cn-python-yield/</a></strong><br>初学python的人经常会发现python函数中使用了很多yield关键字，然而，带有yield关键字的函数的执行流程和普通函数的执行流程不同，yield带来了什么作用，为什么要设计yield?本文将由浅入深地讲解yield的概念和用法，帮助读者体会yield在python中的简单而强大的功能<br>您可能听说过，带有yield的函数在python中称为generator(生成器)，何谓生成器？先抛开generator,以一个常见的编程题目来展示yield的概念。</p>
-<h2 id="如何生成斐波那契数列"><a href="#如何生成斐波那契数列" class="headerlink" title="如何生成斐波那契数列"></a>如何生成斐波那契数列</h2><h3 id="版本1（直接输出斐波那契数列）"><a href="#版本1（直接输出斐波那契数列）" class="headerlink" title="版本1（直接输出斐波那契数列）"></a>版本1（直接输出斐波那契数列）</h3><p>斐波那契额数列的概念搭建应该比较清晰，相信大家能共很轻易的写出如下的算法来计算斐波那契数列:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span></div><div class="line">  n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line">  <span class="keyword">while</span> n &lt; max:</div><div class="line">    <span class="keyword">print</span> b</div><div class="line">    a, b = b, a + b</div><div class="line">    n = n + <span class="number">1</span></div></pre></td></tr></table></figure></p>
-<p>执行fab(5),我们会的到如下的结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; fab(5)</div><div class="line">1</div><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">5</div></pre></td></tr></table></figure></p>
-<p>结果没有问题，但是有经验的开发者会指出，直接在fab函数中 print打印出结果可复用性较差，因为fab返回的结果是None,其他函数无法获取该函数生成的斐波那契数列。所以要提高该函数的可复用性，最好不要直接打印出数列，而是返回一个list</p>
-<h3 id="版本二（返回list）"><a href="#版本二（返回list）" class="headerlink" title="版本二（返回list）"></a>版本二（返回list）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span></div><div class="line">  n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line">  L = []</div><div class="line"></div><div class="line">  <span class="keyword">while</span> n &lt; max:</div><div class="line">    L.append(b)</div><div class="line">    a, b = b, a + b</div><div class="line">    n = n + <span class="number">1</span></div><div class="line">  <span class="keyword">return</span> L</div></pre></td></tr></table></figure>
-<p>使用如下方式打印出斐波那契数列：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> n <span class="keyword">in</span> fab(<span class="number">5</span>):</div><div class="line"><span class="meta">... </span>    <span class="keyword">print</span> =n</div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">2</span></div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">5</span></div></pre></td></tr></table></figure></p>
-<p>上述版本获取了可复用性的要求，但是该函数在运行的过程中占用的内存会随着参数max的增大而增大，如果要控制内存占用，最好不要用list来保存中介按结果，而是通过iterable对象来迭代。例如在python2.x中<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">100</span>)</div><div class="line"></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="number">100</span>)</div></pre></td></tr></table></figure></p>
-<p>前者会生成一个长度为100的list,而后者则不会生成一个100的list，而是在每次迭代中返回下一个数值，内存占用空间很小。因为xrange不返回list,而返回一个iterable的意向，利用iterable我们可以吧fab函数写成一个支持iterable的class</p>
-<h3 id="版本三（实现支持iterable的对象）"><a href="#版本三（实现支持iterable的对象）" class="headerlink" title="版本三（实现支持iterable的对象）"></a>版本三（实现支持iterable的对象）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">fab</span><span class="params">(object)</span>:</span></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, max)</span>:</span></div><div class="line">    self.max = maxself.n, self.a. self.b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="keyword">return</span> self</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">next</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="keyword">if</span> self.n &lt; self.max:</div><div class="line">      r = self.b</div><div class="line">      self.a, self.b = self.b, self.a + self.b</div><div class="line">      self.n = self.n + <span class="number">1</span></div><div class="line">      <span class="keyword">return</span> r</div><div class="line">    <span class="keyword">raise</span> StopIteration</div></pre></td></tr></table></figure>
-<p>Fab函数通过next不断返回数列的下一个数，内存占用始终为常数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt;for n in fab(5):</div><div class="line">...    print n</div><div class="line">1</div><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">5</div></pre></td></tr></table></figure></p>
-<p>上述代码虽然实现了我们版本二的要求，但是代码远远没有第一个版本简洁。如果想要保持第一版的简洁，这个时候就要用上yield</p>
-<h3 id="版本四"><a href="#版本四" class="headerlink" title="版本四"></a>版本四</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span></div><div class="line">  n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></div><div class="line">  <span class="keyword">while</span> n &lt; max:</div><div class="line">    <span class="keyword">yield</span> b</div><div class="line">    a, b = b, a + b</div><div class="line">    n = n + <span class="number">1</span></div></pre></td></tr></table></figure>
-<p>第四个版本和第一个版本相比仅仅把print b该成了yield b,就在保持简洁性的同时获得了iterable的效果。调用第四个版本和第二个版本的fab完全一致:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt;<span class="keyword">for</span> n <span class="keyword">in</span> fab(<span class="number">5</span>):</div><div class="line"><span class="meta">... </span>  <span class="keyword">print</span> n</div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">2</span></div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">5</span></div></pre></td></tr></table></figure></p>
-<p>简单的将,yield的作用就是把一个函数变成了一个generator,带有yield的函数不在是一个普通函数,python解释器会将其视为一个generator,调用fab(5)不会执行fab函数，而是返回一个iterable对象。在for循环执行的时候，每次循环都会执行fab内部的代码，执行到yield b的时候，fab就返回一个迭代之，下次迭代时，代码从yieldb 的下一条语句执行，而函数的本地变量看起来和上次中断执行前是完全一样的，于是函数继续执行，直到再次遇到yield<br>也可以调用fab(5)的next()方法进行回去每次计算的值。</p>
-<h3 id="yield函数的执行流程"><a href="#yield函数的执行流程" class="headerlink" title="yield函数的执行流程"></a>yield函数的执行流程</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>f = fab(<span class="number">5</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">1</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">1</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">2</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">3</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line"><span class="number">5</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>f.next()</div><div class="line">Traceback (most recent call last):</div><div class="line">  File <span class="string">"&lt;stdin&gt;"</span>. line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</div><div class="line"> StopIteration</div></pre></td></tr></table></figure>
-<p>当函数执行结束的时候，generator自动自动抛出StopIteration的异常，表示迭代的结束，而在for循环中，我们不需要手动的进行处理异常，循环会自动的正常结束。</p>
-<blockquote>
-<p>一个带有yield的函数就是一盒generator,它和普通的函数不同，声称一个generator看起来想函数调用，<strong>但是部执行任何函数代码，直到对其调用next()(注意在for循环中会自动调用next)才开始执行</strong>。虽然执行流程和普通函数一样，但是每执行到一个yield语句，就会中断，并返回一个迭代值，下次执行的时候从yield的下一个语句开始执行。看起来像是一个函数在正常执行的过程中被yield中断了数次，每次中断都会通过yield返回当前迭代器的值。<br><strong>yield的好处显而易见，把一个函数该写成generator就获得了迭代能力，比起在类的实例中保存状态计算下一个next的值，更加使代码清洁，而且执行流程非常清晰</strong></p>
-</blockquote>
-<h3 id="判断是否为generator"><a href="#判断是否为generator" class="headerlink" title="判断是否为generator"></a>判断是否为generator</h3><p>方法是使用isgeneratorfunction来进行判断<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> inspect <span class="keyword">import</span> isgeneratorfunction</div><div class="line">isgeneratorfunction(fab)</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p><strong>注意fab不可迭代,而fab(5)可迭代</strong></p>
-</blockquote>
-<h2 id="return的作用"><a href="#return的作用" class="headerlink" title="return的作用"></a>return的作用</h2><p>在一个generator function中，若函数中没有return语句，默认为函数执行到函数结尾，而如果中间遇到return语句，则直接判处StopIteration异常，结束迭代。<br>使用yield进行读取文件的例子<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_file</span><span class="params">(fpath)</span>:</span></div><div class="line">  block_size = <span class="number">1024</span></div><div class="line">  <span class="keyword">with</span> open(fpath, <span class="string">"rb"</span>) <span class="keyword">as</span> f:</div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">      block = f.read(block_size)</div><div class="line">      <span class="keyword">if</span> block:</div><div class="line">        <span class="keyword">yield</span> block</div><div class="line">      <span class="keyword">else</span></div><div class="line">        <span class="keyword">return</span></div></pre></td></tr></table></figure></p>
-<p>上述当文件读取完毕的时候奖直接返回StopIteration异常，结束迭代。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/03/python-yield使用浅析/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
