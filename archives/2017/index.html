@@ -216,6 +216,169 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/30/TCP的连接与建立过程/">
+                            TCP的连接与建立
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-30T16:43:00+08:00">
+	
+		    5月 30, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/网络编程/">网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="TCP的连接与建立"><a href="#TCP的连接与建立" class="headerlink" title="TCP的连接与建立"></a>TCP的连接与建立</h1><p>最常用的传输层协议包括TCP和UDP两种，当然除此之外还有其他协议。UDP是一种既不面向连接有不可靠的传输层协议，而TCP是一种面向连接的可靠的传输层协议，为了达到这个目的，其在设计上使用了差错检测，重传，累计确认，定时器以及用于序号和确认好的字段等等。</p>
+<h2 id="TCP的特点"><a href="#TCP的特点" class="headerlink" title="TCP的特点"></a>TCP的特点</h2><p>TCP协议有以下特点：</p>
+<ul>
+<li>面向连接：TCP的连接不是一条电路的或者虚电路，其连接状完全保留在两个端系统中。</li>
+<li>可靠传输：TCP连接在传输消息的过程中保证了数据的可靠性，即保证数据在传输过程中不会丢失。</li>
+<li>点对点：一条TCP连接只能连接两个端点。</li>
+<li>全双工：如果一台主机上的进程A和另一台主机上的进程B建立了一条TCP连接，那么应用层数据就可以从A进程发送到B进程的<strong>同时</strong>，B进程也可以发送数据到A进程。</li>
+</ul>
+<h2 id="TCP报文段结构"><a href="#TCP报文段结构" class="headerlink" title="TCP报文段结构"></a>TCP报文段结构</h2><p>TCP报文段是由首部字段和一个数据字段组成的，数据字段中包含应用程序需要发送的数据。通常报文段中通过MSS(max segment size)来限制报文段数据字段的最大长度。报文段的结构如下：</p>
+<p><img src="../assets/images/TCP报文.png" alt=""></p>
+<p>说明：</p>
+<ul>
+<li>源端口号与目的端口号指的是客户端和服务器端应用程序分别使用的端口号。用于识别主机上某一个特定的应用程序。</li>
+<li>序号(seq)为TCP报文段中数据其实字节的序号。</li>
+<li>确认号字段为(ACK)期待接收的下一个TCP报文段中数据的序号。</li>
+<li>首部长度：首部长度表示当前TCP报文的首部的长度，一般为20，即可以看到表中报文首部的长度为20个字节。但是有时选项中有一些内容，这个时候首部长度大于20。</li>
+<li>保留字：NULL</li>
+<li>标志位：当某一些标志位被设置的时候表达一些特定的含义。<ul>
+<li>UGR标识报文段中存在着紧急数据。其中紧急数据的指针字段存放在后面16位的紧急数据指针中。</li>
+<li>ACK标识确认号字段生效，一般连接建立之后的内个报文段的ACK被会被设置</li>
+<li>PSH:不常用</li>
+<li>SYN:连接建立时的客户端发送的服务端的第一个报文段和服务端响应客户端的报文段中被设置，标识当前为建立连接的过程。</li>
+<li>FIN：与SYN类似，它是在断开连接时被设置。</li>
+</ul>
+</li>
+<li>互联网检验和：用于错误检测</li>
+<li>紧急数据指针：即为上述当UGR标志被设置时标识紧急数据的指针。</li>
+<li>选项：应用程序中自定义的首部的其他内容。</li>
+<li>数据：应用程序发送的真正数据。</li>
+</ul>
+<h2 id="TCP建立连接（三次握手）"><a href="#TCP建立连接（三次握手）" class="headerlink" title="TCP建立连接（三次握手）"></a>TCP建立连接（三次握手）</h2><p>TCP连接的过程可以简单描述为以下几个过程：</p>
+<ul>
+<li>第一次握手：客户端发送请求连接报文段到服务器。此报文段中SYN被设置为1，同时随机或者指定一个起始序号x。此时客户端进入SYN_SENT（同步已发送）状态。</li>
+<li>第二次握手：服务端收到请求报文段之后，向客户端发送确认报文段。确认报文段中ACK设置为1,SYN设置为1,确认号为x+1，同时为自己生成一个序号y。此时服务端进入SYN_RECV状态（同步接受到）。</li>
+<li>第三次握手：客户端收到服务端的确认报文段之后，还要给服务端发送一个确认报文段。这个报文段中ACK被设置为1，确认号为y+1。此报文段可以携带数据。</li>
+</ul>
+<p>经过上述三个步骤之后，TCP连接建立成功。客户端进入连接建立状态(ESTABLISHED)。然后就可以相互发送数据了。</p>
+<p><img src="../assets/images/三次连接.png" alt=""></p>
+<blockquote>
+<p>为什么要经过三次握手？</p>
+<p>三次握手的目的是为了防止失效的报文段突然传送到服务端而出现问题。</p>
+<p>上述已经失效的报文段是指：如果客户端在发送第一次连接请求的过程中，由于网络原因导致此报文段在某个网络节点滞留较长时间，这个时候TCP传输协议会视为此报文段已经丢失，于是重传。若此滞留的报文段在连接断开之后才到达服务器，这个时候就会出现问题。</p>
+<p>若不是使用三次握手，服务器收到失效的报文段之后会建立连接，故之后无法释放TCP资源。导致资源浪费以致于长期会使服务器宕机。</p>
+</blockquote>
+<h3 id="三次握手过程中服务器和客户端程序的行为"><a href="#三次握手过程中服务器和客户端程序的行为" class="headerlink" title="三次握手过程中服务器和客户端程序的行为"></a>三次握手过程中服务器和客户端程序的行为</h3><ul>
+<li>服务器必须准备好接受外来的连接，调用socket(),bind()以及listen三个函数来完成，我们称为被动打开。</li>
+<li>客户端通过调用connect发起主动打开连接，向服务器发送SYN(同步)包，connect函数阻塞。</li>
+<li>服务器通过accept接收到客户端来送的TCP包，需要进行确认同事发送自己的SYN包，此时accept函数阻塞，</li>
+<li>客户端收到服务器的SYN包，connect函数返回，并向服务器发送确认。服务器接收到确认之后accept函数返回。</li>
+</ul>
+<h2 id="TCP连接断开（四次挥手）"><a href="#TCP连接断开（四次挥手）" class="headerlink" title="TCP连接断开（四次挥手）"></a>TCP连接断开（四次挥手）</h2><p>由于TCP连接是全双工的，因此每个方向都必须单独的关闭，也就是发送方和接收方都需要FIN和ACK。<strong>客户端和服务器都可以首先主动发送连接终止的报文</strong>。当其中一方发送完数据之后即可向另一方发出连接断开的请求。当收到FIN意味着这一方向上没有数据流动，但是一方收到FIN之后仍然可以发送数据。四次挥手的具体过程如下：</p>
+<ol>
+<li>此时TCP连接两端都处于ESTABLISHED的状态，客户端停止发送数据，并发出一个FIN报文段。首部FIN设置为1,序号seq=u(u为客户端传输数据的字后一个字节的序号加1)。客户端进入FIN_WAIT-1状态。</li>
+<li>服务端回复确认报文段，确认号为ack=u+1，序号为seq=v(v为服务端传输数据的最后一个字节序号加1)，服务端进入close_wait状态。现在TCP连接处于半关闭状态，服务端如果继续发送数据，客户端依然接收。</li>
+<li>客户端收到确认报文段,进入FIN_WAIT-2状态，服务端发送完数据之后，发出FIN报文段，FIN被置位1，确认号为ack=u+1，然后进入LAST_ACK状态。</li>
+<li>客户端回复确认报文段。ACK=1，确认号为sck=w+1(w为半开半闭时收到的最后一个字节数据的编号)，序号为seq=u+1，然后进入TIME_WAIT状态。</li>
+</ol>
+<p>一段时间(大约4分钟)之后等待状态结束，连接两端进入CLOSED状态。<br><img src="../assets/images/四次挥手.png" alt=""></p>
+<blockquote>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://book.douban.com/subject/26176870/" target="_blank" rel="external">计算机网络 自顶向下方法</a></li>
+<li><a href="https://book.douban.com/subject/4859464/" target="_blank" rel="external">Unix网络编程</a></li>
+<li><a href="http://blog.csdn.net/whuslei/article/details/6667471/" target="_blank" rel="external">http://blog.csdn.net/whuslei/article/details/6667471/</a></li>
+<li><a href="http://blog.csdn.net/wenqian1991/article/details/39667131" target="_blank" rel="external">http://blog.csdn.net/wenqian1991/article/details/39667131</a></li>
+<li><a href="https://cnbin.github.io/blog/2015/07/01/chuan-shu-ceng-:tcp-xie-yi/" target="_blank" rel="external">https://cnbin.github.io/blog/2015/07/01/chuan-shu-ceng-:tcp-xie-yi/</a></li>
+</ul>
+</blockquote>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/30/TCP的连接与建立过程/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/27/硬链接和软链接的区别/">
+                            硬链接与软链接的区别
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-27T09:45:00+08:00">
+	
+		    5月 27, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux笔记/">Linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="硬链接与软链接的区别"><a href="#硬链接与软链接的区别" class="headerlink" title="硬链接与软链接的区别"></a>硬链接与软链接的区别</h1><p><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/" target="_blank" rel="external">https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/</a></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/27/硬链接和软链接的区别/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/27/rapidJsonStream/">
                             rapidjson Stream
                         </a>
@@ -567,8 +730,11 @@
 <li>set_name(int)       :设置变量值</li>
 <li>clear()             :清空所有元素为空状态</li>
 <li>void CopyFrom(person):从给定的对象复制。</li>
+<li>mutable_name()      :获取变量name的指针</li>
+<li>add_name()          :为repeated变量增加值</li>
+<li>ByteSize()          :获取变量所占的字节数<h2 id="常用的序列化方法"><a href="#常用的序列化方法" class="headerlink" title="常用的序列化方法"></a>常用的序列化方法</h2></li>
 </ul>
-<h2 id="常用的序列化方法"><a href="#常用的序列化方法" class="headerlink" title="常用的序列化方法"></a>常用的序列化方法</h2><h3 id="C数组的序列化与反序列化的API"><a href="#C数组的序列化与反序列化的API" class="headerlink" title="C数组的序列化与反序列化的API"></a>C数组的序列化与反序列化的API</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//API</span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromArray</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span>* data, <span class="keyword">int</span> size)</span></span>;</div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToArray</span><span class="params">(<span class="keyword">void</span>* data. <span class="keyword">int</span> size)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    wp.set_name(<span class="string">"sealyao"</span>);     </div><div class="line">    wp.set_id(<span class="number">123456</span>);          </div><div class="line">    wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">    wp.SerializeToArray(parray,<span class="number">256</span>);  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    rap.ParseFromArray(parray,<span class="number">256</span>);  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Get People from Array:"</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rap.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rap.id() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rap.email() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="C数组的序列化与反序列化的API"><a href="#C数组的序列化与反序列化的API" class="headerlink" title="C数组的序列化与反序列化的API"></a>C数组的序列化与反序列化的API</h3><p>如果想将其序列为char*并通过socket进行传输，这是使用SerializeToArray来达到目的。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span>* parray = (<span class="keyword">char</span>*)<span class="built_in">malloc</span>(<span class="number">256</span>);</div><div class="line"><span class="comment">//API</span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromArray</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span>* data, <span class="keyword">int</span> size)</span></span>;</div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToArray</span><span class="params">(<span class="keyword">void</span>* data. <span class="keyword">int</span> size)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    wp.set_name(<span class="string">"sealyao"</span>);     </div><div class="line">    wp.set_id(<span class="number">123456</span>);          </div><div class="line">    wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">    wp.SerializeToArray(parray,<span class="number">256</span>);  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    rap.ParseFromArray(parray,<span class="number">256</span>);  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Get People from Array:"</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rap.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rap.id() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rap.email() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h3 id="C-String的序列化与反序列化API"><a href="#C-String的序列化与反序列化API" class="headerlink" title="C++ String的序列化与反序列化API"></a>C++ String的序列化与反序列化API</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//C++string序列化和序列化API  </span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToString</span><span class="params">(<span class="built_in">string</span>* output)</span> <span class="keyword">const</span></span>;  </div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromString</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; data)</span></span>;  </div><div class="line"><span class="comment">//使用：  </span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    wp.set_name(<span class="string">"sealyao"</span>);     </div><div class="line">    wp.set_id(<span class="number">123456</span>);          </div><div class="line">    wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">    wp.SerializeToString(&amp;pstring);  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    rsp.ParseFromString(pstring);    </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Get People from String:"</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rsp.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rsp.id() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rsp.email() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="文件描述符序列化与反序列化API"><a href="#文件描述符序列化与反序列化API" class="headerlink" title="文件描述符序列化与反序列化API"></a>文件描述符序列化与反序列化API</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//文件描述符的序列化和序列化API  </span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToFileDescriptor</span><span class="params">(<span class="keyword">int</span> file_descriptor)</span> <span class="keyword">const</span></span>;  </div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromFileDescriptor</span><span class="params">(<span class="keyword">int</span> file_descriptor)</span></span>;  </div><div class="line"></div><div class="line"><span class="comment">//使用:  </span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">   fd = open(path,O_CREAT|O_TRUNC|O_RDWR,<span class="number">0644</span>);  </div><div class="line">   <span class="keyword">if</span>(fd &lt;= <span class="number">0</span>)&#123;  </div><div class="line">       perror(<span class="string">"open"</span>);  </div><div class="line">       <span class="built_in">exit</span>(<span class="number">0</span>);   </div><div class="line">   &#125;     </div><div class="line">   wp.set_name(<span class="string">"sealyaog"</span>);  </div><div class="line">   wp.set_id(<span class="number">123456</span>);  </div><div class="line">   wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">   wp.SerializeToFileDescriptor(fd);     </div><div class="line">   close(fd);  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">   fd = open(path,O_RDONLY);  </div><div class="line">   <span class="keyword">if</span>(fd &lt;= <span class="number">0</span>)&#123;  </div><div class="line">       perror(<span class="string">"open"</span>);  </div><div class="line">       <span class="built_in">exit</span>(<span class="number">0</span>);  </div><div class="line">   &#125;  </div><div class="line">   rp.ParseFromFileDescriptor(fd);  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Get People from FD:"</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rp.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rp.id() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rp.email() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   close(fd);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="C-stream-序列化和反序列化API"><a href="#C-stream-序列化和反序列化API" class="headerlink" title="C++ stream 序列化和反序列化API"></a>C++ stream 序列化和反序列化API</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//C++ stream 序列化/反序列化API  </span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToOstream</span><span class="params">(ostream* output)</span> <span class="keyword">const</span></span>;  </div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromIstream</span><span class="params">(istream* input)</span></span>;  </div><div class="line"></div><div class="line"><span class="comment">//使用：  </span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">    <span class="function">fstream <span class="title">fs</span><span class="params">(path,ios::out|ios::trunc|ios::binary)</span></span>;  </div><div class="line">    wp.set_name(<span class="string">"sealyaog"</span>);  </div><div class="line">    wp.set_id(<span class="number">123456</span>);  </div><div class="line">    wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">    wp.SerializeToOstream(&amp;fs);      </div><div class="line">    fs.close();  </div><div class="line">    fs.clear();  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">    <span class="function">fstream <span class="title">fs</span><span class="params">(path,ios::in|ios::binary)</span></span>;  </div><div class="line">    rp.ParseFromIstream(&amp;fs);  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rp.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rp.id() &lt;&lt; <span class="built_in">endl</span>;   </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rp.email() &lt;&lt; <span class="built_in">endl</span>;     </div><div class="line">    fs.close();  </div><div class="line">    fs.clear();  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -849,320 +1015,6 @@
                     
                         <p>
                             <a href="/2017/05/22/CprintNULL/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/22/Unix环境变量/">
-                            Unix环境变量
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-22T23:53:53+08:00">
-	
-		    5月 22, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix环境变量"><a href="#Unix环境变量" class="headerlink" title="Unix环境变量"></a>Unix环境变量</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在Unix中，<strong>每个进程都有自己的一组环境变量</strong>，这些环境变量，要么是一组全局字符串，要么是子进程从父进程继承而来的,如果子进程不对其修改则与父进程的环境变量一模一样。<br>Unix内核并不查看这些字符串，它们的解释权完全取决于各个应用程序。例如shell是Unix中一个可执行程序，通常shell的启动文件中会对环境变量进行设置。所以当我们进入shell之后可以查看path等环境变量。在当前shell中启动的进程会继承其父进程shell的环境变量，也就可以查看path等环境变量，环境变量可以在登录的时候自动设置，也可以由用户自行设置。</p>
-<h2 id="环境变量相关变量"><a href="#环境变量相关变量" class="headerlink" title="环境变量相关变量"></a>环境变量相关变量</h2><p>每个程序都会接收到一张环境表。与参数表一样，环境表也是一个字符指针数组。其中每个指针都包含一个以NULL结尾的字符串的地址。全局变量<br>environ指向了这个数组的地址。</p>
-<p>代码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">extern char **environ;</div><div class="line">if (environ!= NULL) &#123;</div><div class="line">        for (i = 0; environ[i] != NULL; i++) &#123;</div><div class="line">            printf(&quot;env: %s\n&quot;, environ[i]);</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="环境变量相关的函数"><a href="#环境变量相关的函数" class="headerlink" title="环境变量相关的函数"></a>环境变量相关的函数</h2><p>与环境变量相关的函数包括以下几种：取环境变量的值，添加环境变量、修改环境变量、以及删除环境变量.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">//获取环境变量的值</div><div class="line">char* getenv(const char* name); //若包含此key返回对应的值，否则返回NULL</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 修改环境变量的值 前面两个分别为键值对，最后一个表示是否需要删除原有的定义重写。</div><div class="line">* params：键没有存在，则创建此键值对。若键已经存在：rewrite=0时不覆盖原来的值；rewrite!=0覆盖原来的值</div><div class="line">* return：成功返回0， 出错返回非0。</div><div class="line">*/</div><div class="line">int setenv(const char* name, const char* value, int rewrite);</div><div class="line"></div><div class="line">/*</div><div class="line">* function： 添加环境变量，若存在则删除原有的，添加新的，不存在则直接添加</div><div class="line">* params:  参数为一个键值对字符串，如&quot;name=test&quot;</div><div class="line">* return: 成功返回0,不成功返回-1</div><div class="line">*/</div><div class="line">int putenv(char *str);</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 删除name的定义，即使不存在也不出错。</div><div class="line">* params: 参数为键</div><div class="line">* return：出错返回-1,不出错返回0</div><div class="line">*/</div><div class="line">int unsetenv(const char*name);</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 清除所有的环境变量</div><div class="line">* return: 成功返回0, 失败返回-1。</div><div class="line">*/</div><div class="line">int clearenv();</div></pre></td></tr></table></figure>
-<h3 id="putenv和setenv的区别"><a href="#putenv和setenv的区别" class="headerlink" title="putenv和setenv的区别"></a>putenv和setenv的区别</h3><p>putenv可以使用程序中已经定义的且形如”name=value”的字符串作为参数。此时<strong>系统不再为该环境变量分配内存</strong>，环境变量将使用程序中定义变量的内存。<br>并将该字符串的地址保存在环境变量中。所以要<strong>使用putenv一定要用全局变量作为参数</strong>，否则程序退出栈内存被释放，再次访问环境变量将会出现未定义行为，<br>导致环境变量不可用。</p>
-<p>putenv也可用字符串常量做参数，这个时候系统将为其分配内存。</p>
-<p>但是setenv去设置环境变量系统将会先malloc出一块内存给环境变量使用，所以此时不需要担心环境不可用的情况。</p>
-<h2 id="环境变量在进程空间中的存储位置"><a href="#环境变量在进程空间中的存储位置" class="headerlink" title="环境变量在进程空间中的存储位置"></a>环境变量在进程空间中的存储位置</h2><p><strong>环境变量和环境字符串通常放在进程存储空间的顶部，也就是栈内存之上</strong>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">extern char **environ;</div><div class="line">int main() &#123;</div><div class="line">    int i;</div><div class="line">    printf(&quot;the address of the environment: %p\n&quot;, environ);</div><div class="line">    printf(&quot;the adress of first i: %p\n&quot;, &amp;i);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="环境变量中进行增删改操作的实现机制"><a href="#环境变量中进行增删改操作的实现机制" class="headerlink" title="环境变量中进行增删改操作的实现机制"></a>环境变量中进行增删改操作的实现机制</h2><p>删除环境变量比较容易，当增加或者修改环境变量的时候由于环境表和环境字符串通常占用的是进程地址空间的顶部，所以它不能再向<br>高地址（向上）扩展，同时也不能在移动在它之下的各栈帧，所以也不能向下扩展。两者的组合使得该空间的长度不能再增加。</p>
-<ul>
-<li><strong>删除环境变量</strong>：删除环境变量时只需要先找到该指针，然后将所有后续指针都向环境表的首部顺序移一个位置。</li>
-<li><strong>修改环境变量</strong>:<ul>
-<li>若新的环境变量value长度小于或者等于原有的值，则直接将其复制到旧值。</li>
-<li>否则，先调用malloc在堆上分配一块内存，然后将新字符串指向该空间，接着使环境变量表中针对name的指针指向新分区。</li>
-</ul>
-</li>
-<li><strong>增加环境变量</strong>： 增加新环境变量比较复杂。必须首先通过调用malloc为新的name=value分配内存空间，然后将字符串复制到此空间中。<ul>
-<li>如果该name是第一次增加，则必须调用malloc为<strong>新的指针表</strong>分配内存空间，然后将原来的环境表复制到新的内存，并将指向新的name=value字符串<br>的指针存放在该指针表的表尾，然后将空指针放在其后面。最后<strong>使environ指向新的环境表</strong>。这样就导致原来位于栈顶之上的环境表移到了堆内存中。<br>但是大多数的环境指针仍然指向栈顶之上的name=value字符串。</li>
-<li>如果不是第一次新增加一个name，可知之前已经将环境表迁移到堆内存中，所以只需要调用realloc，以分配比原空间多存放一个指针的空间。然后将指针指向name=value<br>字符串的指针，最后是一个NULL指针。</li>
-</ul>
-</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/22/Unix环境变量/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/22/文件IO相关函数/">
-                            文件IO相关函数
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-22T23:31:31+08:00">
-	
-		    5月 22, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="文件IO相关函数"><a href="#文件IO相关函数" class="headerlink" title="文件IO相关函数"></a>文件IO相关函数</h1><p>Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。</p>
-<h2 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h2><p>对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回<br>一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用于IO的数据结构一章中讲了STDIN_FILENO、STDOUT_FILENO以及STDERR_FILENO所对应的文件描述符。</p>
-<p>为了保证系统资源的合理使用和安全性，Unix系统对于系统和用户能打开的文件描述符的格式都做了一定的限制。通过一下命令我们可以进行查看：</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sysctl -a | grep fs.file-max //查看系统级限制的文件描述符的个数</div><div class="line">ulimit -n //查看用户（进程）级别限制的文件描述符的个数，</div></pre></td></tr></table></figure>
-<h3 id="文件描述符与文件指针的关系"><a href="#文件描述符与文件指针的关系" class="headerlink" title="文件描述符与文件指针的关系"></a>文件描述符与文件指针的关系</h3><p>文件描述符：内核会为每一个运行中的进程在进程控制块(pcb)中维护一个打开文件的记录表，每个表项都有一个指针指向打开的文件，文件描述符就是记录表的索引。</p>
-<p>文件指针：C语言使用文件指针而不是文件描述符作为文件IO的句柄，文件指针是指向进程的用户空间中的一个FILE结构的数据结构，FILE结构中包括一个IO缓冲区和一个文件描述符，而文件描述符是<br>文件描述符表的一个索引，从某种意义上可以将文件指针理解为文件句柄的句柄。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</div><div class="line">  <span class="keyword">char</span>*	_ptr;</div><div class="line">  <span class="keyword">int</span>	_cnt;</div><div class="line">  <span class="keyword">char</span>*	_base;</div><div class="line">  <span class="keyword">int</span>	_flag;</div><div class="line">  <span class="keyword">int</span>	_file;</div><div class="line">  <span class="keyword">int</span>	_charbuf;</div><div class="line">  <span class="keyword">int</span>	_bufsiz;</div><div class="line">  <span class="keyword">char</span>*	_tmpfname;</div><div class="line">&#125; FILE;</div></pre></td></tr></table></figure>
-<ul>
-<li>文件指针相比于文件描述符是高级的接口.</li>
-<li>文件指针使用fread()和fwrite()函数进行操作,文件描述符使用write()和read()函数进行操作</li>
-<li>文件指针具有缓冲区，是较高级别的IO，读写时具有缓冲，具有错误指示和EOF检测；文件描述符没有</li>
-<li>文件指针具有移植性，文件描述符不能移植到除Unix之外的系统。</li>
-<li>fopen在stdio.h中，open在fcntl.h中</li>
-<li>fopen是标准C中定义的，而open是posix中定义的。</li>
-<li>fwrite/fread处理的速度快于read/write，但是在内存方面read/write性能较好。</li>
-</ul>
-<h2 id="函数open-和openat"><a href="#函数open-和openat" class="headerlink" title="函数open()和openat()"></a>函数open()和openat()</h2><h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* path, <span class="keyword">int</span> oflag, ...<span class="comment">/*mode_t mode*/</span>)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">openat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* path, <span class="keyword">int</span> oflag, ...<span class="comment">/*mode_t mode*/</span>)</span></span></div></pre></td></tr></table></figure>
-<h3 id="返回值说明"><a href="#返回值说明" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若文件打开失败返回-1，打开失败原因可以通过errno或者strerror(errno)查看;</p>
-<p>若成功将返回最小的未用的文件描述符的值。</p>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
-<li>path为要打开的文件的文件路径</li>
-<li>oflag为文件打开模式.</li>
-<li>…为可变参数，可以视情况添加</li>
-</ul>
-<h4 id="文件打开模式"><a href="#文件打开模式" class="headerlink" title="文件打开模式"></a>文件打开模式</h4><p>文件打开模式标识当前进程对打开文件的操作权限。通常用一个或者多个权限的或来表示。权限列表如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">flag</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">O_RDONLY</td>
-<td>只读权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_WRONLY</td>
-<td>只写权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_RDWR</td>
-<td>读写权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_EXEC</td>
-<td>可执行权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_SEARCH</td>
-<td>搜索权限(针对目录)</td>
-</tr>
-<tr>
-<td style="text-align:center">O_APPEND</td>
-<td>每次写都追加到文件的末端</td>
-</tr>
-<tr>
-<td style="text-align:center">O_CLOEXEC</td>
-<td>把close_on_exec设置为文件描述符标识</td>
-</tr>
-<tr>
-<td style="text-align:center">O_CREATE</td>
-<td>若文件不存在，则创建它。使用此选项的时候，需要使用第三个参数指定该新文件的访问权限位</td>
-</tr>
-<tr>
-<td style="text-align:center">O_DIRECTORY</td>
-<td>如果path不是目录则出错</td>
-</tr>
-<tr>
-<td style="text-align:center">O_EXCL</td>
-<td>若同时执行了O_CREATE，若文件存在则出错，可以用此选项测试文件是否存在</td>
-</tr>
-<tr>
-<td style="text-align:center">O_NOCTTY</td>
-<td>如果PATH引用的是终端设备，则不将该终端设备作为该进程的控制终端</td>
-</tr>
-<tr>
-<td style="text-align:center">O_NOFOLLOW</td>
-<td>若PATH引用的是符号链接，则出错</td>
-</tr>
-<tr>
-<td style="text-align:center">O_NONBLOCK</td>
-<td>如果path引用的是FIFO,一个块特殊文件或者一个字符特殊文件，则将文本打开操作和后续的IO设置为非阻塞模式</td>
-</tr>
-<tr>
-<td style="text-align:center">O_SYNC</td>
-<td>使每次write等待物理IO完成，包括该write属性引起的文件属性更新需要的IO</td>
-</tr>
-<tr>
-<td style="text-align:center">O_TRUNC</td>
-<td>如果文件存在，且打开模式为只写或者读写，则将文件内容截断为0</td>
-</tr>
-<tr>
-<td style="text-align:center">O_TTY_INIT</td>
-<td>如果打开一个还未打开的终端设备，设置非标准termios参数值，使其符合Single Unix Specification</td>
-</tr>
-<tr>
-<td style="text-align:center">O_DSYNC</td>
-<td>每次write要等待物理IO操作完成，但是如果该写操作并不影响读取刚写入的数据，则不需要等待文件属性被更新</td>
-</tr>
-<tr>
-<td style="text-align:center">O_RSYNC</td>
-<td>使每一个以文件描述符作为参数进行的read操作等待，直至所有对文件同一部分挂起的写操作完成</td>
-</tr>
-</tbody>
-</table>
-<h4 id="文件访问权限mode-t"><a href="#文件访问权限mode-t" class="headerlink" title="文件访问权限mode_t"></a>文件访问权限mode_t</h4><p>mode的值表示了对文件的访问权限。这个访问权限与使用shell命令chmod去修改文件的权限的含义相同，文件的权限包括三大类，分别是当前文件对于文件所有者(u)，文件所有者所在的组(g)以及其他<br>用户(o)而言,对这三种角色又分别具有读写可执行的权限。所以这个参数只有在创建文件的时候才用到，用来指定当前创建的文件所对应的权限。</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">mode</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">S_IRUSR</td>
-<td>用户读</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IWUSR</td>
-<td>用户写</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IXUSR</td>
-<td>用户可执行</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IRGRP</td>
-<td>组读</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IWGRP</td>
-<td>组写</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IXGRP</td>
-<td>组可执行</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IROTH</td>
-<td>其他读</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IWOTH</td>
-<td>其他写</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IXOTH</td>
-<td>其他可执行</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>需要注意的是，目录的可执行权限以及读权限与文件的相应权限完全不同。目录的可执行权限表示搜索位，即可搜索权限，若目录不具有可执行权限则不能cd进入文件；<br>目录的读权限是可以查看目录中文件内容的权限，若文件夹不具有读权限，则ls不能显示目录内的内容。</p>
-</blockquote>
-<h3 id="open与openat的区别"><a href="#open与openat的区别" class="headerlink" title="open与openat的区别"></a>open与openat的区别</h3><p>open和openat的区别主要在fd上</p>
-<ul>
-<li>path参数指定的是绝对路径名，在这种情况下，open与openat相同，fd忽略.</li>
-<li>path参数是相对路径名，fd参数指出了相对路径名在文件系统中的开始地址。fd参数通过打开相对路径名所在的文件目录获取。即此时fd为打开相对路径所获取的文件描述符。</li>
-<li>path参数为相对路径，fd参数为AT_FDCWD，此时相对路径为当前目录，作用于open相同。</li>
-</ul>
-<h2 id="函数create"><a href="#函数create" class="headerlink" title="函数create()"></a>函数create()</h2><h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">create</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">mode_t</span> mode)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="返回值说明-1"><a href="#返回值说明-1" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若文件创建失败返回-1;<br>若创建成功返回当前创建文件的文件描述符。</p>
-<h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><p>参数与open中对应的参数含义相同</p>
-<h3 id="函数功能说明"><a href="#函数功能说明" class="headerlink" title="函数功能说明"></a>函数功能说明</h3><p>create(path, mode)函数功能为创建新文件，与open(path, O_CREATE|O_TRUNC|O_WRONLY)功能相同。</p>
-<h2 id="函数close"><a href="#函数close" class="headerlink" title="函数close()"></a>函数close()</h2><h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="返回值说明-2"><a href="#返回值说明-2" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>文件关闭成功返回0,关闭失败返回-1.</p>
-<h3 id="函数功能介绍"><a href="#函数功能介绍" class="headerlink" title="函数功能介绍"></a>函数功能介绍</h3><p>该函数的作用是关闭指定文件描述符的文件，关闭文件时还会释放该进程加在该文件上的所有的记录锁。当一个进程终止时，内核自动关闭它所有打开的文件。很多程序都是利用这一功能而不是close<br>函数关闭打开的文件。但是对于长期运行的函数，最好还是使用close关闭打开的文件。</p>
-<h2 id="lseek-函数"><a href="#lseek-函数" class="headerlink" title="lseek()函数"></a>lseek()函数</h2><p>每个打开的文件在文件表项中存在着对应的当前文件的偏移量(current file offset)，通常为非负整数。文件的读写操作都是从当前偏移量开始，并在操作后将偏移量增加相应的字节数。当打开文件<br>模式为O_APPEND时，该文件的offset是文件末尾，除此之外，其他情况都被初始化为0.</p>
-<h3 id="函数原型-3"><a href="#函数原型-3" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lseek</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">off_t</span> offset, <span class="keyword">int</span> whence)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="返回值说明-3"><a href="#返回值说明-3" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>成功则返回新的文件的偏移量；<br>失败则返回-1.</p>
-<h3 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h3><p>使用lseek()函数显式的为一个打开的文件设置偏移量。lseek仅将文件的偏移量记录在内核中，并不引起IO开销。</p>
-<h3 id="参数说明-2"><a href="#参数说明-2" class="headerlink" title="参数说明"></a>参数说明</h3><p>参数offset的解释与whence相关。</p>
-<ul>
-<li>若whence为SEEK_SET，则将该文件的偏移量设置为距离<strong>当前文件开始处offset</strong>字节。</li>
-<li>若whence为SEEK_CUR，则将该文件的偏移量设置为距离<strong>当前偏移量加offset</strong>个字节,此时offset可正可负。</li>
-<li>若whence为SEEK_END，则将该文件的偏移量设置为<strong>当前文件长度加offser</strong>个字节，此时offset可正可负。</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> fd = open(<span class="string">"./data"</span>, O_WRONLY | O_CREAT | O_TRUNC);</div><div class="line">    lseek(fd, <span class="number">20</span>, SEEK_END);</div><div class="line">    write(fd, <span class="string">"haha"</span>, <span class="number">4</span>);</div><div class="line"></div><div class="line">    <span class="comment">//可以用这种方法查看打开文件的当前偏移量。</span></div><div class="line">    <span class="comment">//这种方法可以用来确定当前文件是否可以设置偏移量</span></div><div class="line">    <span class="comment">//若文件是管道、FIFO或者网络套接字，则lseek返回-1，并将errno设置为ESPIPE</span></div><div class="line">    <span class="keyword">off_t</span> currpos;</div><div class="line">    currpos = lseek(fd, <span class="number">0</span>, SEEK_CUR);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>注意一般情况下文件的偏移量不能为负值，但是一些特殊的文件允许偏移量为负值，如在FreeBSD上运行的设备/dev/kmem支持负的偏移量。<br>因为偏移量可能为负值，所以在比较偏移量的时候不能直接判断其是否小于0，而是要判断其是否等于-1.</p>
-<p>文件的偏移量允许大于文件的长度，这时会在文件中出现一些空洞，但是是被允许的。文件中的空洞并不在文件中占磁盘块（block）。</p>
-</blockquote>
-<h2 id="read-函数"><a href="#read-函数" class="headerlink" title="read()函数"></a>read()函数</h2><h3 id="函数原型-4"><a href="#函数原型-4" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> read(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes);</div></pre></td></tr></table></figure>
-<h3 id="返回值说明-4"><a href="#返回值说明-4" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若读取成功，读到文件末尾返回0，未读到文件末尾返回当前读的字节数。<br>若读取失败，返回-1。</p>
-<h3 id="参数说明-3"><a href="#参数说明-3" class="headerlink" title="参数说明"></a>参数说明</h3><p>fd为要读取文件的文件描述符。buf为读取文件数据缓冲区，nbytes为期待读取的字节数，通常为sizeof(buf)。</p>
-<blockquote>
-<p>注意read函数默认读入多行，遇到换行不会停止读入，直到读到文件末尾，下一次读取返回值为0.</p>
-</blockquote>
-<h2 id="write-函数"><a href="#write-函数" class="headerlink" title="write()函数"></a>write()函数</h2><h3 id="函数原型-5"><a href="#函数原型-5" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> write(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span>* buf, <span class="keyword">size_t</span> ntyes);</div></pre></td></tr></table></figure>
-<h3 id="返回值说明-5"><a href="#返回值说明-5" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若写入成功则返回写入的字节数；失败返回-1.</p>
-<h3 id="参数说明-4"><a href="#参数说明-4" class="headerlink" title="参数说明"></a>参数说明</h3><p>buf为写入内容的缓冲区，ntyes为期待写入的字节数，通常为sizeof(buf)。一般情况下返回值与ntypes相等，否则写入失败。</p>
-<blockquote>
-<p>当指定O_APPEND选项，内容将从文件末尾写入，否则从文件开始写入。一般情况下将缓冲区的长度设置为磁盘块的大小可以最大程度的提升程序读写的性能。</p>
-</blockquote>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/22/文件IO相关函数/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
