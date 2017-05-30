@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-05-30T10:28:45.326Z</updated>
+  <updated>2017-05-30T11:31:46.880Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,40 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>TCP状态转换图</title>
+    <link href="http://yoursite.com/2017/05/30/TCP%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2%E5%9B%BE/"/>
+    <id>http://yoursite.com/2017/05/30/TCP状态转换图/</id>
+    <published>2017-05-30T09:01:00.000Z</published>
+    <updated>2017-05-30T11:31:46.880Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="TCP状态转换图"><a href="#TCP状态转换图" class="headerlink" title="TCP状态转换图"></a>TCP状态转换图</h1><p>TCP涉及连接建立和连接终止的操作可以用状态转换图来说明。</p>
+<p>TCP为一个连接定义了11中状态，并且规定了如何基于当前状态以及该状态下接收的分节(TCP报文段)从一个状态转换为另一个状态。其状态转换图如下所示：</p>
+<p><img src="../assets/images/TCP状态转化图.jpg" alt=""></p>
+<p>具体转化过程和转换条件如上图所示。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;TCP状态转换图&quot;&gt;&lt;a href=&quot;#TCP状态转换图&quot; class=&quot;headerlink&quot; title=&quot;TCP状态转换图&quot;&gt;&lt;/a&gt;TCP状态转换图&lt;/h1&gt;&lt;p&gt;TCP涉及连接建立和连接终止的操作可以用状态转换图来说明。&lt;/p&gt;
+&lt;p&gt;TCP为一个连接定
+    
+    </summary>
+    
+      <category term="网络编程" scheme="http://yoursite.com/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="TCP" scheme="http://yoursite.com/tags/TCP/"/>
+    
+      <category term="状态转换图" scheme="http://yoursite.com/tags/%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2%E5%9B%BE/"/>
+    
+  </entry>
+  
+  <entry>
     <title>TCP的连接与建立</title>
     <link href="http://yoursite.com/2017/05/30/TCP%E7%9A%84%E8%BF%9E%E6%8E%A5%E4%B8%8E%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B/"/>
     <id>http://yoursite.com/2017/05/30/TCP的连接与建立过程/</id>
     <published>2017-05-30T08:43:00.000Z</published>
-    <updated>2017-05-30T10:28:45.326Z</updated>
+    <updated>2017-05-30T10:29:30.781Z</updated>
     
     <content type="html"><![CDATA[<h1 id="TCP的连接与建立"><a href="#TCP的连接与建立" class="headerlink" title="TCP的连接与建立"></a>TCP的连接与建立</h1><p>最常用的传输层协议包括TCP和UDP两种，当然除此之外还有其他协议。UDP是一种既不面向连接有不可靠的传输层协议，而TCP是一种面向连接的可靠的传输层协议，为了达到这个目的，其在设计上使用了差错检测，重传，累计确认，定时器以及用于序号和确认好的字段等等。</p>
 <h2 id="TCP的特点"><a href="#TCP的特点" class="headerlink" title="TCP的特点"></a>TCP的特点</h2><p>TCP协议有以下特点：</p>
@@ -1496,43 +1525,6 @@
     </summary>
     
       <category term="C++学习" scheme="http://yoursite.com/categories/C-%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-      <category term="C++" scheme="http://yoursite.com/tags/C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>why assigment operator can not be frined function</title>
-    <link href="http://yoursite.com/2017/03/21/why-assigment-operator-can-not-be-frined-function/"/>
-    <id>http://yoursite.com/2017/03/21/why-assigment-operator-can-not-be-frined-function/</id>
-    <published>2017-03-21T06:30:41.000Z</published>
-    <updated>2017-03-21T06:31:31.856Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="why-assigment-operator-can-not-be-frined"><a href="#why-assigment-operator-can-not-be-frined" class="headerlink" title="why assigment operator can not be frined"></a>why assigment operator can not be frined</h1><blockquote>
-<p>this is a problem in my work and I have find th solution on stackoverflow,so recorder here</p>
-</blockquote>
-<h2 id="problem-description"><a href="#problem-description" class="headerlink" title="problem description"></a>problem description</h2><p>When I refactor my object, I have a problem which need to change the return value<br>of and function std::string to a struct data, but I don’t want to change my code<br>where the function be used, so I want to overload the assignment operator which<br>will assign a struct to string.The code is as follows:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="keyword">class</span> data_struct&#123;</div><div class="line">  <span class="keyword">friend</span> <span class="built_in">std</span>::<span class="built_in">string</span> <span class="keyword">operator</span> = (<span class="built_in">std</span>::<span class="built_in">string</span>&amp; s, data_struct&amp; d);</div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="keyword">bool</span> success&#123;<span class="literal">false</span>&#125;;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> message&#123;<span class="string">""</span>&#125;;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  data_struct(<span class="keyword">bool</span> t_success, <span class="built_in">std</span>::<span class="built_in">string</span> t_message):</div><div class="line">            success(t_success), message(t_message) &#123;&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">std</span>::<span class="built_in">string</span> <span class="keyword">operator</span> = (<span class="built_in">std</span>::<span class="built_in">string</span>&amp; s, data_struct&amp; d) &#123;</div><div class="line">  s = d.s;</div><div class="line">  <span class="keyword">return</span> s;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">data_struct <span class="title">d</span><span class="params">(<span class="literal">false</span>,<span class="string">"haha"</span>)</span></span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> s = d;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>when I compile this file , this is an error follows:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">main.cpp:3:64: error: ‘std::__cxx11::string operator=(std::__cxx11::string&amp;, data_struct&amp;)’ must be a nonstatic member <span class="keyword">function</span></div><div class="line">   friend std::string operator = (std::string&amp; s, data_struct&amp; d);</div><div class="line">                                                                ^</div><div class="line">main.cpp:12:13: error: expected initializer before ‘operator’</div><div class="line"> std::string operator = (std::string&amp; s, data_struct&amp; d) &#123;</div><div class="line">             ^</div><div class="line">main.cpp: In <span class="keyword">function</span> ‘int main()’:</div><div class="line">main.cpp:19:19: error: conversion from ‘data_struct’ to non-scalar <span class="built_in">type</span> ‘std::__cxx11::string &#123;aka std::__cxx11::basic_string&lt;char&gt;&#125;’ requested</div><div class="line">   std::string s = d;</div></pre></td></tr></table></figure>
-<h2 id="why-does-this-happen"><a href="#why-does-this-happen" class="headerlink" title="why does this happen?"></a>why does this happen?</h2><p>Firstly, it should be noted that this has nothing to do with the operator being implemented as a friend specifically. It is really about implementing the copy-assignment as a member function or as a non-member (standalone) function. Whether that standalone function is going to be a friend or not is completely irrelevant: it might be, it might not be, depending on what it wants to access inside the class.</p>
-<p>Now, the answer to this question is given in D&amp;E book (The Design and Evolution of C++). The reason for this is that the compiler always declares/defines a member copy-assignment operator for the class (if you don’t declare your own member copy-assignment operator).</p>
-<p>If the language also allowed declaring copy-assignment operator as a standalone (non-member) function, you could end up with the following</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Class definition</span></div><div class="line"><span class="keyword">class</span> SomeClass &#123;</div><div class="line">  <span class="comment">// No copy-assignment operator declared here</span></div><div class="line">  <span class="comment">// so the compiler declares its own implicitly</span></div><div class="line">  ...</div><div class="line">&#125;;</div><div class="line"></div><div class="line">SomeClass a, b;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">  a = b;</div><div class="line">  <span class="comment">// The code here will use the compiler-declared copy-assignment for `SomeClass`</span></div><div class="line">  <span class="comment">// because it doesn't know anything about any other copy-assignment operators</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Your standalone assignment operator</span></div><div class="line">SomeClass&amp; <span class="keyword">operator</span> =(SomeClass&amp; lhs, <span class="keyword">const</span> SomeClass&amp; rhs);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">bar</span><span class="params">()</span> </span>&#123;</div><div class="line">  a = b;</div><div class="line">  <span class="comment">// The code here will use your standalone copy-assigment for `SomeClass`</span></div><div class="line">  <span class="comment">// and not the compiler-declared one</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>As seen in the above example, the semantics of the copy-assignment would change in the middle of the translation unit - before the declaration of your standalone operator the compiler’s version is used. After the declaration your version is used. The behavior of the program will change depending on where you put the declaration of your standalone copy-assignment operator.</p>
-<p>This was considered unacceptably dangerous (and it is), so C++ doesn’t allow copy-assignment operator to be declared as a standalone function.</p>
-<p>It is true that in your particular example, which happens to use a friend function specifically, the operator is declared very early, inside the class definition (since that’s how friends are declared). So, in your case the compiler will, of course, know about the existence of your operator right away. However, from the point of view of C++ language the general issue is not related to friend functions in any way. From the point of view of C++ language it is about member functions vs. non-member functions, and non-member overloading of copy-assignment is just prohibited entirely for the reasons described above.</p>
-<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>due to the solution above is not proper.So I overWrite the orignal function, and<br>invoke different version in their needed place.</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;why-assigment-operator-can-not-be-frined&quot;&gt;&lt;a href=&quot;#why-assigment-operator-can-not-be-frined&quot; class=&quot;headerlink&quot; title=&quot;why assigmen
-    
-    </summary>
-    
-      <category term="C++ problems" scheme="http://yoursite.com/categories/C-problems/"/>
     
     
       <category term="C++" scheme="http://yoursite.com/tags/C/"/>
