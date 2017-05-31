@@ -215,6 +215,162 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/31/Unix标准IO库函数/">
+                            Unix标准IO库相关函数总结（一）
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-31T20:04:00+08:00">
+	
+		    31 5月 2017
+    	
+    </time>
+    
+        <span>dans </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix标准IO库相关函数总结-一"><a href="#Unix标准IO库相关函数总结-一" class="headerlink" title="Unix标准IO库相关函数总结(一)"></a>Unix标准IO库相关函数总结(一)</h1><h2 id="Unix标准IO类型FILE"><a href="#Unix标准IO类型FILE" class="headerlink" title="Unix标准IO类型FILE"></a>Unix标准IO类型FILE</h2><p>在Unix相关的文件IO中几乎所有的函数都用到了文件描述符，文件描述符是打开一个文件时返回的一个可用的最小的文件描述标识。相应的在Unix标准IO相关的函数中，几乎每个函数都用到了FILE数据类型。本小结简单介绍一下FILE结构体的内容。</p>
+<p>FILE实际上是一个struct的typedef,可以在/usr/include/stdio.h中找到它的定义为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> _IO_FILE FILE;</div></pre></td></tr></table></figure></p>
+<p>_IO_FILE_的定义在文件/usr/include/libio.h中，我们可以看到它的具体定义为：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">struct</span> _IO_FILE &#123;</div><div class="line">  <span class="keyword">int</span> _flags;           <span class="comment">/* High-order word is _IO_MAGIC; rest is flags. */</span></div><div class="line">  <span class="meta">#<span class="meta-keyword">define</span> _IO_file_flags _flags</span></div><div class="line"></div><div class="line">  <span class="comment">/* The following pointers correspond to the C++ streambuf protocol. */</span></div><div class="line">  <span class="comment">/* Note:  Tk uses the _IO_read_ptr and _IO_read_end fields directly. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_ptr;   <span class="comment">/* Current read pointer */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_end;   <span class="comment">/* End of get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_base;  <span class="comment">/* Start of putback+get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_base; <span class="comment">/* Start of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_ptr;  <span class="comment">/* Current put pointer. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_end;  <span class="comment">/* End of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_base;   <span class="comment">/* Start of reserve area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_end;    <span class="comment">/* End of reserve area. */</span></div><div class="line">  <span class="comment">/* The following fields are used to support backing up and undo. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_base; <span class="comment">/* Pointer to start of non-current get area. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_backup_base;  <span class="comment">/* Pointer to first valid character of backup area */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_end; <span class="comment">/* Pointer to end of non-current get area. */</span></div><div class="line"></div><div class="line">  <span class="keyword">struct</span> _IO_marker *_markers;</div><div class="line"></div><div class="line">  <span class="keyword">struct</span> _IO_FILE *_chain;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> _fileno;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> 0</span></div><div class="line">  <span class="keyword">int</span> _blksize;</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">  <span class="keyword">int</span> _flags2;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">  _IO_off_t _old_offset; <span class="comment">/* This used to be _offset but it's too small.  */</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __HAVE_COLUMN <span class="comment">/* temporary */</span></span></div><div class="line">  <span class="comment">/* 1+column number of pbase(); 0 is unknown. */</span></div><div class="line">  <span class="keyword">unsigned</span> <span class="keyword">short</span> _cur_column;</div><div class="line">  <span class="keyword">signed</span> <span class="keyword">char</span> _vtable_offset;</div><div class="line">  <span class="keyword">char</span> _shortbuf[<span class="number">1</span>];</div><div class="line"></div><div class="line">  <span class="comment">/*  char* _save_gptr;  char* _save_egptr; */</span></div><div class="line"></div><div class="line">  _IO_lock_t *_lock;</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _IO_USE_OLD_IO_FILE</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>从上面的struct中可以观察到FILE中是有文件描述符标志的，即为fileno参数。</p>
+<h2 id="打开标准IO流"><a href="#打开标准IO流" class="headerlink" title="打开标准IO流"></a>打开标准IO流</h2><p>打开标准文件IO流的方法有如下三个：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function">FILE* <span class="title">fopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">freopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type, FILE* <span class="keyword">restrict</span> fp)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">fdopen</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* type)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>上述三个函数<strong>区别以及使用场景</strong>说明:</p>
+<ul>
+<li>fopen的作用是打开一个指定文件路径的文件流。</li>
+<li>freopen的作用是在一个指定的留上打开一个指定文件。如果当前流已经打开，则先关闭该流；若该流被重定向，则清除重定向。该函数常用于<strong>将一个指定的文件打开为一个默认的流</strong>，如若想使用printf函数将打印出来的内容输出到一个指定文件中，此时可以讲stdout重定向到指定的文件路径并指定打开模式。</li>
+<li>fdopen的作用是将一个已经打开的文件描述符(该文件描述符可能是open,dup,socket等获取的)绑定到一个标准IO流上。此函数<strong>常用于由管道和网络通信通道函数返回的文件描述符</strong>，因为这些无法显式的指定文件。</li>
+</ul>
+<p><strong>参数说明：</strong></p>
+<ul>
+<li>pathname: 文件路径，相对或绝对</li>
+<li>type： 打开模式（r,w,a,r+,w+,a+以及所有后面加b）</li>
+</ul>
+<p><strong>打开模式说明：</strong></p>
+<ul>
+<li>r  : 读模式</li>
+<li>w  : 写模式，在写之前将原有文件内容全部清楚</li>
+<li>a  : 追加模式，offset为文件结尾</li>
+<li>r+ : 读写模式(不删除文件原有内容，offset初始为文件开头)。如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc456”。</li>
+<li>w+ : 读写模式(删除文件原有内容，offset为文件开头).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc”。</li>
+<li>a+ : 读写模式(offset为文件结尾).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”123456abc”。</li>
+</ul>
+<p>上述所有的模式后面都加上b表示对二进制文件的操作(rb,wb,ab,rb+,wb+,ab+)。</p>
+<blockquote>
+<p>注意：对于fdopen函数由于文件已经由文件描述符打开，此时w模式时将不清除文件内容，追加模式不常见文件。</p>
+<p>当以读写模式打开文件时候，将有一些限制。如果中间没有fflush,fseek,fsetpos以及rewind函数，标注输出之后不能直接进行输入;如果没有fseek,fsetpos或者rewind，或者一个输入没有到达文件尾，则输入操作之后不能跟输出操作。</p>
+</blockquote>
+<h2 id="关闭标准文件流"><a href="#关闭标准文件流" class="headerlink" title="关闭标准文件流"></a>关闭标准文件流</h2><p>一般情况下在关闭文件流之前通常先使用fflush刷新缓冲区防止数据丢失，关闭标准文件流使用的函数为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">int fclose(FILE* fp);</div></pre></td></tr></table></figure></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/31/Unix标准IO库函数/#post-footer" class="postShorten-excerpt_link link">
+                                Commenter et partager
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/31/Unix标准IO库函数(一)/">
+                            Unix标准IO库相关函数总结（一）
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-31T20:04:00+08:00">
+	
+		    31 5月 2017
+    	
+    </time>
+    
+        <span>dans </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix标准IO库相关函数总结-一"><a href="#Unix标准IO库相关函数总结-一" class="headerlink" title="Unix标准IO库相关函数总结(一)"></a>Unix标准IO库相关函数总结(一)</h1><h2 id="Unix标准IO类型FILE"><a href="#Unix标准IO类型FILE" class="headerlink" title="Unix标准IO类型FILE"></a>Unix标准IO类型FILE</h2><p>在Unix相关的文件IO中几乎所有的函数都用到了文件描述符，文件描述符是打开一个文件时返回的一个可用的最小的文件描述标识。相应的在Unix标准IO相关的函数中，几乎每个函数都用到了FILE数据类型。本小结简单介绍一下FILE结构体的内容。</p>
+<p>FILE实际上是一个struct的typedef,可以在/usr/include/stdio.h中找到它的定义为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> _IO_FILE FILE;</div></pre></td></tr></table></figure></p>
+<p>_IO_FILE_的定义在文件/usr/include/libio.h中，我们可以看到它的具体定义为：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">struct</span> _IO_FILE &#123;</div><div class="line">  <span class="keyword">int</span> _flags;           <span class="comment">/* High-order word is _IO_MAGIC; rest is flags. */</span></div><div class="line">  <span class="meta">#<span class="meta-keyword">define</span> _IO_file_flags _flags</span></div><div class="line"></div><div class="line">  <span class="comment">/* The following pointers correspond to the C++ streambuf protocol. */</span></div><div class="line">  <span class="comment">/* Note:  Tk uses the _IO_read_ptr and _IO_read_end fields directly. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_ptr;   <span class="comment">/* Current read pointer */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_end;   <span class="comment">/* End of get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_base;  <span class="comment">/* Start of putback+get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_base; <span class="comment">/* Start of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_ptr;  <span class="comment">/* Current put pointer. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_end;  <span class="comment">/* End of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_base;   <span class="comment">/* Start of reserve area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_end;    <span class="comment">/* End of reserve area. */</span></div><div class="line">  <span class="comment">/* The following fields are used to support backing up and undo. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_base; <span class="comment">/* Pointer to start of non-current get area. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_backup_base;  <span class="comment">/* Pointer to first valid character of backup area */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_end; <span class="comment">/* Pointer to end of non-current get area. */</span></div><div class="line"></div><div class="line">  <span class="keyword">struct</span> _IO_marker *_markers;</div><div class="line"></div><div class="line">  <span class="keyword">struct</span> _IO_FILE *_chain;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> _fileno;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> 0</span></div><div class="line">  <span class="keyword">int</span> _blksize;</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">  <span class="keyword">int</span> _flags2;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">  _IO_off_t _old_offset; <span class="comment">/* This used to be _offset but it's too small.  */</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __HAVE_COLUMN <span class="comment">/* temporary */</span></span></div><div class="line">  <span class="comment">/* 1+column number of pbase(); 0 is unknown. */</span></div><div class="line">  <span class="keyword">unsigned</span> <span class="keyword">short</span> _cur_column;</div><div class="line">  <span class="keyword">signed</span> <span class="keyword">char</span> _vtable_offset;</div><div class="line">  <span class="keyword">char</span> _shortbuf[<span class="number">1</span>];</div><div class="line"></div><div class="line">  <span class="comment">/*  char* _save_gptr;  char* _save_egptr; */</span></div><div class="line"></div><div class="line">  _IO_lock_t *_lock;</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _IO_USE_OLD_IO_FILE</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>从上面的struct中可以观察到FILE中是有文件描述符标志的，即为fileno参数。</p>
+<h2 id="打开标准IO流"><a href="#打开标准IO流" class="headerlink" title="打开标准IO流"></a>打开标准IO流</h2><p>打开标准文件IO流的方法有如下三个：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function">FILE* <span class="title">fopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">freopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type, FILE* <span class="keyword">restrict</span> fp)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">fdopen</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* type)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>上述三个函数<strong>区别以及使用场景</strong>说明:</p>
+<ul>
+<li>fopen的作用是打开一个指定文件路径的文件流。</li>
+<li>freopen的作用是在一个指定的留上打开一个指定文件。如果当前流已经打开，则先关闭该流；若该流被重定向，则清除重定向。该函数常用于<strong>将一个指定的文件打开为一个默认的流</strong>，如若想使用printf函数将打印出来的内容输出到一个指定文件中，此时可以讲stdout重定向到指定的文件路径并指定打开模式。</li>
+<li>fdopen的作用是将一个已经打开的文件描述符(该文件描述符可能是open,dup,socket等获取的)绑定到一个标准IO流上。此函数<strong>常用于由管道和网络通信通道函数返回的文件描述符</strong>，因为这些无法显式的指定文件。</li>
+</ul>
+<p><strong>参数说明：</strong></p>
+<ul>
+<li>pathname: 文件路径，相对或绝对</li>
+<li>type： 打开模式（r,w,a,r+,w+,a+以及所有后面加b）</li>
+</ul>
+<p><strong>打开模式说明：</strong></p>
+<ul>
+<li>r  : 读模式</li>
+<li>w  : 写模式，在写之前将原有文件内容全部清楚</li>
+<li>a  : 追加模式，offset为文件结尾</li>
+<li>r+ : 读写模式(不删除文件原有内容，offset初始为文件开头)。如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc456”。</li>
+<li>w+ : 读写模式(删除文件原有内容，offset为文件开头).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc”。</li>
+<li>a+ : 读写模式(offset为文件结尾).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”123456abc”。</li>
+</ul>
+<p>上述所有的模式后面都加上b表示对二进制文件的操作(rb,wb,ab,rb+,wb+,ab+)。</p>
+<blockquote>
+<p>注意：对于fdopen函数由于文件已经由文件描述符打开，此时w模式时将不清除文件内容，追加模式不常见文件。</p>
+<p>当以读写模式打开文件时候，将有一些限制。如果中间没有fflush,fseek,fsetpos以及rewind函数，标注输出之后不能直接进行输入;如果没有fseek,fsetpos或者rewind，或者一个输入没有到达文件尾，则输入操作之后不能跟输出操作。</p>
+</blockquote>
+<h2 id="关闭标准文件流"><a href="#关闭标准文件流" class="headerlink" title="关闭标准文件流"></a>关闭标准文件流</h2><p>一般情况下在关闭文件流之前通常先使用fflush刷新缓冲区防止数据丢失，关闭标准文件流使用的函数为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">int fclose(FILE* fp);</div></pre></td></tr></table></figure></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/31/Unix标准IO库函数(一)/#post-footer" class="postShorten-excerpt_link link">
+                                Commenter et partager
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/30/TCP状态转换图/">
                             TCP状态转换图
                         </a>
@@ -223,11 +379,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-30T17:01:00+08:00">
 	
-		    5月 30, 2017
+		    30 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/网络编程/">网络编程</a>
 
@@ -249,7 +405,7 @@
                     
                         <p>
                             <a href="/2017/05/30/TCP状态转换图/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -274,11 +430,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-30T16:43:00+08:00">
 	
-		    5月 30, 2017
+		    30 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/网络编程/">网络编程</a>
 
@@ -364,7 +520,7 @@
                     
                         <p>
                             <a href="/2017/05/30/TCP的连接与建立过程/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -389,11 +545,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-27T09:45:00+08:00">
 	
-		    5月 27, 2017
+		    27 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/Linux笔记/">Linux笔记</a>
 
@@ -412,7 +568,7 @@
                     
                         <p>
                             <a href="/2017/05/27/硬链接和软链接的区别/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -437,11 +593,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-27T09:36:00+08:00">
 	
-		    5月 27, 2017
+		    27 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
 
@@ -463,7 +619,7 @@
                     
                         <p>
                             <a href="/2017/05/27/rapidJsonStream/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -488,11 +644,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-27T09:35:00+08:00">
 	
-		    5月 27, 2017
+		    27 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
 
@@ -514,7 +670,7 @@
                     
                         <p>
                             <a href="/2017/05/27/rapidjsonSchema/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -539,11 +695,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-27T09:35:00+08:00">
 	
-		    5月 27, 2017
+		    27 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
 
@@ -565,7 +721,7 @@
                     
                         <p>
                             <a href="/2017/05/27/rapidjson指针/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -590,11 +746,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-27T09:32:00+08:00">
 	
-		    5月 27, 2017
+		    27 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
 
@@ -616,7 +772,7 @@
                     
                         <p>
                             <a href="/2017/05/27/rapidjson基本用法/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -641,11 +797,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-26T19:48:59+08:00">
 	
-		    5月 26, 2017
+		    26 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/序列化与反序列化/">序列化与反序列化</a>
 
@@ -799,219 +955,7 @@
                     
                         <p>
                             <a href="/2017/05/26/protobuffer学习总结/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/25/makefile常用相关函数/">
-                            makefile常用相关函数
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-25T19:48:59+08:00">
-	
-		    5月 25, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="makefile常用相关函数"><a href="#makefile常用相关函数" class="headerlink" title="makefile常用相关函数"></a>makefile常用相关函数</h1><p>makefile中函数的用法与变量类似，变量的用法是在变量前面加上$，函数的用法一样，也是使用$开头，$之后加一个括号，括号中的第一个参数是函数名，后面紧跟此函数需要的参数，用逗号分隔。下面介绍几个常用的函数。</p>
-<h2 id="wildcard函数"><a href="#wildcard函数" class="headerlink" title="wildcard函数"></a>wildcard函数</h2><ul>
-<li>参数: 一个正则表达式</li>
-</ul>
-<p>wildcard的中文意思是通配符，它的功能类似于正则表达式，用于展开一列所有符合其参数描述的文件名，文件之间用空格分割。</p>
-<p>实例:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SOURCE=$(wildcard *.cpp)</div></pre></td></tr></table></figure>
-<p>此时SOURCE的值为所有的以.cpp为后缀的文件集合，以空格隔开。</p>
-<h2 id="patsubst函数"><a href="#patsubst函数" class="headerlink" title="patsubst函数"></a>patsubst函数</h2><p>其功能是一个匹配替换的函数(pattern substitute)。</p>
-<ul>
-<li>参数：第一个是需要匹配的样式，第二个是表示用什么替换它，第三个被处理的以空格隔开的字符串。</li>
-</ul>
-<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">TARGET = $(patsubst *.cpp, *.o, $(SOURCE))</div></pre></td></tr></table></figure></p>
-<p>TARGET表示与SOURCE中同名的目标文件.</p>
-<h2 id="lt"><a href="#lt" class="headerlink" title="$@,$&lt;, $^"></a>$@,$&lt;, $^</h2><p>上述几个变量的含义：</p>
-<ul>
-<li>$@ 表示目标的文件名</li>
-<li>$&lt; 表示依赖中的第一个文件名</li>
-<li>$^ 表示依赖中所有的文件名</li>
-</ul>
-<p>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">all: library.cpp main.cpp</div></pre></td></tr></table></figure></p>
-<p>其中$@标识all, $&lt;表示library.cpp ，$^表示library.cpp main.cpp</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/25/makefile常用相关函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/24/Unix标准IO缓冲类型/">
-                            Unix标准IO文件流及缓冲类型
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-24T21:14:10+08:00">
-	
-		    5月 24, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix标准IO文件流及缓冲类型"><a href="#Unix标准IO文件流及缓冲类型" class="headerlink" title="Unix标准IO文件流及缓冲类型"></a>Unix标准IO文件流及缓冲类型</h1><h2 id="Unix标准IO文件流"><a href="#Unix标准IO文件流" class="headerlink" title="Unix标准IO文件流"></a>Unix标准IO文件流</h2><p>在<strong>文件IO相关函数</strong>的一节中,我们所有的I/O函数都是围绕着文件描述符来操作的，当打开一个文件的时候，即返回一个文件描述符，然后该文件描述符用于后续的文件操作。而对于标准IO库，对于文件的操作都是围绕这<strong> 文件流 file stream</strong>进行的。当我们使用标准IO库打开或创建一个文件的时候，我们已经使一个流和一个文件进行关联。</p>
-<h3 id="文件流"><a href="#文件流" class="headerlink" title="文件流"></a>文件流</h3><p>由于历史原因，C语言中原来表示流的数据结构是FILE，而不是叫做流。由于大多数的库函数使用到了FILE类型，有的时候在使用FILE指针的时候也叫其为流，这导致后来很多数据把FILE和流搞得十分混乱。实际上流就是标准IO库中程序与文件交互的一种方式。</p>
-<p>标准IO函数fopen打开一个文件时返回一个指向FILE对象的指针，该对象通常是一个结构，<strong>它包含了标准IO库为管理该流所需要的所有信息，包括该文件的文件描述符，用于指向该流缓冲区的指针，缓冲区的长度，当前缓冲区中的字符数以及出错标志等等</strong>。</p>
-<h3 id="标准输入，标准输出以及标准错误"><a href="#标准输入，标准输出以及标准错误" class="headerlink" title="标准输入，标准输出以及标准错误"></a>标准输入，标准输出以及标准错误</h3><p>标准库中对于每一个进程都预定义了三个流，分别是stdin,stdout以及stderr，他们分别对应与Linux文件IO中的STDIN_FILENO,STDOUT_FILENO和STDERR_FILENO。它们的定义在stdio.h中</p>
-<h2 id="I-O文件流的缓冲类型"><a href="#I-O文件流的缓冲类型" class="headerlink" title="I/O文件流的缓冲类型"></a>I/O文件流的缓冲类型</h2><p>标准IO提供缓冲的目的是为了通过减少使用read和write调用的次数来提高IO读写的效率，它对每个IO流自动的进行缓冲处理，从而避免了用户程序在使用read和write需要考虑的这一点。</p>
-<p>标准IO流提供了三种缓冲。分别是全缓冲(fully buffering)，行缓冲(line Buffering)以及无缓冲(nonBuffering)。</p>
-<h3 id="全缓冲"><a href="#全缓冲" class="headerlink" title="全缓冲"></a>全缓冲</h3><p>在使用全缓冲的情况下，当数据填满整个缓冲区之后才进行实际的IO操作。对于驻留在磁盘上的文件的读写通常是使用全缓冲。通常如果不给文件流指定缓冲区的情况下，标准IO函数会首先调用malloc函数获取所需要的缓冲区。</p>
-<h3 id="行缓冲"><a href="#行缓冲" class="headerlink" title="行缓冲"></a>行缓冲</h3><p>在使用行缓冲的情况下，每当输入输出遇到换行或者缓冲区满了的情况下才会进行实际的IO操作，当涉及到终端输入输出的时候通常使用行缓冲。</p>
-<p>对于行缓冲有两个限制。1.由于接收行缓冲的缓冲区的长度是固定的，所以只要填满了缓冲区，即使还没有遇到换行符，也会进行IO操作。2.任何时候，只要通过IO库要求从一个不带缓冲的流或者一个行缓冲的流得到输入数据，那么就会冲洗所有缓冲输出流。</p>
-<p>###不带缓冲<br>此时标准IO库不对字符进行缓冲存储。这就使得输入流要求IO立即进行，如标准错误流，若果出现错误，会立马输出。</p>
-<blockquote>
-<p>flush一个流即刷新缓冲区有两个含义。</p>
-<ul>
-<li>在IO库方面，flush意味着将缓冲区中的内容写到磁盘上，该缓冲区可能还没有满</li>
-<li>在终端驱动方面表示丢弃已经存储在缓冲区中的内容。</li>
-</ul>
-</blockquote>
-<p>##标准文件流与缓冲类型之间的关系</p>
-<ul>
-<li>当标准输入输出指向的是交互式设备（如终端）的时候，它们是行缓冲的，若不是则是全缓冲的。</li>
-<li>标准错误永远是无缓冲的。</li>
-</ul>
-<h2 id="与缓冲相关的函数"><a href="#与缓冲相关的函数" class="headerlink" title="与缓冲相关的函数"></a>与缓冲相关的函数</h2><p>我们可以通过一下两个函数对将缓冲关闭或者改变缓冲的类型。其中这些函数应该在流被打开之后调用，而且也应该在对流进行一切操作之前调用。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">setbuf</span><span class="params">(FILE* <span class="keyword">restrict</span> fd, <span class="keyword">char</span>* <span class="keyword">restrict</span> buf)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setvbuf</span><span class="params">(FILE* <span class="keyword">restrict</span> fd, <span class="keyword">char</span>* <span class="keyword">restrict</span> buf, <span class="keyword">int</span> mode, <span class="keyword">size_t</span> size)</span></span>;</div></pre></td></tr></table></figure>
-<p>使用setbuf函数打开或者关闭缓冲，当buf是一个有效缓冲区时，此时缓冲打开，若流指向的是终端设备，则此时该流是行缓冲的，否则该流是全缓冲的；当buf为NULL的时候，表示关闭该缓冲。</p>
-<p>使用setvbuf可以精确的说明缓冲的类型，这里是使用mode来说明的，mode的值包括以下几个：</p>
-<ul>
-<li>_IOFBF 全缓冲</li>
-<li>_IOLBUF 行缓冲</li>
-<li>_IONBUF 无缓冲</li>
-</ul>
-<p>如果指定一个不带缓冲的流,则忽略buf和size参数。如果指定缓冲，则buf和size分别指定一个缓冲区域和缓冲区域的长度。若此时buf为NULL，则标准IO库将自动制定一个适合长度的缓冲区。</p>
-<p>上述函数与缓冲之间的关系</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">函数</th>
-<th style="text-align:center">mode</th>
-<th style="text-align:center">buf</th>
-<th style="text-align:center">缓冲区及长度</th>
-<th style="text-align:left">缓冲类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">setbuf</td>
-<td style="text-align:center"></td>
-<td style="text-align:center">非空</td>
-<td style="text-align:center">长度为size的缓冲区buf</td>
-<td style="text-align:left">全缓冲或行缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setbuf</td>
-<td style="text-align:center"></td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">无缓冲区</td>
-<td style="text-align:left">不带缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setvbuf</td>
-<td style="text-align:center">_IOFBF</td>
-<td style="text-align:center">非空</td>
-<td style="text-align:center">长度为size的缓冲区buf</td>
-<td style="text-align:left">全缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setvbuf</td>
-<td style="text-align:center">_IOFBF</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">合适长度的缓冲区buf</td>
-<td style="text-align:left">全缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setvbuf</td>
-<td style="text-align:center">_IOLBF</td>
-<td style="text-align:center">非空</td>
-<td style="text-align:center">长度为size的缓冲区buf</td>
-<td style="text-align:left">行缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setvbuf</td>
-<td style="text-align:center">_IOLBF</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">合适长度的缓冲区buf</td>
-<td style="text-align:left">行缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setvbuf</td>
-<td style="text-align:center">_IONBF</td>
-<td style="text-align:center">忽略</td>
-<td style="text-align:center">无缓冲区</td>
-<td style="text-align:left">不带缓冲</td>
-</tr>
-</tbody>
-</table>
-<p>我们还可以通过fflush强制冲洗一个流，此函数使该流所有未写的数据都被传送到内核。作为一种特殊的情况，当流的NULL时，所有的流将被冲洗：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fflush</span><span class="params">(FILE* fd)</span></span>;</div></pre></td></tr></table></figure></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/24/Unix标准IO缓冲类型/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -1027,12 +971,12 @@
         
         <li class="pagination-next">
             <a class="btn btn--default btn--small" href="/page/2/">
-                    <span>OLDER POSTS</span>
+                    <span>POSTS ANCIENTS</span>
                 <i class="fa fa-angle-right text-base icon-ml"></i>
             </a>
         </li>
         
-        <li class="pagination-number">page 1 of 4</li>
+        <li class="pagination-number">page sur</li>
     </ul>
 </div>
 

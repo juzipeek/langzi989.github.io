@@ -1,0 +1,484 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="魏传柳">
+    <title>Unix标准IO库相关函数总结（一） - 魏传柳</title>
+    <meta name="author" content="魏传柳(langzi989)">
+    
+        <meta name="keywords" content="hexo,javascript,">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="Unix标准IO库相关函数总结(一)Unix标准IO类型FILE在Unix相关的文件IO中几乎所有的函数都用到了文件描述符，文件描述符是打开一个文件时返回的一个可用的最小的文件描述标识。相应的在Unix标准IO相关的函数中，几乎每个函数都用到了FILE数据类型。本小结简单介绍一下FILE结构体的内容。
+FILE实际上是一个struct的typedef,可以在/usr/include/stdio.h">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Unix标准IO库相关函数总结（一）">
+<meta property="og:url" content="http://yoursite.com/2017/05/31/Unix标准IO库函数/index.html">
+<meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="Unix标准IO库相关函数总结(一)Unix标准IO类型FILE在Unix相关的文件IO中几乎所有的函数都用到了文件描述符，文件描述符是打开一个文件时返回的一个可用的最小的文件描述标识。相应的在Unix标准IO相关的函数中，几乎每个函数都用到了FILE数据类型。本小结简单介绍一下FILE结构体的内容。
+FILE实际上是一个struct的typedef,可以在/usr/include/stdio.h">
+<meta property="og:updated_time" content="2017-05-31T13:51:59.236Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Unix标准IO库相关函数总结（一）">
+<meta name="twitter:description" content="Unix标准IO库相关函数总结(一)Unix标准IO类型FILE在Unix相关的文件IO中几乎所有的函数都用到了文件描述符，文件描述符是打开一个文件时返回的一个可用的最小的文件描述标识。相应的在Unix标准IO相关的函数中，几乎每个函数都用到了FILE数据类型。本小结简单介绍一下FILE结构体的内容。
+FILE实际上是一个struct的typedef,可以在/usr/include/stdio.h">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://yoursite.com/assets/images/avar.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-nuvue6sithwirecbhvw3dkaobiojqvtadsnhguwi7k04xklybw5djl1smadp.min.css">
+    <!--STYLES END-->
+    
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">魏传柳</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="/assets/images/avar.jpg"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/avar.jpg"/>
+            </a>
+            <span class="sidebar-profile-name">魏传柳(langzi989)</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">home</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">search</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">about</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/langzi989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://blog.csdn.net/u014630623" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-csdn"></i>
+                    <span class="sidebar-button-desc">CSDN</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Unix标准IO库相关函数总结（一）
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" datetime="2017-05-31T20:04:00+08:00">
+	
+		    31 5月 2017
+    	
+    </time>
+    
+        <span>dans </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="Unix标准IO库相关函数总结-一"><a href="#Unix标准IO库相关函数总结-一" class="headerlink" title="Unix标准IO库相关函数总结(一)"></a>Unix标准IO库相关函数总结(一)</h1><h2 id="Unix标准IO类型FILE"><a href="#Unix标准IO类型FILE" class="headerlink" title="Unix标准IO类型FILE"></a>Unix标准IO类型FILE</h2><p>在Unix相关的文件IO中几乎所有的函数都用到了文件描述符，文件描述符是打开一个文件时返回的一个可用的最小的文件描述标识。相应的在Unix标准IO相关的函数中，几乎每个函数都用到了FILE数据类型。本小结简单介绍一下FILE结构体的内容。</p>
+<p>FILE实际上是一个struct的typedef,可以在/usr/include/stdio.h中找到它的定义为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> _IO_FILE FILE;</div></pre></td></tr></table></figure></p>
+<p>_IO_FILE_的定义在文件/usr/include/libio.h中，我们可以看到它的具体定义为：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">struct</span> _IO_FILE &#123;</div><div class="line">  <span class="keyword">int</span> _flags;           <span class="comment">/* High-order word is _IO_MAGIC; rest is flags. */</span></div><div class="line">  <span class="meta">#<span class="meta-keyword">define</span> _IO_file_flags _flags</span></div><div class="line"></div><div class="line">  <span class="comment">/* The following pointers correspond to the C++ streambuf protocol. */</span></div><div class="line">  <span class="comment">/* Note:  Tk uses the _IO_read_ptr and _IO_read_end fields directly. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_ptr;   <span class="comment">/* Current read pointer */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_end;   <span class="comment">/* End of get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_base;  <span class="comment">/* Start of putback+get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_base; <span class="comment">/* Start of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_ptr;  <span class="comment">/* Current put pointer. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_end;  <span class="comment">/* End of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_base;   <span class="comment">/* Start of reserve area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_end;    <span class="comment">/* End of reserve area. */</span></div><div class="line">  <span class="comment">/* The following fields are used to support backing up and undo. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_base; <span class="comment">/* Pointer to start of non-current get area. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_backup_base;  <span class="comment">/* Pointer to first valid character of backup area */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_end; <span class="comment">/* Pointer to end of non-current get area. */</span></div><div class="line"></div><div class="line">  <span class="keyword">struct</span> _IO_marker *_markers;</div><div class="line"></div><div class="line">  <span class="keyword">struct</span> _IO_FILE *_chain;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> _fileno;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> 0</span></div><div class="line">  <span class="keyword">int</span> _blksize;</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">  <span class="keyword">int</span> _flags2;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">  _IO_off_t _old_offset; <span class="comment">/* This used to be _offset but it's too small.  */</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __HAVE_COLUMN <span class="comment">/* temporary */</span></span></div><div class="line">  <span class="comment">/* 1+column number of pbase(); 0 is unknown. */</span></div><div class="line">  <span class="keyword">unsigned</span> <span class="keyword">short</span> _cur_column;</div><div class="line">  <span class="keyword">signed</span> <span class="keyword">char</span> _vtable_offset;</div><div class="line">  <span class="keyword">char</span> _shortbuf[<span class="number">1</span>];</div><div class="line"></div><div class="line">  <span class="comment">/*  char* _save_gptr;  char* _save_egptr; */</span></div><div class="line"></div><div class="line">  _IO_lock_t *_lock;</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _IO_USE_OLD_IO_FILE</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>从上面的struct中可以观察到FILE中是有文件描述符标志的，即为fileno参数。</p>
+<h2 id="打开标准IO流"><a href="#打开标准IO流" class="headerlink" title="打开标准IO流"></a>打开标准IO流</h2><p>打开标准文件IO流的方法有如下三个：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function">FILE* <span class="title">fopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">freopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type, FILE* <span class="keyword">restrict</span> fp)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">fdopen</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* type)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>上述三个函数<strong>区别以及使用场景</strong>说明:</p>
+<ul>
+<li>fopen的作用是打开一个指定文件路径的文件流。</li>
+<li>freopen的作用是在一个指定的留上打开一个指定文件。如果当前流已经打开，则先关闭该流；若该流被重定向，则清除重定向。该函数常用于<strong>将一个指定的文件打开为一个默认的流</strong>，如若想使用printf函数将打印出来的内容输出到一个指定文件中，此时可以讲stdout重定向到指定的文件路径并指定打开模式。</li>
+<li>fdopen的作用是将一个已经打开的文件描述符(该文件描述符可能是open,dup,socket等获取的)绑定到一个标准IO流上。此函数<strong>常用于由管道和网络通信通道函数返回的文件描述符</strong>，因为这些无法显式的指定文件。</li>
+</ul>
+<p><strong>参数说明：</strong></p>
+<ul>
+<li>pathname: 文件路径，相对或绝对</li>
+<li>type： 打开模式（r,w,a,r+,w+,a+以及所有后面加b）</li>
+</ul>
+<p><strong>打开模式说明：</strong></p>
+<ul>
+<li>r  : 读模式</li>
+<li>w  : 写模式，在写之前将原有文件内容全部清楚</li>
+<li>a  : 追加模式，offset为文件结尾</li>
+<li>r+ : 读写模式(不删除文件原有内容，offset初始为文件开头)。如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc456”。</li>
+<li>w+ : 读写模式(删除文件原有内容，offset为文件开头).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc”。</li>
+<li>a+ : 读写模式(offset为文件结尾).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”123456abc”。</li>
+</ul>
+<p>上述所有的模式后面都加上b表示对二进制文件的操作(rb,wb,ab,rb+,wb+,ab+)。</p>
+<blockquote>
+<p>注意：对于fdopen函数由于文件已经由文件描述符打开，此时w模式时将不清除文件内容，追加模式不常见文件。</p>
+<p>当以读写模式打开文件时候，将有一些限制。如果中间没有fflush,fseek,fsetpos以及rewind函数，标注输出之后不能直接进行输入;如果没有fseek,fsetpos或者rewind，或者一个输入没有到达文件尾，则输入操作之后不能跟输出操作。</p>
+</blockquote>
+<h2 id="关闭标准文件流"><a href="#关闭标准文件流" class="headerlink" title="关闭标准文件流"></a>关闭标准文件流</h2><p>一般情况下在关闭文件流之前通常先使用fflush刷新缓冲区防止数据丢失，关闭标准文件流使用的函数为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">int fclose(FILE* fp);</div></pre></td></tr></table></figure></p>
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGÉ DANS</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/FILE/">FILE</a> <a class="tag tag--primary tag--small t-link" href="/tags/fopen/">fopen</a> <a class="tag tag--primary tag--small t-link" href="/tags/freopen/">freopen</a> <a class="tag tag--primary tag--small t-link" href="/tags/标准IO/">标准IO</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PRÉCÉDENT</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/31/Unix标准IO库函数(一)/" data-tooltip="Unix标准IO库相关函数总结（一）">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">SUIVANT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/31/Unix标准IO库函数/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/31/Unix标准IO库函数/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/31/Unix标准IO库函数/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 魏传柳(langzi989). All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PRÉCÉDENT</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/31/Unix标准IO库函数(一)/" data-tooltip="Unix标准IO库相关函数总结（一）">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">SUIVANT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/31/Unix标准IO库函数/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/31/Unix标准IO库函数/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/31/Unix标准IO库函数/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/31/Unix标准IO库函数/">
+                <i class="fa fa-google-plus"></i><span class="">Partager sur Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/31/Unix标准IO库函数/">
+                <i class="fa fa-facebook-official"></i><span>Partager sur Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/31/Unix标准IO库函数/">
+                <i class="fa fa-twitter"></i><span>Partager sur Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/avar.jpg"/>
+        
+            <h4 id="about-card-name">魏传柳(langzi989)</h4>
+        
+            <h5 id="about-card-bio"><p>author.bio</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Guangzhou,China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+</html>
