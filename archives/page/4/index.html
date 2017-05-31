@@ -216,61 +216,6 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2016/12/22/C-前置声明/">
-                            C++前置声明
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-22T22:08:31+08:00">
-	
-		    12月 22, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-学习/">C++学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C-前置声明"><a href="#C-前置声明" class="headerlink" title="C++前置声明"></a>C++前置声明</h1><p>以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。</p>
-<h2 id="实际场景"><a href="#实际场景" class="headerlink" title="实际场景"></a>实际场景</h2><p>我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：<br>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Key.hpp"</span></span></div><div class="line"><span class="keyword">class</span> Lock &#123;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key m_key;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Lock.hpp"</span></span></div><div class="line"><span class="keyword">class</span> Key &#123;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		m_lock;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这个时候出现了两个类相互包含的情况，因为在编译Lock.cpp的时候，我们需要去查看Key的定义，于是去定义Key,在Key中需要Lock的定义，于是又去构造Lock,这样下去，就出现了一个无限循环包含的情况，有些编译器会直接编译错误，而其他编译器会无限包含下去。<br>这该怎么办呢？有办法，C++为我们提供了前置声明。前置声明是什么？就这个例子来讲，我们要造一把锁，光有锁不行啊，我们还得有能打开这把锁的钥匙。但是锁还没有造好，总不能先打造钥匙吧，钥匙的形状我定了，改天在造。先把锁造好，造锁的时候我要先给要是留一个位置，等锁造好了，我再决定造什么样的钥匙。<strong>前置声明就是我在声明一个类(Lock)的时候,用到了另外一个类（Key）的定义，但是Key还没定义呢，而且我先不需要Key的定义，只需要直到Key是一个类就好了。那好，我就先声明类Key,告诉编译器Key是一个类(不需要包含Key.hpp)</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Key;</div></pre></td></tr></table></figure></p>
-<p>然后在Lock中用到Key的时候，都用指针或者引用代替(因为指针是固定大小的，但Key的大小只有知道了Key的定义才能确定)。然后上面的代码就可以改造为如下：</p>
-<p>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Key;</div><div class="line"><span class="keyword">class</span> Lock&#123;</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key *mp_key;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Lock;</div><div class="line"><span class="keyword">class</span> Key &#123;</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Lock* mp_lock;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="前置声明注意的问题"><a href="#前置声明注意的问题" class="headerlink" title="前置声明注意的问题"></a>前置声明注意的问题</h2><h3 id="必须使用前置声明的指针或引用形式"><a href="#必须使用前置声明的指针或引用形式" class="headerlink" title="必须使用前置声明的指针或引用形式"></a>必须使用前置声明的指针或引用形式</h3><p>在需要使用前置声明的文件中，不可以使用类的定义式，因为类的定义式只有在类定义之后才能获取，这个时候类还没有定义，所以会出错。另一个类在构造的时候编译器是需要计算该对象所占的字节的大小给其分配内存的，但是如果使用类的定义式，这个时候类还未定义，所以无法计算其大小，所以只能使用指针或者引用的形式进行引用。</p>
-<h3 id="避免在Lock中使用Key的方法"><a href="#避免在Lock中使用Key的方法" class="headerlink" title="避免在Lock中使用Key的方法"></a>避免在Lock中使用Key的方法</h3><h3 id="避免在Key定义之前调用Key的析构函数"><a href="#避免在Key定义之前调用Key的析构函数" class="headerlink" title="避免在Key定义之前调用Key的析构函数"></a>避免在Key定义之前调用Key的析构函数</h3>
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/22/C-前置声明/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
                         <a class="link-unstyled" href="/2016/12/21/条款27-尽量少做转型动作/">
                             条款27:尽量少做转型动作
                         </a>
