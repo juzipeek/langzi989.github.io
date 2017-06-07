@@ -216,6 +216,72 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/06/07/protoBuffer中string与byte类型区别/">
+                            protobuffer中string和bytes类型
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-06-07T18:04:59+08:00">
+	
+		    6月 07, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/序列化与反序列化/">序列化与反序列化</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="protobuffer中string和bytes类型"><a href="#protobuffer中string和bytes类型" class="headerlink" title="protobuffer中string和bytes类型"></a>protobuffer中string和bytes类型</h1><p>从上一节protobuffer的介绍中我们知道字符串类型在protobuffer中有string和bytes两种类型，那这两种类型有什么区别呢,什么时候用string,什么时候用bytes。在C++中两种类型分别对应的是什么类型.下面将揭开迷雾</p>
+<h2 id="string与bytes区别"><a href="#string与bytes区别" class="headerlink" title="string与bytes区别"></a>string与bytes区别</h2><p>按照经验我们知道bytes一般适用于存储二进制数据的，但在C++中,string既可以存储ASCII文本字符串，也能存储任意多个\0的二进制序列，那两者的区别在哪里呢？</p>
+<ul>
+<li>string类型（protobuffer中的string，与C++区别开）不能存储非法的UTF-8字符，如果遇到该字符，序列化的时候将会出错。</li>
+</ul>
+<blockquote>
+<p>[libprotobuf ERROR google/protobuf/wire_format.cc:1091] String field ‘str’ contains invalid UTF-8 data when serializing a protocol buffer. Use the ‘bytes’ type if you intend to send raw bytes.</p>
+</blockquote>
+<p>###出现上述错误的原因<br>这里从ProtoBuf的源码进行分析。protoBuf在序列化的过程中，都会调用SerializeFieldWithCachedSizes这个函数。我们看一下序列化string和bytes在序列化过程中的区别。</p>
+<p>对于<strong>string</strong>类型：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> FieldDescriptor::TYPE_STRING: &#123;</div><div class="line">  <span class="built_in">string</span> scratch;</div><div class="line">  <span class="keyword">const</span> <span class="built_in">string</span>&amp; value = field-&gt;is_repeated() ?</div><div class="line">    message_reflection-&gt;GetRepeatedStringReference(</div><div class="line">      message, field, j, &amp;scratch) :</div><div class="line">    message_reflection-&gt;GetStringReference(message, field, &amp;scratch);</div><div class="line">  VerifyUTF8StringNamedField(value.data(), value.length(), SERIALIZE,</div><div class="line">                             field-&gt;name().c_str());</div><div class="line">  WireFormatLite::WriteString(field-&gt;number(), value, output);</div><div class="line">  <span class="keyword">break</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>对于<strong>bytes</strong>类型：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> FieldDescriptor::TYPE_BYTES: &#123;</div><div class="line">        <span class="built_in">string</span> scratch;</div><div class="line">        <span class="keyword">const</span> <span class="built_in">string</span>&amp; value = field-&gt;is_repeated() ?</div><div class="line">          message_reflection-&gt;GetRepeatedStringReference(</div><div class="line">            message, field, j, &amp;scratch) :</div><div class="line">          message_reflection-&gt;GetStringReference(message, field, &amp;scratch);</div><div class="line">        WireFormatLite::WriteBytes(field-&gt;number(), value, output);</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从上面可以看到，序列化string和bytes的区别主要在于:<strong>string类型序列化调用了VerifyUTF8StringNamedField函数检验string中是否有非法的UTF-8字符</strong>。其中VerifyUTF8StringNamedField实现如下：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> WireFormat::VerifyUTF8StringFallback(<span class="keyword">const</span> <span class="keyword">char</span>* data,</div><div class="line">                                          <span class="keyword">int</span> size,</div><div class="line">                                          Operation op,</div><div class="line">                                          <span class="keyword">const</span> <span class="keyword">char</span>* field_name) &#123;</div><div class="line">  <span class="keyword">if</span> (!IsStructurallyValidUTF8(data, size)) &#123;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* operation_str = <span class="literal">NULL</span>;</div><div class="line">    <span class="keyword">switch</span> (op) &#123;</div><div class="line">      <span class="keyword">case</span> PARSE:</div><div class="line">        operation_str = <span class="string">"parsing"</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="keyword">case</span> SERIALIZE:</div><div class="line">        operation_str = <span class="string">"serializing"</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="comment">// no default case: have the compiler warn if a case is not covered.</span></div><div class="line">    &#125;</div><div class="line">    <span class="built_in">string</span> quoted_field_name = <span class="string">""</span>;</div><div class="line">    <span class="keyword">if</span> (field_name != <span class="literal">NULL</span>) &#123;</div><div class="line">      quoted_field_name = StringPrintf(<span class="string">" '%s'"</span>, field_name);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// no space below to avoid double space when the field name is missing.</span></div><div class="line">    GOOGLE_LOG(ERROR) &lt;&lt; <span class="string">"String field"</span> &lt;&lt; quoted_field_name &lt;&lt; <span class="string">" contains invalid "</span></div><div class="line">               &lt;&lt; <span class="string">"UTF-8 data when "</span> &lt;&lt; operation_str &lt;&lt; <span class="string">" a protocol "</span></div><div class="line">               &lt;&lt; <span class="string">"buffer. Use the 'bytes' type if you intend to send raw "</span></div><div class="line">               &lt;&lt; <span class="string">"bytes. "</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="string和bytes类型在C-和Java中的区别"><a href="#string和bytes类型在C-和Java中的区别" class="headerlink" title="string和bytes类型在C++和Java中的区别"></a>string和bytes类型在C++和Java中的区别</h2><p>protobuf类型在C++和java中的类型对应如下：</p>
+<ul>
+<li>在C++中，string和bytes的实现都是std::string类型。</li>
+<li>在Java中string和bytes类型的实现分别是String和ByteString。</li>
+</ul>
+<p><strong>为什么bytes类型可以描述string类型，还需要string呢？</strong></p>
+<p>根据论坛上说的，string类型在Java中有较多的API可供使用，而bytes较少，所以能定义为string的尽量定义为string，如果字段值确定或者可能含有非法的utf-8编码，则使用bytes类型。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/06/07/protoBuffer中string与byte类型区别/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/06/04/linux正则表达式库/">
                             Unix标准IO库相关函数总结之读写流(二)
                         </a>

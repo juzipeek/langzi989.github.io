@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-06-04T12:56:37.710Z</updated>
+  <updated>2017-06-07T10:33:18.528Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,49 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>protobuffer中string和bytes类型</title>
+    <link href="http://yoursite.com/2017/06/07/protoBuffer%E4%B8%ADstring%E4%B8%8Ebyte%E7%B1%BB%E5%9E%8B%E5%8C%BA%E5%88%AB/"/>
+    <id>http://yoursite.com/2017/06/07/protoBuffer中string与byte类型区别/</id>
+    <published>2017-06-07T10:04:59.000Z</published>
+    <updated>2017-06-07T10:33:18.528Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="protobuffer中string和bytes类型"><a href="#protobuffer中string和bytes类型" class="headerlink" title="protobuffer中string和bytes类型"></a>protobuffer中string和bytes类型</h1><p>从上一节protobuffer的介绍中我们知道字符串类型在protobuffer中有string和bytes两种类型，那这两种类型有什么区别呢,什么时候用string,什么时候用bytes。在C++中两种类型分别对应的是什么类型.下面将揭开迷雾</p>
+<h2 id="string与bytes区别"><a href="#string与bytes区别" class="headerlink" title="string与bytes区别"></a>string与bytes区别</h2><p>按照经验我们知道bytes一般适用于存储二进制数据的，但在C++中,string既可以存储ASCII文本字符串，也能存储任意多个\0的二进制序列，那两者的区别在哪里呢？</p>
+<ul>
+<li>string类型（protobuffer中的string，与C++区别开）不能存储非法的UTF-8字符，如果遇到该字符，序列化的时候将会出错。</li>
+</ul>
+<blockquote>
+<p>[libprotobuf ERROR google/protobuf/wire_format.cc:1091] String field ‘str’ contains invalid UTF-8 data when serializing a protocol buffer. Use the ‘bytes’ type if you intend to send raw bytes.</p>
+</blockquote>
+<p>###出现上述错误的原因<br>这里从ProtoBuf的源码进行分析。protoBuf在序列化的过程中，都会调用SerializeFieldWithCachedSizes这个函数。我们看一下序列化string和bytes在序列化过程中的区别。</p>
+<p>对于<strong>string</strong>类型：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> FieldDescriptor::TYPE_STRING: &#123;</div><div class="line">  <span class="built_in">string</span> scratch;</div><div class="line">  <span class="keyword">const</span> <span class="built_in">string</span>&amp; value = field-&gt;is_repeated() ?</div><div class="line">    message_reflection-&gt;GetRepeatedStringReference(</div><div class="line">      message, field, j, &amp;scratch) :</div><div class="line">    message_reflection-&gt;GetStringReference(message, field, &amp;scratch);</div><div class="line">  VerifyUTF8StringNamedField(value.data(), value.length(), SERIALIZE,</div><div class="line">                             field-&gt;name().c_str());</div><div class="line">  WireFormatLite::WriteString(field-&gt;number(), value, output);</div><div class="line">  <span class="keyword">break</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>对于<strong>bytes</strong>类型：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> FieldDescriptor::TYPE_BYTES: &#123;</div><div class="line">        <span class="built_in">string</span> scratch;</div><div class="line">        <span class="keyword">const</span> <span class="built_in">string</span>&amp; value = field-&gt;is_repeated() ?</div><div class="line">          message_reflection-&gt;GetRepeatedStringReference(</div><div class="line">            message, field, j, &amp;scratch) :</div><div class="line">          message_reflection-&gt;GetStringReference(message, field, &amp;scratch);</div><div class="line">        WireFormatLite::WriteBytes(field-&gt;number(), value, output);</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从上面可以看到，序列化string和bytes的区别主要在于:<strong>string类型序列化调用了VerifyUTF8StringNamedField函数检验string中是否有非法的UTF-8字符</strong>。其中VerifyUTF8StringNamedField实现如下：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> WireFormat::VerifyUTF8StringFallback(<span class="keyword">const</span> <span class="keyword">char</span>* data,</div><div class="line">                                          <span class="keyword">int</span> size,</div><div class="line">                                          Operation op,</div><div class="line">                                          <span class="keyword">const</span> <span class="keyword">char</span>* field_name) &#123;</div><div class="line">  <span class="keyword">if</span> (!IsStructurallyValidUTF8(data, size)) &#123;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* operation_str = <span class="literal">NULL</span>;</div><div class="line">    <span class="keyword">switch</span> (op) &#123;</div><div class="line">      <span class="keyword">case</span> PARSE:</div><div class="line">        operation_str = <span class="string">"parsing"</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="keyword">case</span> SERIALIZE:</div><div class="line">        operation_str = <span class="string">"serializing"</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="comment">// no default case: have the compiler warn if a case is not covered.</span></div><div class="line">    &#125;</div><div class="line">    <span class="built_in">string</span> quoted_field_name = <span class="string">""</span>;</div><div class="line">    <span class="keyword">if</span> (field_name != <span class="literal">NULL</span>) &#123;</div><div class="line">      quoted_field_name = StringPrintf(<span class="string">" '%s'"</span>, field_name);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// no space below to avoid double space when the field name is missing.</span></div><div class="line">    GOOGLE_LOG(ERROR) &lt;&lt; <span class="string">"String field"</span> &lt;&lt; quoted_field_name &lt;&lt; <span class="string">" contains invalid "</span></div><div class="line">               &lt;&lt; <span class="string">"UTF-8 data when "</span> &lt;&lt; operation_str &lt;&lt; <span class="string">" a protocol "</span></div><div class="line">               &lt;&lt; <span class="string">"buffer. Use the 'bytes' type if you intend to send raw "</span></div><div class="line">               &lt;&lt; <span class="string">"bytes. "</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="string和bytes类型在C-和Java中的区别"><a href="#string和bytes类型在C-和Java中的区别" class="headerlink" title="string和bytes类型在C++和Java中的区别"></a>string和bytes类型在C++和Java中的区别</h2><p>protobuf类型在C++和java中的类型对应如下：</p>
+<ul>
+<li>在C++中，string和bytes的实现都是std::string类型。</li>
+<li>在Java中string和bytes类型的实现分别是String和ByteString。</li>
+</ul>
+<p><strong>为什么bytes类型可以描述string类型，还需要string呢？</strong></p>
+<p>根据论坛上说的，string类型在Java中有较多的API可供使用，而bytes较少，所以能定义为string的尽量定义为string，如果字段值确定或者可能含有非法的utf-8编码，则使用bytes类型。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;protobuffer中string和bytes类型&quot;&gt;&lt;a href=&quot;#protobuffer中string和bytes类型&quot; class=&quot;headerlink&quot; title=&quot;protobuffer中string和bytes类型&quot;&gt;&lt;/a&gt;protobuf
+    
+    </summary>
+    
+      <category term="序列化与反序列化" scheme="http://yoursite.com/categories/%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"/>
+    
+    
+      <category term="protobuffer" scheme="http://yoursite.com/tags/protobuffer/"/>
+    
+      <category term="数据类型" scheme="http://yoursite.com/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>Unix标准IO库相关函数总结之读写流(二)</title>
@@ -1309,148 +1352,6 @@
       <category term="dup" scheme="http://yoursite.com/tags/dup/"/>
     
       <category term="dup2" scheme="http://yoursite.com/tags/dup2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>cgi原理</title>
-    <link href="http://yoursite.com/2017/05/04/cgi%E5%8E%9F%E7%90%86/"/>
-    <id>http://yoursite.com/2017/05/04/cgi原理/</id>
-    <published>2017-05-04T12:36:55.000Z</published>
-    <updated>2017-05-22T15:34:49.401Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="CGI原理"><a href="#CGI原理" class="headerlink" title="CGI原理"></a>CGI原理</h1><p>CGI（Common Gateway Interface）通用网关接口，CGI描述了服务器和请求处理程序之间传输数据局的<br>一种标准。在理解的过程中我们需要区分CGI和CGI程序，CGI是一种数据传输的标准，而CGI程序是实际处理<br>业务的一个程序。webserver每请求一次，CGI程序就会fork出一个子进程进行处理。CGI程序的参数通过环境<br>变量和标准输入获得，它的相应通过标准输出传递给webServer。</p>
-<h2 id="CGI的工作原理是："><a href="#CGI的工作原理是：" class="headerlink" title="CGI的工作原理是："></a>CGI的工作原理是：</h2><ul>
-<li>客户端通过http将请求发送到web服务器</li>
-<li>web服务器接收并收集用户请求，然后交给CGI程序进行处理</li>
-<li>CGI程序把处理后的结果发送给服务器</li>
-<li>服务器将结果传送给浏览器</li>
-</ul>
-<p>其中上述第二步web服务器通过环境变量或标准输入将请求发送给CGI程序，第三步CGI通过标准输出将结果<br>发送给webServer</p>
-<h2 id="CGI接口标准：标准输入-环境变量以及标准输出"><a href="#CGI接口标准：标准输入-环境变量以及标准输出" class="headerlink" title="CGI接口标准：标准输入,环境变量以及标准输出"></a>CGI接口标准：标准输入,环境变量以及标准输出</h2><table>
-<thead>
-<tr>
-<th style="text-align:left">借口标准</th>
-<th>介绍</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">标准输入</td>
-<td>CGI程序像其他可执行程序一样,可通过标准输入(stdin)从Web服务器得到输入信息,如Form中的数据,这就是所谓的向CGI程序传递数据的POST方法。这意味着在操作系统命令行状态可执行CGI程序,对CGI程序进行调试。POST方法是常用的方法。</td>
-</tr>
-<tr>
-<td style="text-align:left">环境变量</td>
-<td>操作系统提供了许多环境变量,它们定义了程序的执行环境,应用程序可以存取它们。Web服务器和CGI接口又另外设置了自己的一些环境变量,用来向CGI程序传递一些重要的参数。CGI的GET方法还通过环境变量QUERY-STRING向CGI程序传递Form中的数据。</td>
-</tr>
-<tr>
-<td style="text-align:left">标准输出</td>
-<td>CGI程序通过标准输出(stdout)将输出信息传送给Web服务器。传送给Web服务器的信息可以用各种格式,通常是以纯文本或者HTML文本的形式,这样我们就可以在命令行状态调试CGI程序,并且得到它们的输出。</td>
-</tr>
-</tbody>
-</table>
-<p>###常用的环境变量<br>Linux中的环境变量是一系列的键值对集合，它们的值可以通过shell设置，也可以被其他进程或程序设置和访问，它们是web服务器传递给CGI程序的一种最简单的方式，之所以叫做环境变量是因为它们是全局变量，任何程序都可以存取它们。</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">key</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">SERVER_NAME</td>
-<td>CGI脚本运行时的主机名和IP地址</td>
-</tr>
-<tr>
-<td style="text-align:center">SERVER_SOFTWARE</td>
-<td>你的服务器的类型如： CERN/3.0 或 NCSA/1.3.</td>
-</tr>
-<tr>
-<td style="text-align:center">GATEWAY_INTERFACE</td>
-<td>运行的CGI版本. 对于UNIX服务器, 这是CGI/1.1</td>
-</tr>
-<tr>
-<td style="text-align:center">SERVER_PROTOCOL</td>
-<td>服务器运行的HTTP协议. 这里当是HTTP/1.0.</td>
-</tr>
-<tr>
-<td style="text-align:center">SERVER_PORT</td>
-<td>服务器运行的TCP口，通常Web服务器是80.</td>
-</tr>
-<tr>
-<td style="text-align:center">REQUEST_METHOD</td>
-<td>POST 或 GET, 取决于你的表单是怎样递交的</td>
-</tr>
-<tr>
-<td style="text-align:center">HTTP_ACCEPT</td>
-<td>浏览器能直接接收的Content-types, 可以有HTTP Accept header定义.</td>
-</tr>
-<tr>
-<td style="text-align:center">HTTP_USER_AGENT</td>
-<td>递交表单的浏览器的名称、版本 和其他平台性的附加信息。</td>
-</tr>
-<tr>
-<td style="text-align:center">HTTP_REFERER</td>
-<td>递交表单的文本的 URL，不是所有的浏览器都发出这个信息，不要依赖它</td>
-</tr>
-<tr>
-<td style="text-align:center">PATH_INFO</td>
-<td>附加的路径信息, 由浏览器通过GET方法发出.</td>
-</tr>
-<tr>
-<td style="text-align:center">PATH_TRANSLATED</td>
-<td>在PATH_INFO中系统规定的路径信息.</td>
-</tr>
-<tr>
-<td style="text-align:center">SCRIPT_NAME</td>
-<td>指向这个CGI脚本的路径, 是在URL中显示的(如, /cgi-bin/thescript).</td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>QUERY_STRING</strong></td>
-<td><strong>脚本参数或者表单输入项(如果是用GET递交). QUERY_STRING包含URL中问号后面的参数</strong></td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_HOST</td>
-<td>递交脚本的主机名，这个值不能被设置.</td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_ADDR</td>
-<td>递交脚本的主机IP地址.</td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_USER</td>
-<td>递交脚本的用户名. 如果服务器的authentication被激活，这个值可以设置。</td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_IDENT</td>
-<td>如果Web服务器是在ident (一种确认用户连接你的协议)运行, 递交表单的系统也在运行ident, 这个变量就含有ident返回值.</td>
-</tr>
-<tr>
-<td style="text-align:center">CONTENT_TYPE</td>
-<td>如果表单是用POST递交, 这个值将是 application/x-www-form-urlencoded. 在上载文件的表单中, content-type 是个 multipart/form-data.</td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>CONTENT_LENGTH</strong></td>
-<td><strong>对于用POST递交的表单,标准输入口的字节数.</strong></td>
-</tr>
-</tbody>
-</table>
-<h2 id="CGI的工作原理图"><a href="#CGI的工作原理图" class="headerlink" title="CGI的工作原理图"></a>CGI的工作原理图</h2><p><img src="../assets/images/CGI" alt=""></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;CGI原理&quot;&gt;&lt;a href=&quot;#CGI原理&quot; class=&quot;headerlink&quot; title=&quot;CGI原理&quot;&gt;&lt;/a&gt;CGI原理&lt;/h1&gt;&lt;p&gt;CGI（Common Gateway Interface）通用网关接口，CGI描述了服务器和请求处理程序之间传输数据
-    
-    </summary>
-    
-      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-      <category term="cgi" scheme="http://yoursite.com/tags/cgi/"/>
     
   </entry>
   

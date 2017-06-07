@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="魏传柳">
+    <title>protobuffer中string和bytes类型 - 魏传柳</title>
+    <meta name="author" content="魏传柳(langzi989)">
+    
+        <meta name="keywords" content="hexo,javascript,">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="protobuffer中string和bytes类型从上一节protobuffer的介绍中我们知道字符串类型在protobuffer中有string和bytes两种类型，那这两种类型有什么区别呢,什么时候用string,什么时候用bytes。在C++中两种类型分别对应的是什么类型.下面将揭开迷雾
+string与bytes区别按照经验我们知道bytes一般适用于存储二进制数据的，但在C++中,str">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="protobuffer中string和bytes类型">
+<meta property="og:url" content="http://yoursite.com/2017/06/07/protoBuffer中string与byte类型区别/index.html">
+<meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="protobuffer中string和bytes类型从上一节protobuffer的介绍中我们知道字符串类型在protobuffer中有string和bytes两种类型，那这两种类型有什么区别呢,什么时候用string,什么时候用bytes。在C++中两种类型分别对应的是什么类型.下面将揭开迷雾
+string与bytes区别按照经验我们知道bytes一般适用于存储二进制数据的，但在C++中,str">
+<meta property="og:updated_time" content="2017-06-07T10:33:18.528Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="protobuffer中string和bytes类型">
+<meta name="twitter:description" content="protobuffer中string和bytes类型从上一节protobuffer的介绍中我们知道字符串类型在protobuffer中有string和bytes两种类型，那这两种类型有什么区别呢,什么时候用string,什么时候用bytes。在C++中两种类型分别对应的是什么类型.下面将揭开迷雾
+string与bytes区别按照经验我们知道bytes一般适用于存储二进制数据的，但在C++中,str">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://yoursite.com/assets/images/avar.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-nuvue6sithwirecbhvw3dkaobiojqvtadsnhguwi7k04xklybw5djl1smadp.min.css">
+    <!--STYLES END-->
+    
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">魏传柳</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="/assets/images/avar.jpg"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/avar.jpg"/>
+            </a>
+            <span class="sidebar-profile-name">魏传柳(langzi989)</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">home</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">search</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">about</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/langzi989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://blog.csdn.net/u014630623" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-csdn"></i>
+                    <span class="sidebar-button-desc">CSDN</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            protobuffer中string和bytes类型
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" datetime="2017-06-07T18:04:59+08:00">
+	
+		    6月 07, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/序列化与反序列化/">序列化与反序列化</a>
+
+
+    
+</div>
+
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="protobuffer中string和bytes类型"><a href="#protobuffer中string和bytes类型" class="headerlink" title="protobuffer中string和bytes类型"></a>protobuffer中string和bytes类型</h1><p>从上一节protobuffer的介绍中我们知道字符串类型在protobuffer中有string和bytes两种类型，那这两种类型有什么区别呢,什么时候用string,什么时候用bytes。在C++中两种类型分别对应的是什么类型.下面将揭开迷雾</p>
+<h2 id="string与bytes区别"><a href="#string与bytes区别" class="headerlink" title="string与bytes区别"></a>string与bytes区别</h2><p>按照经验我们知道bytes一般适用于存储二进制数据的，但在C++中,string既可以存储ASCII文本字符串，也能存储任意多个\0的二进制序列，那两者的区别在哪里呢？</p>
+<ul>
+<li>string类型（protobuffer中的string，与C++区别开）不能存储非法的UTF-8字符，如果遇到该字符，序列化的时候将会出错。</li>
+</ul>
+<blockquote>
+<p>[libprotobuf ERROR google/protobuf/wire_format.cc:1091] String field ‘str’ contains invalid UTF-8 data when serializing a protocol buffer. Use the ‘bytes’ type if you intend to send raw bytes.</p>
+</blockquote>
+<p>###出现上述错误的原因<br>这里从ProtoBuf的源码进行分析。protoBuf在序列化的过程中，都会调用SerializeFieldWithCachedSizes这个函数。我们看一下序列化string和bytes在序列化过程中的区别。</p>
+<p>对于<strong>string</strong>类型：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> FieldDescriptor::TYPE_STRING: &#123;</div><div class="line">  <span class="built_in">string</span> scratch;</div><div class="line">  <span class="keyword">const</span> <span class="built_in">string</span>&amp; value = field-&gt;is_repeated() ?</div><div class="line">    message_reflection-&gt;GetRepeatedStringReference(</div><div class="line">      message, field, j, &amp;scratch) :</div><div class="line">    message_reflection-&gt;GetStringReference(message, field, &amp;scratch);</div><div class="line">  VerifyUTF8StringNamedField(value.data(), value.length(), SERIALIZE,</div><div class="line">                             field-&gt;name().c_str());</div><div class="line">  WireFormatLite::WriteString(field-&gt;number(), value, output);</div><div class="line">  <span class="keyword">break</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>对于<strong>bytes</strong>类型：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> FieldDescriptor::TYPE_BYTES: &#123;</div><div class="line">        <span class="built_in">string</span> scratch;</div><div class="line">        <span class="keyword">const</span> <span class="built_in">string</span>&amp; value = field-&gt;is_repeated() ?</div><div class="line">          message_reflection-&gt;GetRepeatedStringReference(</div><div class="line">            message, field, j, &amp;scratch) :</div><div class="line">          message_reflection-&gt;GetStringReference(message, field, &amp;scratch);</div><div class="line">        WireFormatLite::WriteBytes(field-&gt;number(), value, output);</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从上面可以看到，序列化string和bytes的区别主要在于:<strong>string类型序列化调用了VerifyUTF8StringNamedField函数检验string中是否有非法的UTF-8字符</strong>。其中VerifyUTF8StringNamedField实现如下：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> WireFormat::VerifyUTF8StringFallback(<span class="keyword">const</span> <span class="keyword">char</span>* data,</div><div class="line">                                          <span class="keyword">int</span> size,</div><div class="line">                                          Operation op,</div><div class="line">                                          <span class="keyword">const</span> <span class="keyword">char</span>* field_name) &#123;</div><div class="line">  <span class="keyword">if</span> (!IsStructurallyValidUTF8(data, size)) &#123;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* operation_str = <span class="literal">NULL</span>;</div><div class="line">    <span class="keyword">switch</span> (op) &#123;</div><div class="line">      <span class="keyword">case</span> PARSE:</div><div class="line">        operation_str = <span class="string">"parsing"</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="keyword">case</span> SERIALIZE:</div><div class="line">        operation_str = <span class="string">"serializing"</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="comment">// no default case: have the compiler warn if a case is not covered.</span></div><div class="line">    &#125;</div><div class="line">    <span class="built_in">string</span> quoted_field_name = <span class="string">""</span>;</div><div class="line">    <span class="keyword">if</span> (field_name != <span class="literal">NULL</span>) &#123;</div><div class="line">      quoted_field_name = StringPrintf(<span class="string">" '%s'"</span>, field_name);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// no space below to avoid double space when the field name is missing.</span></div><div class="line">    GOOGLE_LOG(ERROR) &lt;&lt; <span class="string">"String field"</span> &lt;&lt; quoted_field_name &lt;&lt; <span class="string">" contains invalid "</span></div><div class="line">               &lt;&lt; <span class="string">"UTF-8 data when "</span> &lt;&lt; operation_str &lt;&lt; <span class="string">" a protocol "</span></div><div class="line">               &lt;&lt; <span class="string">"buffer. Use the 'bytes' type if you intend to send raw "</span></div><div class="line">               &lt;&lt; <span class="string">"bytes. "</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="string和bytes类型在C-和Java中的区别"><a href="#string和bytes类型在C-和Java中的区别" class="headerlink" title="string和bytes类型在C++和Java中的区别"></a>string和bytes类型在C++和Java中的区别</h2><p>protobuf类型在C++和java中的类型对应如下：</p>
+<ul>
+<li>在C++中，string和bytes的实现都是std::string类型。</li>
+<li>在Java中string和bytes类型的实现分别是String和ByteString。</li>
+</ul>
+<p><strong>为什么bytes类型可以描述string类型，还需要string呢？</strong></p>
+<p>根据论坛上说的，string类型在Java中有较多的API可供使用，而bytes较少，所以能定义为string的尽量定义为string，如果字段值确定或者可能含有非法的utf-8编码，则使用bytes类型。</p>
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/protobuffer/">protobuffer</a> <a class="tag tag--primary tag--small t-link" href="/tags/数据类型/">数据类型</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/06/04/linux正则表达式库/" data-tooltip="Unix标准IO库相关函数总结之读写流(二)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/06/07/protoBuffer中string与byte类型区别/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/06/07/protoBuffer中string与byte类型区别/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/06/07/protoBuffer中string与byte类型区别/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 魏传柳(langzi989). All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/06/04/linux正则表达式库/" data-tooltip="Unix标准IO库相关函数总结之读写流(二)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/06/07/protoBuffer中string与byte类型区别/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/06/07/protoBuffer中string与byte类型区别/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/06/07/protoBuffer中string与byte类型区别/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/06/07/protoBuffer中string与byte类型区别/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/06/07/protoBuffer中string与byte类型区别/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/06/07/protoBuffer中string与byte类型区别/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/avar.jpg"/>
+        
+            <h4 id="about-card-name">魏传柳(langzi989)</h4>
+        
+            <h5 id="about-card-bio"><p>author.bio</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Guangzhou,China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+</html>
