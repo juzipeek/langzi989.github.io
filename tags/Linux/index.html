@@ -890,14 +890,14 @@
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="CGI原理"><a href="#CGI原理" class="headerlink" title="CGI原理"></a>CGI原理</h1><p>CGI（Common Gateway Interface）通用网关接口，CGI描述了服务器和请求处理程序之间传输数据局的<br>一种标准。在理解的过程中我们需要区分CGI和CGI程序，CGI是一种数据传输的标准，而CGI程序是实际处理<br>业务的一个程序。webserver每请求一次，CGI程序就会fork出一个子进程进行处理。CGI程序的参数通过环境<br>变量和标准输入获得，它的相应通过标准输出传递给webServer。</p>
+                    <h1 id="CGI原理"><a href="#CGI原理" class="headerlink" title="CGI原理"></a>CGI原理</h1><p>CGI（Common Gateway Interface）通用网关接口，CGI描述了服务器和请求处理程序之间传输数据局的一种标准。在理解的过程中我们需要区分CGI和CGI程序，CGI是一种数据传输的标准，而CGI程序是实际处理业务的一个程序。webserver每请求一次，CGI程序就会fork出一个子进程进行处理。CGI程序的参数通过环境变量和标准输入获得，它的相应通过标准输出传递给webServer。</p>
 <h2 id="CGI的工作原理是："><a href="#CGI的工作原理是：" class="headerlink" title="CGI的工作原理是："></a>CGI的工作原理是：</h2><ul>
 <li>客户端通过http将请求发送到web服务器</li>
 <li>web服务器接收并收集用户请求，然后交给CGI程序进行处理</li>
 <li>CGI程序把处理后的结果发送给服务器</li>
 <li>服务器将结果传送给浏览器</li>
 </ul>
-<p>其中上述第二步web服务器通过环境变量或标准输入将请求发送给CGI程序，第三步CGI通过标准输出将结果<br>发送给webServer</p>
+<p>其中上述第二步web服务器通过环境变量或标准输入将请求发送给CGI程序，第三步CGI通过标准输出将结果发送给webServer</p>
 <h2 id="CGI接口标准：标准输入-环境变量以及标准输出"><a href="#CGI接口标准：标准输入-环境变量以及标准输出" class="headerlink" title="CGI接口标准：标准输入,环境变量以及标准输出"></a>CGI接口标准：标准输入,环境变量以及标准输出</h2><table>
 <thead>
 <tr>
