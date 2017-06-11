@@ -215,6 +215,62 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/21/函数dup/">
+                            函数dup与dup2
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-21T23:31:31+08:00">
+	
+		    5月 21, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="函数dup与dup2"><a href="#函数dup与dup2" class="headerlink" title="函数dup与dup2"></a>函数dup与dup2</h1><h2 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup2</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> fd2)</span></span>;</div></pre></td></tr></table></figure>
+<h2 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h2><p>这两个函数的功能都是用来复制一个现有的文件描述符。返回的文件描述符与原有的文件描述符共用同一个文件表项，但是文件描述符标志将被清除，即当进程调用exec时文件描述符将不会被关闭。</p>
+<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><p>dup返回当前可用的最小的文件描述符。dup2返回fd2，若fd2所表示的文件已经打开，则将该文件描述符先关闭，然后再将fd复制到fd2上返回。若fd2与fd相同，则直接返回fd、.</p>
+<h2 id="等效函数"><a href="#等效函数" class="headerlink" title="等效函数"></a>等效函数</h2><p>dup函数与fcntl的F_DUPFD功能相同。</p>
+<p>dup(fd)等效于fcntl(fd, F_DUPFD, 0)</p>
+<p>dup2(fd, fd2)等效于close(fd), fcntl(fd, F_DUPFD, fd2)</p>
+<p>但是dup2是原子的上述先关闭然后在复制不是原子操作。</p>
+<h2 id="作用及用途"><a href="#作用及用途" class="headerlink" title="作用及用途"></a>作用及用途</h2><p>dup函数常用来重定向进程的stdin、stdout以及stderr。原理与CGI类似，即将标准输入标准输出重定向到一个文件或者socket流等。</p>
+<h2 id="重定向标准输出"><a href="#重定向标准输出" class="headerlink" title="重定向标准输出"></a>重定向标准输出</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> fd = dup(STDIN_FILENO);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"dup error\n"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">char</span> buf[] = <span class="string">"this is a test of dup\n"</span>;</div><div class="line">    write(fd, buf, <span class="keyword">sizeof</span>(buf));</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/21/函数dup/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/04/cgi原理/">
                             cgi原理
                         </a>
@@ -1261,81 +1317,6 @@
                     
                         <p>
                             <a href="/2017/01/07/UML时序图详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/01/05/UML图表示常见的类之间的关系/">
-                            UML图表示常见的类之间的关系
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-01-05T21:12:28+08:00">
-	
-		    1月 05, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="UML图表示常见的类之间的关系"><a href="#UML图表示常见的类之间的关系" class="headerlink" title="UML图表示常见的类之间的关系"></a>UML图表示常见的类之间的关系</h1><p>类之间的关系常见的主要包括以下几种:</p>
-<ul>
-<li>继承</li>
-<li>实现</li>
-<li>依赖</li>
-<li>关联</li>
-<li>聚合</li>
-<li>组合</li>
-</ul>
-<h2 id="继承（inheritance）"><a href="#继承（inheritance）" class="headerlink" title="继承（inheritance）"></a>继承（inheritance）</h2><p>继承的概念大家都比较熟悉，他主要指的是派生类继承父类或者接口之间的继承，派生类继承了父类中原有的功能，并在此基础上添加了新的功能。例如public继承实质上是一种is-a的关系,(子类is a 基类)</p>
-<p>图形表示:</p>
-<p><img src="../assets/images/继承.png" alt=""></p>
-<h2 id="实现-implement"><a href="#实现-implement" class="headerlink" title="实现(implement)"></a>实现(implement)</h2><p>实现指的是一个类实现一个接口,一个类可以实现一个或者多个接口。实现是类和接口之间常见的一种关系。在java中通常通过implements实现。</p>
-<p>图形表示：</p>
-<p><img src="../assets/images/实现.png" alt=""></p>
-<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>依赖指的是一个类A使用另外一个类B,这种该使用关系是偶然性的，临时的，非常弱的一种关系。但是类B的变化会影响到类A;比如人要使用船过河中，这个时候人和船就是一种依赖关系。具体表现在代码中就是<strong>B是类A中的某个方法的参数。</strong></p>
-<p>图形表示:</p>
-<p><img src="../assets/images/依赖.png" alt=""></p>
-<h2 id="关联"><a href="#关联" class="headerlink" title="关联"></a>关联</h2><p>关联是指俩个类之间的或者类和接口之间的一种强依赖关系。而这种强依赖关系不是偶然性的，而是长期的，而且双方的关系是平等的，关联可以是单向的，也可以是双向的。具体表现在代码中是<strong>(1):B以类属性的方式出现在类A中（２）A引用类型为B的全局变量</strong></p>
-<p>图形表示:</p>
-<p><img src="../assets/images/关联.png" alt=""></p>
-<h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>聚合是关联关系的一种特例，它表现的是一种has-a的关系，即整体与部分的关系，此时整体与部分可以是分离的，他们可以具有各自的声明周期，部分可以属于多个整体对象，也可以被多个整体对象共享；如计算机与CPU的关系<strong>聚合中部分和整体都有各自的生命周期，并且互相影响</strong></p>
-<p>图形表示：</p>
-<p><img src="../assets/images/聚合.png" alt=""></p>
-<h2 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h2><p>组合也是关联的一种特例，它体现的是一种contain-a的关系，这种关系比聚合强；这个时候整体和部分是不可分离的，<strong>整体的声明周期与部分的声明周期相同，当整体的周期结束时，部分的周期也随之结束</strong>。如人和大脑的关系</p>
-<p>图形表示：</p>
-<p><img src="../assets/images/组合.png" alt=""></p>
-<h2 id="依赖性强弱"><a href="#依赖性强弱" class="headerlink" title="依赖性强弱:"></a>依赖性强弱:</h2><p>组合&gt;聚合&gt;关联&gt;依赖</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/01/05/UML图表示常见的类之间的关系/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

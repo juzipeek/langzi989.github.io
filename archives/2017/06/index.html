@@ -216,6 +216,62 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/06/11/C语言宏定义相关/">
+                            C语言宏定义相关
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-06-11T16:39:20+08:00">
+	
+		    6月 11, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C语言宏定义相关"><a href="#C语言宏定义相关" class="headerlink" title="C语言宏定义相关"></a>C语言宏定义相关</h1><p>C语言宏定义在代码编写中很常见，它常会带来一些很高的性能和很方便的写法，在看Linux源码中sockaddr_in的时候遇到宏定义中##。特地在此记录.</p>
+<h2 id="宏定义中-用法"><a href="#宏定义中-用法" class="headerlink" title="宏定义中##用法"></a>宏定义中##用法</h2><h3 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h3><p>Linux中sockaddr_in的定义在文件/netinet/in.h文件中。具体如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Structure describing an Internet socket address.  */</span></div><div class="line"><span class="keyword">struct</span> sockaddr_in</div><div class="line">  &#123;</div><div class="line">    __SOCKADDR_COMMON (sin_);</div><div class="line">    <span class="keyword">in_port_t</span> sin_port;                 <span class="comment">// Port number.  </span></div><div class="line">    <span class="keyword">struct</span> in_addr sin_addr;            <span class="comment">// Internet address.  </span></div><div class="line"></div><div class="line">    <span class="comment">// Pad to size of struct sockaddr.</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> sin_zero[<span class="keyword">sizeof</span> (<span class="keyword">struct</span> sockaddr) -</div><div class="line">                           __SOCKADDR_COMMON_SIZE -</div><div class="line">                           <span class="keyword">sizeof</span> (<span class="keyword">in_port_t</span>) -</div><div class="line">                           <span class="keyword">sizeof</span> (<span class="keyword">struct</span> in_addr)];</div><div class="line">  &#125;;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __SOCKADDR_COMMON(sa_prefix)\</span></div><div class="line">  sa_family_t sa_prefix##family</div></pre></td></tr></table></figure></p>
+<p>从上面可以看出，__SOCKADDR_COMMON的宏定义中出现了##的使用方法。那它在宏定义中的意思是什么呢？</p>
+<h3 id="详解"><a href="#详解" class="headerlink" title="##详解"></a>##详解</h3><p>##是一种分隔连接方式。它的作用是先分隔，然后进行强制连接。</p>
+<p>在普通的宏定义中，预处理器一般吧空格解释为分段标志，然后进行相应的替换工作。但是这样做的结果是被替换的段之间会出现空格。如果我们不希望这些空格出现，可以使用##来代替空格。</p>
+<p>如：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> type1(type,name) type name_##type##_type</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> type2(type,name) type name##_##type##_type</span></div></pre></td></tr></table></figure></p>
+<p>上述type1(int,c)将被替换为：int name_int_type<br>上述type2(int,c)将被替换为：int c_int_type</p>
+<p>故我们再回去看<strong>SOCKADDR_COMMON的宏定义.
+</strong>SOCKADDR<em>COMMON (sin</em>);将被解释为sa_family_t sin_family;</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/06/11/C语言宏定义相关/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/06/07/protoBuffer中string与byte类型区别/">
                             protobuffer中string和bytes类型
                         </a>
