@@ -254,7 +254,7 @@
 </ul>
 <h2 id="基本元素详解"><a href="#基本元素详解" class="headerlink" title="基本元素详解"></a>基本元素详解</h2><h3 id="角色-actor"><a href="#角色-actor" class="headerlink" title="角色(actor)"></a>角色(actor)</h3><p>角色指的是系统角色，这个角色可以是人，其他系统或者子系统</p>
 <p>图形表示:</p>
-<p><img src="../assets/images/actor.png" alt=""></p>
+<p><img src="/images/actor.png" alt=""></p>
 <h3 id="对象-object"><a href="#对象-object" class="headerlink" title="对象(object)"></a>对象(object)</h3><p>对象包括三种:</p>
 <ul>
 <li>指定类名和对象名的对象objectName: className</li>
@@ -262,17 +262,17 @@
 <li>指定对象名但不指定类名的对象 objectName</li>
 </ul>
 <p>图形表示：<br>第一类:</p>
-<p><img src="../assets/images/object1.png" alt=""></p>
+<p><img src="/images/object1.png" alt=""></p>
 <p>第二类:</p>
-<p><img src="../assets/images/object2.png" alt=""></p>
+<p><img src="/images/object2.png" alt=""></p>
 <p>第三类:</p>
-<p><img src="../assets/images/object3.png" alt=""></p>
+<p><img src="/images/object3.png" alt=""></p>
 <h3 id="生命线-life-line"><a href="#生命线-life-line" class="headerlink" title="生命线(life line)"></a>生命线(life line)</h3><p>生命线在时序图中使用向下的虚线表示,它指的是其所对应的对象的存活时间。从上到下表示时间的推后。</p>
 <p>图像表示:</p>
-<p><img src="../assets/images/lifeline.png" alt=""></p>
+<p><img src="/images/lifeline.png" alt=""></p>
 <h3 id="控制焦点-focus-of-control"><a href="#控制焦点-focus-of-control" class="headerlink" title="控制焦点(focus of control)"></a>控制焦点(focus of control)</h3><p>控制焦点在时序图中以方块的形式出现，它是一种表示时间段的方式，对象在这一时间段中执行相应的操作。</p>
 <p>图像表示:</p>
-<p><img src="../assets/images/control.png" alt=""></p>
+<p><img src="/images/control.png" alt=""></p>
 <h3 id="消息-message"><a href="#消息-message" class="headerlink" title="消息(message)"></a>消息(message)</h3><p>消息有三种类型</p>
 <ul>
 <li>同步消息：发送者发送请求后被阻塞，直到接受者返回消息或者做完其他处理之后发送者才能继续执行之后的操作</li>
@@ -280,11 +280,11 @@
 <li>返回消息:接受者返回消息给发送者</li>
 </ul>
 <p>消息的图形表示：<br>同步消息:</p>
-<p><img src="../assets/images/message1.png" alt=""></p>
+<p><img src="/images/message1.png" alt=""></p>
 <p>异步消息:</p>
-<p><img src="../assets/images/message2.png" alt=""></p>
+<p><img src="/images/message2.png" alt=""></p>
 <p>返回消息:</p>
-<p><img src="../assets/images/message3.png" alt=""></p>
+<p><img src="/images/message3.png" alt=""></p>
 <h3 id="自关联消息-self-associated-message"><a href="#自关联消息-self-associated-message" class="headerlink" title="自关联消息(self-associated message)"></a>自关联消息(self-associated message)</h3><p>自关联消息一般指的是当前类调用自己的函数的情况</p>
 <h3 id="组合片段-combined-fragment"><a href="#组合片段-combined-fragment" class="headerlink" title="组合片段(combined fragment)"></a>组合片段(combined fragment)</h3><p>组合片段中包括四个部分:</p>
 <ul>
@@ -297,7 +297,7 @@
 <li><p>Loop Fragment(loop表示):与循环对应</p>
 <p>图形表示:</p>
 <p>alt:</p>
-<p><img src="../assets/images/alt.png" alt=""></p>
+<p><img src="/images/alt.png" alt=""></p>
 </li>
 </ul>
 
@@ -358,22 +358,22 @@
 </ul>
 <h2 id="继承（inheritance）"><a href="#继承（inheritance）" class="headerlink" title="继承（inheritance）"></a>继承（inheritance）</h2><p>继承的概念大家都比较熟悉，他主要指的是派生类继承父类或者接口之间的继承，派生类继承了父类中原有的功能，并在此基础上添加了新的功能。例如public继承实质上是一种is-a的关系,(子类is a 基类)</p>
 <p>图形表示:</p>
-<p><img src="../assets/images/继承.png" alt=""></p>
+<p><img src="/images/继承.png" alt=""></p>
 <h2 id="实现-implement"><a href="#实现-implement" class="headerlink" title="实现(implement)"></a>实现(implement)</h2><p>实现指的是一个类实现一个接口,一个类可以实现一个或者多个接口。实现是类和接口之间常见的一种关系。在java中通常通过implements实现。</p>
 <p>图形表示：</p>
-<p><img src="../assets/images/实现.png" alt=""></p>
+<p><img src="/images/实现.png" alt=""></p>
 <h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>依赖指的是一个类A使用另外一个类B,这种该使用关系是偶然性的，临时的，非常弱的一种关系。但是类B的变化会影响到类A;比如人要使用船过河中，这个时候人和船就是一种依赖关系。具体表现在代码中就是<strong>B是类A中的某个方法的参数。</strong></p>
 <p>图形表示:</p>
-<p><img src="../assets/images/依赖.png" alt=""></p>
+<p><img src="/images/依赖.png" alt=""></p>
 <h2 id="关联"><a href="#关联" class="headerlink" title="关联"></a>关联</h2><p>关联是指俩个类之间的或者类和接口之间的一种强依赖关系。而这种强依赖关系不是偶然性的，而是长期的，而且双方的关系是平等的，关联可以是单向的，也可以是双向的。具体表现在代码中是<strong>(1):B以类属性的方式出现在类A中（２）A引用类型为B的全局变量</strong></p>
 <p>图形表示:</p>
-<p><img src="../assets/images/关联.png" alt=""></p>
+<p><img src="/images/关联.png" alt=""></p>
 <h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>聚合是关联关系的一种特例，它表现的是一种has-a的关系，即整体与部分的关系，此时整体与部分可以是分离的，他们可以具有各自的声明周期，部分可以属于多个整体对象，也可以被多个整体对象共享；如计算机与CPU的关系<strong>聚合中部分和整体都有各自的生命周期，并且互相影响</strong></p>
 <p>图形表示：</p>
-<p><img src="../assets/images/聚合.png" alt=""></p>
+<p><img src="/images/聚合.png" alt=""></p>
 <h2 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h2><p>组合也是关联的一种特例，它体现的是一种contain-a的关系，这种关系比聚合强；这个时候整体和部分是不可分离的，<strong>整体的声明周期与部分的声明周期相同，当整体的周期结束时，部分的周期也随之结束</strong>。如人和大脑的关系</p>
 <p>图形表示：</p>
-<p><img src="../assets/images/组合.png" alt=""></p>
+<p><img src="/images/组合.png" alt=""></p>
 <h2 id="依赖性强弱"><a href="#依赖性强弱" class="headerlink" title="依赖性强弱:"></a>依赖性强弱:</h2><p>组合&gt;聚合&gt;关联&gt;依赖</p>
 
                     

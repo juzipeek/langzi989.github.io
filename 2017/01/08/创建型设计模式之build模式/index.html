@@ -25,16 +25,16 @@
 <meta property="og:description" content="创建型设计模式之build模式最近在读《设计模式-可复用面向对象软件设计的基础》一书，在阅读的过程中我会结合书中的相关知识和实例以及在网络上的博客对相关的模式的理解进行总结，并在此基础上加入自己的一些理解，总结模式中需要注意的一些点，记录在此博客，以供大家交流分享，同时防止自己对内容遗忘，如有不正确指出，欢迎批评指正。
 本节的主要内容是设计模式中的创建型模式之一:builder模式
 要用好buil">
-<meta property="og:image" content="http://yoursite.com/../assets/images/build_diagram.png">
-<meta property="og:image" content="http://yoursite.com/../assets/images/builder_sequence.png">
-<meta property="og:image" content="http://yoursite.com/../assets/images/BuilderEquipment_thumb.jpg">
-<meta property="og:updated_time" content="2017-01-08T03:38:06.169Z">
+<meta property="og:image" content="http://yoursite.com/images/build_diagram.png">
+<meta property="og:image" content="http://yoursite.com/images/builder_sequence.png">
+<meta property="og:image" content="http://yoursite.com/images/BuilderEquipment_thumb.jpg">
+<meta property="og:updated_time" content="2017-06-13T13:28:30.924Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="创建型设计模式之build模式">
 <meta name="twitter:description" content="创建型设计模式之build模式最近在读《设计模式-可复用面向对象软件设计的基础》一书，在阅读的过程中我会结合书中的相关知识和实例以及在网络上的博客对相关的模式的理解进行总结，并在此基础上加入自己的一些理解，总结模式中需要注意的一些点，记录在此博客，以供大家交流分享，同时防止自己对内容遗忘，如有不正确指出，欢迎批评指正。
 本节的主要内容是设计模式中的创建型模式之一:builder模式
 要用好buil">
-<meta name="twitter:image" content="http://yoursite.com/../assets/images/build_diagram.png">
+<meta name="twitter:image" content="http://yoursite.com/images/build_diagram.png">
     
     
         
@@ -272,7 +272,7 @@
 <p> 当且仅当上面两个条件均满足的情况下我们要使用builder模式（完全理解这两条不一件重要的事情，但是不要着急,当你读完这篇文章的时候就会拨开它的庐山真面目了）</p>
 </blockquote>
 <h2 id="builder模式的结构-UML类图-及详解"><a href="#builder模式的结构-UML类图-及详解" class="headerlink" title="builder模式的结构(UML类图)及详解"></a>builder模式的结构(UML类图)及详解</h2><p>builder模式的UML类图关系如下:</p>
-<p><img src="../assets/images/build_diagram.png" alt=""></p>
+<p><img src="/images/build_diagram.png" alt=""></p>
 <p>注意的问题:</p>
 <ul>
 <li>在builder中一般不声明纯虚函数，而是把它们定义为空方法，这使客户只重定义他们感兴趣的操作。</li>
@@ -287,7 +287,7 @@
 <li>Product: 这个争议不大，即为被构造的复杂对象。此类对象会有不同的表示。</li>
 </ul>
 <h2 id="builder模式各个成分之间的交互方式"><a href="#builder模式各个成分之间的交互方式" class="headerlink" title="builder模式各个成分之间的交互方式"></a>builder模式各个成分之间的交互方式</h2><p>先上一张时序图:</p>
-<p><img src="../assets/images/builder_sequence.png" alt=""></p>
+<p><img src="/images/builder_sequence.png" alt=""></p>
 <p>从上面的时序图可以分析出，各个成分之间的交互方式如下:</p>
 <ul>
 <li>客户首先创建一个concreteBuilder对象,然后创建一个Director,</li>
@@ -302,7 +302,7 @@
 <p>​    首先ordinary和super是port的内部实现方式不同，所以我们需要定义两个具体类，即 ordinaryEQPBuilder和superEQPBuilder。</p>
 <p>​    在EQPbuilder中，我们将定义四个函数，分别是:buildMachine(), addInputPort(), addOutputPort()和getEQP()。两个concrete类继承EQPBuilder。</p>
 <p>​    当我们需要获取不同数目的port的设备，这属于组装方面的范畴，所以我们将在LCDFactory中的createEQP中做。其UML类图如下:</p>
-<p><img src="../assets/images/BuilderEquipment_thumb.jpg" alt=""></p>
+<p><img src="/images/BuilderEquipment_thumb.jpg" alt=""></p>
 <h2 id="builder模式在使用的过程中需要注意的问题"><a href="#builder模式在使用的过程中需要注意的问题" class="headerlink" title="builder模式在使用的过程中需要注意的问题"></a>builder模式在使用的过程中需要注意的问题</h2><p>这里所说的注意的问题可能上面已经提到了，但是这里还是要着重强调一下，因为我们稍不注意，就可能将模式滥用，导致系统设计的失败。</p>
 <ul>
 <li>在builder模式中Builder一定不要定义纯虚函数成员函数，而是定义为空方法的虚函数，这样就可以使得客户可以只定义他们感兴趣的操作。</li>

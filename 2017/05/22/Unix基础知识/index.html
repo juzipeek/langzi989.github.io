@@ -23,13 +23,13 @@
 <meta property="og:site_name" content="魏传柳">
 <meta property="og:description" content="Unix基础知识Unix体系结构从严格意义上讲，可以将操作系统定义为一种软件，它相当于一种控制计算机硬件资源，为程序提供运行环境的软件。我们通常将这种软件叫做内核，因为它相对比较小，并且位于环境的核心。Unix体系结构如下图:
 内核的接口被称为系统调用（system Call），公共库函数建立在系统调用接口之上，应用程序既可以使用公共函数库，也可以使用系统调用。shell是一个特殊的应用程序，为运">
-<meta property="og:image" content="http://yoursite.com/../assets/images/Unix体系结构.png">
-<meta property="og:updated_time" content="2017-05-22T15:24:05.466Z">
+<meta property="og:image" content="http://yoursite.com/images/Unix体系结构.png">
+<meta property="og:updated_time" content="2017-06-13T13:27:17.258Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Unix体系结构">
 <meta name="twitter:description" content="Unix基础知识Unix体系结构从严格意义上讲，可以将操作系统定义为一种软件，它相当于一种控制计算机硬件资源，为程序提供运行环境的软件。我们通常将这种软件叫做内核，因为它相对比较小，并且位于环境的核心。Unix体系结构如下图:
 内核的接口被称为系统调用（system Call），公共库函数建立在系统调用接口之上，应用程序既可以使用公共函数库，也可以使用系统调用。shell是一个特殊的应用程序，为运">
-<meta name="twitter:image" content="http://yoursite.com/../assets/images/Unix体系结构.png">
+<meta name="twitter:image" content="http://yoursite.com/images/Unix体系结构.png">
     
     
         
@@ -242,7 +242,7 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="Unix基础知识"><a href="#Unix基础知识" class="headerlink" title="Unix基础知识"></a>Unix基础知识</h1><h2 id="Unix体系结构"><a href="#Unix体系结构" class="headerlink" title="Unix体系结构"></a>Unix体系结构</h2><p>从严格意义上讲，可以将操作系统定义为一种软件，它相当于一种控制计算机硬件资源，为程序提供运行环境的软件。我们通常将这种软件叫做内核，因为它相对比较小，并且位于环境的核心。Unix体系结构如下图:<br><img src="../assets/images/Unix体系结构.png" alt=""></p>
+            <h1 id="Unix基础知识"><a href="#Unix基础知识" class="headerlink" title="Unix基础知识"></a>Unix基础知识</h1><h2 id="Unix体系结构"><a href="#Unix体系结构" class="headerlink" title="Unix体系结构"></a>Unix体系结构</h2><p>从严格意义上讲，可以将操作系统定义为一种软件，它相当于一种控制计算机硬件资源，为程序提供运行环境的软件。我们通常将这种软件叫做内核，因为它相对比较小，并且位于环境的核心。Unix体系结构如下图:<br><img src="/images/Unix体系结构.png" alt=""></p>
 <p>内核的接口被称为系统调用（system Call），公共库函数建立在系统调用接口之上，<strong>应用程序既可以使用公共函数库，也可以使用系统调用。</strong>shell是一个特殊的应用程序，为运行其他应用程序提供了接口。</p>
 <h2 id="Unix文件和目录"><a href="#Unix文件和目录" class="headerlink" title="Unix文件和目录"></a>Unix文件和目录</h2><h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><p>Unix文件系统是文件和目录的一种层次结构，所有文件的起点都是<strong>根目录(root)</strong>，名称为”/“.</p>
 <p>目录是一个包含目录项的文件。逻辑上，可以认为每个目录项都包含一个文件，同时还说明该文件属性的信息。<strong>文件属性包括文件类型(普通文件还是目录)、文件权限、；链接到改文件的进程数、文件所有者、文件所有者所在的组 文件大小以及文件最后修改的时间等</strong>。stat和fstat函数返回一个文件属性的信息结构。</p>

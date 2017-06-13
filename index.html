@@ -238,8 +238,8 @@
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix网络编程之基础函数-一"><a href="#Unix网络编程之基础函数-一" class="headerlink" title="Unix网络编程之基础函数(一)"></a>Unix网络编程之基础函数(一)</h1><p>TCP客户端与服务器之间交互过程在程序实现上的体现如下图所示：</p>
-<p><img src="../assets/images/客户端与服务器交互图.jpg" alt=""></p>
+                    <h1 id="Unix网络编程之基础函数-一"><a href="#Unix网络编程之基础函数-一" class="headerlink" title="Unix网络编程之基础函数(一)"></a>Unix网络编程之基础函数(一)</h1><p>TCP客户端与服务器之间交互过程在程序实现上的体现如下图所示,注意思考这个过程中TCP状态的变化(参考TCP状态转换图)：</p>
+<p><img src="/images/客户端与服务器交互图.jpg" alt=""></p>
 <p>服务器首先调用socket函数创建socket，通过bind函数将socket与主机地址及端口绑定，然后调用listen函数对主机端口进行监听，然后调用accept函数接收客户端发来的请求，若没有客户端请求，服务端将阻塞在此。客户端建立socket，然后调用connect函数与服务器三次握手建立连接，发送请求给服务器，服务器接收到请求之后对其进行处理并将处理结果返回给客户端，这个过程一直持续下去，一直到客户端与服务器断开连接，服务器接下来将关闭连接或继续等待下一个客户端的连接。</p>
 <h2 id="socket函数"><a href="#socket函数" class="headerlink" title="socket函数"></a>socket函数</h2><p>为了执行网络IO,无论是客户端还是服务器，一个进程首先要做的事情就是调用socket函数创建一个socket，并指定socket的协议族，类型以及协议。</p>
 <h4 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> family, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>;</div></pre></td></tr></table></figure>
@@ -384,6 +384,8 @@
 <li>addr_len : aliaddr的字节数。即客户端sockaddr的地址长度。</li>
 </ul>
 <h3 id="返回值说明-2"><a href="#返回值说明-2" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若出错返回-1;如果accept成功，返回一个新的socket描述符。其代表与所返回的客户端之间的TCP连接，<strong>它是一个连接套接字,之后服务端接收和发送数据都将使用这个描述符进行操作</strong>.</p>
+<h2 id="close函数"><a href="#close函数" class="headerlink" title="close函数"></a>close函数</h2><p>我们知道，关闭文件描述符我可使用close函数，同样的close函数也能用来关闭socket文件描述符。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> sockfd)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>通常情况下,close一个TCP套接字只是将该socket描述符标记为不可用，这个时候其将不能作为read和write的第一个参数进行数据的发送和接收,然而TCP尝试发送已经排队等待的所有需要发送到对端的数据，发送完毕之后将执行正常的TCP连接终止流程关闭TCP连接.</p>
 
                     
                         
@@ -1121,7 +1123,7 @@
                 <div class="postShorten-content" itemprop="articleBody">
                     <h1 id="TCP状态转换图"><a href="#TCP状态转换图" class="headerlink" title="TCP状态转换图"></a>TCP状态转换图</h1><p>TCP涉及连接建立和连接终止的操作可以用状态转换图来说明。</p>
 <p>TCP为一个连接定义了11中状态，并且规定了如何基于当前状态以及该状态下接收的分节(TCP报文段)从一个状态转换为另一个状态。其状态转换图如下所示：</p>
-<p><img src="../assets/images/TCP状态转化图.jpg" alt=""></p>
+<p><img src="/images/TCP状态转化图.jpg" alt=""></p>
 <p>具体转化过程和转换条件如上图所示。</p>
 
                     

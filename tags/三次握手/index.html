@@ -248,7 +248,7 @@
 <li>全双工：如果一台主机上的进程A和另一台主机上的进程B建立了一条TCP连接，那么应用层数据就可以从A进程发送到B进程的<strong>同时</strong>，B进程也可以发送数据到A进程。</li>
 </ul>
 <h2 id="TCP报文段结构"><a href="#TCP报文段结构" class="headerlink" title="TCP报文段结构"></a>TCP报文段结构</h2><p>TCP报文段是由首部字段和一个数据字段组成的，数据字段中包含应用程序需要发送的数据。通常报文段中通过MSS(max segment size)来限制报文段数据字段的最大长度。报文段的结构如下：</p>
-<p><img src="../assets/images/TCP报文.png" alt=""></p>
+<p><img src="/images/TCP报文.png" alt=""></p>
 <p>说明：</p>
 <ul>
 <li>源端口号与目的端口号指的是客户端和服务器端应用程序分别使用的端口号。用于识别主机上某一个特定的应用程序。</li>
@@ -276,7 +276,7 @@
 <li>第三次握手：客户端收到服务端的确认报文段之后，还要给服务端发送一个确认报文段。这个报文段中ACK被设置为1，确认号为y+1。此报文段可以携带数据。</li>
 </ul>
 <p>经过上述三个步骤之后，TCP连接建立成功。客户端进入连接建立状态(ESTABLISHED)。然后就可以相互发送数据了。</p>
-<p><img src="../assets/images/三次连接.png" alt=""></p>
+<p><img src="/images/三次连接.png" alt=""></p>
 <blockquote>
 <p>为什么要经过三次握手？</p>
 <p>三次握手的目的是为了防止失效的报文段突然传送到服务端而出现问题。</p>
@@ -296,7 +296,7 @@
 <li>客户端收到确认报文段,进入FIN_WAIT-2状态，服务端发送完数据之后，发出FIN报文段，FIN被置位1，确认号为ack=u+1，然后进入LAST_ACK状态。</li>
 <li>客户端回复确认报文段。ACK=1，确认号为sck=w+1(w为半开半闭时收到的最后一个字节数据的编号)，序号为seq=u+1，然后进入TIME_WAIT状态。</li>
 </ol>
-<p>一段时间(大约4分钟)之后等待状态结束，连接两端进入CLOSED状态。<br><img src="../assets/images/四次挥手.png" alt=""></p>
+<p>一段时间(大约4分钟)之后等待状态结束，连接两端进入CLOSED状态。<br><img src="/images/四次挥手.png" alt=""></p>
 <blockquote>
 <p>参考链接：</p>
 <ul>

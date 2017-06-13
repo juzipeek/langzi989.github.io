@@ -27,16 +27,16 @@
 
 进程表项 每个进程在记录表中都有一个记录项，记录项中包含一张打开的文件描述符表，可将其视为一个矢量，每个描述符占用一项。与每个文件描述符相关联的是：
 文件描述符标志(close_on_exec,close_o">
-<meta property="og:image" content="http://yoursite.com/../assets/images/singleProcessmultifile.png">
-<meta property="og:image" content="http://yoursite.com/../assets/images/multiProcesssinglefile.png">
-<meta property="og:updated_time" content="2017-05-22T15:43:29.560Z">
+<meta property="og:image" content="http://yoursite.com/images/singleProcessmultifile.png">
+<meta property="og:image" content="http://yoursite.com/images/multiProcesssinglefile.png">
+<meta property="og:updated_time" content="2017-06-13T13:25:41.149Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux用于IO的数据结构及fcntl函数详解">
 <meta name="twitter:description" content="Linux用于I/O的数据结构及fcntl函数详解Linux内核用于IO的数据结构内核使用三种数据结构表示打开的文件，它们之间的关系决定了在文件共享方面一个进程对另一个进程可能产生的影响.
 
 进程表项 每个进程在记录表中都有一个记录项，记录项中包含一张打开的文件描述符表，可将其视为一个矢量，每个描述符占用一项。与每个文件描述符相关联的是：
 文件描述符标志(close_on_exec,close_o">
-<meta name="twitter:image" content="http://yoursite.com/../assets/images/singleProcessmultifile.png">
+<meta name="twitter:image" content="http://yoursite.com/images/singleProcessmultifile.png">
     
     
         
@@ -273,9 +273,9 @@
 <p>close_on_exec是一个进程所有文件描述符（文件句柄）的位图标志，<strong>每个bit代表一个打开的文件描述符，用于<br>确定在系统调用execve()时是否需要关闭文件句柄。</strong>当一个进程fork出一个子进程时，通常会在子进程中调用execve()函数<br>加载执行另一个新程序。此时子进程将完全被新程序替换掉，并在子进程中执行新程序。若一个文件描述符在close_on_exec中对应的<br>bit被设置，那么在执行execve()时该文件描述符将被关闭，否则该文件描述符将始终处于打开状态。<br>当打开一个文件的时候，默认情况下文件句柄在子进程中也处于打开状态。<br>注意文件描述符和文件描述符标志的区别，文件描述符是文件进程打开文件时的文件句柄，文件描述符标志为close_on_exec。</p>
 </blockquote>
 <p>下图显示了一个进程打开两个不同文件时三张表对应的关系：</p>
-<p><img src="../assets/images/singleProcessmultifile.png" alt=""></p>
+<p><img src="/images/singleProcessmultifile.png" alt=""></p>
 <p>如果两个独立的进程同时打开同一个文件，三张表之间的对应关系如下：</p>
-<p><img src="../assets/images/multiProcesssinglefile.png" alt=""><br>从上面可以看出，不同进程打开相同的文件时每个进程将获得各自的文件表项，这是因为不同的进程都有各自的文件偏移量。<br>当我们对文件进行操作的时候，上面三种表项之间的变化关系如下：</p>
+<p><img src="/images/multiProcesssinglefile.png" alt=""><br>从上面可以看出，不同进程打开相同的文件时每个进程将获得各自的文件表项，这是因为不同的进程都有各自的文件偏移量。<br>当我们对文件进行操作的时候，上面三种表项之间的变化关系如下：</p>
 <ul>
 <li>当对文件进行写操作时（write），在文件表项中的文件偏移量将增加写入的字节数。如果此时文件偏移量超过了文件长度，更新文件长度为当前的文件偏移量</li>
 <li>当用O_APPEND标志打开一个文件，则相应的标志也被设置到文件表项的文件标志状态中。每次对这种具有追加标志的文件进行写操作时，<strong>首先将当前文件偏移量设置为文件文件长度</strong>，这就使得每次增加的内容都会写到文件末尾。</li>
