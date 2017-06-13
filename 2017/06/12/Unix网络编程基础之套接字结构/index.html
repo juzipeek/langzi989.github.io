@@ -23,7 +23,7 @@ IPv4套接字地址结构IPv4的套接字以sockaddr_in命名，其具体定义�
 <meta property="og:site_name" content="魏传柳">
 <meta property="og:description" content="Unix网络编程基础之套接字结构大多数的套接字函数都使用到了套接字地址，它们以套接字地址的指针作为参数。每个协议族都定义了自己的套接字地址结构，这些套接字地址结构均以sockaddr_开头，以协议族唯一的后缀结尾。
 IPv4套接字地址结构IPv4的套接字以sockaddr_in命名，其具体定义如下：1234567891011121314#include &amp;lt;netinet/in.h&amp;gt;st">
-<meta property="og:updated_time" content="2017-06-12T11:16:15.805Z">
+<meta property="og:updated_time" content="2017-06-13T02:14:26.431Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Unix网络编程基础之套接字结构">
 <meta name="twitter:description" content="Unix网络编程基础之套接字结构大多数的套接字函数都使用到了套接字地址，它们以套接字地址的指针作为参数。每个协议族都定义了自己的套接字地址结构，这些套接字地址结构均以sockaddr_开头，以协议族唯一的后缀结尾。
@@ -252,6 +252,37 @@ IPv4套接字地址结构IPv4的套接字以sockaddr_in命名，其具体定义�
 <blockquote>
 <p><strong>注意：套接字地址结构仅在本机上使用，虽然结构中的某些字段用在不同主机之间的通信，但是结构体本身不在主机之间传递。</strong></p>
 </blockquote>
+<h3 id="协议族参数说明"><a href="#协议族参数说明" class="headerlink" title="协议族参数说明"></a>协议族参数说明</h3><p>网络通信过程中有不同的协议族，通常我们在socket地址的sin_family中指出当前通信使用的协议族，不同协议族对应不同的参数，其对应参数如下所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">sin_family</th>
+<th>协议说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">AF_INET</td>
+<td>IPv4协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_INET6</td>
+<td>IPv6协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_LOCAL</td>
+<td>Unix域协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_ROUTE</td>
+<td>路由套接字协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_KEY</td>
+<td>密钥套接字</td>
+</tr>
+</tbody>
+</table>
 <h2 id="通用套接字地址结构"><a href="#通用套接字地址结构" class="headerlink" title="通用套接字地址结构"></a>通用套接字地址结构</h2><p>套接字函数以套接字地址结构指针作为参数的过程中，由于在C中没有继承的机制，这个时候向套接字函数传递参数的时候，由于不同协议的套接字地址不同，会出现问题。这个时候有一种解决办法就是<strong>传递void*指针给socket函数，但是void空指针的出现在socket函数之后</strong>，所以这个方案不可行。这个时候的解决方案是　<strong>定义一个通用的套接字函数，socket函数的参数为通用套接字地址的指针，传递参数的时候我们将特定的套接字指针强制转换为通用套接字地址指针。</strong>　如bind函数的函数原型为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">struct</span> sockaddr*, <span class="keyword">socklen_t</span>)</span></span>;</div></pre></td></tr></table></figure></p>
 <p>通用套接字地址的定义如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> sockaddr &#123;</div><div class="line">  <span class="keyword">uint8_t</span> sa_len;</div><div class="line">  <span class="keyword">sa_family_t</span> sa_family;</div><div class="line">  <span class="keyword">char</span> sa_data[<span class="number">14</span>];</div><div class="line">&#125;;</div></pre></td></tr></table></figure>

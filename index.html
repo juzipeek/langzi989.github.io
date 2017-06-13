@@ -215,6 +215,199 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/06/13/Unix网络编程之基础函数(一)/">
+                            Unix网络编程之基础函数(一)
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-06-13T10:17:56+08:00">
+	
+		    6月 13, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix网络编程之基础函数-一"><a href="#Unix网络编程之基础函数-一" class="headerlink" title="Unix网络编程之基础函数(一)"></a>Unix网络编程之基础函数(一)</h1><p>TCP客户端与服务器之间交互过程在程序实现上的体现如下图所示：</p>
+<p><img src="../assets/images/客户端与服务器交互图.jpg" alt=""></p>
+<p>服务器首先调用socket函数创建socket，通过bind函数将socket与主机地址及端口绑定，然后调用listen函数对主机端口进行监听，然后调用accept函数接收客户端发来的请求，若没有客户端请求，服务端将阻塞在此。客户端建立socket，然后调用connect函数与服务器三次握手建立连接，发送请求给服务器，服务器接收到请求之后对其进行处理并将处理结果返回给客户端，这个过程一直持续下去，一直到客户端与服务器断开连接，服务器接下来将关闭连接或继续等待下一个客户端的连接。</p>
+<h2 id="socket函数"><a href="#socket函数" class="headerlink" title="socket函数"></a>socket函数</h2><p>为了执行网络IO,无论是客户端还是服务器，一个进程首先要做的事情就是调用socket函数创建一个socket，并指定socket的协议族，类型以及协议。</p>
+<h4 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> family, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>;</div></pre></td></tr></table></figure>
+<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
+<li>family : 协议族，对应于sockaddr_in中的sin_family，IPv4协议时值为AF_INET.</li>
+<li>type : 套接字类型，套接字类型有多种，TCP一般使用SOCK_STREAM,UDP使用SOCK_DGRAM<ul>
+<li>SOCK_STREAM : 字节流套接字，是一种<strong>有序可靠双向的面向连接字节流</strong>的套接字</li>
+<li>SOCK_DGRAM : 数据报套接字,是一种<strong>长度固定,无连接的不可靠</strong>的套接字。</li>
+<li>SOCK_SEQPACKET : 有序分组套接字，是一种<strong>长度固定，有序，可靠的面向连接的</strong>有序分组套接字。</li>
+<li>SOCK_RAW : 原始套接字</li>
+</ul>
+</li>
+<li>protocal : 链接层传输协议，包括TCP,UDP,SCTP传输协议<ul>
+<li>IPPROTO_TCP : TCP传输协议</li>
+<li>IPPROTO_UDP : UDP传输协议</li>
+<li>IPPROTO_SCTP : SCTP传输协议</li>
+</ul>
+</li>
+</ul>
+<p>一般情况下，我们在使用socket函数的时候，可以只指定前两个参数，将第三个参数设为0，这个时候socket会将protocol设置为默认值，如当family=AF_INET,type=SOCK_STREAM时，这个时候默认的协议为IPv4 TCP协议。但是，注意有些组合是不可用的，组合如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th>AF_TNET</th>
+<th>AF_INET6</th>
+<th>AF_LOCAL</th>
+<th>AF_ROUTE</th>
+<th>AF_KEY</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">SOCK_STREAM</td>
+<td>TCP/SCTP</td>
+<td>TCP/SCTP</td>
+<td>是</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">SOCK_DGRAM</td>
+<td>UDP</td>
+<td>UDP</td>
+<td>是</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">SOCK_SEQPACKET</td>
+<td>SCTP</td>
+<td>SCTP</td>
+<td>是</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">SOCK_RAW</td>
+<td>IPv4</td>
+<td>IPv6</td>
+<td></td>
+<td>是</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<h3 id="返回值说明"><a href="#返回值说明" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>socket函数与open函数类似，若成功，返回一个较小的非负整数,称为套接字描述符，若失败返回-1;</p>
+<h2 id="connect函数"><a href="#connect函数" class="headerlink" title="connect函数"></a>connect函数</h2><p>TCP客户端通过connect函数来与服务器建立连接,注意<strong>客户在调用connect函数之前不必调用bind函数将sockfd与本机的IP端口绑定，因为如果需要的话，内核会确定源IP地址，并选择一个可用的临时端口作为端口号</strong>。</p>
+<p>客户端调用connect函数的时候会激发三次握手连接建立。而且只在连接建立成功或失败时返回，否则会一直阻塞在connect函数处。</p>
+<p>connect函数出错的清空包括以下几种：</p>
+<ul>
+<li>若TCP在调用connect之后没有接收到syn分节，则返回ETIMEOUT错误。这种情况通常发生在<strong>目的主机不存在情况下</strong>。这时客户端会隔一段时间发送一次请求，若等待时间超过一定时间(这个过程客户端被阻塞)，返回ETIMEOUT错误。</li>
+<li>若T客户端收到RST分节(复位)，则返回ECONNREFUSED错误，这种情况发生在<strong>目的主机存在，但是主机上没有进程监听指定端口。</strong></li>
+<li>若客户端发送的分节在某个路由器上返回destination unreachable，此时返回EHOSTUNREACH，这种情况发生在<strong>目的主机和端口存在，但是中间路由出现问题</strong>。</li>
+</ul>
+<p>从TCP状态图可以看出，connect函数可以使得socket状态从closed转移到SYN_SENT状态,若成功，转换到ESTABLISHED状态。若套接字失败不可用，必须关闭。然后重新调用socket函数。</p>
+<h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr* servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li>sockfd : 此参数为调用sock函数的返回值，即套接字描述符</li>
+<li>servaddr : 指向服务器套接字地址结构的指针,套接字地址结构中必须含有Ip地址以及端口。</li>
+<li>addrlen : 上述套接字的长度。</li>
+</ul>
+<h3 id="返回值说明-1"><a href="#返回值说明-1" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>连接失败，返回-1，并将错误码写入errno中;<br>若连接成功，则返回0.</p>
+<h2 id="bind函数"><a href="#bind函数" class="headerlink" title="bind函数"></a>bind函数</h2><p>在建立socket之后，我们通常会将socket与一个套接字绑定，即将一个协议地址赋予给socket，bind函数的作用就是将socket与socket地址绑定。socket协议地址是32位的IPv4地址或128位的IPv6和16位的TCP或UDP端口的组合。</p>
+<p>一般情况下，<strong>客户端一般不调用bind函数进行绑定socket地址(可调用)</strong>,当其调用connect函数的时候，内核会获取主机的IP作为源IP，并选择一个可用的端口作为源端口，当然，客户端可以调用bind为socket指定源端口和IP；<strong>服务端一般要调用bind端口，为socket指定监听的端口和IP</strong>，因为一般情况下服务器是对外提供服务的，如http的80端口,https的443端口等等。</p>
+<blockquote>
+<p>注意：socket绑定的端口必须是<strong>进程所在主机上的网络接口之一</strong>，不能是其他主机的IP，否则会出现“Cannot assign requested address”,也不能绑定已经在使用的端口。</p>
+</blockquote>
+<h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="comment">//函数参数与connect函数中的参数及意义相同。</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr* servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</div></pre></td></tr></table></figure>
+<p>bind函数可以只绑定IP，只绑定端口，也可以两者都绑定，也可以两者都不绑定，具体的制定规则如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">IP地址</th>
+<th>端口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">统配地址(INAAR_ANY)</td>
+<td>0</td>
+<td>内核选择IP地址和端口</td>
+</tr>
+<tr>
+<td style="text-align:center">统配地址(INADDR_ANY)</td>
+<td>非0</td>
+<td>内核选择IP地址，进程指定地址</td>
+</tr>
+<tr>
+<td style="text-align:center">本地IP地址</td>
+<td>0</td>
+<td>进程指定IP,内核选择端口</td>
+</tr>
+<tr>
+<td style="text-align:center">本地IP地址</td>
+<td>0</td>
+<td>进程指定IP和端口</td>
+</tr>
+</tbody>
+</table>
+<p>一般情况下，INADDR_ANY的值为0,将其转化为s_addr的时候使用htonl函数(将主机字节序转化为网络字节序)，若是IPv6则不能使用htonl，因为IPv6的地址是一个128位的地址。需要使用另一种方式，具体参考《Unix网络编程卷一第三版》83页。</p>
+<p>若设置为内核选定端口，则必须调用<strong>getsockname</strong>函数获取系统选定的端口。<br>从bind函数返回的一个常见的错误是:EADDRINUSE : address already in use;</p>
+<h2 id="listen函数"><a href="#listen函数" class="headerlink" title="listen函数"></a>listen函数</h2><h3 id="函数原型-3"><a href="#函数原型-3" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">listen</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> backlog)</span></span>;</div></pre></td></tr></table></figure>
+<p>listen函数仅由TCP服务器调用,一般在调用socket和bind函数之后调用 .当进程调用socket函数创建套接字之后，这个套接字被默认假设为主动套接字，(主动套接字的意思是将会调用connect去和TCP服务器建立连接)。listen函数主要有以下两个作用：</p>
+<ul>
+<li>将一个未连接的套接字转化为主动套接字，指示内核应该接收指向该套接字的连接请求。调用listen成功之后TCP从CLOSED状态转变为LISTEN状态。</li>
+<li>指定内核应该为相应套接字排队的最大连接数。即backlog指定，下面两个队列的和不能超过backlog.若查过backlog还有连接请求，服务器将直接发送RST复位拒绝连接。一般不要吧backlog值设为0，因为不同系统实现对0的解释不同;一般讲backlog的值设为5,因为这是4.2BSD支持的最大值。</li>
+</ul>
+<blockquote>
+<p>内核为任何一个给定的监听套接字维护两个队列:</p>
+<ul>
+<li>未完成连接队列 ：当服务器收到客户端发来的请求之后，数据还没有处理完，此时会进入SYN_RECV状态，这个时候将进入未完成连接队列，也叫SYN队列</li>
+<li>已完成连接队列:服务器与客户端之间建立连接之后，进入ESTABLISHED状态，此时进入已完成连接队列，也叫accept队列。</li>
+</ul>
+</blockquote>
+<h2 id="accept函数"><a href="#accept函数" class="headerlink" title="accept函数"></a>accept函数</h2><p>accept函数的作用是从已经完成连接的队列头返回下一个已经完成的连接，如果已完成的连接为空，则进程进入睡眠状态(阻塞)。</p>
+<h3 id="函数原型-4"><a href="#函数原型-4" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span><span class="params">(<span class="keyword">int</span> servsockfd, <span class="keyword">struct</span> sockaddr* cliaddr, <span class="keyword">socklen_t</span>* addr_len)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="参数说明-2"><a href="#参数说明-2" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li>servsockfd : 监听的套接字描述符</li>
+<li>cliaddr : 客户端的sockaddr，如果对客户端的来源不感兴趣，可以将其设置为NULL;</li>
+<li>addr_len : aliaddr的字节数。即客户端sockaddr的地址长度。</li>
+</ul>
+<h3 id="返回值说明-2"><a href="#返回值说明-2" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若出错返回-1;如果accept成功，返回一个新的socket描述符。其代表与所返回的客户端之间的TCP连接，<strong>它是一个连接套接字,之后服务端接收和发送数据都将使用这个描述符进行操作</strong>.</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/06/13/Unix网络编程之基础函数(一)/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/06/12/Unix网络编程之主机字节序与网络字节序/">
                             Unix网络编程之主机字节序与网络字节序
                         </a>
@@ -301,6 +494,37 @@
 <blockquote>
 <p><strong>注意：套接字地址结构仅在本机上使用，虽然结构中的某些字段用在不同主机之间的通信，但是结构体本身不在主机之间传递。</strong></p>
 </blockquote>
+<h3 id="协议族参数说明"><a href="#协议族参数说明" class="headerlink" title="协议族参数说明"></a>协议族参数说明</h3><p>网络通信过程中有不同的协议族，通常我们在socket地址的sin_family中指出当前通信使用的协议族，不同协议族对应不同的参数，其对应参数如下所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">sin_family</th>
+<th>协议说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">AF_INET</td>
+<td>IPv4协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_INET6</td>
+<td>IPv6协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_LOCAL</td>
+<td>Unix域协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_ROUTE</td>
+<td>路由套接字协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_KEY</td>
+<td>密钥套接字</td>
+</tr>
+</tbody>
+</table>
 <h2 id="通用套接字地址结构"><a href="#通用套接字地址结构" class="headerlink" title="通用套接字地址结构"></a>通用套接字地址结构</h2><p>套接字函数以套接字地址结构指针作为参数的过程中，由于在C中没有继承的机制，这个时候向套接字函数传递参数的时候，由于不同协议的套接字地址不同，会出现问题。这个时候有一种解决办法就是<strong>传递void*指针给socket函数，但是void空指针的出现在socket函数之后</strong>，所以这个方案不可行。这个时候的解决方案是　<strong>定义一个通用的套接字函数，socket函数的参数为通用套接字地址的指针，传递参数的时候我们将特定的套接字指针强制转换为通用套接字地址指针。</strong>　如bind函数的函数原型为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">struct</span> sockaddr*, <span class="keyword">socklen_t</span>)</span></span>;</div></pre></td></tr></table></figure></p>
 <p>通用套接字地址的定义如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> sockaddr &#123;</div><div class="line">  <span class="keyword">uint8_t</span> sa_len;</div><div class="line">  <span class="keyword">sa_family_t</span> sa_family;</div><div class="line">  <span class="keyword">char</span> sa_data[<span class="number">14</span>];</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
@@ -906,121 +1130,6 @@
                     
                         <p>
                             <a href="/2017/05/30/Unix网络编程之TCP状态转换图/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
-                            TCP的连接与建立
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-30T16:43:00+08:00">
-	
-		    5月 30, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="TCP的连接与建立"><a href="#TCP的连接与建立" class="headerlink" title="TCP的连接与建立"></a>TCP的连接与建立</h1><p>最常用的传输层协议包括TCP和UDP两种，当然除此之外还有其他协议。UDP是一种既不面向连接有不可靠的传输层协议，而TCP是一种面向连接的可靠的传输层协议，为了达到这个目的，其在设计上使用了差错检测，重传，累计确认，定时器以及用于序号和确认好的字段等等。</p>
-<h2 id="TCP的特点"><a href="#TCP的特点" class="headerlink" title="TCP的特点"></a>TCP的特点</h2><p>TCP协议有以下特点：</p>
-<ul>
-<li>面向连接：TCP的连接不是一条电路的或者虚电路，其连接状完全保留在两个端系统中。</li>
-<li>可靠传输：TCP连接在传输消息的过程中保证了数据的可靠性，即保证数据在传输过程中不会丢失。</li>
-<li>点对点：一条TCP连接只能连接两个端点。</li>
-<li>全双工：如果一台主机上的进程A和另一台主机上的进程B建立了一条TCP连接，那么应用层数据就可以从A进程发送到B进程的<strong>同时</strong>，B进程也可以发送数据到A进程。</li>
-</ul>
-<h2 id="TCP报文段结构"><a href="#TCP报文段结构" class="headerlink" title="TCP报文段结构"></a>TCP报文段结构</h2><p>TCP报文段是由首部字段和一个数据字段组成的，数据字段中包含应用程序需要发送的数据。通常报文段中通过MSS(max segment size)来限制报文段数据字段的最大长度。报文段的结构如下：</p>
-<p><img src="../assets/images/TCP报文.png" alt=""></p>
-<p>说明：</p>
-<ul>
-<li>源端口号与目的端口号指的是客户端和服务器端应用程序分别使用的端口号。用于识别主机上某一个特定的应用程序。</li>
-<li>序号(seq)为TCP报文段中数据其实字节的序号。</li>
-<li>确认号字段为(ACK)期待接收的下一个TCP报文段中数据的序号。</li>
-<li>首部长度：首部长度表示当前TCP报文的首部的长度，一般为20，即可以看到表中报文首部的长度为20个字节。但是有时选项中有一些内容，这个时候首部长度大于20。</li>
-<li>保留字：NULL</li>
-<li>标志位：当某一些标志位被设置的时候表达一些特定的含义。<ul>
-<li>UGR标识报文段中存在着紧急数据。其中紧急数据的指针字段存放在后面16位的紧急数据指针中。</li>
-<li>ACK标识确认号字段生效，一般连接建立之后的内个报文段的ACK被会被设置</li>
-<li>PSH:不常用</li>
-<li>SYN:连接建立时的客户端发送的服务端的第一个报文段和服务端响应客户端的报文段中被设置，标识当前为建立连接的过程。</li>
-<li>FIN：与SYN类似，它是在断开连接时被设置。</li>
-</ul>
-</li>
-<li>互联网检验和：用于错误检测</li>
-<li>紧急数据指针：即为上述当UGR标志被设置时标识紧急数据的指针。</li>
-<li>选项：应用程序中自定义的首部的其他内容。</li>
-<li>数据：应用程序发送的真正数据。</li>
-</ul>
-<h2 id="TCP建立连接（三次握手）"><a href="#TCP建立连接（三次握手）" class="headerlink" title="TCP建立连接（三次握手）"></a>TCP建立连接（三次握手）</h2><p>TCP连接的过程可以简单描述为以下几个过程：</p>
-<ul>
-<li>第一次握手：客户端发送请求连接报文段到服务器。此报文段中SYN被设置为1，同时随机或者指定一个起始序号x。此时客户端进入SYN_SENT（同步已发送）状态。</li>
-<li>第二次握手：服务端收到请求报文段之后，向客户端发送确认报文段。确认报文段中ACK设置为1,SYN设置为1,确认号为x+1，同时为自己生成一个序号y。此时服务端进入SYN_RECV状态（同步接受到）。</li>
-<li>第三次握手：客户端收到服务端的确认报文段之后，还要给服务端发送一个确认报文段。这个报文段中ACK被设置为1，确认号为y+1。此报文段可以携带数据。</li>
-</ul>
-<p>经过上述三个步骤之后，TCP连接建立成功。客户端进入连接建立状态(ESTABLISHED)。然后就可以相互发送数据了。</p>
-<p><img src="../assets/images/三次连接.png" alt=""></p>
-<blockquote>
-<p>为什么要经过三次握手？</p>
-<p>三次握手的目的是为了防止失效的报文段突然传送到服务端而出现问题。</p>
-<p>上述已经失效的报文段是指：如果客户端在发送第一次连接请求的过程中，由于网络原因导致此报文段在某个网络节点滞留较长时间，这个时候TCP传输协议会视为此报文段已经丢失，于是重传。若此滞留的报文段在连接断开之后才到达服务器，这个时候就会出现问题。</p>
-<p>若不是使用三次握手，服务器收到失效的报文段之后会建立连接，故之后无法释放TCP资源。导致资源浪费以致于长期会使服务器宕机。</p>
-</blockquote>
-<h3 id="三次握手过程中服务器和客户端程序的行为"><a href="#三次握手过程中服务器和客户端程序的行为" class="headerlink" title="三次握手过程中服务器和客户端程序的行为"></a>三次握手过程中服务器和客户端程序的行为</h3><ul>
-<li>服务器必须准备好接受外来的连接，调用socket(),bind()以及listen三个函数来完成，我们称为被动打开。</li>
-<li>客户端通过调用connect发起主动打开连接，向服务器发送SYN(同步)包，connect函数阻塞。</li>
-<li>服务器通过accept接收到客户端来送的TCP包，需要进行确认同事发送自己的SYN包，此时accept函数阻塞，</li>
-<li>客户端收到服务器的SYN包，connect函数返回，并向服务器发送确认。服务器接收到确认之后accept函数返回。</li>
-</ul>
-<h2 id="TCP连接断开（四次挥手）"><a href="#TCP连接断开（四次挥手）" class="headerlink" title="TCP连接断开（四次挥手）"></a>TCP连接断开（四次挥手）</h2><p>由于TCP连接是全双工的，因此每个方向都必须单独的关闭，也就是发送方和接收方都需要FIN和ACK。<strong>客户端和服务器都可以首先主动发送连接终止的报文</strong>。当其中一方发送完数据之后即可向另一方发出连接断开的请求。当收到FIN意味着这一方向上没有数据流动，但是一方收到FIN之后仍然可以发送数据。四次挥手的具体过程如下：</p>
-<ol>
-<li>此时TCP连接两端都处于ESTABLISHED的状态，客户端停止发送数据，并发出一个FIN报文段。首部FIN设置为1,序号seq=u(u为客户端传输数据的字后一个字节的序号加1)。客户端进入FIN_WAIT-1状态。</li>
-<li>服务端回复确认报文段，确认号为ack=u+1，序号为seq=v(v为服务端传输数据的最后一个字节序号加1)，服务端进入close_wait状态。现在TCP连接处于半关闭状态，服务端如果继续发送数据，客户端依然接收。</li>
-<li>客户端收到确认报文段,进入FIN_WAIT-2状态，服务端发送完数据之后，发出FIN报文段，FIN被置位1，确认号为ack=u+1，然后进入LAST_ACK状态。</li>
-<li>客户端回复确认报文段。ACK=1，确认号为sck=w+1(w为半开半闭时收到的最后一个字节数据的编号)，序号为seq=u+1，然后进入TIME_WAIT状态。</li>
-</ol>
-<p>一段时间(大约4分钟)之后等待状态结束，连接两端进入CLOSED状态。<br><img src="../assets/images/四次挥手.png" alt=""></p>
-<blockquote>
-<p>参考链接：</p>
-<ul>
-<li><a href="https://book.douban.com/subject/26176870/" target="_blank" rel="external">计算机网络 自顶向下方法</a></li>
-<li><a href="https://book.douban.com/subject/4859464/" target="_blank" rel="external">Unix网络编程</a></li>
-<li><a href="http://blog.csdn.net/whuslei/article/details/6667471/" target="_blank" rel="external">http://blog.csdn.net/whuslei/article/details/6667471/</a></li>
-<li><a href="http://blog.csdn.net/wenqian1991/article/details/39667131" target="_blank" rel="external">http://blog.csdn.net/wenqian1991/article/details/39667131</a></li>
-<li><a href="https://cnbin.github.io/blog/2015/07/01/chuan-shu-ceng-:tcp-xie-yi/" target="_blank" rel="external">https://cnbin.github.io/blog/2015/07/01/chuan-shu-ceng-:tcp-xie-yi/</a></li>
-</ul>
-</blockquote>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/30/Unix网络编程之TCP的连接与建立过程/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

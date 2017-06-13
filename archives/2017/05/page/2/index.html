@@ -1121,14 +1121,14 @@
 <li>pid &lt; -1：发送信号给<strong>进程组</strong>标识为-pid的进程。</li>
 </ul>
 <p>当sig=0时没有信号发出，但是系统会执行错误检查，通常会利用sig值为0来检查某个进程是否在执行。</p>
-<p>###Example<br>相关知识：WIFSIGNALED和WIFEXITED两个宏是用来判断当前程序的子进程的退出方式，是接收到信号异常退出<br>还是正常调用exit()或return退出。</p>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>相关知识：WIFSIGNALED和WIFEXITED两个宏是用来判断当前程序的子进程的退出方式，是接收到信号异常退出<br>还是正常调用exit()或return退出。</p>
 <ul>
 <li>WIFEXITED: 调用exit()或return退出</li>
 <li>WIFSIGNALED:接收到信号异常退出 此时可以使用WTERMSIG(status)获取其接受信号的内容。</li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></div><div class="line">main()</div><div class="line">&#123;</div><div class="line">    <span class="keyword">pid_t</span> pid;</div><div class="line">    <span class="keyword">int</span> status;</div><div class="line">    <span class="keyword">if</span>(!(pid= fork()))</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"Hi I am child process!\n"</span>);</div><div class="line">        sleep(<span class="number">10</span>);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"send signal to child process (%d) \n"</span>, pid);</div><div class="line">        sleep(<span class="number">1</span>);</div><div class="line">        kill(pid, SIGABRT);</div><div class="line">        wait(&amp;status);</div><div class="line">        <span class="keyword">if</span>(WIFSIGNALED(status))</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"chile process receive signal %d\n"</span>, WTERMSIG(status));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="wait-与waitpid"><a href="#wait-与waitpid" class="headerlink" title="wait()与waitpid()"></a>wait()与waitpid()</h2><p>###头文件<br>sys/wait.h</p>
-<p>###函数原型<br>pid_t wait(int<em> status);<br>pid_t waitpid(pid_t pid, int</em> status, int options);</p>
+<h2 id="wait-与waitpid"><a href="#wait-与waitpid" class="headerlink" title="wait()与waitpid()"></a>wait()与waitpid()</h2><h3 id="头文件-1"><a href="#头文件-1" class="headerlink" title="头文件"></a>头文件</h3><p>sys/wait.h</p>
+<h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><p>pid_t wait(int<em> status);<br>pid_t waitpid(pid_t pid, int</em> status, int options);</p>
 <h3 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h3><p>父进程创建子进程之后，父进程使用wait和waitpid具有监视子进程的运行状态的能力。这两个函数用于<strong>等待子进程的状态发生变化回调并且获取状态发生变化的信息</strong>，所能获取的状态变化包括：<strong>子进程运行结束,子进程被信号量暂停，子进程被信号量回复运行</strong>。</p>
 <p>父进程执行wait函数之后，父进程会被阻塞在此处，如果子进程状态发生变化，则wait函数会立即返回结果；否则wait函数会一直阻塞直到子进程状态发生变化。</p>
 <p>通常意义上，，如果子进程状态发生了变化，但是还是未被其父进程或者其他系统回调执行wait函数，此时的子进程被称为可等待的。</p>
@@ -1155,8 +1155,7 @@
 <p>一般情况下使用值为0即可。</p>
 <h3 id="wait与waitpid关系"><a href="#wait与waitpid关系" class="headerlink" title="wait与waitpid关系"></a>wait与waitpid关系</h3><p>wait实质上是waitpid中pid=-1,options=0时封装，即</p>
 <p>wait(&amp;status)与waitpid(-1, &amp;status, 0)完全相同</p>
-<p>###相关宏</p>
-<p>wait.h中定义了一些宏用于解析status的值：</p>
+<h3 id="相关宏"><a href="#相关宏" class="headerlink" title="相关宏"></a>相关宏</h3><p>wait.h中定义了一些宏用于解析status的值：</p>
 <table>
 <thead>
 <tr>
@@ -1195,7 +1194,7 @@
 <table>
 <thead>
 <tr>
-<th style="text-align:center">常亮</th>
+<th style="text-align:center">常量</th>
 <th>含义</th>
 </tr>
 </thead>

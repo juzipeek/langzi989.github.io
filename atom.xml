@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-06-12T11:33:25.934Z</updated>
+  <updated>2017-06-13T11:51:04.196Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,176 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Unix网络编程之基础函数(一)</title>
+    <link href="http://yoursite.com/2017/06/13/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%87%BD%E6%95%B0(%E4%B8%80)/"/>
+    <id>http://yoursite.com/2017/06/13/Unix网络编程之基础函数(一)/</id>
+    <published>2017-06-13T02:17:56.000Z</published>
+    <updated>2017-06-13T11:51:04.196Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unix网络编程之基础函数-一"><a href="#Unix网络编程之基础函数-一" class="headerlink" title="Unix网络编程之基础函数(一)"></a>Unix网络编程之基础函数(一)</h1><p>TCP客户端与服务器之间交互过程在程序实现上的体现如下图所示：</p>
+<p><img src="../assets/images/客户端与服务器交互图.jpg" alt=""></p>
+<p>服务器首先调用socket函数创建socket，通过bind函数将socket与主机地址及端口绑定，然后调用listen函数对主机端口进行监听，然后调用accept函数接收客户端发来的请求，若没有客户端请求，服务端将阻塞在此。客户端建立socket，然后调用connect函数与服务器三次握手建立连接，发送请求给服务器，服务器接收到请求之后对其进行处理并将处理结果返回给客户端，这个过程一直持续下去，一直到客户端与服务器断开连接，服务器接下来将关闭连接或继续等待下一个客户端的连接。</p>
+<h2 id="socket函数"><a href="#socket函数" class="headerlink" title="socket函数"></a>socket函数</h2><p>为了执行网络IO,无论是客户端还是服务器，一个进程首先要做的事情就是调用socket函数创建一个socket，并指定socket的协议族，类型以及协议。</p>
+<h4 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> family, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>;</div></pre></td></tr></table></figure>
+<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
+<li>family : 协议族，对应于sockaddr_in中的sin_family，IPv4协议时值为AF_INET.</li>
+<li>type : 套接字类型，套接字类型有多种，TCP一般使用SOCK_STREAM,UDP使用SOCK_DGRAM<ul>
+<li>SOCK_STREAM : 字节流套接字，是一种<strong>有序可靠双向的面向连接字节流</strong>的套接字</li>
+<li>SOCK_DGRAM : 数据报套接字,是一种<strong>长度固定,无连接的不可靠</strong>的套接字。</li>
+<li>SOCK_SEQPACKET : 有序分组套接字，是一种<strong>长度固定，有序，可靠的面向连接的</strong>有序分组套接字。</li>
+<li>SOCK_RAW : 原始套接字</li>
+</ul>
+</li>
+<li>protocal : 链接层传输协议，包括TCP,UDP,SCTP传输协议<ul>
+<li>IPPROTO_TCP : TCP传输协议</li>
+<li>IPPROTO_UDP : UDP传输协议</li>
+<li>IPPROTO_SCTP : SCTP传输协议</li>
+</ul>
+</li>
+</ul>
+<p>一般情况下，我们在使用socket函数的时候，可以只指定前两个参数，将第三个参数设为0，这个时候socket会将protocol设置为默认值，如当family=AF_INET,type=SOCK_STREAM时，这个时候默认的协议为IPv4 TCP协议。但是，注意有些组合是不可用的，组合如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th>AF_TNET</th>
+<th>AF_INET6</th>
+<th>AF_LOCAL</th>
+<th>AF_ROUTE</th>
+<th>AF_KEY</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">SOCK_STREAM</td>
+<td>TCP/SCTP</td>
+<td>TCP/SCTP</td>
+<td>是</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">SOCK_DGRAM</td>
+<td>UDP</td>
+<td>UDP</td>
+<td>是</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">SOCK_SEQPACKET</td>
+<td>SCTP</td>
+<td>SCTP</td>
+<td>是</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">SOCK_RAW</td>
+<td>IPv4</td>
+<td>IPv6</td>
+<td></td>
+<td>是</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<h3 id="返回值说明"><a href="#返回值说明" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>socket函数与open函数类似，若成功，返回一个较小的非负整数,称为套接字描述符，若失败返回-1;</p>
+<h2 id="connect函数"><a href="#connect函数" class="headerlink" title="connect函数"></a>connect函数</h2><p>TCP客户端通过connect函数来与服务器建立连接,注意<strong>客户在调用connect函数之前不必调用bind函数将sockfd与本机的IP端口绑定，因为如果需要的话，内核会确定源IP地址，并选择一个可用的临时端口作为端口号</strong>。</p>
+<p>客户端调用connect函数的时候会激发三次握手连接建立。而且只在连接建立成功或失败时返回，否则会一直阻塞在connect函数处。</p>
+<p>connect函数出错的清空包括以下几种：</p>
+<ul>
+<li>若TCP在调用connect之后没有接收到syn分节，则返回ETIMEOUT错误。这种情况通常发生在<strong>目的主机不存在情况下</strong>。这时客户端会隔一段时间发送一次请求，若等待时间超过一定时间(这个过程客户端被阻塞)，返回ETIMEOUT错误。</li>
+<li>若T客户端收到RST分节(复位)，则返回ECONNREFUSED错误，这种情况发生在<strong>目的主机存在，但是主机上没有进程监听指定端口。</strong></li>
+<li>若客户端发送的分节在某个路由器上返回destination unreachable，此时返回EHOSTUNREACH，这种情况发生在<strong>目的主机和端口存在，但是中间路由出现问题</strong>。</li>
+</ul>
+<p>从TCP状态图可以看出，connect函数可以使得socket状态从closed转移到SYN_SENT状态,若成功，转换到ESTABLISHED状态。若套接字失败不可用，必须关闭。然后重新调用socket函数。</p>
+<h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr* servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li>sockfd : 此参数为调用sock函数的返回值，即套接字描述符</li>
+<li>servaddr : 指向服务器套接字地址结构的指针,套接字地址结构中必须含有Ip地址以及端口。</li>
+<li>addrlen : 上述套接字的长度。</li>
+</ul>
+<h3 id="返回值说明-1"><a href="#返回值说明-1" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>连接失败，返回-1，并将错误码写入errno中;<br>若连接成功，则返回0.</p>
+<h2 id="bind函数"><a href="#bind函数" class="headerlink" title="bind函数"></a>bind函数</h2><p>在建立socket之后，我们通常会将socket与一个套接字绑定，即将一个协议地址赋予给socket，bind函数的作用就是将socket与socket地址绑定。socket协议地址是32位的IPv4地址或128位的IPv6和16位的TCP或UDP端口的组合。</p>
+<p>一般情况下，<strong>客户端一般不调用bind函数进行绑定socket地址(可调用)</strong>,当其调用connect函数的时候，内核会获取主机的IP作为源IP，并选择一个可用的端口作为源端口，当然，客户端可以调用bind为socket指定源端口和IP；<strong>服务端一般要调用bind端口，为socket指定监听的端口和IP</strong>，因为一般情况下服务器是对外提供服务的，如http的80端口,https的443端口等等。</p>
+<blockquote>
+<p>注意：socket绑定的端口必须是<strong>进程所在主机上的网络接口之一</strong>，不能是其他主机的IP，否则会出现“Cannot assign requested address”,也不能绑定已经在使用的端口。</p>
+</blockquote>
+<h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="comment">//函数参数与connect函数中的参数及意义相同。</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr* servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</div></pre></td></tr></table></figure>
+<p>bind函数可以只绑定IP，只绑定端口，也可以两者都绑定，也可以两者都不绑定，具体的制定规则如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">IP地址</th>
+<th>端口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">统配地址(INAAR_ANY)</td>
+<td>0</td>
+<td>内核选择IP地址和端口</td>
+</tr>
+<tr>
+<td style="text-align:center">统配地址(INADDR_ANY)</td>
+<td>非0</td>
+<td>内核选择IP地址，进程指定地址</td>
+</tr>
+<tr>
+<td style="text-align:center">本地IP地址</td>
+<td>0</td>
+<td>进程指定IP,内核选择端口</td>
+</tr>
+<tr>
+<td style="text-align:center">本地IP地址</td>
+<td>0</td>
+<td>进程指定IP和端口</td>
+</tr>
+</tbody>
+</table>
+<p>一般情况下，INADDR_ANY的值为0,将其转化为s_addr的时候使用htonl函数(将主机字节序转化为网络字节序)，若是IPv6则不能使用htonl，因为IPv6的地址是一个128位的地址。需要使用另一种方式，具体参考《Unix网络编程卷一第三版》83页。</p>
+<p>若设置为内核选定端口，则必须调用<strong>getsockname</strong>函数获取系统选定的端口。<br>从bind函数返回的一个常见的错误是:EADDRINUSE : address already in use;</p>
+<h2 id="listen函数"><a href="#listen函数" class="headerlink" title="listen函数"></a>listen函数</h2><h3 id="函数原型-3"><a href="#函数原型-3" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">listen</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> backlog)</span></span>;</div></pre></td></tr></table></figure>
+<p>listen函数仅由TCP服务器调用,一般在调用socket和bind函数之后调用 .当进程调用socket函数创建套接字之后，这个套接字被默认假设为主动套接字，(主动套接字的意思是将会调用connect去和TCP服务器建立连接)。listen函数主要有以下两个作用：</p>
+<ul>
+<li>将一个未连接的套接字转化为主动套接字，指示内核应该接收指向该套接字的连接请求。调用listen成功之后TCP从CLOSED状态转变为LISTEN状态。</li>
+<li>指定内核应该为相应套接字排队的最大连接数。即backlog指定，下面两个队列的和不能超过backlog.若查过backlog还有连接请求，服务器将直接发送RST复位拒绝连接。一般不要吧backlog值设为0，因为不同系统实现对0的解释不同;一般讲backlog的值设为5,因为这是4.2BSD支持的最大值。</li>
+</ul>
+<blockquote>
+<p>内核为任何一个给定的监听套接字维护两个队列:</p>
+<ul>
+<li>未完成连接队列 ：当服务器收到客户端发来的请求之后，数据还没有处理完，此时会进入SYN_RECV状态，这个时候将进入未完成连接队列，也叫SYN队列</li>
+<li>已完成连接队列:服务器与客户端之间建立连接之后，进入ESTABLISHED状态，此时进入已完成连接队列，也叫accept队列。</li>
+</ul>
+</blockquote>
+<h2 id="accept函数"><a href="#accept函数" class="headerlink" title="accept函数"></a>accept函数</h2><p>accept函数的作用是从已经完成连接的队列头返回下一个已经完成的连接，如果已完成的连接为空，则进程进入睡眠状态(阻塞)。</p>
+<h3 id="函数原型-4"><a href="#函数原型-4" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span><span class="params">(<span class="keyword">int</span> servsockfd, <span class="keyword">struct</span> sockaddr* cliaddr, <span class="keyword">socklen_t</span>* addr_len)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="参数说明-2"><a href="#参数说明-2" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li>servsockfd : 监听的套接字描述符</li>
+<li>cliaddr : 客户端的sockaddr，如果对客户端的来源不感兴趣，可以将其设置为NULL;</li>
+<li>addr_len : aliaddr的字节数。即客户端sockaddr的地址长度。</li>
+</ul>
+<h3 id="返回值说明-2"><a href="#返回值说明-2" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若出错返回-1;如果accept成功，返回一个新的socket描述符。其代表与所返回的客户端之间的TCP连接，<strong>它是一个连接套接字,之后服务端接收和发送数据都将使用这个描述符进行操作</strong>.</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Unix网络编程之基础函数-一&quot;&gt;&lt;a href=&quot;#Unix网络编程之基础函数-一&quot; class=&quot;headerlink&quot; title=&quot;Unix网络编程之基础函数(一)&quot;&gt;&lt;/a&gt;Unix网络编程之基础函数(一)&lt;/h1&gt;&lt;p&gt;TCP客户端与服务器之间交互过程
+    
+    </summary>
+    
+      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="socket" scheme="http://yoursite.com/tags/socket/"/>
+    
+  </entry>
   
   <entry>
     <title>Unix网络编程之主机字节序与网络字节序</title>
@@ -52,7 +222,7 @@
     <link href="http://yoursite.com/2017/06/12/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80%E4%B9%8B%E5%A5%97%E6%8E%A5%E5%AD%97%E7%BB%93%E6%9E%84/"/>
     <id>http://yoursite.com/2017/06/12/Unix网络编程基础之套接字结构/</id>
     <published>2017-06-12T08:57:47.000Z</published>
-    <updated>2017-06-12T11:16:15.805Z</updated>
+    <updated>2017-06-13T02:14:26.431Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Unix网络编程基础之套接字结构"><a href="#Unix网络编程基础之套接字结构" class="headerlink" title="Unix网络编程基础之套接字结构"></a>Unix网络编程基础之套接字结构</h1><p>大多数的套接字函数都使用到了套接字地址，它们以套接字地址的指针作为参数。每个协议族都定义了自己的套接字地址结构，这些套接字地址结构均以sockaddr_开头，以协议族唯一的后缀结尾。</p>
 <h2 id="IPv4套接字地址结构"><a href="#IPv4套接字地址结构" class="headerlink" title="IPv4套接字地址结构"></a>IPv4套接字地址结构</h2><p>IPv4的套接字以sockaddr_in命名，其具体定义如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></div><div class="line"><span class="keyword">struct</span> in_addr &#123;</div><div class="line">  <span class="keyword">in_addr_t</span> s_addr;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> sockaddr_in &#123;</div><div class="line">  uint8 sin_len;            <span class="comment">//套接字的长度,sizeof(struct　sockaddr_in)</span></div><div class="line">  <span class="keyword">sa_family_t</span> sin_family;   <span class="comment">//协议族</span></div><div class="line">  <span class="keyword">in_port_t</span> sin_port;       <span class="comment">//套接字端口</span></div><div class="line"></div><div class="line">  <span class="keyword">struct</span> in_addr sin_addr;  <span class="comment">//套接字地址</span></div><div class="line"></div><div class="line">  <span class="keyword">char</span> sin_zero[<span class="number">8</span>];         <span class="comment">//保留位</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
@@ -66,6 +236,37 @@
 <blockquote>
 <p><strong>注意：套接字地址结构仅在本机上使用，虽然结构中的某些字段用在不同主机之间的通信，但是结构体本身不在主机之间传递。</strong></p>
 </blockquote>
+<h3 id="协议族参数说明"><a href="#协议族参数说明" class="headerlink" title="协议族参数说明"></a>协议族参数说明</h3><p>网络通信过程中有不同的协议族，通常我们在socket地址的sin_family中指出当前通信使用的协议族，不同协议族对应不同的参数，其对应参数如下所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">sin_family</th>
+<th>协议说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">AF_INET</td>
+<td>IPv4协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_INET6</td>
+<td>IPv6协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_LOCAL</td>
+<td>Unix域协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_ROUTE</td>
+<td>路由套接字协议</td>
+</tr>
+<tr>
+<td style="text-align:center">AF_KEY</td>
+<td>密钥套接字</td>
+</tr>
+</tbody>
+</table>
 <h2 id="通用套接字地址结构"><a href="#通用套接字地址结构" class="headerlink" title="通用套接字地址结构"></a>通用套接字地址结构</h2><p>套接字函数以套接字地址结构指针作为参数的过程中，由于在C中没有继承的机制，这个时候向套接字函数传递参数的时候，由于不同协议的套接字地址不同，会出现问题。这个时候有一种解决办法就是<strong>传递void*指针给socket函数，但是void空指针的出现在socket函数之后</strong>，所以这个方案不可行。这个时候的解决方案是　<strong>定义一个通用的套接字函数，socket函数的参数为通用套接字地址的指针，传递参数的时候我们将特定的套接字指针强制转换为通用套接字地址指针。</strong>　如bind函数的函数原型为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">struct</span> sockaddr*, <span class="keyword">socklen_t</span>)</span></span>;</div></pre></td></tr></table></figure></p>
 <p>通用套接字地址的定义如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> sockaddr &#123;</div><div class="line">  <span class="keyword">uint8_t</span> sa_len;</div><div class="line">  <span class="keyword">sa_family_t</span> sa_family;</div><div class="line">  <span class="keyword">char</span> sa_data[<span class="number">14</span>];</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
@@ -681,35 +882,6 @@
   </entry>
   
   <entry>
-    <title>rapidjson Schema</title>
-    <link href="http://yoursite.com/2017/05/27/rapidjsonSchema/"/>
-    <id>http://yoursite.com/2017/05/27/rapidjsonSchema/</id>
-    <published>2017-05-27T01:35:00.000Z</published>
-    <updated>2017-05-27T01:41:30.650Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="rapidjson-Schema"><a href="#rapidjson-Schema" class="headerlink" title="rapidjson Schema"></a>rapidjson Schema</h1><blockquote>
-<p>本系列文章以例子的方式进行呈现。</p>
-</blockquote>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line">* JsonSchema本质上是一个json，其作用是用于校验Json，使用schema对json进行校验，</div><div class="line">* 可以让代码安全的去当问DOM，而不需要去检查类型或者键值的存在等等。这也能确保输</div><div class="line">* 出的json符合特定的schema。</div><div class="line">*/</div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/schema.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/stringbuffer.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*使用JsonSchema校校验json格式的流程:</span></div><div class="line">*       1. 将schema(模板)解析成一个Document</div><div class="line">*       2. 然后将Document编译成一个SchemaDocument</div><div class="line">*       3. 通过上述SchemaDocument创建一个SchemaValidator。</div><div class="line">*       4. 然后通过document.Accept(validator)去校验一个json，获取校验结果。</div><div class="line">*注意：</div><div class="line">*       1. 一个SchemaDocument能被多个SchemaValidator引用，他不会被SchemaValidator修改。</div><div class="line">*       2. 可以重复使用SchemaValidator校验多个文件。在校验其他文件之前，必须先调用validator.Reset()。</div><div class="line">*JsonSchema的格式：</div><div class="line">*       1. JsonSchema实质上是一个json数据。</div><div class="line">*       2. JsonSchema与其他json数据不同的是它在每一个对象和元素中定义了他们的类型type，属性(如object的properties，以及integer的minimum等等)，</div><div class="line">*           同时，我们可以通过JsonSchema对json的值的类型以及取值范围等进行限定。schema中必须的值需要显示的声明在required中。</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ValidateJson</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> testSchema = <span class="string">"&#123;\"type\":\"object\", \"properties\":&#123;\"code\":&#123;\"type\":\"string\"&#125;, \"int\":&#123;\"type\":\"integer\", \"minimum\":0&#125;&#125;, \"required\":[\"int\",\"code\"]&#125;"</span>;</div><div class="line">  Document sd;</div><div class="line">  <span class="keyword">if</span> (sd.Parse(testSchema.c_str()).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"jsonSchema is not valid : %s"</span>, testSchema.c_str());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//创建SchemaDocument</span></div><div class="line">  <span class="function">SchemaDocument <span class="title">schema</span><span class="params">(sd)</span></span>;</div><div class="line"></div><div class="line">  Document d;</div><div class="line">  <span class="keyword">if</span> (d.Parse(<span class="string">"&#123;\"code\":123, \"int\":1&#125;"</span>).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Document is not a valid json"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">SchemaValidator <span class="title">validator</span><span class="params">(schema)</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!d.Accept(validator)) &#123;</div><div class="line">    StringBuffer sb;</div><div class="line">    validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid schema: %s\n"</span>, sb.GetString());</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid keyword: %s\n"</span>, validator.GetInvalidSchemaKeyword());</div><div class="line">    sb.Clear();</div><div class="line">    validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid document:%s\n "</span>, sb.GetString());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"符合schemas模式\n"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  ValidateJson();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;rapidjson-Schema&quot;&gt;&lt;a href=&quot;#rapidjson-Schema&quot; class=&quot;headerlink&quot; title=&quot;rapidjson Schema&quot;&gt;&lt;/a&gt;rapidjson Schema&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;本
-    
-    </summary>
-    
-      <category term="rapidjson学习" scheme="http://yoursite.com/categories/rapidjson%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-      <category term="rapidjson" scheme="http://yoursite.com/tags/rapidjson/"/>
-    
-      <category term="json" scheme="http://yoursite.com/tags/json/"/>
-    
-  </entry>
-  
-  <entry>
     <title>rapidjson指针</title>
     <link href="http://yoursite.com/2017/05/27/rapidjson%E6%8C%87%E9%92%88/"/>
     <id>http://yoursite.com/2017/05/27/rapidjson指针/</id>
@@ -727,6 +899,35 @@
       &lt;h1 id=&quot;rapidjson指针&quot;&gt;&lt;a href=&quot;#rapidjson指针&quot; class=&quot;headerlink&quot; title=&quot;rapidjson指针&quot;&gt;&lt;/a&gt;rapidjson指针&lt;/h1&gt;&lt;blockquote&gt;
 &lt;p&gt;本系列文章以例子的方式进行呈现。&lt;/p&gt;
 
+    
+    </summary>
+    
+      <category term="rapidjson学习" scheme="http://yoursite.com/categories/rapidjson%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="rapidjson" scheme="http://yoursite.com/tags/rapidjson/"/>
+    
+      <category term="json" scheme="http://yoursite.com/tags/json/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>rapidjson Schema</title>
+    <link href="http://yoursite.com/2017/05/27/rapidjsonSchema/"/>
+    <id>http://yoursite.com/2017/05/27/rapidjsonSchema/</id>
+    <published>2017-05-27T01:35:00.000Z</published>
+    <updated>2017-05-27T01:41:30.650Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="rapidjson-Schema"><a href="#rapidjson-Schema" class="headerlink" title="rapidjson Schema"></a>rapidjson Schema</h1><blockquote>
+<p>本系列文章以例子的方式进行呈现。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line">* JsonSchema本质上是一个json，其作用是用于校验Json，使用schema对json进行校验，</div><div class="line">* 可以让代码安全的去当问DOM，而不需要去检查类型或者键值的存在等等。这也能确保输</div><div class="line">* 出的json符合特定的schema。</div><div class="line">*/</div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/schema.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/stringbuffer.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*使用JsonSchema校校验json格式的流程:</span></div><div class="line">*       1. 将schema(模板)解析成一个Document</div><div class="line">*       2. 然后将Document编译成一个SchemaDocument</div><div class="line">*       3. 通过上述SchemaDocument创建一个SchemaValidator。</div><div class="line">*       4. 然后通过document.Accept(validator)去校验一个json，获取校验结果。</div><div class="line">*注意：</div><div class="line">*       1. 一个SchemaDocument能被多个SchemaValidator引用，他不会被SchemaValidator修改。</div><div class="line">*       2. 可以重复使用SchemaValidator校验多个文件。在校验其他文件之前，必须先调用validator.Reset()。</div><div class="line">*JsonSchema的格式：</div><div class="line">*       1. JsonSchema实质上是一个json数据。</div><div class="line">*       2. JsonSchema与其他json数据不同的是它在每一个对象和元素中定义了他们的类型type，属性(如object的properties，以及integer的minimum等等)，</div><div class="line">*           同时，我们可以通过JsonSchema对json的值的类型以及取值范围等进行限定。schema中必须的值需要显示的声明在required中。</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ValidateJson</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> testSchema = <span class="string">"&#123;\"type\":\"object\", \"properties\":&#123;\"code\":&#123;\"type\":\"string\"&#125;, \"int\":&#123;\"type\":\"integer\", \"minimum\":0&#125;&#125;, \"required\":[\"int\",\"code\"]&#125;"</span>;</div><div class="line">  Document sd;</div><div class="line">  <span class="keyword">if</span> (sd.Parse(testSchema.c_str()).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"jsonSchema is not valid : %s"</span>, testSchema.c_str());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//创建SchemaDocument</span></div><div class="line">  <span class="function">SchemaDocument <span class="title">schema</span><span class="params">(sd)</span></span>;</div><div class="line"></div><div class="line">  Document d;</div><div class="line">  <span class="keyword">if</span> (d.Parse(<span class="string">"&#123;\"code\":123, \"int\":1&#125;"</span>).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Document is not a valid json"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">SchemaValidator <span class="title">validator</span><span class="params">(schema)</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!d.Accept(validator)) &#123;</div><div class="line">    StringBuffer sb;</div><div class="line">    validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid schema: %s\n"</span>, sb.GetString());</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid keyword: %s\n"</span>, validator.GetInvalidSchemaKeyword());</div><div class="line">    sb.Clear();</div><div class="line">    validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid document:%s\n "</span>, sb.GetString());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"符合schemas模式\n"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  ValidateJson();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;rapidjson-Schema&quot;&gt;&lt;a href=&quot;#rapidjson-Schema&quot; class=&quot;headerlink&quot; title=&quot;rapidjson Schema&quot;&gt;&lt;/a&gt;rapidjson Schema&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;本
     
     </summary>
     
@@ -1125,59 +1326,6 @@
     
     
       <category term="print" scheme="http://yoursite.com/tags/print/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unix环境变量</title>
-    <link href="http://yoursite.com/2017/05/22/Unix%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/"/>
-    <id>http://yoursite.com/2017/05/22/Unix环境变量/</id>
-    <published>2017-05-22T15:53:53.000Z</published>
-    <updated>2017-05-24T12:20:42.749Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unix环境变量"><a href="#Unix环境变量" class="headerlink" title="Unix环境变量"></a>Unix环境变量</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在Unix中，<strong>每个进程都有自己的一组环境变量</strong>，这些环境变量，要么是一组全局字符串，要么是子进程从父进程继承而来的,如果子进程不对其修改则与父进程的环境变量一模一样。<br>Unix内核并不查看这些字符串，它们的解释权完全取决于各个应用程序。例如shell是Unix中一个可执行程序，通常shell的启动文件中会对环境变量进行设置。所以当我们进入shell之后可以查看path等环境变量。在当前shell中启动的进程会继承其父进程shell的环境变量，也就可以查看path等环境变量，环境变量可以在登录的时候自动设置，也可以由用户自行设置。</p>
-<h2 id="环境变量相关变量"><a href="#环境变量相关变量" class="headerlink" title="环境变量相关变量"></a>环境变量相关变量</h2><p>每个程序都会接收到一张环境表。与参数表一样，环境表也是一个字符指针数组。其中每个指针都包含一个以NULL结尾的字符串的地址。全局变量<br>environ指向了这个数组的地址。</p>
-<p>代码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">extern char **environ;</div><div class="line">if (environ!= NULL) &#123;</div><div class="line">        for (i = 0; environ[i] != NULL; i++) &#123;</div><div class="line">            printf(&quot;env: %s\n&quot;, environ[i]);</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="环境变量相关的函数"><a href="#环境变量相关的函数" class="headerlink" title="环境变量相关的函数"></a>环境变量相关的函数</h2><p>与环境变量相关的函数包括以下几种：取环境变量的值，添加环境变量、修改环境变量、以及删除环境变量.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">//获取环境变量的值</div><div class="line">char* getenv(const char* name); //若包含此key返回对应的值，否则返回NULL</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 修改环境变量的值 前面两个分别为键值对，最后一个表示是否需要删除原有的定义重写。</div><div class="line">* params：键没有存在，则创建此键值对。若键已经存在：rewrite=0时不覆盖原来的值；rewrite!=0覆盖原来的值</div><div class="line">* return：成功返回0， 出错返回非0。</div><div class="line">*/</div><div class="line">int setenv(const char* name, const char* value, int rewrite);</div><div class="line"></div><div class="line">/*</div><div class="line">* function： 添加环境变量，若存在则删除原有的，添加新的，不存在则直接添加</div><div class="line">* params:  参数为一个键值对字符串，如&quot;name=test&quot;</div><div class="line">* return: 成功返回0,不成功返回-1</div><div class="line">*/</div><div class="line">int putenv(char *str);</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 删除name的定义，即使不存在也不出错。</div><div class="line">* params: 参数为键</div><div class="line">* return：出错返回-1,不出错返回0</div><div class="line">*/</div><div class="line">int unsetenv(const char*name);</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 清除所有的环境变量</div><div class="line">* return: 成功返回0, 失败返回-1。</div><div class="line">*/</div><div class="line">int clearenv();</div></pre></td></tr></table></figure>
-<h3 id="putenv和setenv的区别"><a href="#putenv和setenv的区别" class="headerlink" title="putenv和setenv的区别"></a>putenv和setenv的区别</h3><p>putenv可以使用程序中已经定义的且形如”name=value”的字符串作为参数。此时<strong>系统不再为该环境变量分配内存</strong>，环境变量将使用程序中定义变量的内存。<br>并将该字符串的地址保存在环境变量中。所以要<strong>使用putenv一定要用全局变量作为参数</strong>，否则程序退出栈内存被释放，再次访问环境变量将会出现未定义行为，<br>导致环境变量不可用。</p>
-<p>putenv也可用字符串常量做参数，这个时候系统将为其分配内存。</p>
-<p>但是setenv去设置环境变量系统将会先malloc出一块内存给环境变量使用，所以此时不需要担心环境不可用的情况。</p>
-<h2 id="环境变量在进程空间中的存储位置"><a href="#环境变量在进程空间中的存储位置" class="headerlink" title="环境变量在进程空间中的存储位置"></a>环境变量在进程空间中的存储位置</h2><p><strong>环境变量和环境字符串通常放在进程存储空间的顶部，也就是栈内存之上</strong>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">extern char **environ;</div><div class="line">int main() &#123;</div><div class="line">    int i;</div><div class="line">    printf(&quot;the address of the environment: %p\n&quot;, environ);</div><div class="line">    printf(&quot;the adress of first i: %p\n&quot;, &amp;i);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="环境变量中进行增删改操作的实现机制"><a href="#环境变量中进行增删改操作的实现机制" class="headerlink" title="环境变量中进行增删改操作的实现机制"></a>环境变量中进行增删改操作的实现机制</h2><p>删除环境变量比较容易，当增加或者修改环境变量的时候由于环境表和环境字符串通常占用的是进程地址空间的顶部，所以它不能再向<br>高地址（向上）扩展，同时也不能在移动在它之下的各栈帧，所以也不能向下扩展。两者的组合使得该空间的长度不能再增加。</p>
-<ul>
-<li><strong>删除环境变量</strong>：删除环境变量时只需要先找到该指针，然后将所有后续指针都向环境表的首部顺序移一个位置。</li>
-<li><strong>修改环境变量</strong>:<ul>
-<li>若新的环境变量value长度小于或者等于原有的值，则直接将其复制到旧值。</li>
-<li>否则，先调用malloc在堆上分配一块内存，然后将新字符串指向该空间，接着使环境变量表中针对name的指针指向新分区。</li>
-</ul>
-</li>
-<li><strong>增加环境变量</strong>： 增加新环境变量比较复杂。必须首先通过调用malloc为新的name=value分配内存空间，然后将字符串复制到此空间中。<ul>
-<li>如果该name是第一次增加，则必须调用malloc为<strong>新的指针表</strong>分配内存空间，然后将原来的环境表复制到新的内存，并将指向新的name=value字符串<br>的指针存放在该指针表的表尾，然后将空指针放在其后面。最后<strong>使environ指向新的环境表</strong>。这样就导致原来位于栈顶之上的环境表移到了堆内存中。<br>但是大多数的环境指针仍然指向栈顶之上的name=value字符串。</li>
-<li>如果不是第一次新增加一个name，可知之前已经将环境表迁移到堆内存中，所以只需要调用realloc，以分配比原空间多存放一个指针的空间。然后将指针指向name=value<br>字符串的指针，最后是一个NULL指针。</li>
-</ul>
-</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Unix环境变量&quot;&gt;&lt;a href=&quot;#Unix环境变量&quot; class=&quot;headerlink&quot; title=&quot;Unix环境变量&quot;&gt;&lt;/a&gt;Unix环境变量&lt;/h1&gt;&lt;h2 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; titl
-    
-    </summary>
-    
-      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-      <category term="setenv" scheme="http://yoursite.com/tags/setenv/"/>
-    
-      <category term="putenv" scheme="http://yoursite.com/tags/putenv/"/>
-    
-      <category term="unsetenv" scheme="http://yoursite.com/tags/unsetenv/"/>
-    
-      <category term="clearenv" scheme="http://yoursite.com/tags/clearenv/"/>
     
   </entry>
   
