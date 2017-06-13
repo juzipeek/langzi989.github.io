@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>rapidjson Stream - 魏传柳</title>
+    <title>TCP状态转换图 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,25 +15,27 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="rapidjson Stream(待更新)
-本系列文章以例子的方式进行呈现。
+    <meta name="description" content="TCP状态转换图TCP涉及连接建立和连接终止的操作可以用状态转换图来说明。
+TCP为一个连接定义了11中状态，并且规定了如何基于当前状态以及该状态下接收的分节(TCP报文段)从一个状态转换为另一个状态。其状态转换图如下所示：
 
-123456789101112131415161718192021222324252627282930313233343536#include &amp;lt;iostream&amp;gt;#include &quot;rapidjson/rapidjson.h&quot;#include &quot;rapidjson/document.h&quot;#include">
+具体转化过程和转换条件如上图所示。">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="rapidjson Stream">
-<meta property="og:url" content="http://yoursite.com/2017/05/27/rapidJsonStream/index.html">
+<meta property="og:title" content="TCP状态转换图">
+<meta property="og:url" content="http://yoursite.com/2017/05/30/Unix网络编程之TCP状态转换图/index.html">
 <meta property="og:site_name" content="魏传柳">
-<meta property="og:description" content="rapidjson Stream(待更新)
-本系列文章以例子的方式进行呈现。
+<meta property="og:description" content="TCP状态转换图TCP涉及连接建立和连接终止的操作可以用状态转换图来说明。
+TCP为一个连接定义了11中状态，并且规定了如何基于当前状态以及该状态下接收的分节(TCP报文段)从一个状态转换为另一个状态。其状态转换图如下所示：
 
-123456789101112131415161718192021222324252627282930313233343536#include &amp;lt;iostream&amp;gt;#include &quot;rapidjson/rapidjson.h&quot;#include &quot;rapidjson/document.h&quot;#include">
-<meta property="og:updated_time" content="2017-05-27T01:40:41.516Z">
+具体转化过程和转换条件如上图所示。">
+<meta property="og:image" content="http://yoursite.com/../assets/images/TCP状态转化图.jpg">
+<meta property="og:updated_time" content="2017-06-13T02:04:48.888Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="rapidjson Stream">
-<meta name="twitter:description" content="rapidjson Stream(待更新)
-本系列文章以例子的方式进行呈现。
+<meta name="twitter:title" content="TCP状态转换图">
+<meta name="twitter:description" content="TCP状态转换图TCP涉及连接建立和连接终止的操作可以用状态转换图来说明。
+TCP为一个连接定义了11中状态，并且规定了如何基于当前状态以及该状态下接收的分节(TCP报文段)从一个状态转换为另一个状态。其状态转换图如下所示：
 
-123456789101112131415161718192021222324252627282930313233343536#include &amp;lt;iostream&amp;gt;#include &quot;rapidjson/rapidjson.h&quot;#include &quot;rapidjson/document.h&quot;#include">
+具体转化过程和转换条件如上图所示。">
+<meta name="twitter:image" content="http://yoursite.com/../assets/images/TCP状态转化图.jpg">
     
     
         
@@ -224,19 +226,19 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            rapidjson Stream
+            TCP状态转换图
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" datetime="2017-05-27T09:36:00+08:00">
+    <time itemprop="datePublished" datetime="2017-05-30T17:01:00+08:00">
 	
-		    5月 27, 2017
+		    5月 30, 2017
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
 
 
     
@@ -246,10 +248,10 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="rapidjson-Stream-待更新"><a href="#rapidjson-Stream-待更新" class="headerlink" title="rapidjson Stream(待更新)"></a>rapidjson Stream(待更新)</h1><blockquote>
-<p>本系列文章以例子的方式进行呈现。</p>
-</blockquote>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include "rapidjson/rapidjson.h"</div><div class="line">#include "rapidjson/document.h"</div><div class="line">#include "rapidjson/stringbuffer.h"</div><div class="line">#include "rapidjson/writer.h"</div><div class="line">#include "rapidjson/filereadstream.h"</div><div class="line">#include "cstdio"</div><div class="line"></div><div class="line">using namespace std;</div><div class="line">using namespace rapidjson;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  const char json[] = "[1, 2, 3]";</div><div class="line">  StringStream s(json);</div><div class="line">  Document document;</div><div class="line">  document.ParseStream(s);</div><div class="line"></div><div class="line">  for (int i = 0; i &lt; 3; i++)</div><div class="line">    std::cout &lt;&lt; document[i].GetInt() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  StringBuffer SB;</div><div class="line">  Writer&lt;StringBuffer&gt; writer(SB);</div><div class="line">  document.Accept(writer);</div><div class="line">  std::cout &lt;&lt; SB.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  FILE* fp = fopen("test.json", "rb");</div><div class="line"></div><div class="line">  char readBuffer[65535];</div><div class="line">  FileReadStream is(fp, readBuffer, sizeof(readBuffer));</div><div class="line"></div><div class="line">  document.ParseStream(is);</div><div class="line">  fclose(fp);</div><div class="line">  for (Value::ConstMemberIterator it = document.MemberBegin();</div><div class="line">        it != document.MemberEnd(); it++)</div><div class="line">        std::cout &lt;&lt; (it-&gt;name).GetString() &lt;&lt; std::endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+            <h1 id="TCP状态转换图"><a href="#TCP状态转换图" class="headerlink" title="TCP状态转换图"></a>TCP状态转换图</h1><p>TCP涉及连接建立和连接终止的操作可以用状态转换图来说明。</p>
+<p>TCP为一个连接定义了11中状态，并且规定了如何基于当前状态以及该状态下接收的分节(TCP报文段)从一个状态转换为另一个状态。其状态转换图如下所示：</p>
+<p><img src="../assets/images/TCP状态转化图.jpg" alt=""></p>
+<p>具体转化过程和转换条件如上图所示。</p>
 
             
         </div>
@@ -259,7 +261,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/json/">json</a> <a class="tag tag--primary tag--small t-link" href="/tags/rapidjson/">rapidjson</a> <a class="tag tag--primary tag--small t-link" href="/tags/stream/">stream</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/TCP/">TCP</a> <a class="tag tag--primary tag--small t-link" href="/tags/状态转换图/">状态转换图</a>
 
             </div>
         
@@ -268,7 +270,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/硬链接和软链接的区别/"  data-tooltip="硬链接与软链接的区别">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/31/Unix标准IO库函数之打开关闭流(一)/"  data-tooltip="Unix标准IO库相关函数总结之打开关闭流(一)">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -276,7 +278,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/rapidjsonSchema/" data-tooltip="rapidjson Schema">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/30/Unix网络编程之TCP的连接与建立过程/" data-tooltip="TCP的连接与建立">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -291,17 +293,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/30/Unix网络编程之TCP状态转换图/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/30/Unix网络编程之TCP状态转换图/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/30/Unix网络编程之TCP状态转换图/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -339,7 +341,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/硬链接和软链接的区别/"  data-tooltip="硬链接与软链接的区别">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/31/Unix标准IO库函数之打开关闭流(一)/"  data-tooltip="Unix标准IO库相关函数总结之打开关闭流(一)">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -347,7 +349,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/rapidjsonSchema/" data-tooltip="rapidjson Schema">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/30/Unix网络编程之TCP的连接与建立过程/" data-tooltip="TCP的连接与建立">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -362,17 +364,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/30/Unix网络编程之TCP状态转换图/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/30/Unix网络编程之TCP状态转换图/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/30/Unix网络编程之TCP状态转换图/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -392,17 +394,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/30/Unix网络编程之TCP状态转换图/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/30/Unix网络编程之TCP状态转换图/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/30/Unix网络编程之TCP状态转换图/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>

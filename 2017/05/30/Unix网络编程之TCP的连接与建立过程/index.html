@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Tag: TCP - 魏传柳</title>
+    <title>TCP的连接与建立 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,12 +15,32 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta property="og:type" content="blog">
-<meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/tags/TCP/index.html">
+    <meta name="description" content="TCP的连接与建立最常用的传输层协议包括TCP和UDP两种，当然除此之外还有其他协议。UDP是一种既不面向连接有不可靠的传输层协议，而TCP是一种面向连接的可靠的传输层协议，为了达到这个目的，其在设计上使用了差错检测，重传，累计确认，定时器以及用于序号和确认好的字段等等。
+TCP的特点TCP协议有以下特点：
+
+面向连接：TCP的连接不是一条电路的或者虚电路，其连接状完全保留在两个端系统中。
+可靠传">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="TCP的连接与建立">
+<meta property="og:url" content="http://yoursite.com/2017/05/30/Unix网络编程之TCP的连接与建立过程/index.html">
 <meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="TCP的连接与建立最常用的传输层协议包括TCP和UDP两种，当然除此之外还有其他协议。UDP是一种既不面向连接有不可靠的传输层协议，而TCP是一种面向连接的可靠的传输层协议，为了达到这个目的，其在设计上使用了差错检测，重传，累计确认，定时器以及用于序号和确认好的字段等等。
+TCP的特点TCP协议有以下特点：
+
+面向连接：TCP的连接不是一条电路的或者虚电路，其连接状完全保留在两个端系统中。
+可靠传">
+<meta property="og:image" content="http://yoursite.com/../assets/images/TCP报文.png">
+<meta property="og:image" content="http://yoursite.com/../assets/images/三次连接.png">
+<meta property="og:image" content="http://yoursite.com/../assets/images/四次挥手.png">
+<meta property="og:updated_time" content="2017-06-13T02:05:13.478Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="魏传柳">
+<meta name="twitter:title" content="TCP的连接与建立">
+<meta name="twitter:description" content="TCP的连接与建立最常用的传输层协议包括TCP和UDP两种，当然除此之外还有其他协议。UDP是一种既不面向连接有不可靠的传输层协议，而TCP是一种面向连接的可靠的传输层协议，为了达到这个目的，其在设计上使用了差错检测，重传，累计确认，定时器以及用于序号和确认好的字段等等。
+TCP的特点TCP协议有以下特点：
+
+面向连接：TCP的连接不是一条电路的或者虚电路，其连接状完全保留在两个端系统中。
+可靠传">
+<meta name="twitter:image" content="http://yoursite.com/../assets/images/TCP报文.png">
     
     
         
@@ -49,7 +69,7 @@
         
     
 
-<header id="header" data-behavior="1">
+<header id="header" data-behavior="3">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <h1 class="header-title">
         <a class="header-title-link" href="/ ">魏传柳</a>
@@ -73,7 +93,7 @@
         
     
 
-<nav id="sidebar" data-behavior="1">
+<nav id="sidebar" data-behavior="3">
     
         <div class="sidebar-profile">
             <a href="/#about">
@@ -200,79 +220,21 @@
 </nav>
 
             
-            <div id="main" data-behavior="1"
+            <div id="main" data-behavior="3"
                  class="
                         hasCoverMetaIn
                         ">
                 
-    
-
-<section class="postShorten-group main-content-wrap">
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/30/Unix网络编程之TCP状态转换图/">
-                            TCP状态转换图
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-30T17:01:00+08:00">
-	
-		    5月 30, 2017
-    	
-    </time>
+        <div class="post-header main-content-wrap text-left">
     
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
+        <h1 class="post-title" itemprop="headline">
+            TCP的连接与建立
+        </h1>
     
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="TCP状态转换图"><a href="#TCP状态转换图" class="headerlink" title="TCP状态转换图"></a>TCP状态转换图</h1><p>TCP涉及连接建立和连接终止的操作可以用状态转换图来说明。</p>
-<p>TCP为一个连接定义了11中状态，并且规定了如何基于当前状态以及该状态下接收的分节(TCP报文段)从一个状态转换为另一个状态。其状态转换图如下所示：</p>
-<p><img src="../assets/images/TCP状态转化图.jpg" alt=""></p>
-<p>具体转化过程和转换条件如上图所示。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/30/Unix网络编程之TCP状态转换图/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
-                            TCP的连接与建立
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
+    <div class="post-meta">
     <time itemprop="datePublished" datetime="2017-05-30T16:43:00+08:00">
 	
 		    5月 30, 2017
@@ -287,10 +249,11 @@
     
 </div>
 
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="TCP的连接与建立"><a href="#TCP的连接与建立" class="headerlink" title="TCP的连接与建立"></a>TCP的连接与建立</h1><p>最常用的传输层协议包括TCP和UDP两种，当然除此之外还有其他协议。UDP是一种既不面向连接有不可靠的传输层协议，而TCP是一种面向连接的可靠的传输层协议，为了达到这个目的，其在设计上使用了差错检测，重传，累计确认，定时器以及用于序号和确认好的字段等等。</p>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="TCP的连接与建立"><a href="#TCP的连接与建立" class="headerlink" title="TCP的连接与建立"></a>TCP的连接与建立</h1><p>最常用的传输层协议包括TCP和UDP两种，当然除此之外还有其他协议。UDP是一种既不面向连接有不可靠的传输层协议，而TCP是一种面向连接的可靠的传输层协议，为了达到这个目的，其在设计上使用了差错检测，重传，累计确认，定时器以及用于序号和确认好的字段等等。</p>
 <h2 id="TCP的特点"><a href="#TCP的特点" class="headerlink" title="TCP的特点"></a>TCP的特点</h2><p>TCP协议有以下特点：</p>
 <ul>
 <li>面向连接：TCP的连接不是一条电路的或者虚电路，其连接状完全保留在两个端系统中。</li>
@@ -359,31 +322,78 @@
 </ul>
 </blockquote>
 
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/30/Unix网络编程之TCP的连接与建立过程/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
             
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-    </article>
-    
-    <div class="pagination-bar">
-    <ul class="pagination">
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/TCP/">TCP</a> <a class="tag tag--primary tag--small t-link" href="/tags/三次握手/">三次握手</a> <a class="tag tag--primary tag--small t-link" href="/tags/传输层协议/">传输层协议</a> <a class="tag tag--primary tag--small t-link" href="/tags/四次挥手/">四次挥手</a>
+
+            </div>
         
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/30/Unix网络编程之TCP状态转换图/"  data-tooltip="TCP状态转换图">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/硬链接和软链接的区别/" data-tooltip="硬链接与软链接的区别">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
         
-        <li class="pagination-number">page 1 of 1</li>
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
     </ul>
 </div>
 
-</section>
+
+        
+            
+        
+    </div>
+</article>
+
 
 
                 <footer id="footer" class="main-content-wrap">
@@ -393,6 +403,83 @@
 </footer>
 
             </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/30/Unix网络编程之TCP状态转换图/"  data-tooltip="TCP状态转换图">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/硬链接和软链接的区别/" data-tooltip="硬链接与软链接的区别">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
             
         </div>
         
@@ -439,6 +526,8 @@
     <!--SCRIPTS-->
 <script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
 <!--SCRIPTS END-->
+
+    
 
 
 
