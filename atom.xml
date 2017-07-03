@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-06-13T13:22:14.711Z</updated>
+  <updated>2017-07-03T02:44:44.112Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,127 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>rapidjson创建型</title>
+    <link href="http://yoursite.com/2017/06/21/rapidjson%E5%88%9B%E5%BB%BA%E5%9E%8B/"/>
+    <id>http://yoursite.com/2017/06/21/rapidjson创建型/</id>
+    <published>2017-06-21T12:35:00.000Z</published>
+    <updated>2017-07-03T02:44:44.112Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="rapidjson创建型"><a href="#rapidjson创建型" class="headerlink" title="rapidjson创建型"></a>rapidjson创建型</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include &quot;rapidjson/document.h&quot;</div><div class="line">#include &quot;rapidjson/stringbuffer.h&quot;</div><div class="line">#include &quot;rapidjson/writer.h&quot;</div><div class="line">#include &lt;string&gt;</div><div class="line"></div><div class="line">using namespace std;</div><div class="line">using namespace rapidjson;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">    Document d;</div><div class="line">    d.SetObject();</div><div class="line">    std::string s = &quot;123&quot;;</div><div class="line">    rapidjson::Document::AllocatorType&amp; allocator = d.GetAllocator();</div><div class="line"></div><div class="line">    //生成含有数组的document，注意在rapidjson中所有的数据都是一个Value，数组的本质也是一个Array;</div><div class="line">    rapidjson::Value arr(rapidjson::kArrayType);</div><div class="line"></div><div class="line">    arr.PushBack(&quot;1&quot;, allocator);</div><div class="line">    arr.PushBack(&quot;2&quot;, allocator);</div><div class="line">    arr.PushBack(rapidjson::StringRef(s.c_str()), allocator);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    //生成数组中包含有多个obj的数组</div><div class="line">    rapidjson::Value o1;</div><div class="line">    o1.SetObject();</div><div class="line">    o1.AddMember(&quot;o1&quot;, 1, allocator);</div><div class="line">    arr.PushBack(o1, allocator);</div><div class="line">    rapidjson::Value o2;</div><div class="line">    o2.SetObject();</div><div class="line">    o2.AddMember(&quot;o2&quot;, 2, allocator);</div><div class="line">    arr.PushBack(o2, allocator);</div><div class="line"></div><div class="line">    d.AddMember(&quot;arr&quot;, arr, allocator);</div><div class="line">    rapidjson::StringBuffer buffer;</div><div class="line">    rapidjson::Writer&lt;StringBuffer&gt; writer(buffer);</div><div class="line">    d.Accept(writer);</div><div class="line"></div><div class="line">    std::cout &lt;&lt; buffer.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;rapidjson创建型&quot;&gt;&lt;a href=&quot;#rapidjson创建型&quot; class=&quot;headerlink&quot; title=&quot;rapidjson创建型&quot;&gt;&lt;/a&gt;rapidjson创建型&lt;/h1&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;
+    
+    </summary>
+    
+      <category term="rapidjson学习" scheme="http://yoursite.com/categories/rapidjson%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="rapidjson" scheme="http://yoursite.com/tags/rapidjson/"/>
+    
+      <category term="json" scheme="http://yoursite.com/tags/json/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Unix网络编程之socket异步编程</title>
+    <link href="http://yoursite.com/2017/06/15/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B9%8Bsocket%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/"/>
+    <id>http://yoursite.com/2017/06/15/Unix网络编程之socket异步编程/</id>
+    <published>2017-06-15T01:48:43.000Z</published>
+    <updated>2017-06-15T03:20:13.063Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unix网络编程之socket异步编程"><a href="#Unix网络编程之socket异步编程" class="headerlink" title="Unix网络编程之socket异步编程"></a>Unix网络编程之socket异步编程</h1><h2 id="ioctl"><a href="#ioctl" class="headerlink" title="ioctl"></a>ioctl</h2><p>我们常用ioctlsocket的FIONBIO模式对socket进行设置是否启用异步。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">ioctlsocket</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">long</span> cmd, <span class="keyword">unsigned</span> <span class="keyword">long</span>* args)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>ioctlsocket函数的作用是获取<strong>与套接字sockfd相关的操作参数，可用于任何状态的任一套接字，与具体的协议无关</strong>.</p>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li>sockfd : 待操作的socket描述符</li>
+<li>cmd : 对sockfd的做操类型,包括以下几种<ul>
+<li>FIONBIO : 允许或者禁止套接字sockfd的费阻塞模式，若args为1，则是允许非阻塞模式；若args为0，禁止非阻塞模式。</li>
+<li>FIONREAD : 确定套接字sockfd自动读入设为数量，arg存储ioctlsocket的返回值.若sockfd是SOCKET_STREAM类型，则FIONREAD返回一次recv所接受的所有的数据量，这通常与套接字中排队的数据总量相同。如果sockfd是SOC_DGRAM类型,则FIONREAD返回套接字上排队的第一个数据报的大小。</li>
+<li>SIOCATMARK : 确定是否所有的带外数据都已经被读入，这个类型只适用于SOCK_STREAM套接字接口。</li>
+</ul>
+</li>
+<li>args :　指示参数</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Unix网络编程之socket异步编程&quot;&gt;&lt;a href=&quot;#Unix网络编程之socket异步编程&quot; class=&quot;headerlink&quot; title=&quot;Unix网络编程之socket异步编程&quot;&gt;&lt;/a&gt;Unix网络编程之socket异步编程&lt;/h1&gt;&lt;h2 i
+    
+    </summary>
+    
+      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="socket" scheme="http://yoursite.com/tags/socket/"/>
+    
+      <category term="ioctlsocket" scheme="http://yoursite.com/tags/ioctlsocket/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Unix网络编程之读写相关函数</title>
+    <link href="http://yoursite.com/2017/06/14/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0/"/>
+    <id>http://yoursite.com/2017/06/14/Unix网络编程之读写相关函数/</id>
+    <published>2017-06-14T13:37:41.000Z</published>
+    <updated>2017-06-14T13:48:18.796Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unix网络编程之读写相关函数"><a href="#Unix网络编程之读写相关函数" class="headerlink" title="Unix网络编程之读写相关函数"></a>Unix网络编程之读写相关函数</h1><p>socket编程中常用的输入输出函数(读写函数)总共有五对,它们<strong>都是默认阻塞的</strong>，这就意味着当发出一个不能立即完成的套接字调用的时候，其进程将被投入睡眠，等待相应的进程操作完成，函数才返回继续往下执行。常用的函数如下：</p>
+<ul>
+<li>read, write</li>
+<li>readv, writev</li>
+<li>recv, send</li>
+<li>recvfrom, sendto</li>
+<li>recvmsg, sendmsg</li>
+</ul>
+<h2 id="read-write函数"><a href="#read-write函数" class="headerlink" title="read/write函数"></a>read/write函数</h2><p>read和write函数的详细用法已经在Unix文件IO中已经讲解，在socket编程中的使用方法与文件IO使用方法相同。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Unix网络编程之读写相关函数&quot;&gt;&lt;a href=&quot;#Unix网络编程之读写相关函数&quot; class=&quot;headerlink&quot; title=&quot;Unix网络编程之读写相关函数&quot;&gt;&lt;/a&gt;Unix网络编程之读写相关函数&lt;/h1&gt;&lt;p&gt;socket编程中常用的输入输出函数
+    
+    </summary>
+    
+      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="read" scheme="http://yoursite.com/tags/read/"/>
+    
+      <category term="write" scheme="http://yoursite.com/tags/write/"/>
+    
+      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="socket" scheme="http://yoursite.com/tags/socket/"/>
+    
+      <category term="readv" scheme="http://yoursite.com/tags/readv/"/>
+    
+      <category term="writev" scheme="http://yoursite.com/tags/writev/"/>
+    
+      <category term="recv" scheme="http://yoursite.com/tags/recv/"/>
+    
+      <category term="send" scheme="http://yoursite.com/tags/send/"/>
+    
+      <category term="recvfrom" scheme="http://yoursite.com/tags/recvfrom/"/>
+    
+      <category term="sendto" scheme="http://yoursite.com/tags/sendto/"/>
+    
+      <category term="recvmsg" scheme="http://yoursite.com/tags/recvmsg/"/>
+    
+      <category term="senfmsg" scheme="http://yoursite.com/tags/senfmsg/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Unix网络编程之基础函数(一)</title>
     <link href="http://yoursite.com/2017/06/13/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%9F%BA%E7%A1%80%E5%87%BD%E6%95%B0(%E4%B8%80)/"/>
     <id>http://yoursite.com/2017/06/13/Unix网络编程之基础函数(一)/</id>
     <published>2017-06-13T02:17:56.000Z</published>
-    <updated>2017-06-13T13:22:14.711Z</updated>
+    <updated>2017-06-14T13:15:42.279Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Unix网络编程之基础函数-一"><a href="#Unix网络编程之基础函数-一" class="headerlink" title="Unix网络编程之基础函数(一)"></a>Unix网络编程之基础函数(一)</h1><p>TCP客户端与服务器之间交互过程在程序实现上的体现如下图所示,注意思考这个过程中TCP状态的变化(参考TCP状态转换图)：</p>
 <p><img src="/images/客户端与服务器交互图.jpg" alt=""></p>
@@ -93,7 +209,7 @@
 <h3 id="返回值说明"><a href="#返回值说明" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>socket函数与open函数类似，若成功，返回一个较小的非负整数,称为套接字描述符，若失败返回-1;</p>
 <h2 id="connect函数"><a href="#connect函数" class="headerlink" title="connect函数"></a>connect函数</h2><p>TCP客户端通过connect函数来与服务器建立连接,注意<strong>客户在调用connect函数之前不必调用bind函数将sockfd与本机的IP端口绑定，因为如果需要的话，内核会确定源IP地址，并选择一个可用的临时端口作为端口号</strong>。</p>
 <p>客户端调用connect函数的时候会激发三次握手连接建立。而且只在连接建立成功或失败时返回，否则会一直阻塞在connect函数处。</p>
-<p>connect函数出错的清空包括以下几种：</p>
+<p>connect函数出错的情况包括以下几种：</p>
 <ul>
 <li>若TCP在调用connect之后没有接收到syn分节，则返回ETIMEOUT错误。这种情况通常发生在<strong>目的主机不存在情况下</strong>。这时客户端会隔一段时间发送一次请求，若等待时间超过一定时间(这个过程客户端被阻塞)，返回ETIMEOUT错误。</li>
 <li>若T客户端收到RST分节(复位)，则返回ECONNREFUSED错误，这种情况发生在<strong>目的主机存在，但是主机上没有进程监听指定端口。</strong></li>
@@ -168,6 +284,13 @@
 <li>addr_len : aliaddr的字节数。即客户端sockaddr的地址长度。</li>
 </ul>
 <h3 id="返回值说明-2"><a href="#返回值说明-2" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若出错返回-1;如果accept成功，返回一个新的socket描述符。其代表与所返回的客户端之间的TCP连接，<strong>它是一个连接套接字,之后服务端接收和发送数据都将使用这个描述符进行操作</strong>.</p>
+<h3 id="Invalid-argument常见原因"><a href="#Invalid-argument常见原因" class="headerlink" title="Invalid argument常见原因"></a>Invalid argument常见原因</h3><p>在accept的时候,我们常会遇到Invalid argument的错误，出现这个错误的原因有很多，主要是在accept之前的准备工作出了问题。</p>
+<ul>
+<li>socket创建不成功，在socket函数后检查一下errno值</li>
+<li>绑定socket地址不成功，检查一下返回值，同时检查一下errno</li>
+<li>没有listen，或者listen出问题。</li>
+</ul>
+<p>以上三步有一步出问题或者漏掉一步都有可能出现Invalid　argument错误。</p>
 <h2 id="close函数"><a href="#close函数" class="headerlink" title="close函数"></a>close函数</h2><p>我们知道，关闭文件描述符我可使用close函数，同样的close函数也能用来关闭socket文件描述符。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> sockfd)</span></span>;</div></pre></td></tr></table></figure></p>
 <p>通常情况下,close一个TCP套接字只是将该socket描述符标记为不可用，这个时候其将不能作为read和write的第一个参数进行数据的发送和接收,然而TCP尝试发送已经排队等待的所有需要发送到对端的数据，发送完毕之后将执行正常的TCP连接终止流程关闭TCP连接.</p>
 ]]></content>
@@ -943,13 +1066,13 @@
   </entry>
   
   <entry>
-    <title>rapidjson基本用法</title>
-    <link href="http://yoursite.com/2017/05/27/rapidjson%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/"/>
-    <id>http://yoursite.com/2017/05/27/rapidjson基本用法/</id>
+    <title>rapidjson查询操作基本用法</title>
+    <link href="http://yoursite.com/2017/05/27/rapidjson%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/"/>
+    <id>http://yoursite.com/2017/05/27/rapidjson查询操作基本用法/</id>
     <published>2017-05-27T01:32:00.000Z</published>
-    <updated>2017-05-27T01:47:30.294Z</updated>
+    <updated>2017-06-16T11:43:27.003Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="rapidjson基本用法"><a href="#rapidjson基本用法" class="headerlink" title="rapidjson基本用法"></a>rapidjson基本用法</h1><blockquote>
+    <content type="html"><![CDATA[<h1 id="rapidjson查询操作基本用法"><a href="#rapidjson查询操作基本用法" class="headerlink" title="rapidjson查询操作基本用法"></a>rapidjson查询操作基本用法</h1><blockquote>
 <p>本系列文章以例子的方式进行呈现。</p>
 </blockquote>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div></pre></td><td class="code"><pre><div class="line">#include "rapidjson/document.h"</div><div class="line">#include &lt;iostream&gt;</div><div class="line"></div><div class="line">int main()</div><div class="line">&#123;</div><div class="line">  const char* test = "&#123;\"num\":123, \"hello\":null, \"type\": \"object\",\"properties\": &#123;\"oid\": &#123;\"type\": \"string\"&#125;, \"username\": &#123;\"type\": \"string\"&#125;,\"creid\": &#123;\"type\": \"string\"&#125;&#125;,\"required\": [\"oid\", \"username\",\"creid\"]&#125;";</div><div class="line">  rapidjson::Document document;</div><div class="line">  //Parse(const char*). 从c-string解析为Document json格式</div><div class="line">  document.Parse(test);</div><div class="line"></div><div class="line">  //GetString().从Document json中取出string</div><div class="line">  std::cout &lt;&lt; "type = " &lt;&lt; document["type"].GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*  函数原型          函数功能</div><div class="line">  *   IsNull()       判断当前键对应的值是不是null</div><div class="line">  *   IsNumber()     判断当前键对应的值是不是number</div><div class="line">  *   IsInt()        判断当前键对应的值是不是int</div><div class="line">  *   IsDouble()     判断当前键对应的值是不是double</div><div class="line">  *   IsString()     判断当前键对应的值是不是string</div><div class="line">  *   IsBool()       判断当前键对应的值是不是bool</div><div class="line">  *   IsArray()      判断当前键对应的值是不是array</div><div class="line">  *   ...</div><div class="line">  */</div><div class="line">  std::cout &lt;&lt; "hello is " &lt;&lt; (document["hello"].IsNull() ? "null" : "not null") &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "num is " &lt;&lt; (document["num"].IsNumber() ? "number" : "not number") &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "required is " &lt;&lt; (document["required"].IsArray()? "array" : "not array") &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*      访问Array的两种方法</div><div class="line">  *    1. 通过下标访问    //使用引用来连续访问，方便之余还更高效。</div><div class="line">  *    2. 通过迭代器访问</div><div class="line">  *        注意问题</div><div class="line">  *    1.索引使用SizeType类型，而不是size_t类型，缺省情况下，SizeType是unsigned的typedef</div><div class="line">  *    2.对于String类型使用GetInt是非法的，这个时候会导致程序崩溃</div><div class="line">  */</div><div class="line">  const rapidjson::Value &amp;a = document["required"];</div><div class="line">  assert(a.IsArray());</div><div class="line">  for (rapidjson::SizeType i = 0; i &lt; a.Size(); i++)</div><div class="line">    std::cout &lt;&lt; a[i].GetString() &lt;&lt; std::endl;</div><div class="line">  for (rapidjson::Value::ConstValueIterator it = a.Begin(); it != a.End(); it++) &#123;</div><div class="line">    std::cout &lt;&lt; it-&gt;GetString() &lt;&lt; std::endl;</div><div class="line">    std::cout &lt;&lt; it-&gt;GetStringLength() &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*        访问object的方法</div><div class="line">  *    1.使用迭代器进行访问</div><div class="line">  *    2.使用键对应的下标进行当问 如:document["required"]</div><div class="line">  *          注意问题</div><div class="line">  *    1.在使用下标访问之前，最好先调用HasMember()检查一下当前键是否存在，若存在再往下继续。否则会出现段错误。</div><div class="line">  */</div><div class="line">  static const char* kTypeNames[] = &#123;"Null", "False", "True", "Object", "Array", "String", "Number"&#125;;</div><div class="line">  for (rapidjson::Value::ConstMemberIterator it = document.MemberBegin();</div><div class="line">        it != document.MemberEnd(); it++) &#123;</div><div class="line">        std::cout &lt;&lt; it-&gt;name.GetString() &lt;&lt; " is type : " &lt;&lt; kTypeNames[it-&gt;value.GetType()] &lt;&lt; std::endl;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*        查询Number</div><div class="line">  *      说明:Json只提供一种数值类型---Number。Number可以是实数也可以是整数</div><div class="line">  *           Dom提供了5中数值类型。包括unsigned,int,uint_64,int_64,double</div><div class="line">  *         类型检查          数值提取</div><div class="line">  *        IsUint()          GetUint()</div><div class="line">  *        IsInt()           GetInt()</div><div class="line">  *        IsUint64()        GetUint64()</div><div class="line">  *        IsInt64()         GetInt64()</div><div class="line">  *        IsDouble()        GetDouble()</div><div class="line">  *</div><div class="line">  *       查询String</div><div class="line">  *     说明：除了getString(), Value类也有一个GetStringLength();原因是rapidjson的String需要支持Unicode字符，如\u0000.问题是C/C++字符串是</div><div class="line">  *         空字符结尾的字符串，，这种字符串会把'\0'作为结束符号。为了符合RFC4627，若要处理这些带有unicode的字符串，</div><div class="line">  *         需要使用GetStringLength获取正确的字符串长度</div><div class="line">  *       函数                                功能</div><div class="line">  *     const char* getString()             获取C字符串</div><div class="line">  *     SizeType GetStringLength()const     获取字符串的长度,</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Document d1;</div><div class="line">  d1.Parse("&#123;\"s\":\"a\\u0000b\", \"num\":123&#125;");</div><div class="line">  std::cout &lt;&lt; d1["s"].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; d1["s"].GetStringLength() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; strlen(d1["s"].GetString()) &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *       比较两个Value的值</div><div class="line">  *     1.使用==和!=比较两Value的值，当且仅当两个Value的类型和内容相等才算相等。</div><div class="line">  *     2.可以将Value与原始值进行比较</div><div class="line">  *     3.若被比较的两个Value的类型不同，直接返回false。</div><div class="line">  *     4.可以比较不同Object的值</div><div class="line">  */</div><div class="line"></div><div class="line">  std::cout &lt;&lt; (document["num"] == document["hello"]) &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; (document["num"] == d1["num"]) &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *           创建/修改值</div><div class="line">  *       1.改变Value的类型:当使用默认构造函数创建一个Value或者Document的时候，它的类型默认为</div><div class="line">  *         NULL,要改变其类型，使用SetXXX()。如</div><div class="line">  *                             rapidjsons::Document d;</div><div class="line">  *                             d.SetObject()； //将d的类型修改为Object</div><div class="line">  *                             rapidjson::Value v;</div><div class="line">  *                             v.SetInt(1); //或者v = 1;</div><div class="line">  *       2.构造函数的重载</div><div class="line">  *                              rapidjson::Value b(false);</div><div class="line">  *                              rapidjson::Value n(10);</div><div class="line">  *</div><div class="line">  *       3.特别注意Value的转移语义。 Value重载operator=()时使用了转移语义。</div><div class="line">  *                              rapidjson::Value a(123);</div><div class="line">  *                              rapidjson::Value b(456);</div><div class="line">  *                              a = b; //此时b变为null,a为456</div><div class="line">  *       4.使用move()函数实现函数参数中的转移语义</div><div class="line">  *                              rapidjson::Value a(0);</div><div class="line">  *                               test(a.move());</div><div class="line">  *</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testa(10);</div><div class="line">  rapidjson::Value testb(10);</div><div class="line">  testa = testb;</div><div class="line">  std::cout &lt;&lt; testa.GetInt() &lt;&lt; std::endl;</div><div class="line">  if (testb.IsNull())</div><div class="line">  &#123;</div><div class="line">    std::cout &lt;&lt; "testb is moved to a, and now testb is null" &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line">  else</div><div class="line">  &#123;</div><div class="line">    std::cout &lt;&lt; testb.GetInt() &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *                创建String</div><div class="line">  *         rapidjson提供两种string的存储策略:</div><div class="line">  *                       1.copy-string(深拷贝)：分配缓冲区，然后把来源数据复制至它</div><div class="line">  *                       2.const-string(浅拷贝)：简单的存储字符串指针</div><div class="line">  *          说明：</div><div class="line">  *               1.copy-string总是安全的,因为它拥有数据的克隆</div><div class="line">  *               2.当数据源发生改变，const-string中的数据也会受到影响</div><div class="line">  *         上面两种字符串的创建方式:</div><div class="line">  *               1.copy-string创建方式需要给API传递一个Allocator参数,这个做法避免了给每一个</div><div class="line">  *                             Value都保存一个Allocator。另外还需要一个length参数，保存长度信息，故</div><div class="line">  *                             此函数可以处理带有空字符的字符串。</div><div class="line">  *               2.const-string创建方式不需要长度信息和Allocator参数，它默认字符串以\0结束.</div><div class="line">  *                              一般用于常量字符串或者具有安全生存周期的字符串上</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value autor;</div><div class="line">  char buffer[50];</div><div class="line">  int len = sprintf(buffer, "%s %s", "Milo", "Yip");</div><div class="line">  autor.SetString(buffer,len, document.GetAllocator());</div><div class="line">  memset(buffer, 0x0, sizeof(buffer));</div><div class="line">  std::cout &lt;&lt; autor.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  rapidjson::Value testString;</div><div class="line">  testString = "testString";</div><div class="line">  std::cout &lt;&lt; testString.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /**                   修改Array</div><div class="line">  *           函数                                                              功能</div><div class="line">  *        clear()                                                      清空Array中的内容</div><div class="line">  *        Reserve(SizeType, Allocator&amp;)                                申请指定大小空间，单不插入数据</div><div class="line">  *        Value&amp; PushBack(Value&amp;, Allocator&amp;)                          添加元素</div><div class="line">  *        template &lt;typename T&gt; GenericValue&amp; PushBack(T, Allocator&amp;)  添加元素</div><div class="line">  *        Value&amp; PopBack()                                             删除最后一个元素</div><div class="line">  *        ValueIterator Erase(ConstValueIterator pos)                  删除指定位置元素</div><div class="line">  *        ValueIterator Erase(ConstValueIterator first, ConstValueIterator last) 删除指定范围元素</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testArray(rapidjson::kArrayType);</div><div class="line">  rapidjson::Document::AllocatorType&amp; testAllocator = document.GetAllocator();</div><div class="line"></div><div class="line">  for (int i = 0; i &lt; 5; i++)</div><div class="line">  &#123;</div><div class="line">    testArray.PushBack(i, testAllocator);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  testArray.PushBack("lua", testAllocator).PushBack("Mio", testAllocator);</div><div class="line"></div><div class="line">  for (rapidjson::SizeType i = 0;i &lt; 5; i++)</div><div class="line">    std::cout &lt;&lt;  testArray[i].GetInt() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; testArray[5].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; testArray[6].GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*                      修改Object</div><div class="line">  *     说明：每个Object都是键值对的集合。每个键必须为String。</div><div class="line">  *     添加成员的函数：</div><div class="line">  *                   1.Value&amp; AddMember(Value&amp;, Value&amp;, Allocator&amp; allocator)</div><div class="line">  *                   2.Value&amp; AddMember(StringRefType, Value&amp;, Allocator&amp;)</div><div class="line">  *                   3.template &lt;typename T&gt; Value&amp; AddMember(StringRefType, T value, Allocator&amp;)</div><div class="line">  *</div><div class="line">  *     补充说明：1.使用StingRefType作为name参数的重载版本与字符串的SetString()类似。这些重载是为了避免复制name字符串</div><div class="line">  *               因为jsonObject中经常会使常数键名。</div><div class="line">  *              2.如果你需要从非常数字符串或者生命周期不足的字符串创建键名，需要使用copy-string API。</div><div class="line">  *                 为了避免中间变量，可以使用临时值</div><div class="line">  *</div><div class="line">  *     移除成员函数：</div><div class="line">  *             1.bool RemoveMember(const Ch* name)：使用键名来移除成员（线性时间复杂度）。</div><div class="line">  *             2.bool RemoveMember(const Value&amp; name)：除了 name 是一个 Value，和上一行相同。</div><div class="line">  *             3.MemberIterator RemoveMember(MemberIterator)：使用迭代器移除成员（_ 常数 _ 时间复杂度）。</div><div class="line">  *             4.MemberIterator EraseMember(MemberIterator)：和上行相似但维持成员次序（线性时间复杂度）。</div><div class="line">  *             5.MemberIterator EraseMember(MemberIterator first, MemberIterator last)：移除一个范围内的成员，维持次序（线性时间复杂度）。</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value contact(rapidjson::kObjectType);</div><div class="line">  contact.AddMember("name", "milo", document.GetAllocator());</div><div class="line">  contact.AddMember("married", false, document.GetAllocator());</div><div class="line"></div><div class="line">  std::cout &lt;&lt; "contact[name] is:"&lt;&lt;contact["name"].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "contact[married] is:" &lt;&lt; contact["married"].GetBool() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  contact.AddMember(rapidjson::Value("copy", document.GetAllocator()).Move(), // copy string</div><div class="line">                  rapidjson::Value().Move(),                                // null value</div><div class="line">                  document.GetAllocator());</div><div class="line"></div><div class="line">  /*                        深复制Value</div><div class="line">  *           方法：</div><div class="line">  *                   1.含有Allocator的构造函数</div><div class="line">  *                   2.含有Allocator的CopyFrom</div><div class="line">  *                           交换Value</div><div class="line">  *            方法：  Swap() 无论两颗Dom树多复杂，交换时间为常数</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testCopy1(123);</div><div class="line">  rapidjson::Value testCopy2(testCopy1, document.GetAllocator());</div><div class="line">  rapidjson::Value testCopy3;</div><div class="line">  testCopy3.CopyFrom(testCopy1, document.GetAllocator());</div><div class="line"></div><div class="line">  testCopy1.Swap(testCopy3);</div><div class="line">&#125;</div><div class="line">`</div></pre></td></tr></table></figure>
@@ -957,8 +1080,8 @@
     
     <summary type="html">
     
-      &lt;h1 id=&quot;rapidjson基本用法&quot;&gt;&lt;a href=&quot;#rapidjson基本用法&quot; class=&quot;headerlink&quot; title=&quot;rapidjson基本用法&quot;&gt;&lt;/a&gt;rapidjson基本用法&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;本系列文章以例子的方式进行
+      &lt;h1 id=&quot;rapidjson查询操作基本用法&quot;&gt;&lt;a href=&quot;#rapidjson查询操作基本用法&quot; class=&quot;headerlink&quot; title=&quot;rapidjson查询操作基本用法&quot;&gt;&lt;/a&gt;rapidjson查询操作基本用法&lt;/h1&gt;&lt;blockquote&gt;
+
     
     </summary>
     
@@ -1131,203 +1254,6 @@
       <category term="protobuffer" scheme="http://yoursite.com/tags/protobuffer/"/>
     
       <category term="序列化" scheme="http://yoursite.com/tags/%E5%BA%8F%E5%88%97%E5%8C%96/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>makefile常用相关函数</title>
-    <link href="http://yoursite.com/2017/05/25/makefile%E5%B8%B8%E7%94%A8%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0/"/>
-    <id>http://yoursite.com/2017/05/25/makefile常用相关函数/</id>
-    <published>2017-05-25T11:48:59.000Z</published>
-    <updated>2017-05-25T12:05:57.683Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="makefile常用相关函数"><a href="#makefile常用相关函数" class="headerlink" title="makefile常用相关函数"></a>makefile常用相关函数</h1><p>makefile中函数的用法与变量类似，变量的用法是在变量前面加上$，函数的用法一样，也是使用$开头，$之后加一个括号，括号中的第一个参数是函数名，后面紧跟此函数需要的参数，用逗号分隔。下面介绍几个常用的函数。</p>
-<h2 id="wildcard函数"><a href="#wildcard函数" class="headerlink" title="wildcard函数"></a>wildcard函数</h2><ul>
-<li>参数: 一个正则表达式</li>
-</ul>
-<p>wildcard的中文意思是通配符，它的功能类似于正则表达式，用于展开一列所有符合其参数描述的文件名，文件之间用空格分割。</p>
-<p>实例:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SOURCE=$(wildcard *.cpp)</div></pre></td></tr></table></figure>
-<p>此时SOURCE的值为所有的以.cpp为后缀的文件集合，以空格隔开。</p>
-<h2 id="patsubst函数"><a href="#patsubst函数" class="headerlink" title="patsubst函数"></a>patsubst函数</h2><p>其功能是一个匹配替换的函数(pattern substitute)。</p>
-<ul>
-<li>参数：第一个是需要匹配的样式，第二个是表示用什么替换它，第三个被处理的以空格隔开的字符串。</li>
-</ul>
-<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">TARGET = $(patsubst *.cpp, *.o, $(SOURCE))</div></pre></td></tr></table></figure></p>
-<p>TARGET表示与SOURCE中同名的目标文件.</p>
-<h2 id="lt"><a href="#lt" class="headerlink" title="$@,$&lt;, $^"></a>$@,$&lt;, $^</h2><p>上述几个变量的含义：</p>
-<ul>
-<li>$@ 表示目标的文件名</li>
-<li>$&lt; 表示依赖中的第一个文件名</li>
-<li>$^ 表示依赖中所有的文件名</li>
-</ul>
-<p>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">all: library.cpp main.cpp</div></pre></td></tr></table></figure></p>
-<p>其中$@标识all, $&lt;表示library.cpp ，$^表示library.cpp main.cpp</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;makefile常用相关函数&quot;&gt;&lt;a href=&quot;#makefile常用相关函数&quot; class=&quot;headerlink&quot; title=&quot;makefile常用相关函数&quot;&gt;&lt;/a&gt;makefile常用相关函数&lt;/h1&gt;&lt;p&gt;makefile中函数的用法与变量类似，变量
-    
-    </summary>
-    
-      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
-    
-      <category term="makefile" scheme="http://yoursite.com/tags/makefile/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unix标准IO文件流及缓冲类型</title>
-    <link href="http://yoursite.com/2017/05/24/Unix%E6%A0%87%E5%87%86IO%E7%BC%93%E5%86%B2%E7%B1%BB%E5%9E%8B/"/>
-    <id>http://yoursite.com/2017/05/24/Unix标准IO缓冲类型/</id>
-    <published>2017-05-24T13:14:10.000Z</published>
-    <updated>2017-05-25T01:45:32.860Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unix标准IO文件流及缓冲类型"><a href="#Unix标准IO文件流及缓冲类型" class="headerlink" title="Unix标准IO文件流及缓冲类型"></a>Unix标准IO文件流及缓冲类型</h1><h2 id="Unix标准IO文件流"><a href="#Unix标准IO文件流" class="headerlink" title="Unix标准IO文件流"></a>Unix标准IO文件流</h2><p>在<strong>文件IO相关函数</strong>的一节中,我们所有的I/O函数都是围绕着文件描述符来操作的，当打开一个文件的时候，即返回一个文件描述符，然后该文件描述符用于后续的文件操作。而对于标准IO库，对于文件的操作都是围绕这<strong> 文件流 file stream</strong>进行的。当我们使用标准IO库打开或创建一个文件的时候，我们已经使一个流和一个文件进行关联。</p>
-<h3 id="文件流"><a href="#文件流" class="headerlink" title="文件流"></a>文件流</h3><p>由于历史原因，C语言中原来表示流的数据结构是FILE，而不是叫做流。由于大多数的库函数使用到了FILE类型，有的时候在使用FILE指针的时候也叫其为流，这导致后来很多数据把FILE和流搞得十分混乱。实际上流就是标准IO库中程序与文件交互的一种方式。</p>
-<p>标准IO函数fopen打开一个文件时返回一个指向FILE对象的指针，该对象通常是一个结构，<strong>它包含了标准IO库为管理该流所需要的所有信息，包括该文件的文件描述符，用于指向该流缓冲区的指针，缓冲区的长度，当前缓冲区中的字符数以及出错标志等等</strong>。</p>
-<h3 id="标准输入，标准输出以及标准错误"><a href="#标准输入，标准输出以及标准错误" class="headerlink" title="标准输入，标准输出以及标准错误"></a>标准输入，标准输出以及标准错误</h3><p>标准库中对于每一个进程都预定义了三个流，分别是stdin,stdout以及stderr，他们分别对应与Linux文件IO中的STDIN_FILENO,STDOUT_FILENO和STDERR_FILENO。它们的定义在stdio.h中</p>
-<h2 id="I-O文件流的缓冲类型"><a href="#I-O文件流的缓冲类型" class="headerlink" title="I/O文件流的缓冲类型"></a>I/O文件流的缓冲类型</h2><p>标准IO提供缓冲的目的是为了通过减少使用read和write调用的次数来提高IO读写的效率，它对每个IO流自动的进行缓冲处理，从而避免了用户程序在使用read和write需要考虑的这一点。</p>
-<p>标准IO流提供了三种缓冲。分别是全缓冲(fully buffering)，行缓冲(line Buffering)以及无缓冲(nonBuffering)。</p>
-<h3 id="全缓冲"><a href="#全缓冲" class="headerlink" title="全缓冲"></a>全缓冲</h3><p>在使用全缓冲的情况下，当数据填满整个缓冲区之后才进行实际的IO操作。对于驻留在磁盘上的文件的读写通常是使用全缓冲。通常如果不给文件流指定缓冲区的情况下，标准IO函数会首先调用malloc函数获取所需要的缓冲区。</p>
-<h3 id="行缓冲"><a href="#行缓冲" class="headerlink" title="行缓冲"></a>行缓冲</h3><p>在使用行缓冲的情况下，每当输入输出遇到换行或者缓冲区满了的情况下才会进行实际的IO操作，当涉及到终端输入输出的时候通常使用行缓冲。</p>
-<p>对于行缓冲有两个限制。1.由于接收行缓冲的缓冲区的长度是固定的，所以只要填满了缓冲区，即使还没有遇到换行符，也会进行IO操作。2.任何时候，只要通过IO库要求从一个不带缓冲的流或者一个行缓冲的流得到输入数据，那么就会冲洗所有缓冲输出流。</p>
-<p>###不带缓冲<br>此时标准IO库不对字符进行缓冲存储。这就使得输入流要求IO立即进行，如标准错误流，若果出现错误，会立马输出。</p>
-<blockquote>
-<p>flush一个流即刷新缓冲区有两个含义。</p>
-<ul>
-<li>在IO库方面，flush意味着将缓冲区中的内容写到磁盘上，该缓冲区可能还没有满</li>
-<li>在终端驱动方面表示丢弃已经存储在缓冲区中的内容。</li>
-</ul>
-</blockquote>
-<p>##标准文件流与缓冲类型之间的关系</p>
-<ul>
-<li>当标准输入输出指向的是交互式设备（如终端）的时候，它们是行缓冲的，若不是则是全缓冲的。</li>
-<li>标准错误永远是无缓冲的。</li>
-</ul>
-<h2 id="与缓冲相关的函数"><a href="#与缓冲相关的函数" class="headerlink" title="与缓冲相关的函数"></a>与缓冲相关的函数</h2><p>我们可以通过一下两个函数对将缓冲关闭或者改变缓冲的类型。其中这些函数应该在流被打开之后调用，而且也应该在对流进行一切操作之前调用。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">setbuf</span><span class="params">(FILE* <span class="keyword">restrict</span> fd, <span class="keyword">char</span>* <span class="keyword">restrict</span> buf)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">setvbuf</span><span class="params">(FILE* <span class="keyword">restrict</span> fd, <span class="keyword">char</span>* <span class="keyword">restrict</span> buf, <span class="keyword">int</span> mode, <span class="keyword">size_t</span> size)</span></span>;</div></pre></td></tr></table></figure>
-<p>使用setbuf函数打开或者关闭缓冲，当buf是一个有效缓冲区时，此时缓冲打开，若流指向的是终端设备，则此时该流是行缓冲的，否则该流是全缓冲的；当buf为NULL的时候，表示关闭该缓冲。</p>
-<p>使用setvbuf可以精确的说明缓冲的类型，这里是使用mode来说明的，mode的值包括以下几个：</p>
-<ul>
-<li>_IOFBF 全缓冲</li>
-<li>_IOLBUF 行缓冲</li>
-<li>_IONBUF 无缓冲</li>
-</ul>
-<p>如果指定一个不带缓冲的流,则忽略buf和size参数。如果指定缓冲，则buf和size分别指定一个缓冲区域和缓冲区域的长度。若此时buf为NULL，则标准IO库将自动制定一个适合长度的缓冲区。</p>
-<p>上述函数与缓冲之间的关系</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">函数</th>
-<th style="text-align:center">mode</th>
-<th style="text-align:center">buf</th>
-<th style="text-align:center">缓冲区及长度</th>
-<th style="text-align:left">缓冲类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">setbuf</td>
-<td style="text-align:center"></td>
-<td style="text-align:center">非空</td>
-<td style="text-align:center">长度为size的缓冲区buf</td>
-<td style="text-align:left">全缓冲或行缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setbuf</td>
-<td style="text-align:center"></td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">无缓冲区</td>
-<td style="text-align:left">不带缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setvbuf</td>
-<td style="text-align:center">_IOFBF</td>
-<td style="text-align:center">非空</td>
-<td style="text-align:center">长度为size的缓冲区buf</td>
-<td style="text-align:left">全缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setvbuf</td>
-<td style="text-align:center">_IOFBF</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">合适长度的缓冲区buf</td>
-<td style="text-align:left">全缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setvbuf</td>
-<td style="text-align:center">_IOLBF</td>
-<td style="text-align:center">非空</td>
-<td style="text-align:center">长度为size的缓冲区buf</td>
-<td style="text-align:left">行缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setvbuf</td>
-<td style="text-align:center">_IOLBF</td>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">合适长度的缓冲区buf</td>
-<td style="text-align:left">行缓冲</td>
-</tr>
-<tr>
-<td style="text-align:center">setvbuf</td>
-<td style="text-align:center">_IONBF</td>
-<td style="text-align:center">忽略</td>
-<td style="text-align:center">无缓冲区</td>
-<td style="text-align:left">不带缓冲</td>
-</tr>
-</tbody>
-</table>
-<p>我们还可以通过fflush强制冲洗一个流，此函数使该流所有未写的数据都被传送到内核。作为一种特殊的情况，当流的NULL时，所有的流将被冲洗：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fflush</span><span class="params">(FILE* fd)</span></span>;</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Unix标准IO文件流及缓冲类型&quot;&gt;&lt;a href=&quot;#Unix标准IO文件流及缓冲类型&quot; class=&quot;headerlink&quot; title=&quot;Unix标准IO文件流及缓冲类型&quot;&gt;&lt;/a&gt;Unix标准IO文件流及缓冲类型&lt;/h1&gt;&lt;h2 id=&quot;Unix标准IO文
-    
-    </summary>
-    
-      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-      <category term="标准IO" scheme="http://yoursite.com/tags/%E6%A0%87%E5%87%86IO/"/>
-    
-      <category term="缓冲" scheme="http://yoursite.com/tags/%E7%BC%93%E5%86%B2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CprintNULL</title>
-    <link href="http://yoursite.com/2017/05/22/CprintNULL/"/>
-    <id>http://yoursite.com/2017/05/22/CprintNULL/</id>
-    <published>2017-05-22T15:55:20.000Z</published>
-    <updated>2017-05-22T15:56:04.607Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="printf-s情况下字符串为NULL的输出结果"><a href="#printf-s情况下字符串为NULL的输出结果" class="headerlink" title="printf %s情况下字符串为NULL的输出结果"></a>printf %s情况下字符串为NULL的输出结果</h1><h2 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">printf</span>(<span class="string">"this%s\n"</span>, s);</div><div class="line"><span class="built_in">printf</span>(<span class="string">"%s\n"</span>, s);</div></pre></td></tr></table></figure>
-<p>当s为NULL的时候，执行上面三个语句两个语句执行结果分别为:<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this(null)</div><div class="line">segment fault</div></pre></td></tr></table></figure></p>
-<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>在ANSI C中没有对printf时字符串为NULL的情况进行明确的定义，所以当出现这种情况时往往是未定义行为。<br>所以上面第一种情况会出现segment fault的情况是一种未定义行为，可能在其他编译器上不会出现段错误。</p>
-<p>上面出现段错误的行为我们可以通过反汇编进行查看。</p>
-<p>反汇编的结果如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">804842</span>d:	c7 <span class="number">04</span> <span class="number">24</span> <span class="number">20</span> <span class="number">85</span> <span class="number">04</span> <span class="number">08</span> 	movl   $<span class="number">0x8048520</span>,(%esp)</div><div class="line"><span class="number">8048434</span>:	e8 <span class="number">0b</span> ff ff ff       	call   <span class="number">8048344</span> &lt;<span class="built_in">printf</span>@plt&gt;</div><div class="line"><span class="number">8048439</span>:	c7 <span class="number">04</span> <span class="number">24</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> 	movl   $<span class="number">0x0</span>,(%esp)</div><div class="line"><span class="number">8048440</span>:	e8 df fe ff ff       	call   <span class="number">8048324</span> &lt;<span class="built_in">puts</span>@plt&gt;</div><div class="line"><span class="number">8048445</span>:	<span class="number">83</span> c4 <span class="number">14</span>             	add    $<span class="number">0x14</span>,%esp</div></pre></td></tr></table></figure>
-<p>从上面可以看出第一个执行被汇编成真正的printf指令，而第二个简单的printf NULL的指令被汇编成puts。<br>所以才出现了上面的结果。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;printf-s情况下字符串为NULL的输出结果&quot;&gt;&lt;a href=&quot;#printf-s情况下字符串为NULL的输出结果&quot; class=&quot;headerlink&quot; title=&quot;printf %s情况下字符串为NULL的输出结果&quot;&gt;&lt;/a&gt;printf %s情况下字
-    
-    </summary>
-    
-      <category term="C++ problems" scheme="http://yoursite.com/categories/C-problems/"/>
-    
-    
-      <category term="print" scheme="http://yoursite.com/tags/print/"/>
     
   </entry>
   

@@ -532,8 +532,8 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/05/01/Linux用于IO的数据结构及fcntl函数详解/">
-                            Linux用于IO的数据结构及fcntl函数详解
+                        <a class="link-unstyled" href="/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
+                            Unix文件IO的数据结构及fcntl函数详解
                         </a>
                     
                 </h1>
@@ -606,7 +606,7 @@
 <p>fcntl的功能可以分为5种:</p>
 <ul>
 <li>复制一个已有的文件描述符<ul>
-<li>cmd = F_DUPFD，此功能<strong>返回一个文件描述符，新的描述符的值为大于或等于args的可用的<br>（尚未打开）文件描述符的最小值，新描述符与fd共用一个文件表项</strong>。但是新的文件描述符有<br> 它自己的一套文件描述符标志.</li>
+<li>cmd = F_DUPFD，此功能<em>*返回一个文件描述符，新的描述符的值为大于或等于args的可用的（尚未打开）文件描述符的最小值，新描述符与fd共用一个文件表项</em>。但是新的文件描述符有它自己的一套文件描述符标志.</li>
 <li>cmd = F_DUPFD_CLOEXEC.与上述功能一致，唯一不同的是使用此命令会设置CLOSE_ON_EXEC，<br>即当执行execve的时候，文件描述符将被关闭。</li>
 </ul>
 </li>
@@ -704,7 +704,7 @@
                     
                     
                         <p>
-                            <a href="/2017/05/01/Linux用于IO的数据结构及fcntl函数详解/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

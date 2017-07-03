@@ -1,0 +1,608 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="魏传柳">
+    <title>Unix文件IO的数据结构及fcntl函数详解 - 魏传柳</title>
+    <meta name="author" content="魏传柳(langzi989)">
+    
+        <meta name="keywords" content="hexo,javascript,">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="Linux用于I/O的数据结构及fcntl函数详解Linux内核用于IO的数据结构内核使用三种数据结构表示打开的文件，它们之间的关系决定了在文件共享方面一个进程对另一个进程可能产生的影响.
+
+进程表项 每个进程在记录表中都有一个记录项，记录项中包含一张打开的文件描述符表，可将其视为一个矢量，每个描述符占用一项。与每个文件描述符相关联的是：
+文件描述符标志(close_on_exec,close_o">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Unix文件IO的数据结构及fcntl函数详解">
+<meta property="og:url" content="http://yoursite.com/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/index.html">
+<meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="Linux用于I/O的数据结构及fcntl函数详解Linux内核用于IO的数据结构内核使用三种数据结构表示打开的文件，它们之间的关系决定了在文件共享方面一个进程对另一个进程可能产生的影响.
+
+进程表项 每个进程在记录表中都有一个记录项，记录项中包含一张打开的文件描述符表，可将其视为一个矢量，每个描述符占用一项。与每个文件描述符相关联的是：
+文件描述符标志(close_on_exec,close_o">
+<meta property="og:image" content="http://yoursite.com/images/singleProcessmultifile.png">
+<meta property="og:image" content="http://yoursite.com/images/multiProcesssinglefile.png">
+<meta property="og:updated_time" content="2017-06-14T06:40:23.455Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Unix文件IO的数据结构及fcntl函数详解">
+<meta name="twitter:description" content="Linux用于I/O的数据结构及fcntl函数详解Linux内核用于IO的数据结构内核使用三种数据结构表示打开的文件，它们之间的关系决定了在文件共享方面一个进程对另一个进程可能产生的影响.
+
+进程表项 每个进程在记录表中都有一个记录项，记录项中包含一张打开的文件描述符表，可将其视为一个矢量，每个描述符占用一项。与每个文件描述符相关联的是：
+文件描述符标志(close_on_exec,close_o">
+<meta name="twitter:image" content="http://yoursite.com/images/singleProcessmultifile.png">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://yoursite.com/assets/images/avar.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-nuvue6sithwirecbhvw3dkaobiojqvtadsnhguwi7k04xklybw5djl1smadp.min.css">
+    <!--STYLES END-->
+    
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">魏传柳</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="/assets/images/avar.jpg"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/avar.jpg"/>
+            </a>
+            <span class="sidebar-profile-name">魏传柳(langzi989)</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">home</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">search</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">about</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/langzi989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://blog.csdn.net/u014630623" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-csdn"></i>
+                    <span class="sidebar-button-desc">CSDN</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Unix文件IO的数据结构及fcntl函数详解
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" datetime="2017-05-01T23:31:31+08:00">
+	
+		    5月 01, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="Linux用于I-O的数据结构及fcntl函数详解"><a href="#Linux用于I-O的数据结构及fcntl函数详解" class="headerlink" title="Linux用于I/O的数据结构及fcntl函数详解"></a>Linux用于I/O的数据结构及fcntl函数详解</h1><h2 id="Linux内核用于IO的数据结构"><a href="#Linux内核用于IO的数据结构" class="headerlink" title="Linux内核用于IO的数据结构"></a>Linux内核用于IO的数据结构</h2><p>内核使用<strong>三种数据结构</strong>表示打开的文件，它们之间的关系决定了在文件共享方面一个进程对另一个进程可能产生的影响.</p>
+<ul>
+<li>进程表项 每个进程在记录表中都有一个记录项，记录项中包含一张打开的文件描述符表，可将其视为一个矢量，每个描述符占用一项。与每个文件描述符相关联的是：<ul>
+<li>文件描述符标志(close_on_exec,close_on_exec是一个进程所有文件描述符的标记位图，每个比特位代表一个打开的文件描述符，用于确定在系统调用execve()时需要关闭的文件句柄)。</li>
+<li>指向一个文件表项的指针</li>
+</ul>
+</li>
+<li>文件表项 内核为所有打开文件维护一张文件表（<strong>不同进程打开相同文件将有两条记录</strong>），每个文件表项中包括：<ul>
+<li>文件状态标志(read,write,append,async,nonblock等)</li>
+<li>当前文件偏移量</li>
+<li>指向该文件v(i)节点表项的指针</li>
+</ul>
+</li>
+<li>节点表项。每个打开的文件都有一个v-node结构，v-node中包含了文件类型和对此文件进行各种操作函数的指针。对于大多数文件，V-node中还包含了文件inode节点信息，这些信息是打开文件时从磁盘上读入内存的，所以文件所有信息都是随时可用的。<ul>
+<li>v节点的信息</li>
+<li>当前文件的长度</li>
+<li>i节点的信息</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>close_on_exec是一个进程所有文件描述符（文件句柄）的位图标志，<strong>每个bit代表一个打开的文件描述符，用于<br>确定在系统调用execve()时是否需要关闭文件句柄。</strong>当一个进程fork出一个子进程时，通常会在子进程中调用execve()函数<br>加载执行另一个新程序。此时子进程将完全被新程序替换掉，并在子进程中执行新程序。若一个文件描述符在close_on_exec中对应的<br>bit被设置，那么在执行execve()时该文件描述符将被关闭，否则该文件描述符将始终处于打开状态。<br>当打开一个文件的时候，默认情况下文件句柄在子进程中也处于打开状态。<br>注意文件描述符和文件描述符标志的区别，文件描述符是文件进程打开文件时的文件句柄，文件描述符标志为close_on_exec。</p>
+</blockquote>
+<p>下图显示了一个进程打开两个不同文件时三张表对应的关系：</p>
+<p><img src="/images/singleProcessmultifile.png" alt=""></p>
+<p>如果两个独立的进程同时打开同一个文件，三张表之间的对应关系如下：</p>
+<p><img src="/images/multiProcesssinglefile.png" alt=""><br>从上面可以看出，不同进程打开相同的文件时每个进程将获得各自的文件表项，这是因为不同的进程都有各自的文件偏移量。<br>当我们对文件进行操作的时候，上面三种表项之间的变化关系如下：</p>
+<ul>
+<li>当对文件进行写操作时（write），在文件表项中的文件偏移量将增加写入的字节数。如果此时文件偏移量超过了文件长度，更新文件长度为当前的文件偏移量</li>
+<li>当用O_APPEND标志打开一个文件，则相应的标志也被设置到文件表项的文件标志状态中。每次对这种具有追加标志的文件进行写操作时，<strong>首先将当前文件偏移量设置为文件文件长度</strong>，这就使得每次增加的内容都会写到文件末尾。</li>
+<li>若使用lseek定位到文件末尾，则文件表项中偏移量被设置为文件长度</li>
+<li>lseek函数只修改文件表项中的偏移量，不进行任何IO操作。</li>
+</ul>
+<p><strong>注意问题：</strong></p>
+<ul>
+<li>可能有多个文件描述符指向同一个文件表项，如在fork的时候就有可能发生</li>
+<li>注意文件描述符和文件状态标志在作用范围方面的区别。前者只用于一个进程的描述符，而后者则应用于指向该给定文件表项的任何进程中的所有描述符。</li>
+</ul>
+<h2 id="函数fcntl功能及用法"><a href="#函数fcntl功能及用法" class="headerlink" title="函数fcntl功能及用法"></a>函数fcntl功能及用法</h2><p><strong>函数原型</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> cmd, ...<span class="comment">/*int args or lock args*/</span>)</span></span>;</div></pre></td></tr></table></figure>
+<p><strong>函数功能</strong>:<br>fcntl的作用是改变已经打开的文件属性。</p>
+<p><strong>参数说明</strong>:</p>
+<ul>
+<li>fd 为file descriptor,即文件打开之后的文件描述符</li>
+<li>cmd为命令，即需要对fd操作的命令,一般为几个宏定义中的其中一个</li>
+<li>args 参数，此参数为执行cmd命令所需要的参数</li>
+</ul>
+<p><strong>cmd参数命令及功能</strong>:</p>
+<p>fcntl的功能可以分为5种:</p>
+<ul>
+<li>复制一个已有的文件描述符<ul>
+<li>cmd = F_DUPFD，此功能<em>*返回一个文件描述符，新的描述符的值为大于或等于args的可用的（尚未打开）文件描述符的最小值，新描述符与fd共用一个文件表项</em>。但是新的文件描述符有它自己的一套文件描述符标志.</li>
+<li>cmd = F_DUPFD_CLOEXEC.与上述功能一致，唯一不同的是使用此命令会设置CLOSE_ON_EXEC，<br>即当执行execve的时候，文件描述符将被关闭。</li>
+</ul>
+</li>
+<li>获取或设置文件描述符标志<ul>
+<li>cmd = F_GETFD <strong>返回与fd关联的close_on_exec标志</strong>，第三个参数被忽略。</li>
+<li>cnd = F_SETFD <strong>将文件描述符标志close_on_exec设置为第三个参数</strong>。</li>
+</ul>
+</li>
+<li>获取或设置文件状态标志<ul>
+<li>cmd = F_GETFL <strong>获取fd对应的文件的状态标志（存储于文件表项）</strong></li>
+<li>cmd = F_SETFL <strong>设置fd对应文件的状态标志</strong></li>
+</ul>
+</li>
+<li>获取或设置异步IO所有权<ul>
+<li>cmd = F_GETOWN 获取当前接受SIGIO和SIGURG信号的进程IO或者进程组ID。</li>
+<li>cmd = F_SETOWN 设置接受SIGIO和SIGURG信号的进程ID或进程组ID。返回值为正则为进程，返回值为负数即为进程组。</li>
+</ul>
+</li>
+<li>获取或记录锁（cmd=F_GETLK、F_SETLK、F_SETLKW），此处不详解</li>
+</ul>
+<p><strong>文件状态标志说明</strong>：</p>
+<p>文件状态标志存储与文件表项中，它用于说明进程对当前文件的可操作权限。文件的<br>操作权限说明如下图表所示，权限设置可使用|或者&amp;进行设置.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">文件状态标志</th>
+<th style="text-align:left">功能说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">O_RDONLY</td>
+<td style="text-align:left">只读权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_WRONLY</td>
+<td style="text-align:left">只写权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_RDWR</td>
+<td style="text-align:left">读写权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_EXEC</td>
+<td style="text-align:left">可执行权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_SEARCH</td>
+<td style="text-align:left">只搜索打开权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_APPEND</td>
+<td style="text-align:left">追加写</td>
+</tr>
+<tr>
+<td style="text-align:center">O_NONBLOCK</td>
+<td style="text-align:left">非阻塞模式</td>
+</tr>
+<tr>
+<td style="text-align:center">O_SYNC</td>
+<td style="text-align:left">等待写完成（数据和属性）</td>
+</tr>
+<tr>
+<td style="text-align:center">O_DSYNC</td>
+<td style="text-align:left">等待写完成（仅数据）</td>
+</tr>
+<tr>
+<td style="text-align:center">O_RSYNC</td>
+<td style="text-align:left">同步读写</td>
+</tr>
+<tr>
+<td style="text-align:center">O_FSYNC</td>
+<td style="text-align:left">等待写完成</td>
+</tr>
+<tr>
+<td style="text-align:center">O_ASYNC</td>
+<td style="text-align:left">异步IO</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>注意O_RDONLY、O_WRONLY、O_RDWR、O_EXEC、O_SEARCH这个五个标志并不各占<br>一位，一个文件的访问方式只能取这五个里面的一个。因此检查当前文件的是这<br>五个标志中的哪一个需要使用屏蔽字O_ACCMODE取得当问方式位，在于这五个标志<br>进行对比。</p>
+</blockquote>
+<p><strong>代码示例说明</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">int</span> test;</div><div class="line">  <span class="comment">//返回结果：test = 10，返回大于等于第三个参数可用的fd(10)。</span></div><div class="line">  test = fcntl(STDIN_FILENO, F_DUPFD, <span class="number">10</span>);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"result of fcntl(STDIN_FILENO, F_DUPFD, 10) is:%d\n"</span>, test);</div><div class="line"></div><div class="line">  <span class="comment">//返回结果：test=11,与上一个函数功能相同</span></div><div class="line">  <span class="comment">//不同之处在于其设置了close_on_exec,当执行exec时关闭响应的文件描述符</span></div><div class="line">  <span class="comment">//注意有一些版本的系统上没有定义这个宏</span></div><div class="line">  <span class="comment">//test = fcntl(STDIN_FILENO, F_DUPFD_CLOEXEC, 10);</span></div><div class="line"></div><div class="line">  <span class="comment">//返回结果 test = 0. 标准输入的文件描述符标志(即关闭标志)为0，</span></div><div class="line">  <span class="comment">//意思是执行exec时关联的文件描述符不关闭</span></div><div class="line">  test = fcntl(STDIN_FILENO, F_GETFD);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"the result of fcntl(STDIN_FILENO, F_GETFD) is:%d\n"</span>, test);</div><div class="line"></div><div class="line">  <span class="comment">//将文件描述符标志设置为0</span></div><div class="line">  fcntl(STDIN_FILENO, F_SETFD, <span class="number">0</span>);</div><div class="line"></div><div class="line">  <span class="comment">//返回结果 test = 32270</span></div><div class="line">  test = fcntl(STDIN_FILENO, F_GETFL);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"the result of fcntl(STDIN_FILENO, F_GETFL) is:%d\n"</span>, test);</div><div class="line"></div><div class="line">  <span class="comment">//给STDIN_FILENO对应的IO添加非阻塞权限</span></div><div class="line">  test |= O_NONBLOCK;</div><div class="line">  fcntl(STDIN_FILENO, F_SETFL, test);</div><div class="line"></div><div class="line">  test = fcntl(STDIN_FILENO, F_GETFL);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"the result of fcntl(STDIN_FILENO, F_GETFL) is:%d\n"</span>, test);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="STDIN-FILENO，STDOUT-FILENO以及STDERR-FILENO"><a href="#STDIN-FILENO，STDOUT-FILENO以及STDERR-FILENO" class="headerlink" title="STDIN_FILENO，STDOUT_FILENO以及STDERR_FILENO"></a>STDIN_FILENO，STDOUT_FILENO以及STDERR_FILENO</h2><p>STDIN_FILENO等是系统API接口库中<unistd.h>的宏定义，它是一个int类型的值，是打开文件的句柄，<br>对应的主要函数有open,read,write和close等。<br>STDIN_FILENO的含义是标准输入（键盘）的文件描述符，STDOUT_FILENO是标准输出流的文件描述符，STDERR_FILENO<br>是标准错误流的文件描述符。</unistd.h></p>
+<h3 id="STDIN-FILENO与stdin的区别"><a href="#STDIN-FILENO与stdin的区别" class="headerlink" title="STDIN_FILENO与stdin的区别"></a>STDIN_FILENO与stdin的区别</h3><ul>
+<li>数据类型不同 stdin的数据类型为FILE*，STDIN_NO的数据类型为int</li>
+<li>可用的函数不同 stdin主要用的函数有fread,fwrite,fclose，STDIN_FILENO可用的函数为write，read和close</li>
+<li>stdin属于标准IO，高级的输入输出函数，在stdio.h中定义;STDIN_FILENO是文件描述符，一般定义为0,1,2,属于没有buffer的IO,直接调用系统调用，定义在unistd.h中</li>
+<li>层次不同，stdin属于标注库处理的输入流，其声明为FILE*型，对应的函数前面都有f开头；而STDIN_FILENO属于系统API接口，对用的函数是一些系统级的调用</li>
+</ul>
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Linux/">Linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/fcntl/">fcntl</a> <a class="tag tag--primary tag--small t-link" href="/tags/inode/">inode</a> <a class="tag tag--primary tag--small t-link" href="/tags/文件描述符标志/">文件描述符标志</a> <a class="tag tag--primary tag--small t-link" href="/tags/文件状态标志/">文件状态标志</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/04/Wait函数详解/"  data-tooltip="Wait函数详解">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/07/free如何知道要free多大的空间/" data-tooltip="C语言free如何知道要free多大的空间">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 魏传柳(langzi989). All Rights Reserved.
+    </span>
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+     </script>
+   </br></br>本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/04/Wait函数详解/"  data-tooltip="Wait函数详解">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/04/07/free如何知道要free多大的空间/" data-tooltip="C语言free如何知道要free多大的空间">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/avar.jpg"/>
+        
+            <h4 id="about-card-name">魏传柳(langzi989)</h4>
+        
+            <h5 id="about-card-bio"><p>author.bio</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Guangzhou,China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+</html>

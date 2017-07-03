@@ -215,6 +215,169 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/06/21/rapidjson创建型/">
+                            rapidjson创建型
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-06-21T20:35:00+08:00">
+	
+		    6月 21, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="rapidjson创建型"><a href="#rapidjson创建型" class="headerlink" title="rapidjson创建型"></a>rapidjson创建型</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include &quot;rapidjson/document.h&quot;</div><div class="line">#include &quot;rapidjson/stringbuffer.h&quot;</div><div class="line">#include &quot;rapidjson/writer.h&quot;</div><div class="line">#include &lt;string&gt;</div><div class="line"></div><div class="line">using namespace std;</div><div class="line">using namespace rapidjson;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">    Document d;</div><div class="line">    d.SetObject();</div><div class="line">    std::string s = &quot;123&quot;;</div><div class="line">    rapidjson::Document::AllocatorType&amp; allocator = d.GetAllocator();</div><div class="line"></div><div class="line">    //生成含有数组的document，注意在rapidjson中所有的数据都是一个Value，数组的本质也是一个Array;</div><div class="line">    rapidjson::Value arr(rapidjson::kArrayType);</div><div class="line"></div><div class="line">    arr.PushBack(&quot;1&quot;, allocator);</div><div class="line">    arr.PushBack(&quot;2&quot;, allocator);</div><div class="line">    arr.PushBack(rapidjson::StringRef(s.c_str()), allocator);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    //生成数组中包含有多个obj的数组</div><div class="line">    rapidjson::Value o1;</div><div class="line">    o1.SetObject();</div><div class="line">    o1.AddMember(&quot;o1&quot;, 1, allocator);</div><div class="line">    arr.PushBack(o1, allocator);</div><div class="line">    rapidjson::Value o2;</div><div class="line">    o2.SetObject();</div><div class="line">    o2.AddMember(&quot;o2&quot;, 2, allocator);</div><div class="line">    arr.PushBack(o2, allocator);</div><div class="line"></div><div class="line">    d.AddMember(&quot;arr&quot;, arr, allocator);</div><div class="line">    rapidjson::StringBuffer buffer;</div><div class="line">    rapidjson::Writer&lt;StringBuffer&gt; writer(buffer);</div><div class="line">    d.Accept(writer);</div><div class="line"></div><div class="line">    std::cout &lt;&lt; buffer.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/06/21/rapidjson创建型/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/06/15/Unix网络编程之socket异步编程/">
+                            Unix网络编程之socket异步编程
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-06-15T09:48:43+08:00">
+	
+		    6月 15, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix网络编程之socket异步编程"><a href="#Unix网络编程之socket异步编程" class="headerlink" title="Unix网络编程之socket异步编程"></a>Unix网络编程之socket异步编程</h1><h2 id="ioctl"><a href="#ioctl" class="headerlink" title="ioctl"></a>ioctl</h2><p>我们常用ioctlsocket的FIONBIO模式对socket进行设置是否启用异步。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">ioctlsocket</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">long</span> cmd, <span class="keyword">unsigned</span> <span class="keyword">long</span>* args)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>ioctlsocket函数的作用是获取<strong>与套接字sockfd相关的操作参数，可用于任何状态的任一套接字，与具体的协议无关</strong>.</p>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li>sockfd : 待操作的socket描述符</li>
+<li>cmd : 对sockfd的做操类型,包括以下几种<ul>
+<li>FIONBIO : 允许或者禁止套接字sockfd的费阻塞模式，若args为1，则是允许非阻塞模式；若args为0，禁止非阻塞模式。</li>
+<li>FIONREAD : 确定套接字sockfd自动读入设为数量，arg存储ioctlsocket的返回值.若sockfd是SOCKET_STREAM类型，则FIONREAD返回一次recv所接受的所有的数据量，这通常与套接字中排队的数据总量相同。如果sockfd是SOC_DGRAM类型,则FIONREAD返回套接字上排队的第一个数据报的大小。</li>
+<li>SIOCATMARK : 确定是否所有的带外数据都已经被读入，这个类型只适用于SOCK_STREAM套接字接口。</li>
+</ul>
+</li>
+<li>args :　指示参数</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/06/15/Unix网络编程之socket异步编程/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/06/14/Unix网络编程之读写相关函数/">
+                            Unix网络编程之读写相关函数
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-06-14T21:37:41+08:00">
+	
+		    6月 14, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix网络编程之读写相关函数"><a href="#Unix网络编程之读写相关函数" class="headerlink" title="Unix网络编程之读写相关函数"></a>Unix网络编程之读写相关函数</h1><p>socket编程中常用的输入输出函数(读写函数)总共有五对,它们<strong>都是默认阻塞的</strong>，这就意味着当发出一个不能立即完成的套接字调用的时候，其进程将被投入睡眠，等待相应的进程操作完成，函数才返回继续往下执行。常用的函数如下：</p>
+<ul>
+<li>read, write</li>
+<li>readv, writev</li>
+<li>recv, send</li>
+<li>recvfrom, sendto</li>
+<li>recvmsg, sendmsg</li>
+</ul>
+<h2 id="read-write函数"><a href="#read-write函数" class="headerlink" title="read/write函数"></a>read/write函数</h2><p>read和write函数的详细用法已经在Unix文件IO中已经讲解，在socket编程中的使用方法与文件IO使用方法相同。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/06/14/Unix网络编程之读写相关函数/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/06/13/Unix网络编程之基础函数(一)/">
                             Unix网络编程之基础函数(一)
                         </a>
@@ -309,7 +472,7 @@
 <h3 id="返回值说明"><a href="#返回值说明" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>socket函数与open函数类似，若成功，返回一个较小的非负整数,称为套接字描述符，若失败返回-1;</p>
 <h2 id="connect函数"><a href="#connect函数" class="headerlink" title="connect函数"></a>connect函数</h2><p>TCP客户端通过connect函数来与服务器建立连接,注意<strong>客户在调用connect函数之前不必调用bind函数将sockfd与本机的IP端口绑定，因为如果需要的话，内核会确定源IP地址，并选择一个可用的临时端口作为端口号</strong>。</p>
 <p>客户端调用connect函数的时候会激发三次握手连接建立。而且只在连接建立成功或失败时返回，否则会一直阻塞在connect函数处。</p>
-<p>connect函数出错的清空包括以下几种：</p>
+<p>connect函数出错的情况包括以下几种：</p>
 <ul>
 <li>若TCP在调用connect之后没有接收到syn分节，则返回ETIMEOUT错误。这种情况通常发生在<strong>目的主机不存在情况下</strong>。这时客户端会隔一段时间发送一次请求，若等待时间超过一定时间(这个过程客户端被阻塞)，返回ETIMEOUT错误。</li>
 <li>若T客户端收到RST分节(复位)，则返回ECONNREFUSED错误，这种情况发生在<strong>目的主机存在，但是主机上没有进程监听指定端口。</strong></li>
@@ -384,6 +547,13 @@
 <li>addr_len : aliaddr的字节数。即客户端sockaddr的地址长度。</li>
 </ul>
 <h3 id="返回值说明-2"><a href="#返回值说明-2" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若出错返回-1;如果accept成功，返回一个新的socket描述符。其代表与所返回的客户端之间的TCP连接，<strong>它是一个连接套接字,之后服务端接收和发送数据都将使用这个描述符进行操作</strong>.</p>
+<h3 id="Invalid-argument常见原因"><a href="#Invalid-argument常见原因" class="headerlink" title="Invalid argument常见原因"></a>Invalid argument常见原因</h3><p>在accept的时候,我们常会遇到Invalid argument的错误，出现这个错误的原因有很多，主要是在accept之前的准备工作出了问题。</p>
+<ul>
+<li>socket创建不成功，在socket函数后检查一下errno值</li>
+<li>绑定socket地址不成功，检查一下返回值，同时检查一下errno</li>
+<li>没有listen，或者listen出问题。</li>
+</ul>
+<p>以上三步有一步出问题或者漏掉一步都有可能出现Invalid　argument错误。</p>
 <h2 id="close函数"><a href="#close函数" class="headerlink" title="close函数"></a>close函数</h2><p>我们知道，关闭文件描述符我可使用close函数，同样的close函数也能用来关闭socket文件描述符。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> sockfd)</span></span>;</div></pre></td></tr></table></figure></p>
 <p>通常情况下,close一个TCP套接字只是将该socket描述符标记为不可用，这个时候其将不能作为read和write的第一个参数进行数据的发送和接收,然而TCP尝试发送已经排队等待的所有需要发送到对端的数据，发送完毕之后将执行正常的TCP连接终止流程关闭TCP连接.</p>
 
@@ -863,275 +1033,6 @@
                     
                         <p>
                             <a href="/2017/06/04/linux正则表达式库/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/03/Unix标准IO库函数之读写流(二)/">
-                            Unix标准IO库相关函数总结之读写流(二)
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-06-03T16:04:00+08:00">
-	
-		    6月 03, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix标准IO库相关函数总结之读写流-二"><a href="#Unix标准IO库相关函数总结之读写流-二" class="headerlink" title="Unix标准IO库相关函数总结之读写流(二)"></a>Unix标准IO库相关函数总结之读写流(二)</h1><h2 id="读写流的三种方式"><a href="#读写流的三种方式" class="headerlink" title="读写流的三种方式"></a>读写流的三种方式</h2><p>一旦一个流被打开，则可以选择三种方式对其进行读写。</p>
-<ul>
-<li><strong>每次一个字符的IO</strong>，一次读或者写一个字符，如果流是带缓冲的,则标准IO函数处理所有的缓冲。</li>
-<li>每次一行的IO。每次读写一行数据，可以使用fgets和fputs函数，但是要说明最大行的长度。</li>
-<li>直接IO。通常使用fread和fwrite函数。</li>
-</ul>
-<h2 id="一个字符的IO"><a href="#一个字符的IO" class="headerlink" title="一个字符的IO"></a>一个字符的IO</h2><h3 id="输入函数"><a href="#输入函数" class="headerlink" title="输入函数"></a>输入函数</h3><p>通常使用以下三个函数进行一个字符的读。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getc</span><span class="params">(FILE*)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fgetc</span><span class="params">(FILE*)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">getchar</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure></p>
-<h4 id="区别与联系"><a href="#区别与联系" class="headerlink" title="区别与联系"></a>区别与联系</h4><p>这三个函数都用于一个字符的读取。其区别和联系如下：</p>
-<ul>
-<li><strong>getchar()相当于getc(stdin)</strong>。即每次从标准输入流读入一个字符。<strong>实质上getc是宏</strong>。</li>
-<li>getc和fgetc的区别是<strong>getc可以被实现为宏，而fgetc不能被实现为宏</strong>。这就意味着:<ul>
-<li>getc的参数不能是具有副作用的表达式，因为它的值可能被计算多次。</li>
-<li>fgetc是一个函数，可以获得其地址， 这就允许将fgetc作为参数传递给另一个函数。</li>
-<li>调用fgetc时间比getc时间长，因为调用宏的时间更短。</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>有副作用的表达式是指：表达式的作用本质是用于计算的，原则上只返回一个计算结果，而不会改变表达式中的变量的值。这种<strong>不改变表达式中变量值的表达式叫做无副作用的表达式</strong>。如：x+y，y-z等。除此之外，若<strong>表达式中变量的值被改变则成为有副作用的表达式</strong>，如x++，y+=2;</p>
-<p>由于在宏中宏可能出现在程序的很多位置，也就是表达式会被计算多次，这个时候若表达式有副作用就会GG。</p>
-</blockquote>
-<h4 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h4><p>这三个函数的返回值都是int类型，这三个函数在返回下一个字符的时候，将其unsigned char类型转换为int。说明无符号的理由是，如果最高位为1，也不会使返回值为负。返回整形的理由是<strong>这样既可以返回所有的字符，也可以返回出错或到达文件为的指示值</strong>。</p>
-<p>注意不管是到达文件为还是出错，这个时候三个函数的返回值都一样。为了区分这两种情况，常调用ferror或feof函数。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="comment">//用于判断流fp是否遇到读取错误，若读取错误，返回非零值，否则返回0。</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">ferror</span><span class="params">(FILE* fp)</span></span>;</div><div class="line"><span class="comment">//用于判断流是否遇到文件结尾，若到达文件结尾，返回非零值，否则返回0.</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">feof</span><span class="params">(FILE* fp)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">clearerr</span><span class="params">(FILE* fp)</span></span>;</div></pre></td></tr></table></figure>
-<p>在大多数的实现中，为每个流在FILE对象中维护了两个标志：</p>
-<ul>
-<li>出错标志</li>
-<li>文件结束标志</li>
-</ul>
-<p>调用clearerr可以清除这两个标志。</p>
-<h3 id="压送字符到流中。"><a href="#压送字符到流中。" class="headerlink" title="压送字符到流中。"></a>压送字符到流中。</h3><p>从流中读取字符以后，可以使用ungetc将字符押送回流中，压回的字符又可以从流中读出，读出的顺序与压送的顺序相反。<strong>压送的字符不会被写到流中。</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">ungetc</span><span class="params">(<span class="keyword">int</span> c, FILE* fp)</span></span>;</div></pre></td></tr></table></figure></p>
-<p>###输出函数<br>输出函数为以下三个，与输入对应，区别与联系和输入函数相同。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span>  <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">putc</span><span class="params">(<span class="keyword">int</span> c, FILE* fp)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fputc</span><span class="params">(<span class="keyword">int</span> c, FILE* fp)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">putchar</span><span class="params">(<span class="keyword">int</span> c)</span></span>;</div></pre></td></tr></table></figure></p>
-<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	FILE* test = fopen(<span class="string">"test.txt"</span>, <span class="string">"rw"</span>);</div><div class="line">	<span class="keyword">char</span> a;</div><div class="line">	<span class="keyword">while</span> ((a =getc(test)) != EOF) &#123;</div><div class="line">		putc(a, <span class="built_in">stdout</span>);</div><div class="line">		putc(<span class="string">'\n'</span>, <span class="built_in">stdout</span>);</div><div class="line">	&#125;</div><div class="line">	ungetc(<span class="string">'1'</span>, test);</div><div class="line">	ungetc(<span class="string">'2'</span>, test);</div><div class="line">	putc(getc(test), <span class="built_in">stdout</span>);</div><div class="line">	putc(getc(test), <span class="built_in">stdout</span>);</div><div class="line">	<span class="keyword">if</span> (ferror(test)) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"this is the read error\n"</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (feof(test)) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"this is the eof\n"</span>);</div><div class="line">	&#125;</div><div class="line">	fclose(test);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="一行的IO"><a href="#一行的IO" class="headerlink" title="一行的IO"></a>一行的IO</h2><h3 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h3><p>标准IO中提供了一下两个函数进行一行的读取：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">char</span>* <span class="title">fgets</span><span class="params">(<span class="keyword">char</span>* <span class="keyword">restrict</span> buf, <span class="keyword">int</span> n, FILE* fp)</span></span>;</div><div class="line"><span class="function"><span class="keyword">char</span>* <span class="title">gets</span><span class="params">(<span class="keyword">char</span>* buf)</span></span>;</div></pre></td></tr></table></figure></p>
-<h4 id="返回值-1"><a href="#返回值-1" class="headerlink" title="返回值"></a>返回值</h4><p>若读取成功返回buf，若读取失败或者读取到文件结尾返回NULL.</p>
-<h4 id="区别与联系-1"><a href="#区别与联系-1" class="headerlink" title="区别与联系"></a>区别与联系</h4><ul>
-<li>对于fgets必须指定缓冲区的长度n.此函数一直读到下一个换行符为止，但是<strong>不能超过n-1个字符</strong>，读入的字符将被送入缓冲区，该缓冲区以null结尾。若改行包含换行符超过了n-1个字符，fgets只返回一个不完整的行。下一次读取的时候将继续从该行继续往下读。</li>
-<li>gets函数用于从标准输入读取，但是gets不包含缓冲区的长度，所以在读取的时候可能会出现缓冲区溢出的情况。<strong>一般最好不要用gets函数</strong>.</li>
-<li><strong>gets函数不将换行符存入缓冲区，而fgets将换行符存入缓冲区</strong>。</li>
-</ul>
-<blockquote>
-<p>虽然ISO要求提供gets函数，但一般使用fgets不要使用gets函数。</p>
-</blockquote>
-<h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><p>对应的，标准IO提供了以下连个函数进行输出：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fputs</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> buf, FILE* <span class="keyword">restrict</span> fp)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">puts</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* buf)</span></span>;</div></pre></td></tr></table></figure></p>
-<h4 id="返回值-2"><a href="#返回值-2" class="headerlink" title="返回值"></a>返回值</h4><p>成功返回非负值，失败返回EOF。</p>
-<h4 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h4><ul>
-<li>fputs将一个以null结尾的字符串写到指定的流，但是<strong>null不写出</strong>，注意这不是每次输出一行，而取决于缓冲区中的内容。</li>
-<li>puts将一个以null结尾的字符串写到指定的流，<strong>null不写出，但是在最后又添加了一个换行符</strong>。</li>
-<li>一般情况下使用fgets和fputs，不适用gets和puts函数。</li>
-</ul>
-<h4 id="实例-1"><a href="#实例-1" class="headerlink" title="实例"></a>实例</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	FILE* fp = fopen(<span class="string">"test.txt"</span>, <span class="string">"rw"</span>);</div><div class="line">	<span class="keyword">char</span> buf[<span class="number">5</span>];</div><div class="line">	<span class="keyword">while</span> (fgets(buf, <span class="number">5</span>, fp)) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"%s"</span>, buf);</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="直接IO"><a href="#直接IO" class="headerlink" title="直接IO"></a>直接IO</h2><p>直接IO通常用于对二进制文件的读写，除此之外也可以对文本文件进行读写。其中对二进制文件的读写只能用直接IO的方式，因为二进制文件中可能含有null字符，会导致使用行或者字符获取时出现错误。直接IO进行读写的两个函数如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="keyword">size_t</span> fread(<span class="keyword">void</span>* <span class="keyword">restrict</span> ptr, <span class="keyword">size_t</span> size, <span class="keyword">size_t</span> nobj, FILE* fp);</div><div class="line"></div><div class="line"><span class="keyword">size_t</span> fwrite(<span class="keyword">const</span> <span class="keyword">void</span>* <span class="keyword">restrict</span> ptr, <span class="keyword">size_t</span> size, <span class="keyword">size_t</span> nobj, FILE* fp);</div></pre></td></tr></table></figure></p>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
-<li>ptr：为缓冲区指针</li>
-<li>size：为一个结构体（类型）的大小</li>
-<li>nobj：结构体的个数，若在fread中说明将要写入nobj个大小为size的结构体(类型)，若为fwrite，则为要从流fp中读取nobj个大小为size的数据</li>
-<li>fp：文件指针</li>
-</ul>
-<h3 id="返回值-3"><a href="#返回值-3" class="headerlink" title="返回值"></a>返回值</h3><p>返回值为实际读取或写入的对象的个数。对于fread，若文件出错或者读到文件结尾处都可以少于nobj，对于fwrite，若返回值小于nobj，则写入出错。</p>
-<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>使用这两个函数存在一个问题就是，他们只能用于读写在同一个系统上已写的数据。若是通过网络挂载的文件则不可行。<br>fread,fwrie可移植，而read,write不可移植。</p>
-<h2 id="格式化输出"><a href="#格式化输出" class="headerlink" title="格式化输出"></a>格式化输出</h2><p>格式化输出有以下几个函数:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">printf</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> format, ...)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fprintf</span><span class="params">(FILE* <span class="keyword">restrict</span> fp, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> format, ...)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dprintf</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> format, ...)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sprintf</span><span class="params">(<span class="keyword">char</span>* <span class="keyword">restrict</span> buf, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> format, ...)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">snprintf</span><span class="params">(<span class="keyword">char</span>* <span class="keyword">restrict</span> buf, <span class="keyword">size_t</span> n, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> format, ...)</span></span>;</div></pre></td></tr></table></figure></p>
-<h3 id="返回值-4"><a href="#返回值-4" class="headerlink" title="返回值"></a>返回值</h3><p>前三个函数若输出成功，则返回输出字符的个数；若输出出错，则返回负值。</p>
-<p>sprintf和snprintf若执行成功，则返回存入buf中的字符串的长度，否则返回负值。</p>
-<h3 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h3><ul>
-<li>printf：向标准输出输出字符串。</li>
-<li>fprintf:向标准文件流输fp出字符串。</li>
-<li>dprintf：向文件描述符所指向的文件输出字符串。</li>
-<li>sprintf:向缓冲区buf写入字符串。</li>
-<li>snprintf:<strong>安全的向缓冲区buf写入字符串并指定缓冲区的最大长度</strong>.一般用此函数代替sprintf</li>
-</ul>
-<h3 id="格式化字符串format的格式"><a href="#格式化字符串format的格式" class="headerlink" title="格式化字符串format的格式"></a>格式化字符串format的格式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//其中[]表示可选部分，converter不可选</span></div><div class="line">%[flags][fldwidth][precision][lenmodifier]converter</div></pre></td></tr></table></figure>
-<ul>
-<li>flags ：　是该输出的标志，其包含如下几个值：<ul>
-<li>‘ : 将整数按千位分组字符。</li>
-<li><ul>
-<li>: 在字段内左对齐输出。</li>
-</ul>
-</li>
-<li><ul>
-<li>: 总是显示正负号</li>
-</ul>
-</li>
-<li>(空格) : 如果第一个字符不是正负号，则在其前面加上一个空格</li>
-<li><h1 id="指定另一种转换形式，如对于16进制，在前面加0x"><a href="#指定另一种转换形式，如对于16进制，在前面加0x" class="headerlink" title=": 指定另一种转换形式，如对于16进制，在前面加0x"></a>: 指定另一种转换形式，如对于16进制，在前面加0x</h1></li>
-<li>0 ： 添加前导0进行填充</li>
-</ul>
-</li>
-<li>fldwidth :　说明最小字段宽度，若参数字段小于此宽度，多余位置用空格填充。</li>
-<li>precision : 浮点数精度。前导为.</li>
-</ul>
-<blockquote>
-<p>注意：fldwidth可以用*作为占位符，然后在后面对其进行指定。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</div><div class="line">  <span class="comment">//      10.10</span></div><div class="line">  <span class="built_in">printf</span>(<span class="string">"%10.2lf"</span>, <span class="number">10.1</span>);</div><div class="line">  <span class="comment">//与上面写法等效。</span></div><div class="line">  <span class="built_in">printf</span>(<span class="string">"%*.*lf"</span>, <span class="number">10</span>, <span class="number">2</span>, <span class="number">10.1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-</blockquote>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/06/03/Unix标准IO库函数之读写流(二)/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/31/Unix标准IO库函数之打开关闭流(一)/">
-                            Unix标准IO库相关函数总结之打开关闭流(一)
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-31T20:04:00+08:00">
-	
-		    5月 31, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix标准IO库相关函数总结之打开关闭流-一"><a href="#Unix标准IO库相关函数总结之打开关闭流-一" class="headerlink" title="Unix标准IO库相关函数总结之打开关闭流(一)"></a>Unix标准IO库相关函数总结之打开关闭流(一)</h1><h2 id="Unix标准IO类型FILE"><a href="#Unix标准IO类型FILE" class="headerlink" title="Unix标准IO类型FILE"></a>Unix标准IO类型FILE</h2><p>在Unix相关的文件IO中几乎所有的函数都用到了文件描述符，文件描述符是打开一个文件时返回的一个可用的最小的文件描述标识。相应的在Unix标准IO相关的函数中，几乎每个函数都用到了FILE数据类型。本小结简单介绍一下FILE结构体的内容。</p>
-<p>FILE实际上是一个struct的typedef,可以在/usr/include/stdio.h中找到它的定义为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> _IO_FILE FILE;</div></pre></td></tr></table></figure></p>
-<p>_IO_FILE_的定义在文件/usr/include/libio.h中，我们可以看到它的具体定义为：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">struct</span> _IO_FILE &#123;</div><div class="line">  <span class="keyword">int</span> _flags;           <span class="comment">/* High-order word is _IO_MAGIC; rest is flags. */</span></div><div class="line">  <span class="meta">#<span class="meta-keyword">define</span> _IO_file_flags _flags</span></div><div class="line"></div><div class="line">  <span class="comment">/* The following pointers correspond to the C++ streambuf protocol. */</span></div><div class="line">  <span class="comment">/* Note:  Tk uses the _IO_read_ptr and _IO_read_end fields directly. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_ptr;   <span class="comment">/* Current read pointer */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_end;   <span class="comment">/* End of get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_base;  <span class="comment">/* Start of putback+get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_base; <span class="comment">/* Start of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_ptr;  <span class="comment">/* Current put pointer. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_end;  <span class="comment">/* End of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_base;   <span class="comment">/* Start of reserve area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_end;    <span class="comment">/* End of reserve area. */</span></div><div class="line">  <span class="comment">/* The following fields are used to support backing up and undo. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_base; <span class="comment">/* Pointer to start of non-current get area. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_backup_base;  <span class="comment">/* Pointer to first valid character of backup area */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_end; <span class="comment">/* Pointer to end of non-current get area. */</span></div><div class="line"></div><div class="line">  <span class="keyword">struct</span> _IO_marker *_markers;</div><div class="line"></div><div class="line">  <span class="keyword">struct</span> _IO_FILE *_chain;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> _fileno;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> 0</span></div><div class="line">  <span class="keyword">int</span> _blksize;</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">  <span class="keyword">int</span> _flags2;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">  _IO_off_t _old_offset; <span class="comment">/* This used to be _offset but it's too small.  */</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __HAVE_COLUMN <span class="comment">/* temporary */</span></span></div><div class="line">  <span class="comment">/* 1+column number of pbase(); 0 is unknown. */</span></div><div class="line">  <span class="keyword">unsigned</span> <span class="keyword">short</span> _cur_column;</div><div class="line">  <span class="keyword">signed</span> <span class="keyword">char</span> _vtable_offset;</div><div class="line">  <span class="keyword">char</span> _shortbuf[<span class="number">1</span>];</div><div class="line"></div><div class="line">  <span class="comment">/*  char* _save_gptr;  char* _save_egptr; */</span></div><div class="line"></div><div class="line">  _IO_lock_t *_lock;</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _IO_USE_OLD_IO_FILE</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>从上面的struct中可以观察到FILE中是有文件描述符标志的，即为fileno参数。</p>
-<h2 id="打开标准IO流"><a href="#打开标准IO流" class="headerlink" title="打开标准IO流"></a>打开标准IO流</h2><p>打开标准文件IO流的方法有如下三个：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function">FILE* <span class="title">fopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">freopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type, FILE* <span class="keyword">restrict</span> fp)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">fdopen</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* type)</span></span>;</div></pre></td></tr></table></figure></p>
-<p>上述三个函数<strong>区别以及使用场景</strong>说明:</p>
-<ul>
-<li>fopen的作用是打开一个指定文件路径的文件流。</li>
-<li>freopen的作用是在一个指定的留上打开一个指定文件。如果当前流已经打开，则先关闭该流；若该流被重定向，则清除重定向。该函数常用于<strong>将一个指定的文件打开为一个默认的流</strong>，如若想使用printf函数将打印出来的内容输出到一个指定文件中，此时可以讲stdout重定向到指定的文件路径并指定打开模式。</li>
-<li>fdopen的作用是将一个已经打开的文件描述符(该文件描述符可能是open,dup,socket等获取的)绑定到一个标准IO流上。此函数<strong>常用于由管道和网络通信通道函数返回的文件描述符</strong>，因为这些无法显式的指定文件。</li>
-</ul>
-<p><strong>参数说明：</strong></p>
-<ul>
-<li>pathname: 文件路径，相对或绝对</li>
-<li>type： 打开模式（r,w,a,r+,w+,a+以及所有后面加b）</li>
-</ul>
-<p><strong>打开模式说明：</strong></p>
-<ul>
-<li>r  : 读模式</li>
-<li>w  : 写模式，在写之前将原有文件内容全部清楚</li>
-<li>a  : 追加模式，offset为文件结尾</li>
-<li>r+ : 读写模式(不删除文件原有内容，offset初始为文件开头)。如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc456”。</li>
-<li>w+ : 读写模式(删除文件原有内容，offset为文件开头).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc”。</li>
-<li>a+ : 读写模式(offset为文件结尾).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”123456abc”。</li>
-</ul>
-<p>上述所有的模式后面都加上b表示对二进制文件的操作(rb,wb,ab,rb+,wb+,ab+)。</p>
-<blockquote>
-<p>注意：对于fdopen函数由于文件已经由文件描述符打开，此时w模式时将不清除文件内容，追加模式不常见文件。</p>
-<p>当以读写模式打开文件时候，将有一些限制。如果中间没有fflush,fseek,fsetpos以及rewind函数，标注输出之后不能直接进行输入;如果没有fseek,fsetpos或者rewind，或者一个输入没有到达文件尾，则输入操作之后不能跟输出操作。</p>
-</blockquote>
-<h2 id="关闭标准文件流"><a href="#关闭标准文件流" class="headerlink" title="关闭标准文件流"></a>关闭标准文件流</h2><p>一般情况下在关闭文件流之前通常先使用fflush刷新缓冲区防止数据丢失，关闭标准文件流使用的函数为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">int fclose(FILE* fp);</div></pre></td></tr></table></figure></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/31/Unix标准IO库函数之打开关闭流(一)/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/30/Unix网络编程之TCP状态转换图/">
-                            TCP状态转换图
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-30T17:01:00+08:00">
-	
-		    5月 30, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="TCP状态转换图"><a href="#TCP状态转换图" class="headerlink" title="TCP状态转换图"></a>TCP状态转换图</h1><p>TCP涉及连接建立和连接终止的操作可以用状态转换图来说明。</p>
-<p>TCP为一个连接定义了11中状态，并且规定了如何基于当前状态以及该状态下接收的分节(TCP报文段)从一个状态转换为另一个状态。其状态转换图如下所示：</p>
-<p><img src="/images/TCP状态转化图.jpg" alt=""></p>
-<p>具体转化过程和转换条件如上图所示。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/30/Unix网络编程之TCP状态转换图/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

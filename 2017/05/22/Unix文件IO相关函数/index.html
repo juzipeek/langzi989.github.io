@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>文件IO相关函数 - 魏传柳</title>
+    <title>Unix文件IO相关函数 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,19 +15,19 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="文件IO相关函数Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。
-文件描述符对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用于IO的">
+    <meta name="description" content="Unix文件IO相关函数Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。
+文件描述符对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="文件IO相关函数">
+<meta property="og:title" content="Unix文件IO相关函数">
 <meta property="og:url" content="http://yoursite.com/2017/05/22/Unix文件IO相关函数/index.html">
 <meta property="og:site_name" content="魏传柳">
-<meta property="og:description" content="文件IO相关函数Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。
-文件描述符对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用于IO的">
-<meta property="og:updated_time" content="2017-05-22T15:42:41.023Z">
+<meta property="og:description" content="Unix文件IO相关函数Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。
+文件描述符对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用">
+<meta property="og:updated_time" content="2017-06-14T13:31:28.805Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="文件IO相关函数">
-<meta name="twitter:description" content="文件IO相关函数Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。
-文件描述符对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用于IO的">
+<meta name="twitter:title" content="Unix文件IO相关函数">
+<meta name="twitter:description" content="Unix文件IO相关函数Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。
+文件描述符对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用">
     
     
         
@@ -218,7 +218,7 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            文件IO相关函数
+            Unix文件IO相关函数
         </h1>
     
     <div class="post-meta">
@@ -240,8 +240,8 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="文件IO相关函数"><a href="#文件IO相关函数" class="headerlink" title="文件IO相关函数"></a>文件IO相关函数</h1><p>Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。</p>
-<h2 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h2><p>对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回<br>一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用于IO的数据结构一章中讲了STDIN_FILENO、STDOUT_FILENO以及STDERR_FILENO所对应的文件描述符。</p>
+            <h1 id="Unix文件IO相关函数"><a href="#Unix文件IO相关函数" class="headerlink" title="Unix文件IO相关函数"></a>Unix文件IO相关函数</h1><p>Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。</p>
+<h2 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h2><p>对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用于IO的数据结构一章中讲了STDIN_FILENO、STDOUT_FILENO以及STDERR_FILENO所对应的文件描述符。</p>
 <p>为了保证系统资源的合理使用和安全性，Unix系统对于系统和用户能打开的文件描述符的格式都做了一定的限制。通过一下命令我们可以进行查看：</p>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sysctl -a | grep fs.file-max //查看系统级限制的文件描述符的个数</div><div class="line">ulimit -n //查看用户（进程）级别限制的文件描述符的个数，</div></pre></td></tr></table></figure>
 <h3 id="文件描述符与文件指针的关系"><a href="#文件描述符与文件指针的关系" class="headerlink" title="文件描述符与文件指针的关系"></a>文件描述符与文件指针的关系</h3><p>文件描述符：内核会为每一个运行中的进程在进程控制块(pcb)中维护一个打开文件的记录表，每个表项都有一个指针指向打开的文件，文件描述符就是记录表的索引。</p>
