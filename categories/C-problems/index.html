@@ -216,6 +216,63 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/07/15/C++中find_if查找vector中的特定struct以及值域查询/">
+                            C++中find_if查找vector中的特定struct以及值域查询
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-07-15T17:47:20+08:00">
+	
+		    7月 15, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C-中find-if查找vector中的特定struct以及值域查询"><a href="#C-中find-if查找vector中的特定struct以及值域查询" class="headerlink" title="C++中find_if查找vector中的特定struct以及值域查询"></a>C++中find_if查找vector中的特定struct以及值域查询</h1><p>由于struct不是C++中的内置类型所以不能用std::find直接查找，而且find函数不能满足值域的查询。这个时候需要使用find_if来进行查询。</p>
+<h2 id="find-if函数"><a href="#find-if函数" class="headerlink" title="find_if函数"></a>find_if函数</h2><p>find_if是一个模板函数，函数原型及函数定义：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> InputIterator, <span class="keyword">class</span> Predicate&gt;</div><div class="line"><span class="function">InputIterator <span class="title">find_if</span><span class="params">(InputIterator first, InputIterator end, Predicate pred)</span> </span>&#123;</div><div class="line">  <span class="keyword">while</span> (first != last &amp;&amp; !pred(*first)) ++first;</div><div class="line">  <span class="keyword">return</span> first;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
+<li>first : 起始迭代器</li>
+<li>end :   结束迭代器</li>
+<li>pred : 用于比较数值的函数或者函数对象(仿函数)。遍历条件即为pred()为真.</li>
+</ul>
+<h3 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h3><p>若有满足pred条件的元素，返回该元素的迭代器，否则返回end.</p>
+<h3 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h3><p>该函数最重要的环节是pred，它的<strong>核心环节是重载()运算符，因为每个容器迭代器的*运算符得到的结果都是该容器的value_type的值，所以改重载函数的参数类型是value_type的引用类型</strong>。</p>
+<h2 id="find-if函数应用"><a href="#find-if函数应用" class="headerlink" title="find_if函数应用"></a>find_if函数应用</h2><p>在struct的vector中查找特定的对象.<strong>特别注意的是：仿函数的参数类型是值的const引用，但是finder的构造参数是实际要比较的值的类型，在使用过程中,向构造函数中传的值是要比较的值。</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> book&#123;</div><div class="line">	<span class="keyword">int</span> m_iID;</div><div class="line">	<span class="built_in">string</span> m_strName;</div><div class="line"></div><div class="line">	book(<span class="keyword">int</span> t_id, <span class="built_in">string</span> t_name):m_iID(t_id), m_strName(t_name) &#123;&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> book_finder&#123;</div><div class="line">	<span class="keyword">int</span> m_iID;</div><div class="line">	book_finder(<span class="keyword">int</span> t_id):m_iID(t_id) &#123;&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> book&amp; t)</span> </span>&#123;<span class="keyword">return</span> t.m_iID == m_iID;&#125;</div><div class="line">&#125;;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="built_in">vector</span>&lt;book&gt; bookVc;</div><div class="line">	<span class="function">book <span class="title">book1</span><span class="params">(<span class="number">0</span>, <span class="string">"书0"</span>)</span></span>;</div><div class="line">	<span class="function">book <span class="title">book2</span><span class="params">(<span class="number">1</span>, <span class="string">"书1"</span>)</span></span>;</div><div class="line">	<span class="function">book <span class="title">book3</span><span class="params">(<span class="number">2</span>, <span class="string">"书2"</span>)</span></span>;</div><div class="line">	<span class="function">book <span class="title">book4</span><span class="params">(<span class="number">3</span>, <span class="string">"书3"</span>)</span></span>;</div><div class="line"></div><div class="line">	bookVc.push_back(book1);</div><div class="line">	bookVc.push_back(book2);</div><div class="line">	bookVc.push_back(book3);</div><div class="line">	bookVc.push_back(book4);</div><div class="line"></div><div class="line">	<span class="function">book <span class="title">target</span><span class="params">(<span class="number">1</span>, <span class="string">"书"</span>)</span></span>;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (<span class="built_in">std</span>::find_if(bookVc.begin(), bookVc.end(), book_finder(target.m_iID)) != bookVc.end()) &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"存在1"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"不存在1"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	target.m_iID = <span class="number">10</span>;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (<span class="built_in">std</span>::find_if(bookVc.begin(), bookVc.end(), book_finder(target.m_iID)) != bookVc.end()) &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"存在10"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"不存在10"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/07/15/C++中find_if查找vector中的特定struct以及值域查询/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/06/11/C语言宏定义相关/">
                             C语言宏定义相关
                         </a>

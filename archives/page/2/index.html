@@ -216,6 +216,107 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/06/04/linux正则表达式库/">
+                            Linux Regex正则表达式库
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-06-04T17:08:00+08:00">
+	
+		    6月 04, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Linux-Regex正则表达式库"><a href="#Linux-Regex正则表达式库" class="headerlink" title="Linux Regex正则表达式库"></a>Linux Regex正则表达式库</h1><p>标准的C/C++库不支持正则表达式。在Posix函数库中包含了<regex.h>正则表达式库。</regex.h></p>
+<p>##　正则表达式匹配框架</p>
+<p>标准的正则表达式匹配框架：</p>
+<ul>
+<li>编译正则表达式.</li>
+<li>匹配正则表达式.</li>
+<li>释放正则表达式.</li>
+</ul>
+<h3 id="编译正则表达式"><a href="#编译正则表达式" class="headerlink" title="编译正则表达式"></a>编译正则表达式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;regex.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">Regcomp</span><span class="params">(<span class="keyword">regex_t</span>* preg, <span class="keyword">const</span> <span class="keyword">char</span>* regex, <span class="keyword">int</span> cflags)</span></span>;</div></pre></td></tr></table></figure>
+<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
+<li>preg : 用来保存编译之后的结果</li>
+<li>regex :　正则表达式字符串，表示被编译的正则表达式。</li>
+<li>cflags : 编译控制参数<ul>
+<li>REG_EXTENDED : 使用扩展正则表达式模式</li>
+<li>REG_ICASE　:　对规则中字符串不区分大小写</li>
+<li>REG_NOSUB : 只检查是否有符合规则的子串。</li>
+</ul>
+</li>
+</ul>
+<h4 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h4><p>编译成功返回0,否则返回非0</p>
+<h3 id="匹配正则表达式"><a href="#匹配正则表达式" class="headerlink" title="匹配正则表达式"></a>匹配正则表达式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</div><div class="line">  <span class="keyword">regoff_t</span> rm_so;</div><div class="line">  <span class="keyword">regoff_t</span> rm_eo;</div><div class="line">&#125; <span class="keyword">regmatch_t</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">regexec</span><span class="params">(<span class="keyword">const</span> <span class="keyword">regex_t</span>* preg,</span></span></div><div class="line">            <span class="keyword">const</span> <span class="keyword">char</span>* <span class="built_in">string</span>,</div><div class="line">            <span class="keyword">size_t</span> nmatch,</div><div class="line">            <span class="keyword">regmatch_t</span> pmatch[],</div><div class="line">            <span class="keyword">int</span> eflags);</div></pre></td></tr></table></figure>
+<h4 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
+<li>preg : 上述编译之后的正则表达式regex_t指针。</li>
+<li>string : 被匹配的字符串。</li>
+<li>match :　被匹配的个数。告诉函数regexec最多可以把多少个匹配结果写入pmatch，一般为pmatch数组的长度。</li>
+<li>pmatch : 匹配结果数组。<ul>
+<li>rm_so : 满足子串在string中的起始偏移量</li>
+<li>rm_eo : 满足子串在string中的结束偏移量</li>
+</ul>
+</li>
+<li>eflags : 匹配的特性<ul>
+<li>REG_NOTBOL : 是否为第一行</li>
+<li>REG_NOTEOL : 是否是最后一行</li>
+</ul>
+</li>
+</ul>
+<h4 id="返回值-1"><a href="#返回值-1" class="headerlink" title="返回值"></a>返回值</h4><p>0表示匹配成功，1表示REG_NOMATCH。</p>
+<h3 id="报错信息"><a href="#报错信息" class="headerlink" title="报错信息"></a>报错信息</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">size_t</span> regerror(<span class="keyword">int</span> errcode, <span class="keyword">const</span> <span class="keyword">regex_t</span>* preg, <span class="keyword">char</span>* buf, <span class="keyword">size_t</span> buffer_size);</div></pre></td></tr></table></figure>
+<h4 id="参数说明-2"><a href="#参数说明-2" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
+<li>errcode : 来自regcomp和regexec的错误码。</li>
+<li>preg : 编译后的正则表达式</li>
+<li>buf : 缓冲区错误信息字符串</li>
+<li>buffer_size : 缓冲区最大长度。</li>
+</ul>
+<h3 id="释放正则表达式"><a href="#释放正则表达式" class="headerlink" title="释放正则表达式"></a>释放正则表达式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//释放reget_t指针，无返回值。</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">regfree</span><span class="params">(<span class="keyword">reget_t</span>* preg)</span></span>;</div></pre></td></tr></table></figure>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;regex.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">regex_t</span> preg;</div><div class="line">	<span class="keyword">int</span> iErr = <span class="number">0</span>;</div><div class="line">	<span class="keyword">regmatch_t</span> subs[<span class="number">256</span>];</div><div class="line">	<span class="keyword">char</span> acReg[] = <span class="string">"[0-9a-zA-Z]+$"</span>;</div><div class="line"></div><div class="line">	iErr = regcomp(&amp;preg, acReg, REG_EXTENDED);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (iErr) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"compile reg error\n"</span>);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	iErr = regexec(&amp;preg, <span class="string">"12345"</span>, <span class="number">256</span>, subs, <span class="number">0</span>);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (REG_NOMATCH == iErr) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"no match\n"</span>);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"match\n"</span>);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>参考资料:</p>
+<ul>
+<li><a href="http://crocodile.blog.51cto.com/2691566/967202" target="_blank" rel="external">http://crocodile.blog.51cto.com/2691566/967202</a></li>
+<li><a href="http://crocodile.blog.51cto.com/2691566/967202" target="_blank" rel="external">http://crocodile.blog.51cto.com/2691566/967202</a></li>
+<li><a href="http://crocodile.blog.51cto.com/2691566/967202" target="_blank" rel="external">http://crocodile.blog.51cto.com/2691566/967202</a></li>
+</ul>
+</blockquote>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/06/04/linux正则表达式库/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/06/03/Unix标准IO库函数之读写流(二)/">
                             Unix标准IO库相关函数总结之读写流(二)
                         </a>
@@ -699,57 +800,6 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/05/27/rapidjsonSchema/">
-                            rapidjson Schema
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-27T09:35:00+08:00">
-	
-		    5月 27, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="rapidjson-Schema"><a href="#rapidjson-Schema" class="headerlink" title="rapidjson Schema"></a>rapidjson Schema</h1><blockquote>
-<p>本系列文章以例子的方式进行呈现。</p>
-</blockquote>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line">* JsonSchema本质上是一个json，其作用是用于校验Json，使用schema对json进行校验，</div><div class="line">* 可以让代码安全的去当问DOM，而不需要去检查类型或者键值的存在等等。这也能确保输</div><div class="line">* 出的json符合特定的schema。</div><div class="line">*/</div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/schema.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/stringbuffer.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*使用JsonSchema校校验json格式的流程:</span></div><div class="line">*       1. 将schema(模板)解析成一个Document</div><div class="line">*       2. 然后将Document编译成一个SchemaDocument</div><div class="line">*       3. 通过上述SchemaDocument创建一个SchemaValidator。</div><div class="line">*       4. 然后通过document.Accept(validator)去校验一个json，获取校验结果。</div><div class="line">*注意：</div><div class="line">*       1. 一个SchemaDocument能被多个SchemaValidator引用，他不会被SchemaValidator修改。</div><div class="line">*       2. 可以重复使用SchemaValidator校验多个文件。在校验其他文件之前，必须先调用validator.Reset()。</div><div class="line">*JsonSchema的格式：</div><div class="line">*       1. JsonSchema实质上是一个json数据。</div><div class="line">*       2. JsonSchema与其他json数据不同的是它在每一个对象和元素中定义了他们的类型type，属性(如object的properties，以及integer的minimum等等)，</div><div class="line">*           同时，我们可以通过JsonSchema对json的值的类型以及取值范围等进行限定。schema中必须的值需要显示的声明在required中。</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ValidateJson</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> testSchema = <span class="string">"&#123;\"type\":\"object\", \"properties\":&#123;\"code\":&#123;\"type\":\"string\"&#125;, \"int\":&#123;\"type\":\"integer\", \"minimum\":0&#125;&#125;, \"required\":[\"int\",\"code\"]&#125;"</span>;</div><div class="line">  Document sd;</div><div class="line">  <span class="keyword">if</span> (sd.Parse(testSchema.c_str()).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"jsonSchema is not valid : %s"</span>, testSchema.c_str());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//创建SchemaDocument</span></div><div class="line">  <span class="function">SchemaDocument <span class="title">schema</span><span class="params">(sd)</span></span>;</div><div class="line"></div><div class="line">  Document d;</div><div class="line">  <span class="keyword">if</span> (d.Parse(<span class="string">"&#123;\"code\":123, \"int\":1&#125;"</span>).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Document is not a valid json"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">SchemaValidator <span class="title">validator</span><span class="params">(schema)</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!d.Accept(validator)) &#123;</div><div class="line">    StringBuffer sb;</div><div class="line">    validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid schema: %s\n"</span>, sb.GetString());</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid keyword: %s\n"</span>, validator.GetInvalidSchemaKeyword());</div><div class="line">    sb.Clear();</div><div class="line">    validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid document:%s\n "</span>, sb.GetString());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"符合schemas模式\n"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  ValidateJson();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/27/rapidjsonSchema/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
                         <a class="link-unstyled" href="/2017/05/27/rapidjson指针/">
                             rapidjson指针
                         </a>
@@ -784,6 +834,57 @@
                     
                         <p>
                             <a href="/2017/05/27/rapidjson指针/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/27/rapidjsonSchema/">
+                            rapidjson Schema
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-27T09:35:00+08:00">
+	
+		    5月 27, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="rapidjson-Schema"><a href="#rapidjson-Schema" class="headerlink" title="rapidjson Schema"></a>rapidjson Schema</h1><blockquote>
+<p>本系列文章以例子的方式进行呈现。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line">* JsonSchema本质上是一个json，其作用是用于校验Json，使用schema对json进行校验，</div><div class="line">* 可以让代码安全的去当问DOM，而不需要去检查类型或者键值的存在等等。这也能确保输</div><div class="line">* 出的json符合特定的schema。</div><div class="line">*/</div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/schema.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/stringbuffer.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*使用JsonSchema校校验json格式的流程:</span></div><div class="line">*       1. 将schema(模板)解析成一个Document</div><div class="line">*       2. 然后将Document编译成一个SchemaDocument</div><div class="line">*       3. 通过上述SchemaDocument创建一个SchemaValidator。</div><div class="line">*       4. 然后通过document.Accept(validator)去校验一个json，获取校验结果。</div><div class="line">*注意：</div><div class="line">*       1. 一个SchemaDocument能被多个SchemaValidator引用，他不会被SchemaValidator修改。</div><div class="line">*       2. 可以重复使用SchemaValidator校验多个文件。在校验其他文件之前，必须先调用validator.Reset()。</div><div class="line">*JsonSchema的格式：</div><div class="line">*       1. JsonSchema实质上是一个json数据。</div><div class="line">*       2. JsonSchema与其他json数据不同的是它在每一个对象和元素中定义了他们的类型type，属性(如object的properties，以及integer的minimum等等)，</div><div class="line">*           同时，我们可以通过JsonSchema对json的值的类型以及取值范围等进行限定。schema中必须的值需要显示的声明在required中。</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ValidateJson</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> testSchema = <span class="string">"&#123;\"type\":\"object\", \"properties\":&#123;\"code\":&#123;\"type\":\"string\"&#125;, \"int\":&#123;\"type\":\"integer\", \"minimum\":0&#125;&#125;, \"required\":[\"int\",\"code\"]&#125;"</span>;</div><div class="line">  Document sd;</div><div class="line">  <span class="keyword">if</span> (sd.Parse(testSchema.c_str()).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"jsonSchema is not valid : %s"</span>, testSchema.c_str());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//创建SchemaDocument</span></div><div class="line">  <span class="function">SchemaDocument <span class="title">schema</span><span class="params">(sd)</span></span>;</div><div class="line"></div><div class="line">  Document d;</div><div class="line">  <span class="keyword">if</span> (d.Parse(<span class="string">"&#123;\"code\":123, \"int\":1&#125;"</span>).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Document is not a valid json"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">SchemaValidator <span class="title">validator</span><span class="params">(schema)</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!d.Accept(validator)) &#123;</div><div class="line">    StringBuffer sb;</div><div class="line">    validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid schema: %s\n"</span>, sb.GetString());</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid keyword: %s\n"</span>, validator.GetInvalidSchemaKeyword());</div><div class="line">    sb.Clear();</div><div class="line">    validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid document:%s\n "</span>, sb.GetString());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"符合schemas模式\n"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  ValidateJson();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/27/rapidjsonSchema/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
@@ -845,195 +946,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/26/protobuffer学习总结/">
-                            protobuffer学习总结
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-26T19:48:59+08:00">
-	
-		    5月 26, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/序列化与反序列化/">序列化与反序列化</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="protobuffer学习总结"><a href="#protobuffer学习总结" class="headerlink" title="protobuffer学习总结"></a>protobuffer学习总结</h1><p>protobuffer是google开发的一种数据描述语言，它能够将结构化的数据序列化，并切可以将序列化的数据进行反序列化恢复原有的数据结构。一般用于数据存储以及通信协议方面。</p>
-<p>如果是第一次使用protobuffer,我们可以将其与json或者xml进行类比，其实它与json或xml类似都可以作为数据的存储方式，不同的是json和xml是文本格式，而protobuffer是二进制格式。二进制格式不利于使用者直观的阅读，但是与json以及xml相比它有更多的优点。</p>
-<h2 id="protoBuffer相比于xml的优点"><a href="#protoBuffer相比于xml的优点" class="headerlink" title="protoBuffer相比于xml的优点"></a>protoBuffer相比于xml的优点</h2><ul>
-<li>更加简介</li>
-<li>体积小：消息大小只需要xml的1/10~1/3</li>
-<li>解析速度快：解析速度比xml快20~100倍</li>
-<li>使用proto Buffer的编译器，可以生成方便在编程中使用的数据访问代码.</li>
-<li>具有更好的兼容性，很好的支持向上或向下兼容的特性</li>
-<li>提供多种序列化的出口和入口,如文件流，string流,array流等等</li>
-</ul>
-<h2 id="protobuffer语法"><a href="#protobuffer语法" class="headerlink" title="protobuffer语法"></a>protobuffer语法</h2><p>消息类型实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Package example;</div><div class="line"></div><div class="line">message Person&#123;</div><div class="line">  required string name = 1;</div><div class="line">  required int32 id = 2;</div><div class="line">  optional string email = 3;</div><div class="line"></div><div class="line">  enum PhoneType&#123;</div><div class="line">    mobile = 1;</div><div class="line">    home = 2;</div><div class="line">    work = 3;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  message PhoneNumber&#123;</div><div class="line">    required string number = 1;</div><div class="line">    optional PhoneType type = 2;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  repeated PhoneNumber phone = 4;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="指定字段规则"><a href="#指定字段规则" class="headerlink" title="指定字段规则"></a>指定字段规则</h3><p>protobuffer中字段规则包括一下三种：</p>
-<ul>
-<li>required：实例中必须包含的字段</li>
-<li>optional：实例中可以选择性包含的字段，若实例没有指定，则为默认值，若没有设置该字段的默认值，其值是该类型的默认值。如string默认值为””，bool默认值为false,整数默认值为0。</li>
-<li>repeated: 可以有多个值的字段，这类变量类似于vector，可以存储此类型的多个值。</li>
-</ul>
-<blockquote>
-<p>由于一些历史原因，基本数值类型的repeated的字段并没有被尽可能地高效编码。在新的代码中，用户应该使用特殊选项[packed=true]来保证更高效的编码。<br>一般情况下慎重使用required字段，当此字段一定是必要的时候才使用。</p>
-</blockquote>
-<p>repeated使用实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">message Person &#123;  </div><div class="line">  required int32 age = 1;  </div><div class="line">  required string name = 2;  </div><div class="line">&#125;  </div><div class="line"></div><div class="line">message Family &#123;  </div><div class="line">  repeated Person person = 1;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span>  </span></div><div class="line">&#123;  </div><div class="line"></div><div class="line">    GOOGLE_PROTOBUF_VERIFY_VERSION;  </div><div class="line"></div><div class="line">    Family family;  </div><div class="line">    Person* person;  </div><div class="line"></div><div class="line">    <span class="comment">// 添加一个家庭成员，John  </span></div><div class="line">    person = family.add_person();  </div><div class="line">    person-&gt;set_age(<span class="number">25</span>);  </div><div class="line">    person-&gt;set_name(<span class="string">"John"</span>);  </div><div class="line"></div><div class="line">    <span class="comment">// 添加一个家庭成员，Lucy  </span></div><div class="line">    person = family.add_person();  </div><div class="line">    person-&gt;set_age(<span class="number">23</span>);  </div><div class="line">    person-&gt;set_name(<span class="string">"Lucy"</span>);  </div><div class="line"></div><div class="line">    <span class="comment">// 添加一个家庭成员，Tony  </span></div><div class="line">    person = family.add_person();  </div><div class="line">    person-&gt;set_age(<span class="number">2</span>);  </div><div class="line">    person-&gt;set_name(<span class="string">"Tony"</span>);  </div><div class="line"></div><div class="line">    <span class="comment">// 显示所有家庭成员  </span></div><div class="line">    <span class="keyword">int</span> size = family.person_size();  </div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"这个家庭有 "</span> &lt;&lt; size &lt;&lt; <span class="string">" 个成员，如下："</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line"></div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++)  </div><div class="line">    &#123;  </div><div class="line">        Person psn = family.person(i);  </div><div class="line">        <span class="built_in">cout</span> &lt;&lt; i+<span class="number">1</span> &lt;&lt; <span class="string">". "</span> &lt;&lt; psn.name() &lt;&lt; <span class="string">", 年龄 "</span> &lt;&lt; psn.age() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    getchar();  </div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>protobuffer中的数据类型与C++数据类型之间的关联如下图：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">protobuffer类型</th>
-<th style="text-align:center">C++类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">double</td>
-<td style="text-align:center">double</td>
-</tr>
-<tr>
-<td style="text-align:center">float</td>
-<td style="text-align:center">float</td>
-</tr>
-<tr>
-<td style="text-align:center">int32</td>
-<td style="text-align:center">int32</td>
-</tr>
-<tr>
-<td style="text-align:center">int64</td>
-<td style="text-align:center">int64</td>
-</tr>
-<tr>
-<td style="text-align:center">uint32</td>
-<td style="text-align:center">uint32</td>
-</tr>
-<tr>
-<td style="text-align:center">uint64</td>
-<td style="text-align:center">uint64</td>
-</tr>
-<tr>
-<td style="text-align:center">sint32</td>
-<td style="text-align:center">int32</td>
-</tr>
-<tr>
-<td style="text-align:center">sint64</td>
-<td style="text-align:center">int64</td>
-</tr>
-<tr>
-<td style="text-align:center">fixed32</td>
-<td style="text-align:center">uint32</td>
-</tr>
-<tr>
-<td style="text-align:center">fixed64</td>
-<td style="text-align:center">uint64</td>
-</tr>
-<tr>
-<td style="text-align:center">sfixed32</td>
-<td style="text-align:center">uint32</td>
-</tr>
-<tr>
-<td style="text-align:center">sfixed64</td>
-<td style="text-align:center">uint64</td>
-</tr>
-<tr>
-<td style="text-align:center">bool</td>
-<td style="text-align:center">bool</td>
-</tr>
-<tr>
-<td style="text-align:center">string</td>
-<td style="text-align:center">string</td>
-</tr>
-<tr>
-<td style="text-align:center">bytes</td>
-<td style="text-align:center">string</td>
-</tr>
-</tbody>
-</table>
-<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><p>当需要定义一个消息类型的时候，我们可能想为某一个字段指定预定义列表中的值。这个时候就需要用到枚举</p>
-<p>如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">message SearchRequest &#123;</div><div class="line">  required string query = 1;</div><div class="line">  optional int32 page_number = 2;</div><div class="line">  optional int32 result_per_page = 3 [default = 10];</div><div class="line">  enum Corpus &#123;</div><div class="line">    UNIVERSAL = 0;</div><div class="line">    WEB = 1;</div><div class="line">    IMAGES = 2;</div><div class="line">    LOCAL = 3;</div><div class="line">    NEWS = 4;</div><div class="line">    PRODUCTS = 5;</div><div class="line">    VIDEO = 6;</div><div class="line">  &#125;</div><div class="line">  optional Corpus corpus = 4 [default = UNIVERSAL];</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="变量标识号"><a href="#变量标识号" class="headerlink" title="变量标识号"></a>变量标识号</h3><p>在proto数据结构中，每一个变量都有唯一的数字标识。这些标识符的作用是在二进制格式中识别各个字段的，一旦开始使用就不可再改变。</p>
-<blockquote>
-<p>此处需要注意的是1-15之内的标号在存储的时候只占一个字节，而大于15到162047之间的需要占两个字符，所以<strong>我们尽量为频繁使用的字段分配1-15内的标识号</strong><br>。另外19000-19999之内的标识号已经被预留，不可用。最大标识号为2^29-1。</p>
-</blockquote>
-<h3 id="嵌套"><a href="#嵌套" class="headerlink" title="嵌套"></a>嵌套</h3><p>protobuffer中的消息可以嵌套消息，也就是在一个message中定义另一个message。如上面实例可以看出。</p>
-<h3 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h3><p>我们可以通过扩展对proto文件进行扩展，而不需要直接区编辑原文件。</p>
-<p>例如有原文件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">message Foo&#123;</div><div class="line">  //...</div><div class="line">  extensions 100 to 199;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>上述extensions 100 to 199表示此范围内的标识号被保留为扩展用。我们在扩展文件中就可以使用这些标识号了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">extend Foo&#123;</div><div class="line">  optional int32 bar = 126;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>上述为扩展。当用户的Foo消息被编码的时候，数据的传输格式与用户在Foo里定义新字段的效果是完全一样的。然而，要在程序代码中访问扩展字段的方法与访问普通的字段稍有不同——生成的数据访问代码为扩展准备了特殊的访问函数来访问它。例如，下面是如何在C++中设置bar的值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Foo foo;</div><div class="line">foo.SetExtentions(bar, 15);</div></pre></td></tr></table></figure>
-<h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><p>与c++注释风格相同。双斜杠</p>
-<h3 id="向上且向下兼容更新消息"><a href="#向上且向下兼容更新消息" class="headerlink" title="向上且向下兼容更新消息"></a>向上且向下兼容更新消息</h3><p>当在需求不断增加的过程中，数据结构也会不断变化，这个时候就需要我们去更新消息。怎么才能做到更新消息不会影响之前的数据和代码。这个时候我们更新消息需要遵循以下几个原则：</p>
-<ul>
-<li>不要更改任何已有的字段的数值标识</li>
-<li>所添加的字段必须是optional或者repeated。</li>
-</ul>
-<h3 id="包名称解析"><a href="#包名称解析" class="headerlink" title="包名称解析"></a>包名称解析</h3><p>为了防止消息明明冲突，我们往往会在文件的开始出生命包，包的作用相当于命名空间。在编译成C++代码时也是namespace。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">package foo.bar;</div><div class="line">message open&#123;</div><div class="line">  ///...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>在C++对open进行访问的时候的访问方式为:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">foo::bar::open test;</div></pre></td></tr></table></figure>
-<h2 id="protobuffer编译为C-代码的常用接口"><a href="#protobuffer编译为C-代码的常用接口" class="headerlink" title="protobuffer编译为C++代码的常用接口"></a>protobuffer编译为C++代码的常用接口</h2><p>对于C++来说，编译器会为每个.proto文件生成一个.h文件和.cc文件。.proto文件中的每一个消息对应一个类。<br>protobuffer中常用的函数：</p>
-<ul>
-<li>has_name()          :判断是否有当前成员</li>
-<li>clear_name()        :清空该成员变量值</li>
-<li>name()              :获取成员的变量值</li>
-<li>set_name(string)    :设置变量值</li>
-<li>set_name(const char*):设置变量值</li>
-<li>set_name(int)       :设置变量值</li>
-<li>clear()             :清空所有元素为空状态</li>
-<li>void CopyFrom(person):从给定的对象复制。</li>
-<li>mutable_name()      :获取变量name的指针</li>
-<li>add_name()          :为repeated变量增加值</li>
-<li>ByteSize()          :获取变量所占的字节数<br>若有元素data属性为repeated，其行为类似于vector,则此时则可用下列函数：</li>
-<li>add_data()          : 添加data元素，返回值为Date*类型。</li>
-<li>data_size()         : 获取repeated元素size，即元素的个数。</li>
-<li>data(i)             : 获取data中地i个元素。</li>
-<li>ByteSize()          : 获取序列化之后的protobuff对象的长度。<h2 id="常用的序列化方法"><a href="#常用的序列化方法" class="headerlink" title="常用的序列化方法"></a>常用的序列化方法</h2></li>
-</ul>
-<h3 id="C数组的序列化与反序列化的API"><a href="#C数组的序列化与反序列化的API" class="headerlink" title="C数组的序列化与反序列化的API"></a>C数组的序列化与反序列化的API</h3><p>如果想将其序列为char<em>并通过socket进行传输，这是使用SerializeToArray来达到目的。<br><em>*除了下述的SerializeToArray方法之外，还有方法SerializePartialToArray，两者用法相同，其中唯一的区别在于SerializePartialToArray允许忽略required字段，而前者不允许</em></em></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span>* parray = (<span class="keyword">char</span>*)<span class="built_in">malloc</span>(<span class="number">256</span>);</div><div class="line"><span class="comment">//API</span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromArray</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span>* data, <span class="keyword">int</span> size)</span></span>;</div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToArray</span><span class="params">(<span class="keyword">void</span>* data. <span class="keyword">int</span> size)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    wp.set_name(<span class="string">"sealyao"</span>);     </div><div class="line">    wp.set_id(<span class="number">123456</span>);          </div><div class="line">    wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">    wp.SerializeToArray(parray,<span class="number">256</span>);  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    rap.ParseFromArray(parray,<span class="number">256</span>);  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Get People from Array:"</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rap.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rap.id() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rap.email() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="C-String的序列化与反序列化API"><a href="#C-String的序列化与反序列化API" class="headerlink" title="C++ String的序列化与反序列化API"></a>C++ String的序列化与反序列化API</h3><p><strong>除了下述的SerializeToString方法之外，还有方法SerializePartialToString，两者用法相同，其中唯一的区别在于SerializePartialToString允许忽略required字段，而前者不允许</strong></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//C++string序列化和序列化API  </span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToString</span><span class="params">(<span class="built_in">string</span>* output)</span> <span class="keyword">const</span></span>;  </div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromString</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; data)</span></span>;  </div><div class="line"><span class="comment">//使用：  </span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    wp.set_name(<span class="string">"sealyao"</span>);     </div><div class="line">    wp.set_id(<span class="number">123456</span>);          </div><div class="line">    wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">    wp.SerializeToString(&amp;pstring);  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    rsp.ParseFromString(pstring);    </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Get People from String:"</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rsp.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rsp.id() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rsp.email() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="文件描述符序列化与反序列化API"><a href="#文件描述符序列化与反序列化API" class="headerlink" title="文件描述符序列化与反序列化API"></a>文件描述符序列化与反序列化API</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//文件描述符的序列化和序列化API  </span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToFileDescriptor</span><span class="params">(<span class="keyword">int</span> file_descriptor)</span> <span class="keyword">const</span></span>;  </div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromFileDescriptor</span><span class="params">(<span class="keyword">int</span> file_descriptor)</span></span>;  </div><div class="line"></div><div class="line"><span class="comment">//使用:  </span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">   fd = open(path,O_CREAT|O_TRUNC|O_RDWR,<span class="number">0644</span>);  </div><div class="line">   <span class="keyword">if</span>(fd &lt;= <span class="number">0</span>)&#123;  </div><div class="line">       perror(<span class="string">"open"</span>);  </div><div class="line">       <span class="built_in">exit</span>(<span class="number">0</span>);   </div><div class="line">   &#125;     </div><div class="line">   wp.set_name(<span class="string">"sealyaog"</span>);  </div><div class="line">   wp.set_id(<span class="number">123456</span>);  </div><div class="line">   wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">   wp.SerializeToFileDescriptor(fd);     </div><div class="line">   close(fd);  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">   fd = open(path,O_RDONLY);  </div><div class="line">   <span class="keyword">if</span>(fd &lt;= <span class="number">0</span>)&#123;  </div><div class="line">       perror(<span class="string">"open"</span>);  </div><div class="line">       <span class="built_in">exit</span>(<span class="number">0</span>);  </div><div class="line">   &#125;  </div><div class="line">   rp.ParseFromFileDescriptor(fd);  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Get People from FD:"</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rp.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rp.id() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rp.email() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   close(fd);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="C-stream-序列化和反序列化API"><a href="#C-stream-序列化和反序列化API" class="headerlink" title="C++ stream 序列化和反序列化API"></a>C++ stream 序列化和反序列化API</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//C++ stream 序列化/反序列化API  </span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToOstream</span><span class="params">(ostream* output)</span> <span class="keyword">const</span></span>;  </div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromIstream</span><span class="params">(istream* input)</span></span>;  </div><div class="line"></div><div class="line"><span class="comment">//使用：  </span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">    <span class="function">fstream <span class="title">fs</span><span class="params">(path,ios::out|ios::trunc|ios::binary)</span></span>;  </div><div class="line">    wp.set_name(<span class="string">"sealyaog"</span>);  </div><div class="line">    wp.set_id(<span class="number">123456</span>);  </div><div class="line">    wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">    wp.SerializeToOstream(&amp;fs);      </div><div class="line">    fs.close();  </div><div class="line">    fs.clear();  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">    <span class="function">fstream <span class="title">fs</span><span class="params">(path,ios::in|ios::binary)</span></span>;  </div><div class="line">    rp.ParseFromIstream(&amp;fs);  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rp.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rp.id() &lt;&lt; <span class="built_in">endl</span>;   </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rp.email() &lt;&lt; <span class="built_in">endl</span>;     </div><div class="line">    fs.close();  </div><div class="line">    fs.clear();  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>参考链接：</p>
-<p><a href="http://blog.csdn.net/mycwq/article/details/19622571" target="_blank" rel="external">http://blog.csdn.net/mycwq/article/details/19622571</a><br><a href="http://colobu.com/2015/01/07/Protobuf-language-guide/" target="_blank" rel="external">http://colobu.com/2015/01/07/Protobuf-language-guide/</a><br><a href="https://worktile.com/tech/share/prototol-buffers" target="_blank" rel="external">https://worktile.com/tech/share/prototol-buffers</a><br><a href="http://tech.meituan.com/serialization_vs_deserialization.html" target="_blank" rel="external">http://tech.meituan.com/serialization_vs_deserialization.html</a><br><a href="http://blog.csdn.net/weiwangchao_/article/details/16797763" target="_blank" rel="external">http://blog.csdn.net/weiwangchao_/article/details/16797763</a></p>
-</blockquote>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/26/protobuffer学习总结/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1054,7 +966,7 @@
             </a>
         </li>
         
-        <li class="pagination-number">page 2 of 5</li>
+        <li class="pagination-number">page 2 of 6</li>
     </ul>
 </div>
 

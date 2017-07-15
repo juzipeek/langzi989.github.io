@@ -216,6 +216,157 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/04/Wait函数详解/">
+                            Wait函数详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-04T15:40:48+08:00">
+	
+		    5月 04, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Wait函数详解"><a href="#Wait函数详解" class="headerlink" title="Wait函数详解"></a>Wait函数详解</h1><h2 id="kill"><a href="#kill" class="headerlink" title="kill"></a>kill</h2><h3 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h3><p>sys/types.h<br>signal.h</p>
+<h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><p>int kill(pid_t pid, int sig);</p>
+<p>返回值：执行成功返回0，执行失败返回-1。</p>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><p>pid为进程ID,sig标识要发送的信号。</p>
+<p>kill()函数的作用是用来向指定的进程或进程组发送信号。其中pid有一下<br>几种类型:</p>
+<ul>
+<li>pid &gt; 0： 发送信号给<strong>进程</strong>标识为pid的进程</li>
+<li>pid = 0： 发送信号给当前进程<strong>相同进程组</strong>的所有进程</li>
+<li>pid = -1：发送信号给<strong>系统内除了1号进程以外</strong>的所有进程</li>
+<li>pid &lt; -1：发送信号给<strong>进程组</strong>标识为-pid的进程。</li>
+</ul>
+<p>当sig=0时没有信号发出，但是系统会执行错误检查，通常会利用sig值为0来检查某个进程是否在执行。</p>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>相关知识：WIFSIGNALED和WIFEXITED两个宏是用来判断当前程序的子进程的退出方式，是接收到信号异常退出<br>还是正常调用exit()或return退出。</p>
+<ul>
+<li>WIFEXITED: 调用exit()或return退出</li>
+<li>WIFSIGNALED:接收到信号异常退出 此时可以使用WTERMSIG(status)获取其接受信号的内容。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></div><div class="line">main()</div><div class="line">&#123;</div><div class="line">    <span class="keyword">pid_t</span> pid;</div><div class="line">    <span class="keyword">int</span> status;</div><div class="line">    <span class="keyword">if</span>(!(pid= fork()))</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"Hi I am child process!\n"</span>);</div><div class="line">        sleep(<span class="number">10</span>);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"send signal to child process (%d) \n"</span>, pid);</div><div class="line">        sleep(<span class="number">1</span>);</div><div class="line">        kill(pid, SIGABRT);</div><div class="line">        wait(&amp;status);</div><div class="line">        <span class="keyword">if</span>(WIFSIGNALED(status))</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"chile process receive signal %d\n"</span>, WTERMSIG(status));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="wait-与waitpid"><a href="#wait-与waitpid" class="headerlink" title="wait()与waitpid()"></a>wait()与waitpid()</h2><h3 id="头文件-1"><a href="#头文件-1" class="headerlink" title="头文件"></a>头文件</h3><p>sys/wait.h</p>
+<h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><p>pid_t wait(int<em> status);<br>pid_t waitpid(pid_t pid, int</em> status, int options);</p>
+<h3 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h3><p>父进程创建子进程之后，父进程使用wait和waitpid具有监视子进程的运行状态的能力。这两个函数用于<strong>等待子进程的状态发生变化回调并且获取状态发生变化的信息</strong>，所能获取的状态变化包括：<strong>子进程运行结束,子进程被信号量暂停，子进程被信号量回复运行</strong>。</p>
+<p>父进程执行wait函数之后，父进程会被阻塞在此处，如果子进程状态发生变化，则wait函数会立即返回结果；否则wait函数会一直阻塞直到子进程状态发生变化。</p>
+<p>通常意义上，，如果子进程状态发生了变化，但是还是未被其父进程或者其他系统回调执行wait函数，此时的子进程被称为可等待的。</p>
+<p>子进程运行结束后父进程执行wait函数可以推动系统释放与子进程相关的资源；否则子进程将会被维持在<strong>僵尸进程</strong>（子进程已结束，而父进程还在运行）的状态下一直存在。</p>
+<h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li>pid：要监听的进程的ID(&lt;-1, =-1, =0, &gt; 0)</li>
+<li>status: 用于存储出发状态变化时的信号值和exit(code)中的code值。</li>
+<li>options 提供一些额外的选项控制waitpid,目前linux中只支持WNOHANG和WUNTRACED两个选项，这是两个常数宏，可以使用|连接使用.</li>
+</ul>
+<p><strong>pid详细说明</strong>:</p>
+<ul>
+<li>pid &lt; -1 : 监听范围为进程组为-pid的所有子进程</li>
+<li>pid = -1 : 监听范围为调用wait/waitpid的所有子进程</li>
+<li>pid = 0: 监听范围为子进程的进程组ID（与父进程相等）</li>
+<li>pid &gt; 0: 监听特定pid的进程</li>
+</ul>
+<p><strong>status详细说明</strong></p>
+<p>status用于保存出发wait的信号值或者退出时exit(code)中的code值</p>
+<p><strong>options详细说明</strong></p>
+<ul>
+<li>WNOHANG : 使用此参数调用waitpid,即使子进程没有退出，他也会立即返回，而不是像wait一直等下去</li>
+<li>WUNTRACED : 用于调试，极少用</li>
+</ul>
+<p>一般情况下使用值为0即可。</p>
+<h3 id="wait与waitpid关系"><a href="#wait与waitpid关系" class="headerlink" title="wait与waitpid关系"></a>wait与waitpid关系</h3><p>wait实质上是waitpid中pid=-1,options=0时封装，即</p>
+<p>wait(&amp;status)与waitpid(-1, &amp;status, 0)完全相同</p>
+<h3 id="相关宏"><a href="#相关宏" class="headerlink" title="相关宏"></a>相关宏</h3><p>wait.h中定义了一些宏用于解析status的值：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">宏</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">WIFEXITED(status)</td>
+<td>子进程正常退出返回true否则false</td>
+</tr>
+<tr>
+<td style="text-align:center">WEXITSTATUS(status)</td>
+<td>当正常退出时，返回exit(code)中的code</td>
+</tr>
+<tr>
+<td style="text-align:center">WIFSIGNALED</td>
+<td>子进程接受信号退出时返回true，否则false</td>
+</tr>
+<tr>
+<td style="text-align:center">WTERMSIG</td>
+<td>被信号量杀死时，返回信号量的值</td>
+</tr>
+<tr>
+<td style="text-align:center">WIFSTOPED(status)</td>
+<td>当子进程被信号量暂停时返回true</td>
+</tr>
+<tr>
+<td style="text-align:center">WSTOPSIG(status)</td>
+<td>被信号量暂停时信号量的值</td>
+</tr>
+</tbody>
+</table>
+<p><strong>options值</strong>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">常量</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">WNOHANG</td>
+<td>调用wait时制定pid仍未返回，wait立即返回0，用于判断子进程有没有结束</td>
+</tr>
+<tr>
+<td style="text-align:center">WUNTRACED</td>
+<td>当子进程被暂停时，则wait立即返回子进程的pid</td>
+</tr>
+<tr>
+<td style="text-align:center">WCONTINUED</td>
+<td>当被暂停的子进程又被信号量恢复后，则wait立即返回子进程的pid。Linux 2.6.10及以后生效。在Mac 0S X 10.9.5上未生效。</td>
+</tr>
+</tbody>
+</table>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/04/Wait函数详解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
                             Unix文件IO的数据结构及fcntl函数详解
                         </a>
