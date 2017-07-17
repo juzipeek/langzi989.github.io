@@ -216,6 +216,83 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/07/17/C中编码问题/">
+                            C中编码问题
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-07-17T14:40:31+08:00">
+	
+		    7月 17, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-学习/">C++学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C中编码问题"><a href="#C中编码问题" class="headerlink" title="C中编码问题"></a>C中编码问题</h1><h2 id="编码介绍"><a href="#编码介绍" class="headerlink" title="编码介绍"></a>编码介绍</h2><p>在代码中我们通常不可避免的出现一些中文，这个时候我们就要考虑到中文的编码格式，如果不注意可能会导致乱码或者信息失真等问题。我们常用的中文编码有GBK,gb2312,Unicode等等。具体详细的介绍看下面几篇文章：</p>
+<ul>
+<li><a href="http://www.cnblogs.com/lizhenghn/p/3690406.html" target="_blank" rel="external">http://www.cnblogs.com/lizhenghn/p/3690406.html</a></li>
+<li><a href="http://docs.linuxtone.org/ebooks/C&amp;CPP/c/apas03.html" target="_blank" rel="external">http://docs.linuxtone.org/ebooks/C&amp;CPP/c/apas03.html</a></li>
+</ul>
+<h2 id="C语言编码转换"><a href="#C语言编码转换" class="headerlink" title="C语言编码转换"></a>C语言编码转换</h2><p>在C语言中，如果需要讲编码进行转换，可以使用iconv系列函数。<br>头文件以及常用函数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iconv.h&gt;</span></span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">void</span>* <span class="keyword">iconv_t</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> iconv_t <span class="title">iconv_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* to_code, <span class="keyword">const</span> <span class="keyword">char</span>* from_code)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">iconv_close</span><span class="params">(<span class="keyword">iconv_t</span> cd)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="iconv-open"><a href="#iconv-open" class="headerlink" title="iconv_open"></a>iconv_open</h3><h4 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h4><p>此函数说明将要进行哪两种编码的转换，并返回一个转化句柄。</p>
+<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
+<li>tocode:目标编码</li>
+<li>fromcode : 原编码</li>
+</ul>
+<h3 id="iconv"><a href="#iconv" class="headerlink" title="iconv"></a>iconv</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div></pre></td></tr></table></figure>
+<h4 id="函数说明-1"><a href="#函数说明-1" class="headerlink" title="函数说明"></a>函数说明</h4><p>此函数用于从inbuf中读取数据并将转换到指定编码的的数据输出到outbuf中，若转换成功，则输出本次转化的字节数，否则返回sizeof_t(-1)</p>
+<h4 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
+<li>cd : 转换描述符,由iconv_open获得</li>
+<li>inbuf:输入缓冲区</li>
+<li>in_left_buf :输入缓冲区还未转换的字符数</li>
+<li>outbuf : 输出缓冲区</li>
+<li>out_len_buf:输出缓冲区的剩余空间.</li>
+</ul>
+<h3 id="iconv-close"><a href="#iconv-close" class="headerlink" title="iconv_close"></a>iconv_close</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">iconv_close</span><span class="params">(<span class="keyword">iconv_t</span> cd)</span></span>;</div></pre></td></tr></table></figure>
+<p>用于关闭iconv_open打开的文件描述符</p>
+<h2 id="举例转换函数"><a href="#举例转换函数" class="headerlink" title="举例转换函数"></a>举例转换函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iconv.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="built_in">string</span> <span class="title">convertCode</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; p_str, <span class="keyword">const</span> <span class="keyword">char</span>* from, <span class="keyword">const</span> <span class="keyword">char</span>* to)</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span> * <span class="built_in">sin</span>, * sout;</div><div class="line">  <span class="keyword">int</span> lenin, lenout, ret;</div><div class="line">  <span class="keyword">const</span> <span class="keyword">int</span> BUF_LEN = <span class="number">10240</span>;</div><div class="line">  <span class="keyword">char</span> bufOut[BUF_LEN];</div><div class="line">  <span class="function"><span class="built_in">string</span> <span class="title">result</span><span class="params">(<span class="string">""</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">memset</span>(bufOut, <span class="number">0x0</span>, <span class="keyword">sizeof</span>(bufOut));</div><div class="line"></div><div class="line"></div><div class="line">  <span class="keyword">iconv_t</span> cd;</div><div class="line">  <span class="keyword">if</span> ((cd = iconv_open(to, from)) == (<span class="keyword">iconv_t</span>)(<span class="number">-1</span>)) &#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"open iconv error"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span> <span class="string">""</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  lenin = p_str.length();</div><div class="line">  lenout = BUF_LEN;</div><div class="line"></div><div class="line">  <span class="built_in">sin</span> = (<span class="keyword">char</span>*)p_str.c_str();</div><div class="line">  sout = bufOut;</div><div class="line"><span class="comment">//  std::cout &lt;&lt; sin &lt;&lt; std::endl;</span></div><div class="line">  <span class="comment">//std::cout &lt;&lt; lenin &lt;&lt; std::endl;</span></div><div class="line">  <span class="comment">//std::cout &lt;&lt; lenout &lt;&lt; std::endl;</span></div><div class="line"></div><div class="line">  ret = iconv(cd, &amp;<span class="built_in">sin</span>, <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span> * &gt;(&amp;lenin), &amp;sout, <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span> * &gt;(&amp;lenout));</div><div class="line"></div><div class="line">  <span class="comment">//errno:84:Invalid or incomplate multibyte or wide character</span></div><div class="line">  <span class="keyword">if</span> (<span class="number">-1</span> == ret) &#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; strerror(errno) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">if</span> (errno != <span class="number">84</span>) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="string">""</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"bufout:"</span> &lt;&lt; bufOut &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"bufout end"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  iconv_close(cd);</div><div class="line"></div><div class="line">  result.assign(bufOut, BUF_LEN - lenout);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> result;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> s = <span class="string">"哈哈"</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; s.length() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  s = convertCode(s, <span class="string">"gbk"</span>, <span class="string">"utf-8//IGNORE"</span>);</div><div class="line">  <span class="comment">//std::cout &lt;&lt; s &lt;&lt; std::endl;</span></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; s.length() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="iconv函数出现段错误的原因"><a href="#iconv函数出现段错误的原因" class="headerlink" title="iconv函数出现段错误的原因"></a>iconv函数出现段错误的原因</h2><p>使用iconv函数进行转换的时候可能会出现段错误，这里出现这个错误的主要原因是注意看iconv函数的函数原型:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>长度为size_t的指针，<strong>int指针转换为size_t指针在一些系统的转换过程会出现问题</strong>，导致长度出现错误，内存越界，出现段错误。错误信息如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Program received signal SIGSEGV, Segmentation fault.</div><div class="line">from_gbk (irreversible=0x7fffffffb188, outend=0x61d7c0 &quot;&quot;, outptrp=&lt;synthetic pointer&gt;,</div><div class="line">    inend=0xa7ffffffdb76 &lt;error: Cannot access memory at address 0xa7ffffffdb76&gt;,</div><div class="line">    inptrp=0x7fffffffb2e8, step_data=0x6157d0, step=0x615030) at ../iconv/loop.c:325</div><div class="line">325	../iconv/loop.c: No such file or directory.</div></pre></td></tr></table></figure>
+<h3 id="size-t与int类型"><a href="#size-t与int类型" class="headerlink" title="size_t与int类型"></a>size_t与int类型</h3><p>size_t类型是在stddef.h文件中定义。size_t的类型与操作系统相关，在32位架构中被普遍定义为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">size_t</span>;</div></pre></td></tr></table></figure></p>
+<p>在64为机器中被定义为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">size_t</span>;</div></pre></td></tr></table></figure></p>
+<p>int类型在32和64为机器上的长度都是4位，long在32位机器为4位，在64位机器为8位。所以在64为机器上,size_t和int指针转换的过程中一定会出现问题，在32为系统中的正整数指针不会指针，但是负整数也会出现问题。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/07/17/C中编码问题/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/07/15/C++中find_if查找vector中的特定struct以及值域查询/">
                             C++中find_if查找vector中的特定struct以及值域查询
                         </a>

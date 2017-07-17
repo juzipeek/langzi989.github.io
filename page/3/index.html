@@ -215,6 +215,57 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/27/rapidjson查询操作基本用法/">
+                            rapidjson查询操作基本用法
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-27T09:32:00+08:00">
+	
+		    5月 27, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="rapidjson查询操作基本用法"><a href="#rapidjson查询操作基本用法" class="headerlink" title="rapidjson查询操作基本用法"></a>rapidjson查询操作基本用法</h1><blockquote>
+<p>本系列文章以例子的方式进行呈现。</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div></pre></td><td class="code"><pre><div class="line">#include "rapidjson/document.h"</div><div class="line">#include &lt;iostream&gt;</div><div class="line"></div><div class="line">int main()</div><div class="line">&#123;</div><div class="line">  const char* test = "&#123;\"num\":123, \"hello\":null, \"type\": \"object\",\"properties\": &#123;\"oid\": &#123;\"type\": \"string\"&#125;, \"username\": &#123;\"type\": \"string\"&#125;,\"creid\": &#123;\"type\": \"string\"&#125;&#125;,\"required\": [\"oid\", \"username\",\"creid\"]&#125;";</div><div class="line">  rapidjson::Document document;</div><div class="line">  //Parse(const char*). 从c-string解析为Document json格式</div><div class="line">  document.Parse(test);</div><div class="line"></div><div class="line">  //GetString().从Document json中取出string</div><div class="line">  std::cout &lt;&lt; "type = " &lt;&lt; document["type"].GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*  函数原型          函数功能</div><div class="line">  *   IsNull()       判断当前键对应的值是不是null</div><div class="line">  *   IsNumber()     判断当前键对应的值是不是number</div><div class="line">  *   IsInt()        判断当前键对应的值是不是int</div><div class="line">  *   IsDouble()     判断当前键对应的值是不是double</div><div class="line">  *   IsString()     判断当前键对应的值是不是string</div><div class="line">  *   IsBool()       判断当前键对应的值是不是bool</div><div class="line">  *   IsArray()      判断当前键对应的值是不是array</div><div class="line">  *   ...</div><div class="line">  */</div><div class="line">  std::cout &lt;&lt; "hello is " &lt;&lt; (document["hello"].IsNull() ? "null" : "not null") &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "num is " &lt;&lt; (document["num"].IsNumber() ? "number" : "not number") &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "required is " &lt;&lt; (document["required"].IsArray()? "array" : "not array") &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*      访问Array的两种方法</div><div class="line">  *    1. 通过下标访问    //使用引用来连续访问，方便之余还更高效。</div><div class="line">  *    2. 通过迭代器访问</div><div class="line">  *        注意问题</div><div class="line">  *    1.索引使用SizeType类型，而不是size_t类型，缺省情况下，SizeType是unsigned的typedef</div><div class="line">  *    2.对于String类型使用GetInt是非法的，这个时候会导致程序崩溃</div><div class="line">  */</div><div class="line">  const rapidjson::Value &amp;a = document["required"];</div><div class="line">  assert(a.IsArray());</div><div class="line">  for (rapidjson::SizeType i = 0; i &lt; a.Size(); i++)</div><div class="line">    std::cout &lt;&lt; a[i].GetString() &lt;&lt; std::endl;</div><div class="line">  for (rapidjson::Value::ConstValueIterator it = a.Begin(); it != a.End(); it++) &#123;</div><div class="line">    std::cout &lt;&lt; it-&gt;GetString() &lt;&lt; std::endl;</div><div class="line">    std::cout &lt;&lt; it-&gt;GetStringLength() &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*        访问object的方法</div><div class="line">  *    1.使用迭代器进行访问</div><div class="line">  *    2.使用键对应的下标进行当问 如:document["required"]</div><div class="line">  *          注意问题</div><div class="line">  *    1.在使用下标访问之前，最好先调用HasMember()检查一下当前键是否存在，若存在再往下继续。否则会出现段错误。</div><div class="line">  */</div><div class="line">  static const char* kTypeNames[] = &#123;"Null", "False", "True", "Object", "Array", "String", "Number"&#125;;</div><div class="line">  for (rapidjson::Value::ConstMemberIterator it = document.MemberBegin();</div><div class="line">        it != document.MemberEnd(); it++) &#123;</div><div class="line">        std::cout &lt;&lt; it-&gt;name.GetString() &lt;&lt; " is type : " &lt;&lt; kTypeNames[it-&gt;value.GetType()] &lt;&lt; std::endl;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*        查询Number</div><div class="line">  *      说明:Json只提供一种数值类型---Number。Number可以是实数也可以是整数</div><div class="line">  *           Dom提供了5中数值类型。包括unsigned,int,uint_64,int_64,double</div><div class="line">  *         类型检查          数值提取</div><div class="line">  *        IsUint()          GetUint()</div><div class="line">  *        IsInt()           GetInt()</div><div class="line">  *        IsUint64()        GetUint64()</div><div class="line">  *        IsInt64()         GetInt64()</div><div class="line">  *        IsDouble()        GetDouble()</div><div class="line">  *</div><div class="line">  *       查询String</div><div class="line">  *     说明：除了getString(), Value类也有一个GetStringLength();原因是rapidjson的String需要支持Unicode字符，如\u0000.问题是C/C++字符串是</div><div class="line">  *         空字符结尾的字符串，，这种字符串会把'\0'作为结束符号。为了符合RFC4627，若要处理这些带有unicode的字符串，</div><div class="line">  *         需要使用GetStringLength获取正确的字符串长度</div><div class="line">  *       函数                                功能</div><div class="line">  *     const char* getString()             获取C字符串</div><div class="line">  *     SizeType GetStringLength()const     获取字符串的长度,</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Document d1;</div><div class="line">  d1.Parse("&#123;\"s\":\"a\\u0000b\", \"num\":123&#125;");</div><div class="line">  std::cout &lt;&lt; d1["s"].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; d1["s"].GetStringLength() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; strlen(d1["s"].GetString()) &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *       比较两个Value的值</div><div class="line">  *     1.使用==和!=比较两Value的值，当且仅当两个Value的类型和内容相等才算相等。</div><div class="line">  *     2.可以将Value与原始值进行比较</div><div class="line">  *     3.若被比较的两个Value的类型不同，直接返回false。</div><div class="line">  *     4.可以比较不同Object的值</div><div class="line">  */</div><div class="line"></div><div class="line">  std::cout &lt;&lt; (document["num"] == document["hello"]) &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; (document["num"] == d1["num"]) &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *           创建/修改值</div><div class="line">  *       1.改变Value的类型:当使用默认构造函数创建一个Value或者Document的时候，它的类型默认为</div><div class="line">  *         NULL,要改变其类型，使用SetXXX()。如</div><div class="line">  *                             rapidjsons::Document d;</div><div class="line">  *                             d.SetObject()； //将d的类型修改为Object</div><div class="line">  *                             rapidjson::Value v;</div><div class="line">  *                             v.SetInt(1); //或者v = 1;</div><div class="line">  *       2.构造函数的重载</div><div class="line">  *                              rapidjson::Value b(false);</div><div class="line">  *                              rapidjson::Value n(10);</div><div class="line">  *</div><div class="line">  *       3.特别注意Value的转移语义。 Value重载operator=()时使用了转移语义。</div><div class="line">  *                              rapidjson::Value a(123);</div><div class="line">  *                              rapidjson::Value b(456);</div><div class="line">  *                              a = b; //此时b变为null,a为456</div><div class="line">  *       4.使用move()函数实现函数参数中的转移语义</div><div class="line">  *                              rapidjson::Value a(0);</div><div class="line">  *                               test(a.move());</div><div class="line">  *</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testa(10);</div><div class="line">  rapidjson::Value testb(10);</div><div class="line">  testa = testb;</div><div class="line">  std::cout &lt;&lt; testa.GetInt() &lt;&lt; std::endl;</div><div class="line">  if (testb.IsNull())</div><div class="line">  &#123;</div><div class="line">    std::cout &lt;&lt; "testb is moved to a, and now testb is null" &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line">  else</div><div class="line">  &#123;</div><div class="line">    std::cout &lt;&lt; testb.GetInt() &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *                创建String</div><div class="line">  *         rapidjson提供两种string的存储策略:</div><div class="line">  *                       1.copy-string(深拷贝)：分配缓冲区，然后把来源数据复制至它</div><div class="line">  *                       2.const-string(浅拷贝)：简单的存储字符串指针</div><div class="line">  *          说明：</div><div class="line">  *               1.copy-string总是安全的,因为它拥有数据的克隆</div><div class="line">  *               2.当数据源发生改变，const-string中的数据也会受到影响</div><div class="line">  *         上面两种字符串的创建方式:</div><div class="line">  *               1.copy-string创建方式需要给API传递一个Allocator参数,这个做法避免了给每一个</div><div class="line">  *                             Value都保存一个Allocator。另外还需要一个length参数，保存长度信息，故</div><div class="line">  *                             此函数可以处理带有空字符的字符串。</div><div class="line">  *               2.const-string创建方式不需要长度信息和Allocator参数，它默认字符串以\0结束.</div><div class="line">  *                              一般用于常量字符串或者具有安全生存周期的字符串上</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value autor;</div><div class="line">  char buffer[50];</div><div class="line">  int len = sprintf(buffer, "%s %s", "Milo", "Yip");</div><div class="line">  autor.SetString(buffer,len, document.GetAllocator());</div><div class="line">  memset(buffer, 0x0, sizeof(buffer));</div><div class="line">  std::cout &lt;&lt; autor.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  rapidjson::Value testString;</div><div class="line">  testString = "testString";</div><div class="line">  std::cout &lt;&lt; testString.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /**                   修改Array</div><div class="line">  *           函数                                                              功能</div><div class="line">  *        clear()                                                      清空Array中的内容</div><div class="line">  *        Reserve(SizeType, Allocator&amp;)                                申请指定大小空间，单不插入数据</div><div class="line">  *        Value&amp; PushBack(Value&amp;, Allocator&amp;)                          添加元素</div><div class="line">  *        template &lt;typename T&gt; GenericValue&amp; PushBack(T, Allocator&amp;)  添加元素</div><div class="line">  *        Value&amp; PopBack()                                             删除最后一个元素</div><div class="line">  *        ValueIterator Erase(ConstValueIterator pos)                  删除指定位置元素</div><div class="line">  *        ValueIterator Erase(ConstValueIterator first, ConstValueIterator last) 删除指定范围元素</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testArray(rapidjson::kArrayType);</div><div class="line">  rapidjson::Document::AllocatorType&amp; testAllocator = document.GetAllocator();</div><div class="line"></div><div class="line">  for (int i = 0; i &lt; 5; i++)</div><div class="line">  &#123;</div><div class="line">    testArray.PushBack(i, testAllocator);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  testArray.PushBack("lua", testAllocator).PushBack("Mio", testAllocator);</div><div class="line"></div><div class="line">  for (rapidjson::SizeType i = 0;i &lt; 5; i++)</div><div class="line">    std::cout &lt;&lt;  testArray[i].GetInt() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; testArray[5].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; testArray[6].GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*                      修改Object</div><div class="line">  *     说明：每个Object都是键值对的集合。每个键必须为String。</div><div class="line">  *     添加成员的函数：</div><div class="line">  *                   1.Value&amp; AddMember(Value&amp;, Value&amp;, Allocator&amp; allocator)</div><div class="line">  *                   2.Value&amp; AddMember(StringRefType, Value&amp;, Allocator&amp;)</div><div class="line">  *                   3.template &lt;typename T&gt; Value&amp; AddMember(StringRefType, T value, Allocator&amp;)</div><div class="line">  *</div><div class="line">  *     补充说明：1.使用StingRefType作为name参数的重载版本与字符串的SetString()类似。这些重载是为了避免复制name字符串</div><div class="line">  *               因为jsonObject中经常会使常数键名。</div><div class="line">  *              2.如果你需要从非常数字符串或者生命周期不足的字符串创建键名，需要使用copy-string API。</div><div class="line">  *                 为了避免中间变量，可以使用临时值</div><div class="line">  *</div><div class="line">  *     移除成员函数：</div><div class="line">  *             1.bool RemoveMember(const Ch* name)：使用键名来移除成员（线性时间复杂度）。</div><div class="line">  *             2.bool RemoveMember(const Value&amp; name)：除了 name 是一个 Value，和上一行相同。</div><div class="line">  *             3.MemberIterator RemoveMember(MemberIterator)：使用迭代器移除成员（_ 常数 _ 时间复杂度）。</div><div class="line">  *             4.MemberIterator EraseMember(MemberIterator)：和上行相似但维持成员次序（线性时间复杂度）。</div><div class="line">  *             5.MemberIterator EraseMember(MemberIterator first, MemberIterator last)：移除一个范围内的成员，维持次序（线性时间复杂度）。</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value contact(rapidjson::kObjectType);</div><div class="line">  contact.AddMember("name", "milo", document.GetAllocator());</div><div class="line">  contact.AddMember("married", false, document.GetAllocator());</div><div class="line"></div><div class="line">  std::cout &lt;&lt; "contact[name] is:"&lt;&lt;contact["name"].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "contact[married] is:" &lt;&lt; contact["married"].GetBool() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  contact.AddMember(rapidjson::Value("copy", document.GetAllocator()).Move(), // copy string</div><div class="line">                  rapidjson::Value().Move(),                                // null value</div><div class="line">                  document.GetAllocator());</div><div class="line"></div><div class="line">  /*                        深复制Value</div><div class="line">  *           方法：</div><div class="line">  *                   1.含有Allocator的构造函数</div><div class="line">  *                   2.含有Allocator的CopyFrom</div><div class="line">  *                           交换Value</div><div class="line">  *            方法：  Swap() 无论两颗Dom树多复杂，交换时间为常数</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testCopy1(123);</div><div class="line">  rapidjson::Value testCopy2(testCopy1, document.GetAllocator());</div><div class="line">  rapidjson::Value testCopy3;</div><div class="line">  testCopy3.CopyFrom(testCopy1, document.GetAllocator());</div><div class="line"></div><div class="line">  testCopy1.Swap(testCopy3);</div><div class="line">&#125;</div><div class="line">`</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/27/rapidjson查询操作基本用法/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/26/protobuffer学习总结/">
                             protobuffer学习总结
                         </a>
@@ -1161,171 +1212,6 @@
                     
                         <p>
                             <a href="/2017/05/21/函数dup/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/04/cgi原理/">
-                            cgi原理
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-04T20:36:55+08:00">
-	
-		    5月 04, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="CGI原理"><a href="#CGI原理" class="headerlink" title="CGI原理"></a>CGI原理</h1><p>CGI（Common Gateway Interface）通用网关接口，CGI描述了服务器和请求处理程序之间传输数据局的一种标准。在理解的过程中我们需要区分CGI和CGI程序，CGI是一种数据传输的标准，而CGI程序是实际处理业务的一个程序。webserver每请求一次，CGI程序就会fork出一个子进程进行处理。CGI程序的参数通过环境变量和标准输入获得，它的相应通过标准输出传递给webServer。</p>
-<h2 id="CGI的工作原理是："><a href="#CGI的工作原理是：" class="headerlink" title="CGI的工作原理是："></a>CGI的工作原理是：</h2><ul>
-<li>客户端通过http将请求发送到web服务器</li>
-<li>web服务器接收并收集用户请求，然后交给CGI程序进行处理</li>
-<li>CGI程序把处理后的结果发送给服务器</li>
-<li>服务器将结果传送给浏览器</li>
-</ul>
-<p>其中上述第二步web服务器通过环境变量或标准输入将请求发送给CGI程序，第三步CGI通过标准输出将结果发送给webServer</p>
-<h2 id="CGI接口标准：标准输入-环境变量以及标准输出"><a href="#CGI接口标准：标准输入-环境变量以及标准输出" class="headerlink" title="CGI接口标准：标准输入,环境变量以及标准输出"></a>CGI接口标准：标准输入,环境变量以及标准输出</h2><table>
-<thead>
-<tr>
-<th style="text-align:left">借口标准</th>
-<th>介绍</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">标准输入</td>
-<td>CGI程序像其他可执行程序一样,可通过标准输入(stdin)从Web服务器得到输入信息,如Form中的数据,这就是所谓的向CGI程序传递数据的POST方法。这意味着在操作系统命令行状态可执行CGI程序,对CGI程序进行调试。POST方法是常用的方法。</td>
-</tr>
-<tr>
-<td style="text-align:left">环境变量</td>
-<td>操作系统提供了许多环境变量,它们定义了程序的执行环境,应用程序可以存取它们。Web服务器和CGI接口又另外设置了自己的一些环境变量,用来向CGI程序传递一些重要的参数。CGI的GET方法还通过环境变量QUERY-STRING向CGI程序传递Form中的数据。</td>
-</tr>
-<tr>
-<td style="text-align:left">标准输出</td>
-<td>CGI程序通过标准输出(stdout)将输出信息传送给Web服务器。传送给Web服务器的信息可以用各种格式,通常是以纯文本或者HTML文本的形式,这样我们就可以在命令行状态调试CGI程序,并且得到它们的输出。</td>
-</tr>
-</tbody>
-</table>
-<p>###常用的环境变量<br>Linux中的环境变量是一系列的键值对集合，它们的值可以通过shell设置，也可以被其他进程或程序设置和访问，它们是web服务器传递给CGI程序的一种最简单的方式，之所以叫做环境变量是因为它们是全局变量，任何程序都可以存取它们。</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">key</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">SERVER_NAME</td>
-<td>CGI脚本运行时的主机名和IP地址</td>
-</tr>
-<tr>
-<td style="text-align:center">SERVER_SOFTWARE</td>
-<td>你的服务器的类型如： CERN/3.0 或 NCSA/1.3.</td>
-</tr>
-<tr>
-<td style="text-align:center">GATEWAY_INTERFACE</td>
-<td>运行的CGI版本. 对于UNIX服务器, 这是CGI/1.1</td>
-</tr>
-<tr>
-<td style="text-align:center">SERVER_PROTOCOL</td>
-<td>服务器运行的HTTP协议. 这里当是HTTP/1.0.</td>
-</tr>
-<tr>
-<td style="text-align:center">SERVER_PORT</td>
-<td>服务器运行的TCP口，通常Web服务器是80.</td>
-</tr>
-<tr>
-<td style="text-align:center">REQUEST_METHOD</td>
-<td>POST 或 GET, 取决于你的表单是怎样递交的</td>
-</tr>
-<tr>
-<td style="text-align:center">HTTP_ACCEPT</td>
-<td>浏览器能直接接收的Content-types, 可以有HTTP Accept header定义.</td>
-</tr>
-<tr>
-<td style="text-align:center">HTTP_USER_AGENT</td>
-<td>递交表单的浏览器的名称、版本 和其他平台性的附加信息。</td>
-</tr>
-<tr>
-<td style="text-align:center">HTTP_REFERER</td>
-<td>递交表单的文本的 URL，不是所有的浏览器都发出这个信息，不要依赖它</td>
-</tr>
-<tr>
-<td style="text-align:center">PATH_INFO</td>
-<td>附加的路径信息, 由浏览器通过GET方法发出.</td>
-</tr>
-<tr>
-<td style="text-align:center">PATH_TRANSLATED</td>
-<td>在PATH_INFO中系统规定的路径信息.</td>
-</tr>
-<tr>
-<td style="text-align:center">SCRIPT_NAME</td>
-<td>指向这个CGI脚本的路径, 是在URL中显示的(如, /cgi-bin/thescript).</td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>QUERY_STRING</strong></td>
-<td><strong>脚本参数或者表单输入项(如果是用GET递交). QUERY_STRING包含URL中问号后面的参数</strong></td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_HOST</td>
-<td>递交脚本的主机名，这个值不能被设置.</td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_ADDR</td>
-<td>递交脚本的主机IP地址.</td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_USER</td>
-<td>递交脚本的用户名. 如果服务器的authentication被激活，这个值可以设置。</td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_IDENT</td>
-<td>如果Web服务器是在ident (一种确认用户连接你的协议)运行, 递交表单的系统也在运行ident, 这个变量就含有ident返回值.</td>
-</tr>
-<tr>
-<td style="text-align:center">CONTENT_TYPE</td>
-<td>如果表单是用POST递交, 这个值将是 application/x-www-form-urlencoded. 在上载文件的表单中, content-type 是个 multipart/form-data.</td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>CONTENT_LENGTH</strong></td>
-<td><strong>对于用POST递交的表单,标准输入口的字节数.</strong></td>
-</tr>
-</tbody>
-</table>
-<h2 id="CGI的工作原理图"><a href="#CGI的工作原理图" class="headerlink" title="CGI的工作原理图"></a>CGI的工作原理图</h2><p><img src="/images/CGI" alt=""></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/04/cgi原理/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
