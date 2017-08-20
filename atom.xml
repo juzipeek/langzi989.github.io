@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-08-20T06:40:10.997Z</updated>
+  <updated>2017-08-20T09:14:01.114Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,97 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Linux正则表达式以及Sed使用学习</title>
+    <link href="http://yoursite.com/2017/08/20/Linux%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
+    <id>http://yoursite.com/2017/08/20/Linux正则表达式/</id>
+    <published>2017-08-20T07:11:12.000Z</published>
+    <updated>2017-08-20T09:14:01.114Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Linux正则表达式以及Sed使用学习"><a href="#Linux正则表达式以及Sed使用学习" class="headerlink" title="Linux正则表达式以及Sed使用学习"></a>Linux正则表达式以及Sed使用学习</h1><p>正则表达式是熟悉和使用Linux系统的最重要的基础，其中grep,find,awk以及sed等对其依赖更大。本节将总结一下Linux中常用的正则表达式使用方法。</p>
+<h2 id="正则表达式中特殊字符"><a href="#正则表达式中特殊字符" class="headerlink" title="正则表达式中特殊字符"></a>正则表达式中特殊字符</h2><ul>
+<li>.   : 表示任何单个字符</li>
+<li>[]  : 包含一个字符序列，表示匹配序列中其中一个字符</li>
+<li>-  : 出现在[]中,表示一个序列范围.如[a-z]表示26个小写的英文字母</li>
+<li>^   : 出现在[]中，表示对序列去反。如[^a-z]表示匹配不是a-z的其他字符</li>
+<li>*  : 匹配某一个字符的０个或1个或多个实例</li>
+<li>?   : 匹配某一个字符的0个或1个实例</li>
+<li>+  : 匹配某一个字符的1个或多个实例</li>
+<li>$   : 匹配行尾。如test$指匹配以test结尾的行</li>
+<li>^   : 匹配行首。如^test指匹配以test开始的行</li>
+<li>\&lt;  : 匹配词首</li>
+<li>>  :　匹配词尾</li>
+<li>\   : 转移特殊字符,如果需要匹配上述特殊字符，用反斜杠转义</li>
+</ul>
+<h2 id="sed使用说明"><a href="#sed使用说明" class="headerlink" title="sed使用说明"></a>sed使用说明</h2><h3 id="sed命令："><a href="#sed命令：" class="headerlink" title="sed命令："></a>sed命令：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed [OPTION]... &#123;script-only-if-no-other-script&#125; [input-file]...</div></pre></td></tr></table></figure>
+<h3 id="sed使用"><a href="#sed使用" class="headerlink" title="sed使用"></a>sed使用</h3><p>data文件内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<h4 id="用s命令进行替换"><a href="#用s命令进行替换" class="headerlink" title="用s命令进行替换"></a>用s命令进行替换</h4><p>替换时若出现单引号，直接将脚本用双引号括起来即可。<br>1.将一行中第一个匹配的特定字符串替换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/&quot; data</div></pre></td></tr></table></figure></p>
+<p>注意不会改变原文件，只是会打印到标准输出流。若要保存可以重定向到新的文件中。</p>
+<p>2.讲一行中所有匹配的特定字符串匹配，使用g参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/g&quot; data</div></pre></td></tr></table></figure></p>
+<p>3.使用-i参数直接修改文件内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed -i &quot;s/a/an/g&quot; data</div></pre></td></tr></table></figure></p>
+<p>4.在每一行的开头添加内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/^/#/&quot; data</div></pre></td></tr></table></figure></p>
+<p>5.在每一行的结尾添加内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/$/#/&quot; data</div></pre></td></tr></table></figure></p>
+<p>6.指定特定行替换,或指定特定范围内的行替换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sed &quot;3s/an/a/&quot; data</div><div class="line">sed &quot;1,2s/an/a/&quot; data</div></pre></td></tr></table></figure></p>
+<p>7.只替换每一行的第一个a:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/1&quot; data</div></pre></td></tr></table></figure></p>
+<p>8.只替换每一行的第二个a:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/2&quot; data</div></pre></td></tr></table></figure></p>
+<p>9.只替换每一行第二个以后的所有a<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/2g&quot; data</div></pre></td></tr></table></figure></p>
+<h4 id="多个匹配"><a href="#多个匹配" class="headerlink" title="多个匹配"></a>多个匹配</h4><p>多个匹配可以用分好将匹配规则连接。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/an/a/g;s/dog/cat/g&quot; data</div></pre></td></tr></table></figure></p>
+<p>上述命令等价于:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed -e &quot;s/an/a/g&quot; -e &quot;s/dog/cat/g&quot; data</div></pre></td></tr></table></figure></p>
+<h4 id="显示被匹配的变量"><a href="#显示被匹配的变量" class="headerlink" title="显示被匹配的变量"></a>显示被匹配的变量</h4><p>&amp;可以表示被匹配的变量,即若被匹配的变量为”abc”,则&amp;代表abc。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#功能为在每个an外加[]</div><div class="line">sed -e &quot;s/an/[&amp;]/g&quot; data</div></pre></td></tr></table></figure></p>
+<h3 id="圆括号匹配"><a href="#圆括号匹配" class="headerlink" title="圆括号匹配"></a>圆括号匹配</h3><p>被圆括号括起来的匹配可以当做变量使用，注意圆括号匹配时括号需要”\”转义。变量按顺序使用\1,\2指代。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/this \(.*\) an \(.*\)/\1:\2/&quot; data</div></pre></td></tr></table></figure></p>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">is:dog an</div><div class="line">is:cant</div><div class="line">is:money</div><div class="line">is:fish</div></pre></td></tr></table></figure></p>
+<h2 id="sed命令"><a href="#sed命令" class="headerlink" title="sed命令"></a>sed命令</h2><p>data内容:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<h3 id="N命令"><a href="#N命令" class="headerlink" title="N命令"></a>N命令</h3><p>N命令的作用是把下一行的命令纳入当做缓冲区。也就是缓冲区包括两行.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#只匹配缓冲区的第一个this</div><div class="line">sed &quot;N;s/this/that/&quot; data</div></pre></td></tr></table></figure></p>
+<p>执行命令结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">that is a dog a</div><div class="line">this is a cat</div><div class="line">that is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;N;s/\n/,/&quot; data</div></pre></td></tr></table></figure>
+<p>执行命令结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a,this is a cat</div><div class="line">this is a money,this is a fish</div></pre></td></tr></table></figure></p>
+<h3 id="a命令和i命令"><a href="#a命令和i命令" class="headerlink" title="a命令和i命令"></a>a命令和i命令</h3><ol>
+<li><p>i命令的作用是在指定行前面插入一行，行号写在i前面，中间空格可有可无；如果不写行号默认在所有行的前面插入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#在第一行前面插入 this is my test i</div><div class="line">sed &quot;1i this is my test i&quot; data</div></pre></td></tr></table></figure>
+</li>
+<li><p>a命令的作用是在指定行后追加内容,行号写在a前面，若不写表示所有行后。也可用$代表最后一行，不过一定要有空格.</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#在第一行后插入 this is my test a</div><div class="line">sed &quot;1a this is my test a&quot; data</div></pre></td></tr></table></figure>
+<ol>
+<li>可以使用匹配来添加</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#若匹配到cat，则在当前行后追加一行 this is test match a</div><div class="line">sed &quot;/cat/a this is test match a&quot; data</div></pre></td></tr></table></figure>
+<h3 id="c命令"><a href="#c命令" class="headerlink" title="c命令"></a>c命令</h3><p>c命令是替换匹配的行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#替换第二行</div><div class="line">sed &quot;2 c this is test c&quot; data</div></pre></td></tr></table></figure></p>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is test c</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#用匹配替换</div><div class="line">sed &quot;/fish/c this is the test c&quot; data</div></pre></td></tr></table></figure>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div><div class="line">this is the test c</div></pre></td></tr></table></figure></p>
+<h3 id="d命令"><a href="#d命令" class="headerlink" title="d命令"></a>d命令</h3><p>d命令删除指定的行，可指定范围<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除第２到3行</div><div class="line">sed &quot;2,3 d&quot; data</div></pre></td></tr></table></figure></p>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除找到cat指定的行</div><div class="line">sed &quot;/cat/d&quot; data</div></pre></td></tr></table></figure>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除第二行到结尾</div><div class="line">sed &quot;2,$ d&quot; data</div></pre></td></tr></table></figure>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div></pre></td></tr></table></figure></p>
+<h3 id="p命令"><a href="#p命令" class="headerlink" title="p命令"></a>p命令</h3><p>p命令的作用是打印匹配到的行.注意打印的时候使用-n参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印匹配到cat的行</div><div class="line">sed -n &quot;/cat/p&quot; data</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印符合从一个模式当另一个模式的行</div><div class="line">sed -n &quot;/dog/,/money/p&quot; data</div></pre></td></tr></table></figure>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印从第一行到匹配到的哪一行</div><div class="line">sed -n &quot;1,/cat/p&quot; data</div></pre></td></tr></table></figure>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Linux正则表达式以及Sed使用学习&quot;&gt;&lt;a href=&quot;#Linux正则表达式以及Sed使用学习&quot; class=&quot;headerlink&quot; title=&quot;Linux正则表达式以及Sed使用学习&quot;&gt;&lt;/a&gt;Linux正则表达式以及Sed使用学习&lt;/h1&gt;&lt;p&gt;正则
+    
+    </summary>
+    
+      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
+    
+      <category term="sed" scheme="http://yoursite.com/tags/sed/"/>
+    
+      <category term="regex" scheme="http://yoursite.com/tags/regex/"/>
+    
+  </entry>
   
   <entry>
     <title>查找含有特定字符串的文件</title>
@@ -760,9 +851,9 @@
       <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="正则表达式" scheme="http://yoursite.com/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
-    
       <category term="regex" scheme="http://yoursite.com/tags/regex/"/>
+    
+      <category term="正则表达式" scheme="http://yoursite.com/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
     
   </entry>
   
@@ -1121,35 +1212,6 @@
       <category term="json" scheme="http://yoursite.com/tags/json/"/>
     
       <category term="stream" scheme="http://yoursite.com/tags/stream/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>rapidjson Schema</title>
-    <link href="http://yoursite.com/2017/05/27/rapidjsonSchema/"/>
-    <id>http://yoursite.com/2017/05/27/rapidjsonSchema/</id>
-    <published>2017-05-27T01:35:00.000Z</published>
-    <updated>2017-05-27T01:41:30.650Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="rapidjson-Schema"><a href="#rapidjson-Schema" class="headerlink" title="rapidjson Schema"></a>rapidjson Schema</h1><blockquote>
-<p>本系列文章以例子的方式进行呈现。</p>
-</blockquote>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line">* JsonSchema本质上是一个json，其作用是用于校验Json，使用schema对json进行校验，</div><div class="line">* 可以让代码安全的去当问DOM，而不需要去检查类型或者键值的存在等等。这也能确保输</div><div class="line">* 出的json符合特定的schema。</div><div class="line">*/</div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/schema.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/stringbuffer.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*使用JsonSchema校校验json格式的流程:</span></div><div class="line">*       1. 将schema(模板)解析成一个Document</div><div class="line">*       2. 然后将Document编译成一个SchemaDocument</div><div class="line">*       3. 通过上述SchemaDocument创建一个SchemaValidator。</div><div class="line">*       4. 然后通过document.Accept(validator)去校验一个json，获取校验结果。</div><div class="line">*注意：</div><div class="line">*       1. 一个SchemaDocument能被多个SchemaValidator引用，他不会被SchemaValidator修改。</div><div class="line">*       2. 可以重复使用SchemaValidator校验多个文件。在校验其他文件之前，必须先调用validator.Reset()。</div><div class="line">*JsonSchema的格式：</div><div class="line">*       1. JsonSchema实质上是一个json数据。</div><div class="line">*       2. JsonSchema与其他json数据不同的是它在每一个对象和元素中定义了他们的类型type，属性(如object的properties，以及integer的minimum等等)，</div><div class="line">*           同时，我们可以通过JsonSchema对json的值的类型以及取值范围等进行限定。schema中必须的值需要显示的声明在required中。</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ValidateJson</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> testSchema = <span class="string">"&#123;\"type\":\"object\", \"properties\":&#123;\"code\":&#123;\"type\":\"string\"&#125;, \"int\":&#123;\"type\":\"integer\", \"minimum\":0&#125;&#125;, \"required\":[\"int\",\"code\"]&#125;"</span>;</div><div class="line">  Document sd;</div><div class="line">  <span class="keyword">if</span> (sd.Parse(testSchema.c_str()).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"jsonSchema is not valid : %s"</span>, testSchema.c_str());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//创建SchemaDocument</span></div><div class="line">  <span class="function">SchemaDocument <span class="title">schema</span><span class="params">(sd)</span></span>;</div><div class="line"></div><div class="line">  Document d;</div><div class="line">  <span class="keyword">if</span> (d.Parse(<span class="string">"&#123;\"code\":123, \"int\":1&#125;"</span>).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Document is not a valid json"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">SchemaValidator <span class="title">validator</span><span class="params">(schema)</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!d.Accept(validator)) &#123;</div><div class="line">    StringBuffer sb;</div><div class="line">    validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid schema: %s\n"</span>, sb.GetString());</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid keyword: %s\n"</span>, validator.GetInvalidSchemaKeyword());</div><div class="line">    sb.Clear();</div><div class="line">    validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid document:%s\n "</span>, sb.GetString());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"符合schemas模式\n"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  ValidateJson();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;rapidjson-Schema&quot;&gt;&lt;a href=&quot;#rapidjson-Schema&quot; class=&quot;headerlink&quot; title=&quot;rapidjson Schema&quot;&gt;&lt;/a&gt;rapidjson Schema&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;本
-    
-    </summary>
-    
-      <category term="rapidjson学习" scheme="http://yoursite.com/categories/rapidjson%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-      <category term="rapidjson" scheme="http://yoursite.com/tags/rapidjson/"/>
-    
-      <category term="json" scheme="http://yoursite.com/tags/json/"/>
     
   </entry>
   
