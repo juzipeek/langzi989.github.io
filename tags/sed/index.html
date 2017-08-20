@@ -304,7 +304,7 @@
 <p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印从第一行到匹配到的哪一行</div><div class="line">sed -n &quot;1,/cat/p&quot; data</div></pre></td></tr></table></figure>
 <p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div></pre></td></tr></table></figure></p>
-<h3 id="命令"><a href="#命令" class="headerlink" title="=命令"></a>=命令</h3><p>=参数用于打印匹配到的行号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印含有cat的行号</div><div class="line">sed &quot;/cat/=&quot; data</div></pre></td></tr></table></figure></p>
+<h3 id="命令"><a href="#命令" class="headerlink" title="=命令"></a>=命令</h3><p>=参数用于打印匹配到的行号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印含有cat的行号</div><div class="line">sed -n &quot;/cat/=&quot; data</div></pre></td></tr></table></figure></p>
 
                     
                         
