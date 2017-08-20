@@ -216,6 +216,66 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2016/12/04/迭代器和简单的生成器/">
+                            迭代器和简单的生成器
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-04T20:22:48+08:00">
+	
+		    12月 04, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/python学习/">python学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="迭代器和简单的生成器"><a href="#迭代器和简单的生成器" class="headerlink" title="迭代器和简单的生成器"></a>迭代器和简单的生成器</h1><p>摘自: <a href="https://www.ibm.com/developerworks/cn/linux/sdk/python/charm-20/" target="_blank" rel="external">https://www.ibm.com/developerworks/cn/linux/sdk/python/charm-20/</a></p>
+<blockquote>
+<p>python2.2引进了一种带有新型关键字的新型构造。这个构造是生成器；关键字是yield.生成器使几个新型，强大和富有表现力的编程习惯成为可能，但初看，要理解生成器，还是有一点难度。本文由浅入深的介绍了生成器，同时还介绍了迭代器的相关问题。</p>
+</blockquote>
+<p>由于迭代器比较容易理解，让我们先看它。基本上迭代器是含有.next方法的对象。这样定义不十分正确但非常接近。事实上，当迭代器应用新的iter()内置函数的时候，大多数迭代器的上下文希望返回迭代器，需要使<strong>iter</strong>()方法返回self.本文的示例将会说明清楚这一点。如果迭代有一个逻辑的终止，则迭代器的.next()方法可能决定抛出StopIteration异常。<br>生成器要稍微复杂化和一般化一点。但生成器典型的用途是用来定义迭代器；所以不值得总是为一些细微之处而担心，生成器是这样一个函数<strong>它记住上一次返回时在函数体中的位置，对于生成器函数的第二次调用跳转到该函数的中间，而上次调用的所有的局部变量都被记住</strong></p>
+<h2 id="随机遍历"><a href="#随机遍历" class="headerlink" title="随机遍历"></a>随机遍历</h2><p>让我们考虑一个简单的问题，可以使用很多方法解决它。假设我们想要一串正的随机数字流，这个数字流的要求是每一个数字不允许小于0.1,且相邻两个数字之间的大小相差绝对值不小于0.4</p>
+<h3 id="版本一"><a href="#版本一" class="headerlink" title="版本一"></a>版本一</h3><p>版本一是比较传统的做法,我们直接写一个随机产生一串数字流的函数，并将他保存在一个list中返回:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_random</span><span class="params">()</span>:</span></div><div class="line">    last, rand = <span class="number">1</span>, random.random()</div><div class="line">    num = []</div><div class="line">    <span class="keyword">while</span> rand &gt; <span class="number">0.1</span>:</div><div class="line">        <span class="keyword">if</span> abs(last - rand) &gt;= <span class="number">0.4</span>:</div><div class="line">            last = rand</div><div class="line">            num.append(rand)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="keyword">print</span> <span class="string">"invalid"</span></div><div class="line">            rand = random.random()</div><div class="line">    num.append(rand)</div><div class="line">    <span class="keyword">return</span> num</div><div class="line"></div><div class="line"><span class="keyword">for</span> item <span class="keyword">in</span> generate_random():</div><div class="line">    <span class="keyword">print</span> item</div></pre></td></tr></table></figure></p>
+<p>从上面可以产出，这种方法有很大的局限性。首先这个示例中不可能产生庞大的数字列表，通过对数字的大小限制进行终结随机数的产生，我们可以通过限制进行预测此数列的大小。另一方面，在内存和性能方面使这种方法变得不切实际，以及没有必要。同样是这个问题，使得python较早的版本中添加了xrange()和xreadlines()。重要的是，许多流取决于外部事件，并且当每个元素可用时，才处理这些流。<br>在python2.1和较早的版本中，我们的诀窍是使用静态函数局部变量来记住函数上一次调用的事情。显而易见，全局变量可以用来做同样的工作，但是它会带来大家熟知的问题：命名空间污染问题</p>
+<p>###版本二 使用静态成员解决上述问题<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_random_static</span><span class="params">(last = [<span class="number">1</span>])</span>:</span></div><div class="line">    rand = random.random()</div><div class="line">    <span class="keyword">if</span> rand &lt; <span class="number">0.1</span>:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    <span class="keyword">while</span> abs(rand - last[<span class="number">0</span>]) &lt; <span class="number">0.4</span>:</div><div class="line">        <span class="keyword">print</span> <span class="string">"invalid"</span></div><div class="line">        rand = random.random()</div><div class="line">    last[<span class="number">0</span>] = rand</div><div class="line">    <span class="keyword">return</span> rand</div><div class="line"></div><div class="line">num = generate_random_static()</div><div class="line"><span class="keyword">while</span> num <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">    <span class="keyword">print</span> num</div><div class="line">    num = generate_random_static()</div></pre></td></tr></table></figure></p>
+<p>这个函数是一个很好的存储器，它只需要记住上一次的的值，返回一个单一的数字。而不需要存储一整个列表。并且与此类似的函数可以返回却绝育外部事件的连续的值。不方便的是使用这个函数不够方便，且想当不灵活</p>
+<h3 id="版本三-定义迭代器类"><a href="#版本三-定义迭代器类" class="headerlink" title="版本三 定义迭代器类"></a>版本三 定义迭代器类</h3><p>实质上python2.2的序列都是迭代器，python常见的习惯用法for elem in lst:而实际上是让;lst差生一个迭代器。然后for循环调用这个迭代器的.next()方法，直到遇到StopIteration为止。幸运的是，由于常见的内置类型自动产生它们的迭代器，所以python程序员不需要直到这里发生了什么。实际上，现在字典里有.iterkeys(),.iteritems(),.itervalues()方法产生迭代器。定制类支持直接使用randomwalk_list()以及一次一个元素这种极度节省的randomwalk_static,这是简单易懂的。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">generate_random_class</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self.last = <span class="number">1</span></div><div class="line">        self.rand = random.random()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> self</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">next</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">if</span> self.rand &lt; <span class="number">0.1</span>:</div><div class="line">            <span class="keyword">raise</span> StopIteration</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="keyword">while</span> abs(self.last - self.rand) &lt; <span class="number">0.4</span>:</div><div class="line">                <span class="keyword">print</span> <span class="string">"invalid"</span></div><div class="line">                self.rand = random.random()</div><div class="line">            self.last = self.rand</div><div class="line">            <span class="keyword">return</span> self.rand</div><div class="line"></div><div class="line"><span class="keyword">for</span> item <span class="keyword">in</span> generate_random_class():</div><div class="line">    <span class="keyword">print</span> item</div></pre></td></tr></table></figure></p>
+<h3 id="版本四-生成器版本"><a href="#版本四-生成器版本" class="headerlink" title="版本四 生成器版本"></a>版本四 生成器版本</h3><p>上述方法也会产生较多的问题，虽然它避免了产生整个list,大量局部变量的情况，但是当迭代器类或者函数取决于多个数据状态的时候，就需要记录多个数据的状态，这种情况下出现错误的记录较大。所以也不是一种较好的解决方法。使用python自带的生成器yield关键字<br>在 Python 2.2+ 中，不直接 写生成器。 相反，编写一个函数，当调用它时，返回生成器。这可能看起来有点古怪，但“函数工厂”是 Python 的常见特性，并且“生成器工厂”明显是这个概念性扩展。在 Python 2.2+ 中使函数成为生成器工厂是它主体某处的一个或多个 yield 语句。如果 yield 发生， return 一定只发生在没有伴随任何返回值的情况中。 然而，一个较好的选择是，安排函数体以便于完成所有 yield 之后，执行就“跳转到结束”。但如果遇到 return ，它导致产生的生成器抛出 StopIteration 异常，而不是进一步生成值。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_random_yield</span><span class="params">()</span>:</span></div><div class="line">    last, rand = <span class="number">1</span>, random.random()</div><div class="line">    <span class="keyword">while</span> rand &gt; <span class="number">0.1</span>:</div><div class="line">        <span class="keyword">if</span> abs(last - rand) &gt;= <span class="number">0.4</span>:</div><div class="line">            last = rand</div><div class="line">            <span class="keyword">yield</span> rand</div><div class="line">        rand = random.random()</div><div class="line">    <span class="keyword">yield</span> rand</div><div class="line"></div><div class="line"><span class="keyword">for</span> item <span class="keyword">in</span> generate_random_yield():</div><div class="line">    <span class="keyword">print</span> item</div></pre></td></tr></table></figure></p>
+<p>上述做法的好处是逻辑简洁，与正常写法无意，也保证了通用性。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/04/迭代器和简单的生成器/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/12/03/python-yield使用浅析/">
                             python yield使用浅析
                         </a>

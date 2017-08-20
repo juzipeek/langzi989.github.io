@@ -216,6 +216,62 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/06/11/C语言宏定义相关/">
+                            C语言宏定义相关
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-06-11T16:39:20+08:00">
+	
+		    6月 11, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C语言宏定义相关"><a href="#C语言宏定义相关" class="headerlink" title="C语言宏定义相关"></a>C语言宏定义相关</h1><p>C语言宏定义在代码编写中很常见，它常会带来一些很高的性能和很方便的写法，在看Linux源码中sockaddr_in的时候遇到宏定义中##。特地在此记录.</p>
+<h2 id="宏定义中-用法"><a href="#宏定义中-用法" class="headerlink" title="宏定义中##用法"></a>宏定义中##用法</h2><h3 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h3><p>Linux中sockaddr_in的定义在文件/netinet/in.h文件中。具体如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Structure describing an Internet socket address.  */</span></div><div class="line"><span class="keyword">struct</span> sockaddr_in</div><div class="line">  &#123;</div><div class="line">    __SOCKADDR_COMMON (sin_);</div><div class="line">    <span class="keyword">in_port_t</span> sin_port;                 <span class="comment">// Port number.  </span></div><div class="line">    <span class="keyword">struct</span> in_addr sin_addr;            <span class="comment">// Internet address.  </span></div><div class="line"></div><div class="line">    <span class="comment">// Pad to size of struct sockaddr.</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> sin_zero[<span class="keyword">sizeof</span> (<span class="keyword">struct</span> sockaddr) -</div><div class="line">                           __SOCKADDR_COMMON_SIZE -</div><div class="line">                           <span class="keyword">sizeof</span> (<span class="keyword">in_port_t</span>) -</div><div class="line">                           <span class="keyword">sizeof</span> (<span class="keyword">struct</span> in_addr)];</div><div class="line">  &#125;;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __SOCKADDR_COMMON(sa_prefix)\</span></div><div class="line">  sa_family_t sa_prefix##family</div></pre></td></tr></table></figure></p>
+<p>从上面可以看出，__SOCKADDR_COMMON的宏定义中出现了##的使用方法。那它在宏定义中的意思是什么呢？</p>
+<h3 id="详解"><a href="#详解" class="headerlink" title="##详解"></a>##详解</h3><p>##是一种分隔连接方式。它的作用是先分隔，然后进行强制连接。</p>
+<p>在普通的宏定义中，预处理器一般吧空格解释为分段标志，然后进行相应的替换工作。但是这样做的结果是被替换的段之间会出现空格。如果我们不希望这些空格出现，可以使用##来代替空格。</p>
+<p>如：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> type1(type,name) type name_##type##_type</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> type2(type,name) type name##_##type##_type</span></div></pre></td></tr></table></figure></p>
+<p>上述type1(int,c)将被替换为：int name_int_type<br>上述type2(int,c)将被替换为：int c_int_type</p>
+<p>故我们再回去看<strong>SOCKADDR_COMMON的宏定义.
+</strong>SOCKADDR<em>COMMON (sin</em>);将被解释为sa_family_t sin_family;</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/06/11/C语言宏定义相关/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/06/07/protoBuffer中string与byte类型区别/">
                             protobuffer中string和bytes类型
                         </a>
@@ -866,57 +922,6 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/05/27/rapidjsonSchema/">
-                            rapidjson Schema
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-27T09:35:00+08:00">
-	
-		    5月 27, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="rapidjson-Schema"><a href="#rapidjson-Schema" class="headerlink" title="rapidjson Schema"></a>rapidjson Schema</h1><blockquote>
-<p>本系列文章以例子的方式进行呈现。</p>
-</blockquote>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line">* JsonSchema本质上是一个json，其作用是用于校验Json，使用schema对json进行校验，</div><div class="line">* 可以让代码安全的去当问DOM，而不需要去检查类型或者键值的存在等等。这也能确保输</div><div class="line">* 出的json符合特定的schema。</div><div class="line">*/</div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/schema.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/stringbuffer.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*使用JsonSchema校校验json格式的流程:</span></div><div class="line">*       1. 将schema(模板)解析成一个Document</div><div class="line">*       2. 然后将Document编译成一个SchemaDocument</div><div class="line">*       3. 通过上述SchemaDocument创建一个SchemaValidator。</div><div class="line">*       4. 然后通过document.Accept(validator)去校验一个json，获取校验结果。</div><div class="line">*注意：</div><div class="line">*       1. 一个SchemaDocument能被多个SchemaValidator引用，他不会被SchemaValidator修改。</div><div class="line">*       2. 可以重复使用SchemaValidator校验多个文件。在校验其他文件之前，必须先调用validator.Reset()。</div><div class="line">*JsonSchema的格式：</div><div class="line">*       1. JsonSchema实质上是一个json数据。</div><div class="line">*       2. JsonSchema与其他json数据不同的是它在每一个对象和元素中定义了他们的类型type，属性(如object的properties，以及integer的minimum等等)，</div><div class="line">*           同时，我们可以通过JsonSchema对json的值的类型以及取值范围等进行限定。schema中必须的值需要显示的声明在required中。</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ValidateJson</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> testSchema = <span class="string">"&#123;\"type\":\"object\", \"properties\":&#123;\"code\":&#123;\"type\":\"string\"&#125;, \"int\":&#123;\"type\":\"integer\", \"minimum\":0&#125;&#125;, \"required\":[\"int\",\"code\"]&#125;"</span>;</div><div class="line">  Document sd;</div><div class="line">  <span class="keyword">if</span> (sd.Parse(testSchema.c_str()).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"jsonSchema is not valid : %s"</span>, testSchema.c_str());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//创建SchemaDocument</span></div><div class="line">  <span class="function">SchemaDocument <span class="title">schema</span><span class="params">(sd)</span></span>;</div><div class="line"></div><div class="line">  Document d;</div><div class="line">  <span class="keyword">if</span> (d.Parse(<span class="string">"&#123;\"code\":123, \"int\":1&#125;"</span>).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Document is not a valid json"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">SchemaValidator <span class="title">validator</span><span class="params">(schema)</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!d.Accept(validator)) &#123;</div><div class="line">    StringBuffer sb;</div><div class="line">    validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid schema: %s\n"</span>, sb.GetString());</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid keyword: %s\n"</span>, validator.GetInvalidSchemaKeyword());</div><div class="line">    sb.Clear();</div><div class="line">    validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid document:%s\n "</span>, sb.GetString());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"符合schemas模式\n"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  ValidateJson();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/27/rapidjsonSchema/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
                         <a class="link-unstyled" href="/2017/05/27/rapidjson指针/">
                             rapidjson指针
                         </a>
@@ -981,7 +986,7 @@
             </a>
         </li>
         
-        <li class="pagination-number">page 2 of 4</li>
+        <li class="pagination-number">page 2 of 5</li>
     </ul>
 </div>
 
