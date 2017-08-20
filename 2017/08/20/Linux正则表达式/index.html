@@ -31,7 +31,7 @@
 []  : 包含一个字符序列，表示匹配序列中其中一个字符
 -  : 出现在[]中,表示一个序列范围.如[a-z]表示26个小写的英文字母
 ^   :">
-<meta property="og:updated_time" content="2017-08-20T09:14:01.114Z">
+<meta property="og:updated_time" content="2017-08-20T09:26:15.791Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux正则表达式以及Sed使用学习">
 <meta name="twitter:description" content="Linux正则表达式以及Sed使用学习正则表达式是熟悉和使用Linux系统的最重要的基础，其中grep,find,awk以及sed等对其依赖更大。本节将总结一下Linux中常用的正则表达式使用方法。
@@ -311,12 +311,13 @@
 <p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除第二行到结尾</div><div class="line">sed &quot;2,$ d&quot; data</div></pre></td></tr></table></figure>
 <p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div></pre></td></tr></table></figure></p>
-<h3 id="p命令"><a href="#p命令" class="headerlink" title="p命令"></a>p命令</h3><p>p命令的作用是打印匹配到的行.注意打印的时候使用-n参数</p>
+<h3 id="p命令"><a href="#p命令" class="headerlink" title="p命令"></a>p命令</h3><p>p命令的作用是打印匹配到的行.注意打印的时候使用-n参数。sed默认输出处理后的文本，使用-n参数阻止默认输出。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印匹配到cat的行</div><div class="line">sed -n &quot;/cat/p&quot; data</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印符合从一个模式当另一个模式的行</div><div class="line">sed -n &quot;/dog/,/money/p&quot; data</div></pre></td></tr></table></figure>
 <p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印从第一行到匹配到的哪一行</div><div class="line">sed -n &quot;1,/cat/p&quot; data</div></pre></td></tr></table></figure>
 <p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div></pre></td></tr></table></figure></p>
+<h3 id="命令"><a href="#命令" class="headerlink" title="=命令"></a>=命令</h3><p>=参数用于打印匹配到的行号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印含有cat的行号</div><div class="line">sed &quot;/cat/=&quot; data</div></pre></td></tr></table></figure></p>
 
             
         </div>

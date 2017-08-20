@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-08-20T09:14:01.114Z</updated>
+  <updated>2017-08-20T09:26:15.791Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/08/20/Linux%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
     <id>http://yoursite.com/2017/08/20/Linux正则表达式/</id>
     <published>2017-08-20T07:11:12.000Z</published>
-    <updated>2017-08-20T09:14:01.114Z</updated>
+    <updated>2017-08-20T09:26:15.791Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Linux正则表达式以及Sed使用学习"><a href="#Linux正则表达式以及Sed使用学习" class="headerlink" title="Linux正则表达式以及Sed使用学习"></a>Linux正则表达式以及Sed使用学习</h1><p>正则表达式是熟悉和使用Linux系统的最重要的基础，其中grep,find,awk以及sed等对其依赖更大。本节将总结一下Linux中常用的正则表达式使用方法。</p>
 <h2 id="正则表达式中特殊字符"><a href="#正则表达式中特殊字符" class="headerlink" title="正则表达式中特殊字符"></a>正则表达式中特殊字符</h2><ul>
@@ -81,12 +81,13 @@
 <p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除第二行到结尾</div><div class="line">sed &quot;2,$ d&quot; data</div></pre></td></tr></table></figure>
 <p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div></pre></td></tr></table></figure></p>
-<h3 id="p命令"><a href="#p命令" class="headerlink" title="p命令"></a>p命令</h3><p>p命令的作用是打印匹配到的行.注意打印的时候使用-n参数</p>
+<h3 id="p命令"><a href="#p命令" class="headerlink" title="p命令"></a>p命令</h3><p>p命令的作用是打印匹配到的行.注意打印的时候使用-n参数。sed默认输出处理后的文本，使用-n参数阻止默认输出。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印匹配到cat的行</div><div class="line">sed -n &quot;/cat/p&quot; data</div></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印符合从一个模式当另一个模式的行</div><div class="line">sed -n &quot;/dog/,/money/p&quot; data</div></pre></td></tr></table></figure>
 <p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印从第一行到匹配到的哪一行</div><div class="line">sed -n &quot;1,/cat/p&quot; data</div></pre></td></tr></table></figure>
 <p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div></pre></td></tr></table></figure></p>
+<h3 id="命令"><a href="#命令" class="headerlink" title="=命令"></a>=命令</h3><p>=参数用于打印匹配到的行号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印含有cat的行号</div><div class="line">sed &quot;/cat/=&quot; data</div></pre></td></tr></table></figure></p>
 ]]></content>
     
     <summary type="html">
