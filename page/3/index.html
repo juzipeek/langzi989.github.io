@@ -608,82 +608,6 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/05/25/makefile自动变量与隐晦规则推导/">
-                            makefile自动变量与隐晦规则推导
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-25T19:48:59+08:00">
-	
-		    5月 25, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="makefile自动变量与隐晦规则推导"><a href="#makefile自动变量与隐晦规则推导" class="headerlink" title="makefile自动变量与隐晦规则推导"></a>makefile自动变量与隐晦规则推导</h1><p>makefile的使用可以大大简化程序编译的过程，不过对于新手来说makefile的执行规则理解起来还是很让人迷糊的。其中最重要的原因是makefile中使用了大量的隐晦规则和自动变量来简化makefile的编写.本节将记录一下makefile自动变量和隐晦规则的推导过程以及makefile的执行流程。</p>
-<blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; %.o:%.c</div><div class="line">&gt;   $(CC) -c $(CFLAGS) -o $@ $&lt;</div><div class="line">&gt;</div></pre></td></tr></table></figure>
-<p>对于上面的推导规则，makefile是怎么将%c文件编译汇编成.o文件的？下面将针对这个问题进行讲解</p>
-</blockquote>
-<h2 id="自动变量"><a href="#自动变量" class="headerlink" title="自动变量"></a>自动变量</h2><p>makefile中的自动变量实质上是对一类变量的简写，当我们在模式规则中对这类变量处理的时候可以直接使用自动变量简化makefile代码的编写。自动变量包括如目标文件,依赖文件等。下面以实例的方式列出了一些常用的自动变量:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a: a.o b.o c.o d.o</div><div class="line">  g++ -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
-<ul>
-<li>$@: 表示模式规则中的目标文件,对于上面的模式规则,$@表示a</li>
-<li>$&lt;: 表示依赖中的第一个文件.对于上述规则,$&lt;表示a.o</li>
-<li>$^: 表示所有依赖文件的集合,对于上述规则$^表示a.o b.o c.o d.o</li>
-<li>$+: 表示所有依赖文件的集合(不去重).对于上述规则$+表示a.o b.o c.o d.o</li>
-<li>$%: 仅当目标是函数库文件(.a)文件时，表示规则中目标成员名。如一个目标是(test.a(a.o)),此时$%表示a.o, $@表示test.a</li>
-<li>$?: 所有比目标新的依赖目标的集合</li>
-<li>$*: 表示目标规则中%以及%之前的部分。如若目标文件为”src/test.o”,目标文件模式为”src/%.o”,此时$*表示”src/test”。</li>
-</ul>
-<h2 id="隐晦规则自动规则推导"><a href="#隐晦规则自动规则推导" class="headerlink" title="隐晦规则自动规则推导"></a>隐晦规则自动规则推导</h2><p>使用makefile的makefile的隐晦自动规则推导功能也可以让我们的makefile的代码大大简化。使用隐晦规则，我们没必要为每一个类似的规则生成都去写类似的规则。makefile会自动推导依赖文件,并根据隐含规则推导出生成当前目标的命令。<br>如下面的makefile:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">target: a.o b.o c.o</div><div class="line">  g++ -o $@　$^ $(LIB) $(INC) $(LINKER)</div><div class="line">a.o: a.c</div><div class="line">  g++ -c $(CFLAGS) -o a.o a.c</div><div class="line">b.o: b.c</div><div class="line">  g++ -c $(CFLAGS) -o b.o b.c</div><div class="line">c.o: c.c</div><div class="line">  g++ -c $(CFLAGS) -o c.o c.c</div></pre></td></tr></table></figure></p>
-<p>上述规则没有使用隐晦规则,对于每一个.o文件的生成都写了一条规则语句.若使用隐晦规则推导，上述makefile可写为如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SOURCE := $(shell find ./ -type f -name *.c)</div><div class="line">OBJECTS := $(patsubst *.c,*.o,$(SOURCE))</div><div class="line"></div><div class="line">target : $(OBJECTS)</div><div class="line">  g++ -o $@ $^ $(LIB) $(INC) $(LINKER)</div><div class="line">%.o:%.c</div><div class="line">   $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
-<p>从上面的隐晦规则可以看出,对于.o文件的生成命令，makefile都可以由隐晦规则” $(CC) -c $(CFLAGS) -o $@ $&lt;”推导出。即如当目标需要a.隐晦规则将推导出命令”g++ -c $(CFLAGS) -o a.o a.c”用于生成该目标.</p>
-<h2 id="makefile执行过程。"><a href="#makefile执行过程。" class="headerlink" title="makefile执行过程。"></a>makefile执行过程。</h2><p>由上一节中的makefile简单说一下makefile的执行规则。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SOURCE := $(shell find ./ -type f -name *.c)</div><div class="line">OBJECTS := $(patsubst *.c,*.o,$(SOURCE))</div><div class="line"></div><div class="line">target : $(OBJECTS)</div><div class="line">  g++ -o $@ $^ $(LIB) $(INC) $(LINKER)</div><div class="line">%.o:%.c</div><div class="line">   $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
-<p>makefile中首先声明了变量SOURCE和OBJECTS，SOURCE是当前文件夹下的所有.c文件的集合，OBJECTS是所有.c文件对应的目标文件.o的集合.</p>
-<p>执行过程:<br>首先,目标target依赖所有的目标文件.o，即a.o,b.o,c.o。当需要依赖a.o时，makefile会根据隐晦规则自动推导出生成a.o文件的命令，(“g++ -c $(CFLAGS) -o a.o a.c”)，生成a.o；类似的也会根据同样的过程生成b.o和c.o文件,这三个文件生成之后,再根据上述规则生成target。</p>
-<h2 id="makefile中常用函数"><a href="#makefile中常用函数" class="headerlink" title="makefile中常用函数"></a>makefile中常用函数</h2><h3 id="wildcard函数"><a href="#wildcard函数" class="headerlink" title="wildcard函数"></a>wildcard函数</h3><p>函数参数:一个正则表达式<br>函数功能:wildcard的中文意思是通配符，它的功能类似于正则表达式，用于展开一列所有符合其参数描述的文件名，文件之间用空格分割。</p>
-<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SOURCE=$(wildcard *.cpp)</div></pre></td></tr></table></figure></p>
-<p>此时SOURCE的值为所有的以.cpp为后缀的文件集合，以空格隔开。</p>
-<h3 id="patsubst函数"><a href="#patsubst函数" class="headerlink" title="patsubst函数"></a>patsubst函数</h3><p>函数参数:　第一个是需要匹配的样式，第二个是表示用什么替换它，第三个被处理的以空格隔开的字符串。<br>函数功能:其功能是一个匹配替换的函数(pattern substitute)。</p>
-<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#TARGET表示与SOURCE中同名的目标文件.</div><div class="line">TARGET = $(patsubst *.cpp, *.o, $(SOURCE))</div></pre></td></tr></table></figure></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/25/makefile自动变量与隐晦规则推导/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
                         <a class="link-unstyled" href="/2017/05/25/makefile常用相关函数/">
                             makefile常用相关函数
                         </a>
@@ -736,6 +660,82 @@
                     
                         <p>
                             <a href="/2017/05/25/makefile常用相关函数/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/25/makefile自动变量与隐晦规则推导/">
+                            makefile自动变量与隐晦规则推导
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-25T19:48:59+08:00">
+	
+		    5月 25, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="makefile自动变量与隐晦规则推导"><a href="#makefile自动变量与隐晦规则推导" class="headerlink" title="makefile自动变量与隐晦规则推导"></a>makefile自动变量与隐晦规则推导</h1><p>makefile的使用可以大大简化程序编译的过程，不过对于新手来说makefile的执行规则理解起来还是很让人迷糊的。其中最重要的原因是makefile中使用了大量的隐晦规则和自动变量来简化makefile的编写.本节将记录一下makefile自动变量和隐晦规则的推导过程以及makefile的执行流程。</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">%.o:%.c</div><div class="line">  $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<p>对于上面的推导规则，makefile是怎么将%c文件编译汇编成.o文件的？下面将针对这个问题进行讲解</p>
+</blockquote>
+<h2 id="自动变量"><a href="#自动变量" class="headerlink" title="自动变量"></a>自动变量</h2><p>makefile中的自动变量实质上是对一类变量的简写，当我们在模式规则中对这类变量处理的时候可以直接使用自动变量简化makefile代码的编写。自动变量包括如目标文件,依赖文件等。下面以实例的方式列出了一些常用的自动变量:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a: a.o b.o c.o d.o</div><div class="line">  g++ -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<ul>
+<li>$@: 表示模式规则中的目标文件,对于上面的模式规则,$@表示a</li>
+<li>$&lt;: 表示依赖中的第一个文件.对于上述规则,$&lt;表示a.o</li>
+<li>$^: 表示所有依赖文件的集合,对于上述规则$^表示a.o b.o c.o d.o</li>
+<li>$+: 表示所有依赖文件的集合(不去重).对于上述规则$+表示a.o b.o c.o d.o</li>
+<li>$%: 仅当目标是函数库文件(.a)文件时，表示规则中目标成员名。如一个目标是(test.a(a.o)),此时$%表示a.o, $@表示test.a</li>
+<li>$?: 所有比目标新的依赖目标的集合</li>
+<li>$*: 表示目标规则中%以及%之前的部分。如若目标文件为”src/test.o”,目标文件模式为”src/%.o”,此时$*表示”src/test”。</li>
+</ul>
+<h2 id="隐晦规则自动规则推导"><a href="#隐晦规则自动规则推导" class="headerlink" title="隐晦规则自动规则推导"></a>隐晦规则自动规则推导</h2><p>使用makefile的makefile的隐晦自动规则推导功能也可以让我们的makefile的代码大大简化。使用隐晦规则，我们没必要为每一个类似的规则生成都去写类似的规则。makefile会自动推导依赖文件,并根据隐含规则推导出生成当前目标的命令。<br>如下面的makefile:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">target: a.o b.o c.o</div><div class="line">  g++ -o $@　$^ $(LIB) $(INC) $(LINKER)</div><div class="line">a.o: a.c</div><div class="line">  g++ -c $(CFLAGS) -o a.o a.c</div><div class="line">b.o: b.c</div><div class="line">  g++ -c $(CFLAGS) -o b.o b.c</div><div class="line">c.o: c.c</div><div class="line">  g++ -c $(CFLAGS) -o c.o c.c</div></pre></td></tr></table></figure></p>
+<p>上述规则没有使用隐晦规则,对于每一个.o文件的生成都写了一条规则语句.若使用隐晦规则推导，上述makefile可写为如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SOURCE := $(shell find ./ -type f -name *.c)</div><div class="line">OBJECTS := $(patsubst *.c,*.o,$(SOURCE))</div><div class="line"></div><div class="line">target : $(OBJECTS)</div><div class="line">  g++ -o $@ $^ $(LIB) $(INC) $(LINKER)</div><div class="line">%.o:%.c</div><div class="line">   $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<p>从上面的隐晦规则可以看出,对于.o文件的生成命令，makefile都可以由隐晦规则” $(CC) -c $(CFLAGS) -o $@ $&lt;”推导出。即如当目标需要a.隐晦规则将推导出命令”g++ -c $(CFLAGS) -o a.o a.c”用于生成该目标.</p>
+<h2 id="makefile执行过程。"><a href="#makefile执行过程。" class="headerlink" title="makefile执行过程。"></a>makefile执行过程。</h2><p>由上一节中的makefile简单说一下makefile的执行规则。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SOURCE := $(shell find ./ -type f -name *.c)</div><div class="line">OBJECTS := $(patsubst *.c,*.o,$(SOURCE))</div><div class="line"></div><div class="line">target : $(OBJECTS)</div><div class="line">  g++ -o $@ $^ $(LIB) $(INC) $(LINKER)</div><div class="line">%.o:%.c</div><div class="line">   $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<p>makefile中首先声明了变量SOURCE和OBJECTS，SOURCE是当前文件夹下的所有.c文件的集合，OBJECTS是所有.c文件对应的目标文件.o的集合.</p>
+<p>执行过程:<br>首先,目标target依赖所有的目标文件.o，即a.o,b.o,c.o。当需要依赖a.o时，makefile会根据隐晦规则自动推导出生成a.o文件的命令，(“g++ -c $(CFLAGS) -o a.o a.c”)，生成a.o；类似的也会根据同样的过程生成b.o和c.o文件,这三个文件生成之后,再根据上述规则生成target。</p>
+<h2 id="makefile中常用函数"><a href="#makefile中常用函数" class="headerlink" title="makefile中常用函数"></a>makefile中常用函数</h2><h3 id="wildcard函数"><a href="#wildcard函数" class="headerlink" title="wildcard函数"></a>wildcard函数</h3><p>函数参数:一个正则表达式<br>函数功能:wildcard的中文意思是通配符，它的功能类似于正则表达式，用于展开一列所有符合其参数描述的文件名，文件之间用空格分割。</p>
+<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SOURCE=$(wildcard *.cpp)</div></pre></td></tr></table></figure></p>
+<p>此时SOURCE的值为所有的以.cpp为后缀的文件集合，以空格隔开。</p>
+<h3 id="patsubst函数"><a href="#patsubst函数" class="headerlink" title="patsubst函数"></a>patsubst函数</h3><p>函数参数:　第一个是需要匹配的样式，第二个是表示用什么替换它，第三个被处理的以空格隔开的字符串。<br>函数功能:其功能是一个匹配替换的函数(pattern substitute)。</p>
+<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#TARGET表示与SOURCE中同名的目标文件.</div><div class="line">TARGET = $(patsubst *.cpp, *.o, $(SOURCE))</div></pre></td></tr></table></figure></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/25/makefile自动变量与隐晦规则推导/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
