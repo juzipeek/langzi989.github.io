@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archivos: 2017 - 魏传柳</title>
+    <title>Archives: 2017 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,86 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/08/31/makefile自动变量与隐晦规则推导/">
+                            makefile自动变量与隐晦规则推导
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-08-31T20:48:59+08:00">
+	
+		    8月 31, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="makefile自动变量与隐晦规则推导"><a href="#makefile自动变量与隐晦规则推导" class="headerlink" title="makefile自动变量与隐晦规则推导"></a>makefile自动变量与隐晦规则推导</h1><p>makefile的使用可以大大简化程序编译的过程，不过对于新手来说makefile的执行规则理解起来还是很让人迷糊的。其中最重要的原因是makefile中使用了大量的隐晦规则和自动变量来简化makefile的编写.本节将记录一下makefile自动变量和隐晦规则的推导过程以及makefile的执行流程。</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">%.o:%.c</div><div class="line">  $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<p>对于上面的推导规则，makefile是怎么将%c文件编译汇编成.o文件的？下面将针对这个问题进行讲解</p>
+</blockquote>
+<h2 id="自动变量"><a href="#自动变量" class="headerlink" title="自动变量"></a>自动变量</h2><p>makefile中的自动变量实质上是对一类变量的简写，当我们在模式规则中对这类变量处理的时候可以直接使用自动变量简化makefile代码的编写。自动变量包括如目标文件,依赖文件等。下面以实例的方式列出了一些常用的自动变量:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a: a.o b.o c.o d.o</div><div class="line">  g++ -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<ul>
+<li>$@: 表示模式规则中的目标文件,对于上面的模式规则,$@表示a</li>
+<li>$&lt;: 表示依赖中的第一个文件.对于上述规则,$&lt;表示a.o</li>
+<li>$^: 表示所有依赖文件的集合,对于上述规则$^表示a.o b.o c.o d.o</li>
+<li>$+: 表示所有依赖文件的集合(不去重).对于上述规则$+表示a.o b.o c.o d.o</li>
+<li>$%: 仅当目标是函数库文件(.a)文件时，表示规则中目标成员名。如一个目标是(test.a(a.o)),此时$%表示a.o, $@表示test.a</li>
+<li>$?: 所有比目标新的依赖目标的集合</li>
+<li>$*: 表示目标规则中%以及%之前的部分。如若目标文件为”src/test.o”,目标文件模式为”src/%.o”,此时$*表示”src/test”。</li>
+</ul>
+<h2 id="隐晦规则自动规则推导"><a href="#隐晦规则自动规则推导" class="headerlink" title="隐晦规则自动规则推导"></a>隐晦规则自动规则推导</h2><p>使用makefile的makefile的隐晦自动规则推导功能也可以让我们的makefile的代码大大简化。使用隐晦规则，我们没必要为每一个类似的规则生成都去写类似的规则。makefile会自动推导依赖文件,并根据隐含规则推导出生成当前目标的命令。<br>如下面的makefile:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">target: a.o b.o c.o</div><div class="line">  g++ -o $@　$^ $(LIB) $(INC) $(LINKER)</div><div class="line">a.o: a.c</div><div class="line">  g++ -c $(CFLAGS) -o a.o a.c</div><div class="line">b.o: b.c</div><div class="line">  g++ -c $(CFLAGS) -o b.o b.c</div><div class="line">c.o: c.c</div><div class="line">  g++ -c $(CFLAGS) -o c.o c.c</div></pre></td></tr></table></figure></p>
+<p>上述规则没有使用隐晦规则,对于每一个.o文件的生成都写了一条规则语句.若使用隐晦规则推导，上述makefile可写为如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SOURCE := $(shell find ./ -type f -name *.c)</div><div class="line">OBJECTS := $(patsubst *.c,*.o,$(SOURCE))</div><div class="line"></div><div class="line">target : $(OBJECTS)</div><div class="line">  g++ -o $@ $^ $(LIB) $(INC) $(LINKER)</div><div class="line">%.o:%.c</div><div class="line">   $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<p>从上面的隐晦规则可以看出,对于.o文件的生成命令，makefile都可以由隐晦规则” $(CC) -c $(CFLAGS) -o $@ $&lt;”推导出。即如当目标需要a.隐晦规则将推导出命令”g++ -c $(CFLAGS) -o a.o a.c”用于生成该目标.</p>
+<h2 id="makefile执行过程"><a href="#makefile执行过程" class="headerlink" title="makefile执行过程"></a>makefile执行过程</h2><p>由上一节中的makefile简单说一下makefile的执行规则。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SOURCE := $(shell find ./ -type f -name *.c)</div><div class="line">OBJECTS := $(patsubst *.c,*.o,$(SOURCE))</div><div class="line"></div><div class="line">target : $(OBJECTS)</div><div class="line">  g++ -o $@ $^ $(LIB) $(INC) $(LINKER)</div><div class="line">%.o:%.c</div><div class="line">   $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<p>makefile中首先声明了变量SOURCE和OBJECTS，SOURCE是当前文件夹下的所有.c文件的集合，OBJECTS是所有.c文件对应的目标文件.o的集合.</p>
+<p>执行过程:<br>首先,目标target依赖所有的目标文件.o，即a.o,b.o,c.o。当需要依赖a.o时，makefile会根据隐晦规则自动推导出生成a.o文件的命令，(“g++ -c $(CFLAGS) -o a.o a.c”)，生成a.o；类似的也会根据同样的过程生成b.o和c.o文件,这三个文件生成之后,再根据上述规则生成target。</p>
+<h2 id="makefile中常用函数"><a href="#makefile中常用函数" class="headerlink" title="makefile中常用函数"></a>makefile中常用函数</h2><h3 id="wildcard函数"><a href="#wildcard函数" class="headerlink" title="wildcard函数"></a>wildcard函数</h3><p>函数参数:一个正则表达式<br>函数功能:wildcard的中文意思是通配符，它的功能类似于正则表达式，用于展开一列所有符合其参数描述的文件名，文件之间用空格分割。</p>
+<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SOURCE=$(wildcard *.cpp)</div></pre></td></tr></table></figure></p>
+<p>此时SOURCE的值为所有的以.cpp为后缀的文件集合，以空格隔开。</p>
+<h3 id="patsubst函数"><a href="#patsubst函数" class="headerlink" title="patsubst函数"></a>patsubst函数</h3><p>函数参数:　第一个是需要匹配的样式，第二个是表示用什么替换它，第三个被处理的以空格隔开的字符串。<br>函数功能:其功能是一个匹配替换的函数(pattern substitute)。</p>
+<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#TARGET表示与SOURCE中同名的目标文件.</div><div class="line">TARGET = $(patsubst *.cpp, *.o, $(SOURCE))</div></pre></td></tr></table></figure></p>
+<h2 id="makefile中链接静态库顺序问题"><a href="#makefile中链接静态库顺序问题" class="headerlink" title="makefile中链接静态库顺序问题"></a>makefile中链接静态库顺序问题</h2><p>在链接静态库的时候，如果多个静态库之间存在依赖关系，则有依赖的静态库之间存在顺序问题，若顺序出现错误，则可能出现函数未定义或符号找不到等错误。</p>
+<p>静态库链接的顺序的原则是：<strong>被依赖的库一定要放在后面</strong>，因为makefile在链接静态库时的顺序是从右往左(或从后向前).如libb.a依赖于liba.a，此时的链接顺序应该是:-Llibb.a -Lliba.a。</p>
+<p>会出现上述问题的原因是:我们在生成静态库的时候并未把依赖库的定义编到生成的库中。如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">gcc -c a.c</div><div class="line">ar cr liba.a a.o</div><div class="line">gcc -c b.c</div><div class="line">ar cr libb.a b.o # 虽然libb.a使用到了liba.o中的一些函数,但并不会将它们的定义包含进来,所以在链接test时需要指定这两个库</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/08/31/makefile自动变量与隐晦规则推导/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/08/31/makefile详解/">
                             makefile详解
                         </a>
@@ -224,11 +304,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-08-31T17:22:57+08:00">
 	
-		    31 8月 2017
+		    8月 31, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -249,7 +329,7 @@
                     
                         <p>
                             <a href="/2017/08/31/makefile详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -274,11 +354,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-08-20T15:11:12+08:00">
 	
-		    20 8月 2017
+		    8月 20, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -366,7 +446,7 @@
                     
                         <p>
                             <a href="/2017/08/20/Linux正则表达式/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -391,11 +471,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
 	
-		    20 8月 2017
+		    8月 20, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -417,7 +497,7 @@
                     
                         <p>
                             <a href="/2017/08/20/Linux查找含有特定字符串的文件/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -442,11 +522,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-07-17T14:40:31+08:00">
 	
-		    17 7月 2017
+		    7月 17, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-学习/">C++学习</a>
 
@@ -494,7 +574,7 @@
                     
                         <p>
                             <a href="/2017/07/17/C中编码问题/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -519,11 +599,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-07-15T17:47:20+08:00">
 	
-		    15 7月 2017
+		    7月 15, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -551,7 +631,7 @@
                     
                         <p>
                             <a href="/2017/07/15/C++中find_if查找vector中的特定struct以及值域查询/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -576,11 +656,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-06-21T20:35:00+08:00">
 	
-		    21 6月 2017
+		    6月 21, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
 
@@ -599,7 +679,7 @@
                     
                         <p>
                             <a href="/2017/06/21/rapidjson创建型/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -624,11 +704,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-06-15T09:48:43+08:00">
 	
-		    15 6月 2017
+		    6月 15, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
 
@@ -658,7 +738,7 @@
                     
                         <p>
                             <a href="/2017/06/15/Unix网络编程之socket异步编程/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -683,11 +763,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-06-14T21:37:41+08:00">
 	
-		    14 6月 2017
+		    6月 14, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
 
@@ -714,7 +794,7 @@
                     
                         <p>
                             <a href="/2017/06/14/Unix网络编程之读写相关函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -739,11 +819,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-06-13T10:17:56+08:00">
 	
-		    13 6月 2017
+		    6月 13, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
 
@@ -916,58 +996,7 @@
                     
                         <p>
                             <a href="/2017/06/13/Unix网络编程之基础函数(一)/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/12/Unix网络编程之主机字节序与网络字节序/">
-                            Unix网络编程之主机字节序与网络字节序
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-06-12T19:20:46+08:00">
-	
-		    12 6月 2017
-    	
-    </time>
-    
-        <span>en </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix网络编程之主机字节序与网络字节序"><a href="#Unix网络编程之主机字节序与网络字节序" class="headerlink" title="Unix网络编程之主机字节序与网络字节序"></a>Unix网络编程之主机字节序与网络字节序</h1><p>在各种计算机体系中，对于字节，字等的存储机制有所不同，但是在网络通信过程中，如果双方交流的信息存储结构不一致，则会导致通信失败的结果。当前计算机中通常采用的字节存储机制主要有两种:<strong>大端规则与小端规则</strong>。<strong>网络通信的过程中的存储机制统一为大端规则。</strong></p>
-<h2 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a>字节序</h2><blockquote>
-<p>参考：<a href="http://www.cppblog.com/tx7do/archive/2015/12/14/71276.html" target="_blank" rel="external">http://www.cppblog.com/tx7do/archive/2015/12/14/71276.html</a></p>
-</blockquote>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/06/12/Unix网络编程之主机字节序与网络字节序/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -983,12 +1012,12 @@
         
         <li class="pagination-next">
             <a class="btn btn--default btn--small" href="/archives/2017/page/2/">
-                    <span>ARTÍCULOS ANTERIORES</span>
+                    <span>OLDER POSTS</span>
                 <i class="fa fa-angle-right text-base icon-ml"></i>
             </a>
         </li>
         
-        <li class="pagination-number">página 1 de 5</li>
+        <li class="pagination-number">page 1 of 5</li>
     </ul>
 </div>
 

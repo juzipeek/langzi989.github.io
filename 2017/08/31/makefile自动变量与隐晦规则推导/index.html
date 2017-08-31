@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Tag: 自动变量 - 魏传柳</title>
+    <title>makefile自动变量与隐晦规则推导 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,12 +15,22 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta property="og:type" content="blog">
-<meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/tags/自动变量/index.html">
+    <meta name="description" content="makefile自动变量与隐晦规则推导makefile的使用可以大大简化程序编译的过程，不过对于新手来说makefile的执行规则理解起来还是很让人迷糊的。其中最重要的原因是makefile中使用了大量的隐晦规则和自动变量来简化makefile的编写.本节将记录一下makefile自动变量和隐晦规则的推导过程以及makefile的执行流程。
+
+12%.o:%.c  $(CC) -c $(CFLAG">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="makefile自动变量与隐晦规则推导">
+<meta property="og:url" content="http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/index.html">
 <meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="makefile自动变量与隐晦规则推导makefile的使用可以大大简化程序编译的过程，不过对于新手来说makefile的执行规则理解起来还是很让人迷糊的。其中最重要的原因是makefile中使用了大量的隐晦规则和自动变量来简化makefile的编写.本节将记录一下makefile自动变量和隐晦规则的推导过程以及makefile的执行流程。
+
+12%.o:%.c  $(CC) -c $(CFLAG">
+<meta property="og:updated_time" content="2017-08-31T13:56:48.364Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="魏传柳">
+<meta name="twitter:title" content="makefile自动变量与隐晦规则推导">
+<meta name="twitter:description" content="makefile自动变量与隐晦规则推导makefile的使用可以大大简化程序编译的过程，不过对于新手来说makefile的执行规则理解起来还是很让人迷糊的。其中最重要的原因是makefile中使用了大量的隐晦规则和自动变量来简化makefile的编写.本节将记录一下makefile自动变量和隐晦规则的推导过程以及makefile的执行流程。
+
+12%.o:%.c  $(CC) -c $(CFLAG">
     
     
         
@@ -49,7 +59,7 @@
         
     
 
-<header id="header" data-behavior="1">
+<header id="header" data-behavior="3">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <h1 class="header-title">
         <a class="header-title-link" href="/ ">魏传柳</a>
@@ -73,7 +83,7 @@
         
     
 
-<nav id="sidebar" data-behavior="1">
+<nav id="sidebar" data-behavior="3">
     
         <div class="sidebar-profile">
             <a href="/#about">
@@ -200,28 +210,21 @@
 </nav>
 
             
-            <div id="main" data-behavior="1"
+            <div id="main" data-behavior="3"
                  class="
                         hasCoverMetaIn
                         ">
                 
-    
-
-<section class="postShorten-group main-content-wrap">
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/08/31/makefile自动变量与隐晦规则推导/">
-                            makefile自动变量与隐晦规则推导
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            makefile自动变量与隐晦规则推导
+        </h1>
+    
+    <div class="post-meta">
     <time itemprop="datePublished" datetime="2017-08-31T20:48:59+08:00">
 	
 		    8月 31, 2017
@@ -236,10 +239,11 @@
     
 </div>
 
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="makefile自动变量与隐晦规则推导"><a href="#makefile自动变量与隐晦规则推导" class="headerlink" title="makefile自动变量与隐晦规则推导"></a>makefile自动变量与隐晦规则推导</h1><p>makefile的使用可以大大简化程序编译的过程，不过对于新手来说makefile的执行规则理解起来还是很让人迷糊的。其中最重要的原因是makefile中使用了大量的隐晦规则和自动变量来简化makefile的编写.本节将记录一下makefile自动变量和隐晦规则的推导过程以及makefile的执行流程。</p>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="makefile自动变量与隐晦规则推导"><a href="#makefile自动变量与隐晦规则推导" class="headerlink" title="makefile自动变量与隐晦规则推导"></a>makefile自动变量与隐晦规则推导</h1><p>makefile的使用可以大大简化程序编译的过程，不过对于新手来说makefile的执行规则理解起来还是很让人迷糊的。其中最重要的原因是makefile中使用了大量的隐晦规则和自动变量来简化makefile的编写.本节将记录一下makefile自动变量和隐晦规则的推导过程以及makefile的执行流程。</p>
 <blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">%.o:%.c</div><div class="line">  $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
 <p>对于上面的推导规则，makefile是怎么将%c文件编译汇编成.o文件的？下面将针对这个问题进行讲解</p>
@@ -273,31 +277,78 @@
 <p>会出现上述问题的原因是:我们在生成静态库的时候并未把依赖库的定义编到生成的库中。如</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">gcc -c a.c</div><div class="line">ar cr liba.a a.o</div><div class="line">gcc -c b.c</div><div class="line">ar cr libb.a b.o # 虽然libb.a使用到了liba.o中的一些函数,但并不会将它们的定义包含进来,所以在链接test时需要指定这两个库</div></pre></td></tr></table></figure>
 
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/08/31/makefile自动变量与隐晦规则推导/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
             
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-    </article>
-    
-    <div class="pagination-bar">
-    <ul class="pagination">
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/linux/">linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/makefile/">makefile</a> <a class="tag tag--primary tag--small t-link" href="/tags/自动变量/">自动变量</a> <a class="tag tag--primary tag--small t-link" href="/tags/规则推导/">规则推导</a>
+
+            </div>
         
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/08/31/makefile详解/" data-tooltip="makefile详解">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
         
-        <li class="pagination-number">page 1 of 1</li>
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
     </ul>
 </div>
 
-</section>
+
+        
+            
+        
+    </div>
+</article>
+
 
 
                 <footer id="footer" class="main-content-wrap">
@@ -310,6 +361,83 @@
 </footer>
 
             </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/08/31/makefile详解/" data-tooltip="makefile详解">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
             
         </div>
         
@@ -356,6 +484,8 @@
     <!--SCRIPTS-->
 <script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
 <!--SCRIPTS END-->
+
+    
 
 
 
