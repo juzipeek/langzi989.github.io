@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Tag: 规则推导 - 魏传柳</title>
+    <title>Etiqueta: 规则推导 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -224,11 +224,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-25T19:48:59+08:00">
 	
-		    5月 25, 2017
+		    25 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -268,6 +268,10 @@
 <p>此时SOURCE的值为所有的以.cpp为后缀的文件集合，以空格隔开。</p>
 <h3 id="patsubst函数"><a href="#patsubst函数" class="headerlink" title="patsubst函数"></a>patsubst函数</h3><p>函数参数:　第一个是需要匹配的样式，第二个是表示用什么替换它，第三个被处理的以空格隔开的字符串。<br>函数功能:其功能是一个匹配替换的函数(pattern substitute)。</p>
 <p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#TARGET表示与SOURCE中同名的目标文件.</div><div class="line">TARGET = $(patsubst *.cpp, *.o, $(SOURCE))</div></pre></td></tr></table></figure></p>
+<h2 id="makefile中链接静态库顺序问题"><a href="#makefile中链接静态库顺序问题" class="headerlink" title="makefile中链接静态库顺序问题"></a>makefile中链接静态库顺序问题</h2><p>在链接静态库的时候，如果多个静态库之间存在依赖关系，则有依赖的静态库之间存在顺序问题，若顺序出现错误，则可能出现函数未定义或符号找不到等错误。</p>
+<p>静态库链接的顺序的原则是：<strong>被依赖的库一定要放在后面</strong>，因为makefile在链接静态库时的顺序是从右往左(或从后向前).如libb.a依赖于liba.a，此时的链接顺序应该是:-Llibb.a -Lliba.a。</p>
+<p>会出现上述问题的原因是:我们在生成静态库的时候并未把依赖库的定义编到生成的库中。如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">gcc -c a.c</div><div class="line">ar cr liba.a a.o</div><div class="line">gcc -c b.c</div><div class="line">ar cr libb.a b.o # 虽然libb.a使用到了liba.o中的一些函数,但并不会将它们的定义包含进来,所以在链接test时需要指定这两个库</div></pre></td></tr></table></figure>
 
                     
                         
@@ -275,7 +279,7 @@
                     
                         <p>
                             <a href="/2017/05/25/makefile自动变量与隐晦规则推导/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -289,7 +293,7 @@
     <ul class="pagination">
         
         
-        <li class="pagination-number">page 1 of 1</li>
+        <li class="pagination-number">página 1 de 1</li>
     </ul>
 </div>
 
