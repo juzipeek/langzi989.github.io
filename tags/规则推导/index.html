@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Tag: makefile - 魏传柳</title>
+    <title>Tag: 规则推导 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -17,7 +17,7 @@
     
     <meta property="og:type" content="blog">
 <meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/tags/makefile/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/规则推导/index.html">
 <meta property="og:site_name" content="魏传柳">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="魏传柳">
@@ -216,56 +216,6 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/08/31/makefile详解/">
-                            makefile详解
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-08-31T17:22:57+08:00">
-	
-		    8月 31, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>makefile详解</p>
-<p>makefile基础<br><a href="http://blog.csdn.net/ruglcc/article/details/7814546/" target="_blank" rel="external">http://blog.csdn.net/ruglcc/article/details/7814546/</a></p>
-<p>makefile依赖关系详解<br><a href="http://blog.chinaunix.net/uid-20682147-id-76330.html" target="_blank" rel="external">http://blog.chinaunix.net/uid-20682147-id-76330.html</a><br><a href="http://blog.csdn.net/aquester/article/details/48547685" target="_blank" rel="external">http://blog.csdn.net/aquester/article/details/48547685</a></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/08/31/makefile详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
                         <a class="link-unstyled" href="/2017/05/25/makefile自动变量与隐晦规则推导/">
                             makefile自动变量与隐晦规则推导
                         </a>
@@ -325,75 +275,6 @@
                     
                         <p>
                             <a href="/2017/05/25/makefile自动变量与隐晦规则推导/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/25/makefile常用相关函数/">
-                            makefile常用相关函数
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-25T19:48:59+08:00">
-	
-		    5月 25, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="makefile常用相关函数"><a href="#makefile常用相关函数" class="headerlink" title="makefile常用相关函数"></a>makefile常用相关函数</h1><p>makefile中函数的用法与变量类似，变量的用法是在变量前面加上$，函数的用法一样，也是使用$开头，$之后加一个括号，括号中的第一个参数是函数名，后面紧跟此函数需要的参数，用逗号分隔。下面介绍几个常用的函数。</p>
-<h2 id="wildcard函数"><a href="#wildcard函数" class="headerlink" title="wildcard函数"></a>wildcard函数</h2><ul>
-<li>参数: 一个正则表达式</li>
-</ul>
-<p>wildcard的中文意思是通配符，它的功能类似于正则表达式，用于展开一列所有符合其参数描述的文件名，文件之间用空格分割。</p>
-<p>实例:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SOURCE=$(wildcard *.cpp)</div></pre></td></tr></table></figure>
-<p>此时SOURCE的值为所有的以.cpp为后缀的文件集合，以空格隔开。</p>
-<h2 id="patsubst函数"><a href="#patsubst函数" class="headerlink" title="patsubst函数"></a>patsubst函数</h2><p>其功能是一个匹配替换的函数(pattern substitute)。</p>
-<ul>
-<li>参数：第一个是需要匹配的样式，第二个是表示用什么替换它，第三个被处理的以空格隔开的字符串。</li>
-</ul>
-<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">TARGET = $(patsubst *.cpp, *.o, $(SOURCE))</div></pre></td></tr></table></figure></p>
-<p>TARGET表示与SOURCE中同名的目标文件.</p>
-<h2 id="lt"><a href="#lt" class="headerlink" title="$@,$&lt;, $^"></a>$@,$&lt;, $^</h2><p>上述几个变量的含义：</p>
-<ul>
-<li>$@ 表示目标的文件名</li>
-<li>$&lt; 表示依赖中的第一个文件名</li>
-<li>$^ 表示依赖中所有的文件名</li>
-</ul>
-<p>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">all: library.cpp main.cpp</div></pre></td></tr></table></figure></p>
-<p>其中$@标识all, $&lt;表示library.cpp ，$^表示library.cpp main.cpp</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/25/makefile常用相关函数/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
