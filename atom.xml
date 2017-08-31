@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-08-20T11:58:41.638Z</updated>
+  <updated>2017-08-31T09:28:49.059Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>makefile详解</title>
+    <link href="http://yoursite.com/2017/08/31/makefile%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://yoursite.com/2017/08/31/makefile详解/</id>
+    <published>2017-08-31T09:22:57.000Z</published>
+    <updated>2017-08-31T09:28:49.059Z</updated>
+    
+    <content type="html"><![CDATA[<p>makefile详解</p>
+<p>makefile基础<br><a href="http://blog.csdn.net/ruglcc/article/details/7814546/" target="_blank" rel="external">http://blog.csdn.net/ruglcc/article/details/7814546/</a></p>
+<p>makefile依赖关系详解<br><a href="http://blog.chinaunix.net/uid-20682147-id-76330.html" target="_blank" rel="external">http://blog.chinaunix.net/uid-20682147-id-76330.html</a><br><a href="http://blog.csdn.net/aquester/article/details/48547685" target="_blank" rel="external">http://blog.csdn.net/aquester/article/details/48547685</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;makefile详解&lt;/p&gt;
+&lt;p&gt;makefile基础&lt;br&gt;&lt;a href=&quot;http://blog.csdn.net/ruglcc/article/details/7814546/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://blog
+    
+    </summary>
+    
+      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
+    
+      <category term="makefile" scheme="http://yoursite.com/tags/makefile/"/>
+    
+  </entry>
   
   <entry>
     <title>Linux正则表达式以及Sed使用学习</title>
@@ -1187,36 +1215,6 @@
     
     
       <category term="链接，硬链接，软连接" scheme="http://yoursite.com/tags/%E9%93%BE%E6%8E%A5%EF%BC%8C%E7%A1%AC%E9%93%BE%E6%8E%A5%EF%BC%8C%E8%BD%AF%E8%BF%9E%E6%8E%A5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>rapidjson Stream</title>
-    <link href="http://yoursite.com/2017/05/27/rapidJsonStream/"/>
-    <id>http://yoursite.com/2017/05/27/rapidJsonStream/</id>
-    <published>2017-05-27T01:36:00.000Z</published>
-    <updated>2017-05-27T01:40:41.516Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="rapidjson-Stream-待更新"><a href="#rapidjson-Stream-待更新" class="headerlink" title="rapidjson Stream(待更新)"></a>rapidjson Stream(待更新)</h1><blockquote>
-<p>本系列文章以例子的方式进行呈现。</p>
-</blockquote>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include "rapidjson/rapidjson.h"</div><div class="line">#include "rapidjson/document.h"</div><div class="line">#include "rapidjson/stringbuffer.h"</div><div class="line">#include "rapidjson/writer.h"</div><div class="line">#include "rapidjson/filereadstream.h"</div><div class="line">#include "cstdio"</div><div class="line"></div><div class="line">using namespace std;</div><div class="line">using namespace rapidjson;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  const char json[] = "[1, 2, 3]";</div><div class="line">  StringStream s(json);</div><div class="line">  Document document;</div><div class="line">  document.ParseStream(s);</div><div class="line"></div><div class="line">  for (int i = 0; i &lt; 3; i++)</div><div class="line">    std::cout &lt;&lt; document[i].GetInt() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  StringBuffer SB;</div><div class="line">  Writer&lt;StringBuffer&gt; writer(SB);</div><div class="line">  document.Accept(writer);</div><div class="line">  std::cout &lt;&lt; SB.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  FILE* fp = fopen("test.json", "rb");</div><div class="line"></div><div class="line">  char readBuffer[65535];</div><div class="line">  FileReadStream is(fp, readBuffer, sizeof(readBuffer));</div><div class="line"></div><div class="line">  document.ParseStream(is);</div><div class="line">  fclose(fp);</div><div class="line">  for (Value::ConstMemberIterator it = document.MemberBegin();</div><div class="line">        it != document.MemberEnd(); it++)</div><div class="line">        std::cout &lt;&lt; (it-&gt;name).GetString() &lt;&lt; std::endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;rapidjson-Stream-待更新&quot;&gt;&lt;a href=&quot;#rapidjson-Stream-待更新&quot; class=&quot;headerlink&quot; title=&quot;rapidjson Stream(待更新)&quot;&gt;&lt;/a&gt;rapidjson Stream(待更新)&lt;/h1
-    
-    </summary>
-    
-      <category term="rapidjson学习" scheme="http://yoursite.com/categories/rapidjson%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-      <category term="rapidjson" scheme="http://yoursite.com/tags/rapidjson/"/>
-    
-      <category term="json" scheme="http://yoursite.com/tags/json/"/>
-    
-      <category term="stream" scheme="http://yoursite.com/tags/stream/"/>
     
   </entry>
   
