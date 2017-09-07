@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-08-31T13:56:48.364Z</updated>
+  <updated>2017-09-07T09:05:47.220Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Linux常用命令混淆点记录</title>
+    <link href="http://yoursite.com/2017/09/07/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"/>
+    <id>http://yoursite.com/2017/09/07/Linux常用命令/</id>
+    <published>2017-09-07T09:05:01.000Z</published>
+    <updated>2017-09-07T09:05:47.220Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Linux常用命令混淆点记录"><a href="#Linux常用命令混淆点记录" class="headerlink" title="Linux常用命令混淆点记录"></a>Linux常用命令混淆点记录</h1><h2 id="ls命令单位问题"><a href="#ls命令单位问题" class="headerlink" title="ls命令单位问题"></a>ls命令单位问题</h2><p>ls命令的<strong>默认单位为字节</strong>。<br>若使用ls时需要指定单位显示的时候，需要添加参数-h或–block-size进行操作。具体操作方法如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#-h表示human，即人可读的方式</div><div class="line">#它会按照文件的大小显示单位,</div><div class="line">#若文件小于1k，则不显示单位，表示字节</div><div class="line">#若文件大于1k但是小于1M，显示的单位为k</div><div class="line">#文件大于1M小于1G会显示单位为M，</div><div class="line">#以此类推</div><div class="line">ls -h ~/test</div><div class="line"></div><div class="line">#按照指定的单位显示</div><div class="line">#注意使用此参数需要注意一个问题。若文件小于1G也显示1G。</div><div class="line">ls --block-size=g ~/test    #按照单位为g显示</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;a href=&quot;#Linux常用命令混淆点记录&quot; class=&quot;headerlink&quot; title=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;/a&gt;Linux常用命令混淆点记录&lt;/h1&gt;&lt;h2 id=&quot;ls命令单位问题&quot;&gt;&lt;a href
+    
+    </summary>
+    
+      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
+    
+      <category term="ls" scheme="http://yoursite.com/tags/ls/"/>
+    
+  </entry>
   
   <entry>
     <title>makefile自动变量与隐晦规则推导</title>
@@ -1157,102 +1183,6 @@
       <category term="TCP" scheme="http://yoursite.com/tags/TCP/"/>
     
       <category term="状态转换图" scheme="http://yoursite.com/tags/%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2%E5%9B%BE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>TCP的连接与建立</title>
-    <link href="http://yoursite.com/2017/05/30/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B9%8BTCP%E7%9A%84%E8%BF%9E%E6%8E%A5%E4%B8%8E%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B/"/>
-    <id>http://yoursite.com/2017/05/30/Unix网络编程之TCP的连接与建立过程/</id>
-    <published>2017-05-30T08:43:00.000Z</published>
-    <updated>2017-06-13T13:27:47.414Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="TCP的连接与建立"><a href="#TCP的连接与建立" class="headerlink" title="TCP的连接与建立"></a>TCP的连接与建立</h1><p>最常用的传输层协议包括TCP和UDP两种，当然除此之外还有其他协议。UDP是一种既不面向连接有不可靠的传输层协议，而TCP是一种面向连接的可靠的传输层协议，为了达到这个目的，其在设计上使用了差错检测，重传，累计确认，定时器以及用于序号和确认好的字段等等。</p>
-<h2 id="TCP的特点"><a href="#TCP的特点" class="headerlink" title="TCP的特点"></a>TCP的特点</h2><p>TCP协议有以下特点：</p>
-<ul>
-<li>面向连接：TCP的连接不是一条电路的或者虚电路，其连接状完全保留在两个端系统中。</li>
-<li>可靠传输：TCP连接在传输消息的过程中保证了数据的可靠性，即保证数据在传输过程中不会丢失。</li>
-<li>点对点：一条TCP连接只能连接两个端点。</li>
-<li>全双工：如果一台主机上的进程A和另一台主机上的进程B建立了一条TCP连接，那么应用层数据就可以从A进程发送到B进程的<strong>同时</strong>，B进程也可以发送数据到A进程。</li>
-</ul>
-<h2 id="TCP报文段结构"><a href="#TCP报文段结构" class="headerlink" title="TCP报文段结构"></a>TCP报文段结构</h2><p>TCP报文段是由首部字段和一个数据字段组成的，数据字段中包含应用程序需要发送的数据。通常报文段中通过MSS(max segment size)来限制报文段数据字段的最大长度。报文段的结构如下：</p>
-<p><img src="/images/TCP报文.png" alt=""></p>
-<p>说明：</p>
-<ul>
-<li>源端口号与目的端口号指的是客户端和服务器端应用程序分别使用的端口号。用于识别主机上某一个特定的应用程序。</li>
-<li>序号(seq)为TCP报文段中数据其实字节的序号。</li>
-<li>确认号字段为(ACK)期待接收的下一个TCP报文段中数据的序号。</li>
-<li>首部长度：首部长度表示当前TCP报文的首部的长度，一般为20，即可以看到表中报文首部的长度为20个字节。但是有时选项中有一些内容，这个时候首部长度大于20。</li>
-<li>保留字：NULL</li>
-<li>标志位：当某一些标志位被设置的时候表达一些特定的含义。<ul>
-<li>UGR标识报文段中存在着紧急数据。其中紧急数据的指针字段存放在后面16位的紧急数据指针中。</li>
-<li>ACK标识确认号字段生效，一般连接建立之后的内个报文段的ACK被会被设置</li>
-<li>PSH:不常用</li>
-<li>SYN:连接建立时的客户端发送的服务端的第一个报文段和服务端响应客户端的报文段中被设置，标识当前为建立连接的过程。</li>
-<li>FIN：与SYN类似，它是在断开连接时被设置。</li>
-</ul>
-</li>
-<li>互联网检验和：用于错误检测</li>
-<li>紧急数据指针：即为上述当UGR标志被设置时标识紧急数据的指针。</li>
-<li>选项：应用程序中自定义的首部的其他内容。</li>
-<li>数据：应用程序发送的真正数据。</li>
-</ul>
-<h2 id="TCP建立连接（三次握手）"><a href="#TCP建立连接（三次握手）" class="headerlink" title="TCP建立连接（三次握手）"></a>TCP建立连接（三次握手）</h2><p>TCP连接的过程可以简单描述为以下几个过程：</p>
-<ul>
-<li>第一次握手：客户端发送请求连接报文段到服务器。此报文段中SYN被设置为1，同时随机或者指定一个起始序号x。此时客户端进入SYN_SENT（同步已发送）状态。</li>
-<li>第二次握手：服务端收到请求报文段之后，向客户端发送确认报文段。确认报文段中ACK设置为1,SYN设置为1,确认号为x+1，同时为自己生成一个序号y。此时服务端进入SYN_RECV状态（同步接受到）。</li>
-<li>第三次握手：客户端收到服务端的确认报文段之后，还要给服务端发送一个确认报文段。这个报文段中ACK被设置为1，确认号为y+1。此报文段可以携带数据。</li>
-</ul>
-<p>经过上述三个步骤之后，TCP连接建立成功。客户端进入连接建立状态(ESTABLISHED)。然后就可以相互发送数据了。</p>
-<p><img src="/images/三次连接.png" alt=""></p>
-<blockquote>
-<p>为什么要经过三次握手？</p>
-<p>三次握手的目的是为了防止失效的报文段突然传送到服务端而出现问题。</p>
-<p>上述已经失效的报文段是指：如果客户端在发送第一次连接请求的过程中，由于网络原因导致此报文段在某个网络节点滞留较长时间，这个时候TCP传输协议会视为此报文段已经丢失，于是重传。若此滞留的报文段在连接断开之后才到达服务器，这个时候就会出现问题。</p>
-<p>若不是使用三次握手，服务器收到失效的报文段之后会建立连接，故之后无法释放TCP资源。导致资源浪费以致于长期会使服务器宕机。</p>
-</blockquote>
-<h3 id="三次握手过程中服务器和客户端程序的行为"><a href="#三次握手过程中服务器和客户端程序的行为" class="headerlink" title="三次握手过程中服务器和客户端程序的行为"></a>三次握手过程中服务器和客户端程序的行为</h3><ul>
-<li>服务器必须准备好接受外来的连接，调用socket(),bind()以及listen三个函数来完成，我们称为被动打开。</li>
-<li>客户端通过调用connect发起主动打开连接，向服务器发送SYN(同步)包，connect函数阻塞。</li>
-<li>服务器通过accept接收到客户端来送的TCP包，需要进行确认同事发送自己的SYN包，此时accept函数阻塞，</li>
-<li>客户端收到服务器的SYN包，connect函数返回，并向服务器发送确认。服务器接收到确认之后accept函数返回。</li>
-</ul>
-<h2 id="TCP连接断开（四次挥手）"><a href="#TCP连接断开（四次挥手）" class="headerlink" title="TCP连接断开（四次挥手）"></a>TCP连接断开（四次挥手）</h2><p>由于TCP连接是全双工的，因此每个方向都必须单独的关闭，也就是发送方和接收方都需要FIN和ACK。<strong>客户端和服务器都可以首先主动发送连接终止的报文</strong>。当其中一方发送完数据之后即可向另一方发出连接断开的请求。当收到FIN意味着这一方向上没有数据流动，但是一方收到FIN之后仍然可以发送数据。四次挥手的具体过程如下：</p>
-<ol>
-<li>此时TCP连接两端都处于ESTABLISHED的状态，客户端停止发送数据，并发出一个FIN报文段。首部FIN设置为1,序号seq=u(u为客户端传输数据的字后一个字节的序号加1)。客户端进入FIN_WAIT-1状态。</li>
-<li>服务端回复确认报文段，确认号为ack=u+1，序号为seq=v(v为服务端传输数据的最后一个字节序号加1)，服务端进入close_wait状态。现在TCP连接处于半关闭状态，服务端如果继续发送数据，客户端依然接收。</li>
-<li>客户端收到确认报文段,进入FIN_WAIT-2状态，服务端发送完数据之后，发出FIN报文段，FIN被置位1，确认号为ack=u+1，然后进入LAST_ACK状态。</li>
-<li>客户端回复确认报文段。ACK=1，确认号为sck=w+1(w为半开半闭时收到的最后一个字节数据的编号)，序号为seq=u+1，然后进入TIME_WAIT状态。</li>
-</ol>
-<p>一段时间(大约4分钟)之后等待状态结束，连接两端进入CLOSED状态。<br><img src="/images/四次挥手.png" alt=""></p>
-<blockquote>
-<p>参考链接：</p>
-<ul>
-<li><a href="https://book.douban.com/subject/26176870/" target="_blank" rel="external">计算机网络 自顶向下方法</a></li>
-<li><a href="https://book.douban.com/subject/4859464/" target="_blank" rel="external">Unix网络编程</a></li>
-<li><a href="http://blog.csdn.net/whuslei/article/details/6667471/" target="_blank" rel="external">http://blog.csdn.net/whuslei/article/details/6667471/</a></li>
-<li><a href="http://blog.csdn.net/wenqian1991/article/details/39667131" target="_blank" rel="external">http://blog.csdn.net/wenqian1991/article/details/39667131</a></li>
-<li><a href="https://cnbin.github.io/blog/2015/07/01/chuan-shu-ceng-:tcp-xie-yi/" target="_blank" rel="external">https://cnbin.github.io/blog/2015/07/01/chuan-shu-ceng-:tcp-xie-yi/</a></li>
-</ul>
-</blockquote>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;TCP的连接与建立&quot;&gt;&lt;a href=&quot;#TCP的连接与建立&quot; class=&quot;headerlink&quot; title=&quot;TCP的连接与建立&quot;&gt;&lt;/a&gt;TCP的连接与建立&lt;/h1&gt;&lt;p&gt;最常用的传输层协议包括TCP和UDP两种，当然除此之外还有其他协议。UDP是一种既不
-    
-    </summary>
-    
-      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="TCP" scheme="http://yoursite.com/tags/TCP/"/>
-    
-      <category term="三次握手" scheme="http://yoursite.com/tags/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/"/>
-    
-      <category term="四次挥手" scheme="http://yoursite.com/tags/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/"/>
-    
-      <category term="传输层协议" scheme="http://yoursite.com/tags/%E4%BC%A0%E8%BE%93%E5%B1%82%E5%8D%8F%E8%AE%AE/"/>
     
   </entry>
   
