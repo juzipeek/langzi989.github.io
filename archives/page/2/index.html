@@ -216,6 +216,62 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/06/14/Unix网络编程之读写相关函数/">
+                            Unix网络编程之读写相关函数
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-06-14T21:37:41+08:00">
+	
+		    14 6月 2017
+    	
+    </time>
+    
+        <span>en </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix网络编程之读写相关函数"><a href="#Unix网络编程之读写相关函数" class="headerlink" title="Unix网络编程之读写相关函数"></a>Unix网络编程之读写相关函数</h1><p>socket编程中常用的输入输出函数(读写函数)总共有五对,它们<strong>都是默认阻塞的</strong>，这就意味着当发出一个不能立即完成的套接字调用的时候，其进程将被投入睡眠，等待相应的进程操作完成，函数才返回继续往下执行。常用的函数如下：</p>
+<ul>
+<li>read, write</li>
+<li>readv, writev</li>
+<li>recv, send</li>
+<li>recvfrom, sendto</li>
+<li>recvmsg, sendmsg</li>
+</ul>
+<h2 id="read-write函数"><a href="#read-write函数" class="headerlink" title="read/write函数"></a>read/write函数</h2><p>read和write函数的详细用法已经在Unix文件IO中已经讲解，在socket编程中的使用方法与文件IO使用方法相同。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/06/14/Unix网络编程之读写相关函数/#post-footer" class="postShorten-excerpt_link link">
+                                Comentar y compartir
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/06/13/Unix网络编程之基础函数(一)/">
                             Unix网络编程之基础函数(一)
                         </a>
@@ -1089,57 +1145,6 @@
                     
                         <p>
                             <a href="/2017/05/31/Unix标准IO库函数之打开关闭流(一)/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/30/Unix网络编程之TCP状态转换图/">
-                            TCP状态转换图
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-30T17:01:00+08:00">
-	
-		    30 5月 2017
-    	
-    </time>
-    
-        <span>en </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="TCP状态转换图"><a href="#TCP状态转换图" class="headerlink" title="TCP状态转换图"></a>TCP状态转换图</h1><p>TCP涉及连接建立和连接终止的操作可以用状态转换图来说明。</p>
-<p>TCP为一个连接定义了11中状态，并且规定了如何基于当前状态以及该状态下接收的分节(TCP报文段)从一个状态转换为另一个状态。其状态转换图如下所示：</p>
-<p><img src="/images/TCP状态转化图.jpg" alt=""></p>
-<p>具体转化过程和转换条件如上图所示。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/30/Unix网络编程之TCP状态转换图/#post-footer" class="postShorten-excerpt_link link">
                                 Comentar y compartir
                             </a>
                         </p>
