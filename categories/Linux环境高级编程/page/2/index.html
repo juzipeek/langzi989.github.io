@@ -405,6 +405,7 @@
             
                 <div class="postShorten-content" itemprop="articleBody">
                     <h1 id="Wait函数详解"><a href="#Wait函数详解" class="headerlink" title="Wait函数详解"></a>Wait函数详解</h1><h2 id="kill"><a href="#kill" class="headerlink" title="kill"></a>kill</h2><h3 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h3><p>sys/types.h<br>signal.h</p>
+<h2 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h2><p>注意此函数的功能是向指定进程发送信号。而不是杀死某个进程.名字为kill的原因是早期的Unix系统对信号的默认处理方式大部分是终止进程。</p>
 <h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><p>int kill(pid_t pid, int sig);</p>
 <p>返回值：执行成功返回0，执行失败返回-1。</p>
 <h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><p>pid为进程ID,sig标识要发送的信号。</p>
@@ -415,7 +416,11 @@
 <li>pid = -1：发送信号给<strong>系统内除了1号进程以外</strong>的所有进程</li>
 <li>pid &lt; -1：发送信号给<strong>进程组</strong>标识为-pid的进程。</li>
 </ul>
-<p>当sig=0时没有信号发出，但是系统会执行错误检查，通常会利用sig值为0来检查某个进程是否在执行。</p>
+<p><strong>当sig=0时没有信号发出，但是系统会执行错误检查，通常会利用sig值为0来检查某个进程是否在执行。</strong></p>
+<ul>
+<li>若进程不存在,errno为ESRCH</li>
+<li>若errno为EPERM(无权向目标进程发送信号，但是存在)或调用成功，表示进程存在。</li>
+</ul>
 <h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>相关知识：WIFSIGNALED和WIFEXITED两个宏是用来判断当前程序的子进程的退出方式，是接收到信号异常退出<br>还是正常调用exit()或return退出。</p>
 <ul>
 <li>WIFEXITED: 调用exit()或return退出</li>
