@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archivos: 2017 - 魏传柳</title>
+    <title>Archives: 2017 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,65 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/04/07/free如何知道要free多大的空间/">
+                            C语言free如何知道要free多大的空间
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-04-07T10:50:31+08:00">
+	
+		    4月 07, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-学习/">C++学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。</p>
+<p>malloc函数的实现是以块分配内存，在被分配的块中包括两部分。<strong>第一部分中存储含有报头的元数据，它其中包含有分配块的大小信息，是一个常量；第二部分中存储实际用户数据</strong>。而使用malloc分配内存返回的是第二部分用户数据的地址。而块的两个部分在内存中的存储取决有编译器的实现，一般有两种情况，第一种是最常见的，即元数据和用户数据是连续的，存储在连续空间位置。第二种是两部分分开存储。</p>
+<p>对于第一种情况，malloc分配内存的空间图如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">____ The allocated block ____</div><div class="line">/                             \</div><div class="line">+--------+--------------------+</div><div class="line">| Header | Your data area ... |</div><div class="line">+--------+--------------------+</div><div class="line">         ^</div><div class="line">         |</div><div class="line">         +-- The address you are given</div></pre></td></tr></table></figure>
+<p>对于上述情况，malloc中内存转换实现方式为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* The corresponding word size */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> SIZE_SZ                (sizeof(INTERNAL_SIZE_T))</span></div><div class="line">...</div><div class="line"><span class="comment">/* conversion from malloc headers to user pointers, and back */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> chunk2mem(p) ((void*)((char*)(p) + 2*SIZE_SZ))</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> mem2chunk(mem) ((mchunkptr)((char*)(mem) - 2*SIZE_SZ))</span></div></pre></td></tr></table></figure></p>
+<p>如上源码我们可以看出来，chunk2mem将原始指针转换为user_data的指针，mem2chunk做了相反的转换。这个时候free的实现为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span>* mem)</span> </span>&#123;</div><div class="line">  p = mem2chunk(mem);</div><div class="line">  <span class="comment">// Now that you know how large is chunk "p", go ahead and free the chunk.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>同时，我们通过实验可以推测，标准库对void*的operator=做了重载。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  int *a = (int*)malloc(sizeof(int));</div><div class="line">  int *b = (int*)malloc(sizeof(int));</div><div class="line">  short *c = (short*)malloc(sizeof(short));</div><div class="line">  std::cout &lt;&lt; a &lt;&lt; std::endl</div><div class="line">            &lt;&lt; b &lt;&lt; std::endl</div><div class="line">            &lt;&lt; c &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; b - a &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; reinterpret_cast&lt;size_t&gt;(b) - reinterpret_cast&lt;size_t&gt;(a) &lt;&lt; std::endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">0x10b5c20</div><div class="line">0x10b5c40</div><div class="line">0x10b5c60</div><div class="line">8</div><div class="line">32</div></pre></td></tr></table></figure></p>
+<p>参考:</p>
+<p><a href="https://www.quora.com/How-does-free-function-in-C-knows-how-much-memory-to-be-released-deallocate" target="_blank" rel="external">https://www.quora.com/How-does-free-function-in-C-knows-how-much-memory-to-be-released-deallocate</a></p>
+<p><a href="http://stackoverflow.com/questions/1518711/how-does-free-know-how-much-to-free" target="_blank" rel="external">http://stackoverflow.com/questions/1518711/how-does-free-know-how-much-to-free</a></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/04/07/free如何知道要free多大的空间/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/03/21/why-assigment-operator-can-not-be-frined-function/">
                             why assigment operator can not be frined function
                         </a>
@@ -224,11 +283,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-03-21T14:30:41+08:00">
 	
-		    21 3月 2017
+		    3月 21, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -261,7 +320,7 @@
                     
                         <p>
                             <a href="/2017/03/21/why-assigment-operator-can-not-be-frined-function/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -286,11 +345,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-01-09T16:57:04+08:00">
 	
-		    09 1月 2017
+		    1月 09, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
 
@@ -351,7 +410,7 @@
                     
                         <p>
                             <a href="/2017/01/09/工厂类模式家族之简单工厂模式/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -376,11 +435,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-01-08T19:45:46+08:00">
 	
-		    08 1月 2017
+		    1月 08, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
 
@@ -466,7 +525,7 @@
                     
                         <p>
                             <a href="/2017/01/08/GRASP设计原则（职责分配原则）/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -491,11 +550,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-01-08T01:36:19+08:00">
 	
-		    08 1月 2017
+		    1月 08, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
 
@@ -588,7 +647,7 @@
                     
                         <p>
                             <a href="/2017/01/08/创建型设计模式之build模式/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -613,11 +672,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-01-07T15:17:23+08:00">
 	
-		    07 1月 2017
+		    1月 07, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
 
@@ -696,7 +755,7 @@
                     
                         <p>
                             <a href="/2017/01/07/UML时序图详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -721,11 +780,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-01-05T21:12:28+08:00">
 	
-		    05 1月 2017
+		    1月 05, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
 
@@ -771,7 +830,7 @@
                     
                         <p>
                             <a href="/2017/01/05/UML图表示常见的类之间的关系/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -789,12 +848,12 @@
                 <a class="btn btn--default btn--small" href="/archives/2017/page/4/">
             
                 <i class="fa fa-angle-left text-base icon-mr"></i>
-                    <span>ARTÍCULOS RECIENTES</span>
+                    <span>NEWER POSTS</span>
             </a>
         </li>
         
         
-        <li class="pagination-number">página 5 de 5</li>
+        <li class="pagination-number">page 5 of 5</li>
     </ul>
 </div>
 

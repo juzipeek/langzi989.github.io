@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-09-09T00:37:37.411Z</updated>
+  <updated>2017-09-09T02:06:40.168Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,123 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Linux中ulimit命令简单使用</title>
+    <link href="http://yoursite.com/2017/09/09/Linux%E4%B8%ADulimit%E5%91%BD%E4%BB%A4%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/"/>
+    <id>http://yoursite.com/2017/09/09/Linux中ulimit命令简单使用/</id>
+    <published>2017-09-09T02:05:01.000Z</published>
+    <updated>2017-09-09T02:06:40.168Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="linux中ulimit命令简单使用"><a href="#linux中ulimit命令简单使用" class="headerlink" title="linux中ulimit命令简单使用"></a>linux中ulimit命令简单使用</h1><blockquote>
+<p>系统性能是一个受关注的话题，如何通过最简单的设置来实现有效的性能调优，如何在有限资源的条件下保证程序的运作，ulimit是我们在处理问题的时候经常使用的一种手段。ulimit是一种linux系统内置的功能。下面将列举ulimit的一些常用关键字和简单用法。</p>
+</blockquote>
+<h2 id="ulimit命令参数"><a href="#ulimit命令参数" class="headerlink" title="ulimit命令参数"></a>ulimit命令参数</h2><p>ulimit参数命令</p>
+<blockquote>
+<p>注意ulimit设置分软硬区别，加-H为硬,-S为软.默认查询是显示的是软，但使用ulimit进行设置的时候为软硬都作用。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数</th>
+<th style="text-align:left">功能</th>
+<th style="text-align:left">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">-H</td>
+<td style="text-align:left">设置硬资源限制，一旦设置不能增加。</td>
+<td style="text-align:left">ulimit – Hs 64；限制硬资源，线程栈大小为 64K。</td>
+</tr>
+<tr>
+<td style="text-align:left">-S</td>
+<td style="text-align:left">设置软资源限制，设置后可以增加，但是不能超过硬资源设置。</td>
+<td style="text-align:left">ulimit – Sn 32；限制软资源，32 个文件描述符。</td>
+</tr>
+<tr>
+<td style="text-align:left">-a</td>
+<td style="text-align:left">显示当前所有的 limit 信息。</td>
+<td style="text-align:left">ulimit – a；显示当前所有的 limit 信息。</td>
+</tr>
+<tr>
+<td style="text-align:left">-c</td>
+<td style="text-align:left">最大的 core 文件的大小， 以 blocks 为单位。</td>
+<td style="text-align:left">ulimit – c unlimited； 对生成的 core 文件的大小不进行限制。</td>
+</tr>
+<tr>
+<td style="text-align:left">-d</td>
+<td style="text-align:left">进程最大的数据段的大小，以 Kbytes 为单位。</td>
+<td style="text-align:left">ulimit -d unlimited；对进程的数据段大小不进行限制。</td>
+</tr>
+<tr>
+<td style="text-align:left">-f</td>
+<td style="text-align:left">进程可以创建文件的最大值，以 blocks 为单位。</td>
+<td style="text-align:left">ulimit – f 2048；限制进程可以创建的最大文件大小为 2048 blocks。</td>
+</tr>
+<tr>
+<td style="text-align:left">-l</td>
+<td style="text-align:left">最大可加锁内存大小，以 Kbytes 为单位。</td>
+<td style="text-align:left">ulimit – l 32；限制最大可加锁内存大小为 32 Kbytes。</td>
+</tr>
+<tr>
+<td style="text-align:left">-m</td>
+<td style="text-align:left">最大内存大小，以 Kbytes 为单位。</td>
+<td style="text-align:left">ulimit – m unlimited；对最大内存不进行限制。</td>
+</tr>
+<tr>
+<td style="text-align:left">-n</td>
+<td style="text-align:left">可以打开最大文件描述符的数量。</td>
+<td style="text-align:left">ulimit – n 128；限制最大可以使用 128 个文件描述符。</td>
+</tr>
+<tr>
+<td style="text-align:left">-p</td>
+<td style="text-align:left">管道缓冲区的大小，以 Kbytes 为单位。</td>
+<td style="text-align:left">ulimit – p 512；限制管道缓冲区的大小为 512 Kbytes。</td>
+</tr>
+<tr>
+<td style="text-align:left">-s</td>
+<td style="text-align:left">线程栈大小，以 Kbytes 为单位。</td>
+<td style="text-align:left">ulimit – s 512；限制线程栈的大小为 512 Kbytes。</td>
+</tr>
+<tr>
+<td style="text-align:left">-t</td>
+<td style="text-align:left">最大的 CPU 占用时间，以秒为单位。</td>
+<td style="text-align:left">ulimit – t unlimited；对最大的 CPU 占用时间不进行限制。</td>
+</tr>
+<tr>
+<td style="text-align:left">-u</td>
+<td style="text-align:left">用户最大可用的进程数。</td>
+<td style="text-align:left">ulimit – u 64；限制用户最多可以使用 64 个进程。</td>
+</tr>
+<tr>
+<td style="text-align:left">-v</td>
+<td style="text-align:left">进程最大可用的虚拟内存，以 Kbytes 为单位。</td>
+<td style="text-align:left">ulimit – v 200000；限制最大可用的虚拟内存为 200000 Kbytes。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ulimit参数作用范围"><a href="#ulimit参数作用范围" class="headerlink" title="ulimit参数作用范围"></a>ulimit参数作用范围</h2><ul>
+<li>针对单个tty生效:在tty中直接运行ulimit命令的作用范围是只对当前tty生效</li>
+<li>针对单个用户生效:将命令添加到.bashrc中,将对当前用户生效</li>
+<li>针对所有用户生效:将命令添加到/etc/security/limits.conf中，可以设置针对特定用户或者所有用户的限制。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;linux中ulimit命令简单使用&quot;&gt;&lt;a href=&quot;#linux中ulimit命令简单使用&quot; class=&quot;headerlink&quot; title=&quot;linux中ulimit命令简单使用&quot;&gt;&lt;/a&gt;linux中ulimit命令简单使用&lt;/h1&gt;&lt;blockquo
+    
+    </summary>
+    
+      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
+    
+      <category term="ulimit" scheme="http://yoursite.com/tags/ulimit/"/>
+    
+  </entry>
   
   <entry>
     <title>C++函数指针学习</title>
@@ -1155,65 +1272,6 @@
     <summary type="html">
     
       &lt;h1 id=&quot;Unix标准IO库相关函数总结之读写流-二&quot;&gt;&lt;a href=&quot;#Unix标准IO库相关函数总结之读写流-二&quot; class=&quot;headerlink&quot; title=&quot;Unix标准IO库相关函数总结之读写流(二)&quot;&gt;&lt;/a&gt;Unix标准IO库相关函数总结之读写流(二)
-    
-    </summary>
-    
-      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="标准IO" scheme="http://yoursite.com/tags/%E6%A0%87%E5%87%86IO/"/>
-    
-      <category term="FILE" scheme="http://yoursite.com/tags/FILE/"/>
-    
-      <category term="fopen" scheme="http://yoursite.com/tags/fopen/"/>
-    
-      <category term="freopen" scheme="http://yoursite.com/tags/freopen/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unix标准IO库相关函数总结之打开关闭流(一)</title>
-    <link href="http://yoursite.com/2017/05/31/Unix%E6%A0%87%E5%87%86IO%E5%BA%93%E5%87%BD%E6%95%B0%E4%B9%8B%E6%89%93%E5%BC%80%E5%85%B3%E9%97%AD%E6%B5%81(%E4%B8%80)/"/>
-    <id>http://yoursite.com/2017/05/31/Unix标准IO库函数之打开关闭流(一)/</id>
-    <published>2017-05-31T12:04:00.000Z</published>
-    <updated>2017-06-03T12:35:41.271Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unix标准IO库相关函数总结之打开关闭流-一"><a href="#Unix标准IO库相关函数总结之打开关闭流-一" class="headerlink" title="Unix标准IO库相关函数总结之打开关闭流(一)"></a>Unix标准IO库相关函数总结之打开关闭流(一)</h1><h2 id="Unix标准IO类型FILE"><a href="#Unix标准IO类型FILE" class="headerlink" title="Unix标准IO类型FILE"></a>Unix标准IO类型FILE</h2><p>在Unix相关的文件IO中几乎所有的函数都用到了文件描述符，文件描述符是打开一个文件时返回的一个可用的最小的文件描述标识。相应的在Unix标准IO相关的函数中，几乎每个函数都用到了FILE数据类型。本小结简单介绍一下FILE结构体的内容。</p>
-<p>FILE实际上是一个struct的typedef,可以在/usr/include/stdio.h中找到它的定义为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> _IO_FILE FILE;</div></pre></td></tr></table></figure></p>
-<p>_IO_FILE_的定义在文件/usr/include/libio.h中，我们可以看到它的具体定义为：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">struct</span> _IO_FILE &#123;</div><div class="line">  <span class="keyword">int</span> _flags;           <span class="comment">/* High-order word is _IO_MAGIC; rest is flags. */</span></div><div class="line">  <span class="meta">#<span class="meta-keyword">define</span> _IO_file_flags _flags</span></div><div class="line"></div><div class="line">  <span class="comment">/* The following pointers correspond to the C++ streambuf protocol. */</span></div><div class="line">  <span class="comment">/* Note:  Tk uses the _IO_read_ptr and _IO_read_end fields directly. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_ptr;   <span class="comment">/* Current read pointer */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_end;   <span class="comment">/* End of get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_base;  <span class="comment">/* Start of putback+get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_base; <span class="comment">/* Start of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_ptr;  <span class="comment">/* Current put pointer. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_end;  <span class="comment">/* End of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_base;   <span class="comment">/* Start of reserve area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_end;    <span class="comment">/* End of reserve area. */</span></div><div class="line">  <span class="comment">/* The following fields are used to support backing up and undo. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_base; <span class="comment">/* Pointer to start of non-current get area. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_backup_base;  <span class="comment">/* Pointer to first valid character of backup area */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_end; <span class="comment">/* Pointer to end of non-current get area. */</span></div><div class="line"></div><div class="line">  <span class="keyword">struct</span> _IO_marker *_markers;</div><div class="line"></div><div class="line">  <span class="keyword">struct</span> _IO_FILE *_chain;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> _fileno;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> 0</span></div><div class="line">  <span class="keyword">int</span> _blksize;</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">  <span class="keyword">int</span> _flags2;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">  _IO_off_t _old_offset; <span class="comment">/* This used to be _offset but it's too small.  */</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __HAVE_COLUMN <span class="comment">/* temporary */</span></span></div><div class="line">  <span class="comment">/* 1+column number of pbase(); 0 is unknown. */</span></div><div class="line">  <span class="keyword">unsigned</span> <span class="keyword">short</span> _cur_column;</div><div class="line">  <span class="keyword">signed</span> <span class="keyword">char</span> _vtable_offset;</div><div class="line">  <span class="keyword">char</span> _shortbuf[<span class="number">1</span>];</div><div class="line"></div><div class="line">  <span class="comment">/*  char* _save_gptr;  char* _save_egptr; */</span></div><div class="line"></div><div class="line">  _IO_lock_t *_lock;</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _IO_USE_OLD_IO_FILE</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>从上面的struct中可以观察到FILE中是有文件描述符标志的，即为fileno参数。</p>
-<h2 id="打开标准IO流"><a href="#打开标准IO流" class="headerlink" title="打开标准IO流"></a>打开标准IO流</h2><p>打开标准文件IO流的方法有如下三个：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function">FILE* <span class="title">fopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">freopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type, FILE* <span class="keyword">restrict</span> fp)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">fdopen</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* type)</span></span>;</div></pre></td></tr></table></figure></p>
-<p>上述三个函数<strong>区别以及使用场景</strong>说明:</p>
-<ul>
-<li>fopen的作用是打开一个指定文件路径的文件流。</li>
-<li>freopen的作用是在一个指定的留上打开一个指定文件。如果当前流已经打开，则先关闭该流；若该流被重定向，则清除重定向。该函数常用于<strong>将一个指定的文件打开为一个默认的流</strong>，如若想使用printf函数将打印出来的内容输出到一个指定文件中，此时可以讲stdout重定向到指定的文件路径并指定打开模式。</li>
-<li>fdopen的作用是将一个已经打开的文件描述符(该文件描述符可能是open,dup,socket等获取的)绑定到一个标准IO流上。此函数<strong>常用于由管道和网络通信通道函数返回的文件描述符</strong>，因为这些无法显式的指定文件。</li>
-</ul>
-<p><strong>参数说明：</strong></p>
-<ul>
-<li>pathname: 文件路径，相对或绝对</li>
-<li>type： 打开模式（r,w,a,r+,w+,a+以及所有后面加b）</li>
-</ul>
-<p><strong>打开模式说明：</strong></p>
-<ul>
-<li>r  : 读模式</li>
-<li>w  : 写模式，在写之前将原有文件内容全部清楚</li>
-<li>a  : 追加模式，offset为文件结尾</li>
-<li>r+ : 读写模式(不删除文件原有内容，offset初始为文件开头)。如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc456”。</li>
-<li>w+ : 读写模式(删除文件原有内容，offset为文件开头).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc”。</li>
-<li>a+ : 读写模式(offset为文件结尾).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”123456abc”。</li>
-</ul>
-<p>上述所有的模式后面都加上b表示对二进制文件的操作(rb,wb,ab,rb+,wb+,ab+)。</p>
-<blockquote>
-<p>注意：对于fdopen函数由于文件已经由文件描述符打开，此时w模式时将不清除文件内容，追加模式不常见文件。</p>
-<p>当以读写模式打开文件时候，将有一些限制。如果中间没有fflush,fseek,fsetpos以及rewind函数，标注输出之后不能直接进行输入;如果没有fseek,fsetpos或者rewind，或者一个输入没有到达文件尾，则输入操作之后不能跟输出操作。</p>
-</blockquote>
-<h2 id="关闭标准文件流"><a href="#关闭标准文件流" class="headerlink" title="关闭标准文件流"></a>关闭标准文件流</h2><p>一般情况下在关闭文件流之前通常先使用fflush刷新缓冲区防止数据丢失，关闭标准文件流使用的函数为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">int fclose(FILE* fp);</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Unix标准IO库相关函数总结之打开关闭流-一&quot;&gt;&lt;a href=&quot;#Unix标准IO库相关函数总结之打开关闭流-一&quot; class=&quot;headerlink&quot; title=&quot;Unix标准IO库相关函数总结之打开关闭流(一)&quot;&gt;&lt;/a&gt;Unix标准IO库相关函数总结之
     
     </summary>
     
