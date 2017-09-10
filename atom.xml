@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-09-10T10:53:41.079Z</updated>
+  <updated>2017-09-10T10:56:47.947Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
+    <title>Unix高级编程之signal</title>
     <link href="http://yoursite.com/2017/09/10/Unix%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B%E4%B9%8Bsignal/"/>
     <id>http://yoursite.com/2017/09/10/Unix高级编程之signal/</id>
-    <published>2017-09-10T10:53:41.079Z</published>
-    <updated>2017-09-10T10:53:41.079Z</updated>
+    <published>2017-09-09T21:24:40.000Z</published>
+    <updated>2017-09-10T10:56:47.947Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Unix高级编程之signal"><a href="#Unix高级编程之signal" class="headerlink" title="Unix高级编程之signal"></a>Unix高级编程之signal</h1><p>signal函数相关的细节描述详见另外两篇篇博客，这里不详细赘述:<br><a href="https://langzi989.github.io/2017/09/08/C++%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E5%AD%A6%E4%B9%A0/" target="_blank" rel="external">https://langzi989.github.io/2017/09/08/C++%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E5%AD%A6%E4%B9%A0/</a><br><a href="https://langzi989.github.io/2017/05/04/Wait%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3/" target="_blank" rel="external">https://langzi989.github.io/2017/05/04/Wait%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3/</a></p>
 <h2 id="显示信号的描述"><a href="#显示信号的描述" class="headerlink" title="显示信号的描述"></a>显示信号的描述</h2><p>信号的个数可以用宏<strong>NSIG</strong>获取。</p>
@@ -62,6 +62,14 @@
     
     </summary>
     
+      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="signal" scheme="http://yoursite.com/tags/signal/"/>
+    
+      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
+    
+      <category term="sigaction" scheme="http://yoursite.com/tags/sigaction/"/>
     
   </entry>
   
@@ -677,11 +685,11 @@
       <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
       <category term="read" scheme="http://yoursite.com/tags/read/"/>
     
       <category term="write" scheme="http://yoursite.com/tags/write/"/>
+    
+      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
     
       <category term="socket" scheme="http://yoursite.com/tags/socket/"/>
     
