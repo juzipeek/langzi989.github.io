@@ -216,6 +216,67 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/09/13/Linux中umash深入理解/">
+                            Linux中umask深入理解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-09-13T14:53:01+08:00">
+	
+		    9月 13, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Linux中umask深入理解"><a href="#Linux中umask深入理解" class="headerlink" title="Linux中umask深入理解"></a>Linux中umask深入理解</h1><p>umask(user file-creatiopn mode mask)为用户文件创建掩码，是创建文件或文件夹时默认权限的基础。通常我们可以使用chmod修改linux中文件的权限.umask的作用与chmod的效果相反，具体看下面。</p>
+<blockquote>
+<p>若没有文件掩码时，文件的默认权限为0666,文件夹的默认权限为0777。</p>
+<p>原因:</p>
+<ul>
+<li>创建文件一般是用来读写，所以默认情况下所有用户都具有读写权限，但是没有可执行权限，所以文件创建的默认权限为0666</li>
+<li>而文件夹的x权限表示的是打开权限，所以这个权限必须要有，所以文件夹的默认权限为0777。</li>
+</ul>
+</blockquote>
+<h2 id="用户掩码作用"><a href="#用户掩码作用" class="headerlink" title="用户掩码作用"></a>用户掩码作用</h2><p>上述的权限是在没有umask情况下的默认权限。但是系统为了保护用户创建文件和文件夹的权限,此时系统会有一个默认的用户掩码(umask)，大多数的Linux系统的默认掩码为022。用户掩码的作用是用户在创建文件时从文件的默认权限中去除掩码中的权限。所以文件创建之后的权限实际为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">＃文件创建权限</div><div class="line">默认权限(文件0666,文件夹0777)-umask</div></pre></td></tr></table></figure></p>
+<p>所以在用户不修改umask的情况下，创建文件的权限为：0666-0022=0644。创建文件夹的权限为：0777-0022=0755</p>
+<h2 id="查看与修改默认掩码"><a href="#查看与修改默认掩码" class="headerlink" title="查看与修改默认掩码"></a>查看与修改默认掩码</h2><p>查看用户掩码:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#以数字方式查看掩码</div><div class="line">umask</div><div class="line"># 以符号形式查看掩码</div><div class="line">umask -S</div></pre></td></tr></table></figure></p>
+<p>可以使用umask命令直接修改掩码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">umask 0000</div></pre></td></tr></table></figure></p>
+<p>上述方法修改的掩码只在当前tty中生效.若要全局生效,可以讲umask值写在/etc/profile或者.bashrc中</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/09/13/Linux中umash深入理解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/09/09/Linux中ulimit命令简单使用/">
                             Linux中ulimit命令简单使用
                         </a>
@@ -901,69 +962,6 @@
                     
                         <p>
                             <a href="/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/">
-                            通过/proc/stat计算linux系统即时CPU使用率
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-19T06:03:09+08:00">
-	
-		    12月 19, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="通过-proc-stat计算linux系统即时CPU使用率"><a href="#通过-proc-stat计算linux系统即时CPU使用率" class="headerlink" title="通过/proc/stat计算linux系统即时CPU使用率"></a>通过/proc/stat计算linux系统即时CPU使用率</h1><h2 id="proc-stat"><a href="#proc-stat" class="headerlink" title="/proc/stat"></a>/proc/stat</h2><p>/proc文件系统是一个伪文件系统，它存在于内存中，不占用外存空间。它以文件系统的方式为内核与进程提供通信接口。用户和应用程序可以通过/proc得到系统的信息，并可以改变内核的某些参数。由于系统的信息，如进程是动态改变的，所以用户或应用程序读取/proc目录中的文件的时，/proc文件系统是动态从系统内核读出所需信息并提交的。<br>在linux或Ubuntu系统中，/proc/stat文件记录了所有CPU活动的信息，该文件中的所有值都是从系统启动开始累计到当前的值。我们可以通过一个较小的时间段的CPU利用率值来估算某一个时刻的CPU利用率。首先我们先来查看一下/proc/stat中的内容：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ cat /proc/stat</div><div class="line">cpu  <span class="number">15543</span> <span class="number">334</span> <span class="number">4963</span> <span class="number">142337</span> <span class="number">3413</span> <span class="number">0</span> <span class="number">180</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu0 <span class="number">3877</span> <span class="number">142</span> <span class="number">1137</span> <span class="number">35988</span> <span class="number">615</span> <span class="number">0</span> <span class="number">28</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu1 <span class="number">3866</span> <span class="number">23</span> <span class="number">1068</span> <span class="number">35982</span> <span class="number">608</span> <span class="number">0</span> <span class="number">74</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu2 <span class="number">4104</span> <span class="number">159</span> <span class="number">1333</span> <span class="number">35395</span> <span class="number">735</span> <span class="number">0</span> <span class="number">59</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu3 <span class="number">3695</span> <span class="number">9</span> <span class="number">1424</span> <span class="number">34970</span> <span class="number">1454</span> <span class="number">0</span> <span class="number">18</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div></pre></td></tr></table></figure></p>
-<p>上面的信息中前八个是比较重要的。</p>
-<ul>
-<li>user(15543): 从系统启动到当前时刻，处于用户态的时间(用户空间的CPU时间)，不包括nice为负值的进程。</li>
-<li>nice(334): 从系统启动到当前时刻，nice值为负的进程所占的CPU时间。</li>
-<li>system(4963): 从系统启动到当前时刻，处于内核状态的CPU时间。</li>
-<li>idle(142337): 从系统启动到当前时刻，除了I/O等待时间以外的其他等待时间</li>
-<li>iowait(3413): ~，IO等待时间</li>
-<li>irq(0): ~, 硬中断时间</li>
-<li>softrq(180): ~,软中断时间。</li>
-<li>steal: ~,在虚拟环境中运行的时间。</li>
-</ul>
-<blockquote>
-<p>总的CPU时间为：total = user+nice+system+idle+iowait+irq+softrq</p>
-</blockquote>
-<h2 id="计算当前时刻的CPU使用率"><a href="#计算当前时刻的CPU使用率" class="headerlink" title="计算当前时刻的CPU使用率"></a>计算当前时刻的CPU使用率</h2><p>我们使用距离当前时刻较小的间隔的时间段的CPU使用率近似当前时刻的CPU使用率。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CPU Usage=1 - (△idle+△iowait) / △total_time</div><div class="line">		 =1 - (idle2+iowait2 - idle1 - iowait1) / (total_time2 - total_time1)</div></pre></td></tr></table></figure></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
