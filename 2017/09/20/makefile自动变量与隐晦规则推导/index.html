@@ -20,12 +20,12 @@
 12%.o:%.c  $(CC) -c $(CFLAG">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="makefile自动变量与隐晦规则推导">
-<meta property="og:url" content="http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/index.html">
+<meta property="og:url" content="http://yoursite.com/2017/09/20/makefile自动变量与隐晦规则推导/index.html">
 <meta property="og:site_name" content="魏传柳">
 <meta property="og:description" content="makefile自动变量与隐晦规则推导makefile的使用可以大大简化程序编译的过程，不过对于新手来说makefile的执行规则理解起来还是很让人迷糊的。其中最重要的原因是makefile中使用了大量的隐晦规则和自动变量来简化makefile的编写.本节将记录一下makefile自动变量和隐晦规则的推导过程以及makefile的执行流程。
 
 12%.o:%.c  $(CC) -c $(CFLAG">
-<meta property="og:updated_time" content="2017-09-19T01:41:32.326Z">
+<meta property="og:updated_time" content="2017-09-24T08:48:44.367Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="makefile自动变量与隐晦规则推导">
 <meta name="twitter:description" content="makefile自动变量与隐晦规则推导makefile的使用可以大大简化程序编译的过程，不过对于新手来说makefile的执行规则理解起来还是很让人迷糊的。其中最重要的原因是makefile中使用了大量的隐晦规则和自动变量来简化makefile的编写.本节将记录一下makefile自动变量和隐晦规则的推导过程以及makefile的执行流程。
@@ -225,9 +225,9 @@
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" datetime="2017-08-31T20:48:59+08:00">
+    <time itemprop="datePublished" datetime="2017-09-20T20:48:59+08:00">
 	
-		    8月 31, 2017
+		    9月 20, 2017
     	
     </time>
     
@@ -323,7 +323,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/07/Linux常用命令/"  data-tooltip="Linux常用命令混淆点记录">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -331,7 +331,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/08/31/makefile详解/" data-tooltip="makefile详解">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/20/UnixIPC中key_t类型本质/" data-tooltip="UnixIPC 机制和key_t本质类型">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -346,17 +346,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/20/makefile自动变量与隐晦规则推导/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/20/makefile自动变量与隐晦规则推导/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/20/makefile自动变量与隐晦规则推导/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -397,7 +397,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/07/Linux常用命令/"  data-tooltip="Linux常用命令混淆点记录">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -405,7 +405,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/08/31/makefile详解/" data-tooltip="makefile详解">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/20/UnixIPC中key_t类型本质/" data-tooltip="UnixIPC 机制和key_t本质类型">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -420,17 +420,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/20/makefile自动变量与隐晦规则推导/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/20/makefile自动变量与隐晦规则推导/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/20/makefile自动变量与隐晦规则推导/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -450,17 +450,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/20/makefile自动变量与隐晦规则推导/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/20/makefile自动变量与隐晦规则推导/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/08/31/makefile自动变量与隐晦规则推导/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/20/makefile自动变量与隐晦规则推导/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>

@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>C++前置声明 - 魏传柳</title>
+    <title>UnixIPC 机制和key_t本质类型 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,19 +15,28 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="C++前置声明以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。
-实际场景我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：Lock.hpp12345678#include &quot;Key.hpp&quot;class Lock &amp;#123">
+    <meta name="description" content="System V IPC 机制和key_t本质类型System V三种IPC机制System V IPC包括三种不同的通信机制
+
+消息队列:消息队列类似于管道,但是又有很大的差别。第一,消息队列是有边界的，所以消息队列的通信机制是通过消息进行传递，而管道是通过字节流进行通信。第二，每条消息包括一个完整的整形字段，消息队列可以通过类型来选择消息。
+信号量:用于同步两个进程。
+共享内存:共享内存允许两">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="C++前置声明">
-<meta property="og:url" content="http://yoursite.com/2016/12/22/C-前置声明/index.html">
+<meta property="og:title" content="UnixIPC 机制和key_t本质类型">
+<meta property="og:url" content="http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/index.html">
 <meta property="og:site_name" content="魏传柳">
-<meta property="og:description" content="C++前置声明以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。
-实际场景我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：Lock.hpp12345678#include &quot;Key.hpp&quot;class Lock &amp;#123">
-<meta property="og:updated_time" content="2016-12-22T16:10:28.499Z">
+<meta property="og:description" content="System V IPC 机制和key_t本质类型System V三种IPC机制System V IPC包括三种不同的通信机制
+
+消息队列:消息队列类似于管道,但是又有很大的差别。第一,消息队列是有边界的，所以消息队列的通信机制是通过消息进行传递，而管道是通过字节流进行通信。第二，每条消息包括一个完整的整形字段，消息队列可以通过类型来选择消息。
+信号量:用于同步两个进程。
+共享内存:共享内存允许两">
+<meta property="og:updated_time" content="2017-09-20T13:36:33.697Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C++前置声明">
-<meta name="twitter:description" content="C++前置声明以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。
-实际场景我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：Lock.hpp12345678#include &quot;Key.hpp&quot;class Lock &amp;#123">
+<meta name="twitter:title" content="UnixIPC 机制和key_t本质类型">
+<meta name="twitter:description" content="System V IPC 机制和key_t本质类型System V三种IPC机制System V IPC包括三种不同的通信机制
+
+消息队列:消息队列类似于管道,但是又有很大的差别。第一,消息队列是有边界的，所以消息队列的通信机制是通过消息进行传递，而管道是通过字节流进行通信。第二，每条消息包括一个完整的整形字段，消息队列可以通过类型来选择消息。
+信号量:用于同步两个进程。
+共享内存:共享内存允许两">
     
     
         
@@ -218,19 +227,19 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            C++前置声明
+            UnixIPC 机制和key_t本质类型
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" datetime="2016-12-22T22:08:31+08:00">
+    <time itemprop="datePublished" datetime="2017-09-20T20:09:08+08:00">
 	
-		    12月 22, 2016
+		    9月 20, 2017
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/C-学习/">C++学习</a>
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
 
     
@@ -240,15 +249,26 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="C-前置声明"><a href="#C-前置声明" class="headerlink" title="C++前置声明"></a>C++前置声明</h1><p>以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。</p>
-<h2 id="实际场景"><a href="#实际场景" class="headerlink" title="实际场景"></a>实际场景</h2><p>我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：<br>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Key.hpp"</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span> &#123;</span></div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key m_key;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Lock.hpp"</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Key</span> &#123;</span></div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		m_lock;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这个时候出现了两个类相互包含的情况，因为在编译Lock.cpp的时候，我们需要去查看Key的定义，于是去定义Key,在Key中需要Lock的定义，于是又去构造Lock,这样下去，就出现了一个无限循环包含的情况，有些编译器会直接编译错误，而其他编译器会无限包含下去。<br>这该怎么办呢？有办法，C++为我们提供了前置声明。前置声明是什么？就这个例子来讲，我们要造一把锁，光有锁不行啊，我们还得有能打开这把锁的钥匙。但是锁还没有造好，总不能先打造钥匙吧，钥匙的形状我定了，改天在造。先把锁造好，造锁的时候我要先给要是留一个位置，等锁造好了，我再决定造什么样的钥匙。<strong>前置声明就是我在声明一个类(Lock)的时候,用到了另外一个类（Key）的定义，但是Key还没定义呢，而且我先不需要Key的定义，只需要直到Key是一个类就好了。那好，我就先声明类Key,告诉编译器Key是一个类(不需要包含Key.hpp)</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Key</span>;</span></div></pre></td></tr></table></figure></p>
-<p>然后在Lock中用到Key的时候，都用指针或者引用代替(因为指针是固定大小的，但Key的大小只有知道了Key的定义才能确定)。然后上面的代码就可以改造为如下：</p>
-<p>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Key</span>;</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span>&#123;</span></div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key *mp_key;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span>;</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Key</span> &#123;</span></div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Lock* mp_lock;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="前置声明注意的问题"><a href="#前置声明注意的问题" class="headerlink" title="前置声明注意的问题"></a>前置声明注意的问题</h2><h3 id="必须使用前置声明的指针或引用形式"><a href="#必须使用前置声明的指针或引用形式" class="headerlink" title="必须使用前置声明的指针或引用形式"></a>必须使用前置声明的指针或引用形式</h3><p>在需要使用前置声明的文件中，不可以使用类的定义式，因为类的定义式只有在类定义之后才能获取，这个时候类还没有定义，所以会出错。另一个类在构造的时候编译器是需要计算该对象所占的字节的大小给其分配内存的，但是如果使用类的定义式，这个时候类还未定义，所以无法计算其大小，所以只能使用指针或者引用的形式进行引用。</p>
-<h3 id="避免在Lock中使用Key的方法"><a href="#避免在Lock中使用Key的方法" class="headerlink" title="避免在Lock中使用Key的方法"></a>避免在Lock中使用Key的方法</h3><h3 id="避免在Key定义之前调用Key的析构函数"><a href="#避免在Key定义之前调用Key的析构函数" class="headerlink" title="避免在Key定义之前调用Key的析构函数"></a>避免在Key定义之前调用Key的析构函数</h3>
+            <h1 id="System-V-IPC-机制和key-t本质类型"><a href="#System-V-IPC-机制和key-t本质类型" class="headerlink" title="System V IPC 机制和key_t本质类型"></a>System V IPC 机制和key_t本质类型</h1><h2 id="System-V三种IPC机制"><a href="#System-V三种IPC机制" class="headerlink" title="System V三种IPC机制"></a>System V三种IPC机制</h2><p>System V IPC包括三种不同的通信机制</p>
+<ul>
+<li>消息队列:消息队列类似于管道,但是又有很大的差别。第一,消息队列是有边界的，所以消息队列的通信机制是通过消息进行传递，而管道是通过字节流进行通信。第二，每条消息包括一个完整的整形字段，消息队列可以通过类型来选择消息。</li>
+<li>信号量:用于同步两个进程。</li>
+<li>共享内存:共享内存允许两个进程共享同一个内存段。即一块内存被映射到不同进程的虚拟内存中。</li>
+</ul>
+<h2 id="key-t本质"><a href="#key-t本质" class="headerlink" title="key_t本质"></a>key_t本质</h2><p>System V系统调用都有一个相关的get系统调用，它与文件io中的open函数类似，不同的是它的参数是一个整数，给定一个整数之后，系统会做以下操作:</p>
+<ul>
+<li>使用给定key创建一个新的IPC对象，并将IPC对象标识key_t返回给调用者.</li>
+<li>若该key对应的IPC对象存在，直接将标识返回给调用者，相当于使用key换取标识,而不做创建操作.</li>
+</ul>
+<p>上述IPC对象的标识类型为key_t。key_t的本质是什么?我们可以通过grep命令追踪到</p>
+<p>在文件/usr/include/sys/ipc.h中:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#ifndef __key_t_defined</div><div class="line">typedef __key_t key_t;</div><div class="line"># define __key_t_defined</div><div class="line">#endif</div></pre></td></tr></table></figure></p>
+<p>在文件/usr/include/bits/types.h中:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">__STD_TYPE __KEY_T_TYPE __key_t;        /* Type of an IPC key.  */</div></pre></td></tr></table></figure></p>
+<p>在文件/usr/include/bits/typesizes.h中:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#define __KEY_T_TYPE            __S32_TYPE</div></pre></td></tr></table></figure>
+<p>在文件中:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#define __S32_TYPE              int</div></pre></td></tr></table></figure>
+<p>故从上面的追踪，可以看出key_t的本质为int类型.</p>
+
             
         </div>
     </div>
@@ -257,7 +277,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/C/">C++</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/Linux/">Linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/ipc/">ipc</a> <a class="tag tag--primary tag--small t-link" href="/tags/key-t/">key_t</a>
 
             </div>
         
@@ -266,7 +286,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/27/time命令详解/"  data-tooltip="time命令详解">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/20/makefile自动变量与隐晦规则推导/"  data-tooltip="makefile自动变量与隐晦规则推导">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -274,7 +294,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/21/条款27-尽量少做转型动作/" data-tooltip="条款27:尽量少做转型动作">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/13/Linux中umash深入理解/" data-tooltip="Linux中umask深入理解">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -289,17 +309,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -340,7 +360,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/27/time命令详解/"  data-tooltip="time命令详解">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/20/makefile自动变量与隐晦规则推导/"  data-tooltip="makefile自动变量与隐晦规则推导">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -348,7 +368,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/12/21/条款27-尽量少做转型动作/" data-tooltip="条款27:尽量少做转型动作">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/13/Linux中umash深入理解/" data-tooltip="Linux中umask深入理解">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -363,17 +383,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -393,17 +413,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2016/12/22/C-前置声明/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>

@@ -323,7 +323,7 @@
 <li>若客户端发送的分节在某个路由器上返回destination unreachable，此时返回EHOSTUNREACH，这种情况发生在<strong>目的主机和端口存在，但是中间路由出现问题</strong>。</li>
 </ul>
 <p>从TCP状态图可以看出，connect函数可以使得socket状态从closed转移到SYN_SENT状态,若成功，转换到ESTABLISHED状态。若套接字失败不可用，必须关闭。然后重新调用socket函数。</p>
-<h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr* servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> struct sockaddr* servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</div></pre></td></tr></table></figure>
 <h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
 <li>sockfd : 此参数为调用sock函数的返回值，即套接字描述符</li>
 <li>servaddr : 指向服务器套接字地址结构的指针,套接字地址结构中必须含有Ip地址以及端口。</li>
@@ -335,7 +335,7 @@
 <blockquote>
 <p>注意：socket绑定的端口必须是<strong>进程所在主机上的网络接口之一</strong>，不能是其他主机的IP，否则会出现“Cannot assign requested address”,也不能绑定已经在使用的端口。</p>
 </blockquote>
-<h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="comment">//函数参数与connect函数中的参数及意义相同。</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr* servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="comment">//函数参数与connect函数中的参数及意义相同。</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> struct sockaddr* servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</div></pre></td></tr></table></figure>
 <p>bind函数可以只绑定IP，只绑定端口，也可以两者都绑定，也可以两者都不绑定，具体的制定规则如下：</p>
 <table>
 <thead>
@@ -384,7 +384,7 @@
 </ul>
 </blockquote>
 <h2 id="accept函数"><a href="#accept函数" class="headerlink" title="accept函数"></a>accept函数</h2><p>accept函数的作用是从已经完成连接的队列头返回下一个已经完成的连接，如果已完成的连接为空，则进程进入睡眠状态(阻塞)。</p>
-<h3 id="函数原型-4"><a href="#函数原型-4" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span><span class="params">(<span class="keyword">int</span> servsockfd, <span class="keyword">struct</span> sockaddr* cliaddr, <span class="keyword">socklen_t</span>* addr_len)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="函数原型-4"><a href="#函数原型-4" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span><span class="params">(<span class="keyword">int</span> servsockfd, struct sockaddr* cliaddr, <span class="keyword">socklen_t</span>* addr_len)</span></span>;</div></pre></td></tr></table></figure>
 <h3 id="参数说明-2"><a href="#参数说明-2" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
 <li>servsockfd : 监听的套接字描述符</li>
 <li>cliaddr : 客户端的sockaddr，如果对客户端的来源不感兴趣，可以将其设置为NULL;</li>

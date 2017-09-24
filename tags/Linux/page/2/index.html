@@ -216,6 +216,62 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/21/函数dup/">
+                            函数dup与dup2
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-21T23:31:31+08:00">
+	
+		    5月 21, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="函数dup与dup2"><a href="#函数dup与dup2" class="headerlink" title="函数dup与dup2"></a>函数dup与dup2</h1><h2 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup2</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> fd2)</span></span>;</div></pre></td></tr></table></figure>
+<h2 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h2><p>这两个函数的功能都是用来复制一个现有的文件描述符。返回的文件描述符与原有的文件描述符共用同一个文件表项，但是文件描述符标志将被清除，即当进程调用exec时文件描述符将不会被关闭。</p>
+<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><p>dup返回当前可用的最小的文件描述符。dup2返回fd2，若fd2所表示的文件已经打开，则将该文件描述符先关闭，然后再将fd复制到fd2上返回。若fd2与fd相同，则直接返回fd、.</p>
+<h2 id="等效函数"><a href="#等效函数" class="headerlink" title="等效函数"></a>等效函数</h2><p>dup函数与fcntl的F_DUPFD功能相同。</p>
+<p>dup(fd)等效于fcntl(fd, F_DUPFD, 0)</p>
+<p>dup2(fd, fd2)等效于close(fd), fcntl(fd, F_DUPFD, fd2)</p>
+<p>但是dup2是原子的上述先关闭然后在复制不是原子操作。</p>
+<h2 id="作用及用途"><a href="#作用及用途" class="headerlink" title="作用及用途"></a>作用及用途</h2><p>dup函数常用来重定向进程的stdin、stdout以及stderr。原理与CGI类似，即将标准输入标准输出重定向到一个文件或者socket流等。</p>
+<h2 id="重定向标准输出"><a href="#重定向标准输出" class="headerlink" title="重定向标准输出"></a>重定向标准输出</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> fd = dup(STDIN_FILENO);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"dup error\n"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">char</span> buf[] = <span class="string">"this is a test of dup\n"</span>;</div><div class="line">    write(fd, buf, <span class="keyword">sizeof</span>(buf));</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/21/函数dup/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/04/cgi原理/">
                             cgi原理
                         </a>
