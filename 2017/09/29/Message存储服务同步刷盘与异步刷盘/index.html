@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>rapidjson Stream - 魏传柳</title>
+    <title>异步刷盘与同步刷盘的区别 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,25 +15,19 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="rapidjson Stream(待更新)
-本系列文章以例子的方式进行呈现。
-
-123456789101112131415161718192021222324252627282930313233343536#include &amp;lt;iostream&amp;gt;#include &quot;rapidjson/rapidjson.h&quot;#include &quot;rapidjson/document.h&quot;#include">
+    <meta name="description" content="异步刷盘与同步刷盘的区别存储系统往往追求尽量高的吞吐,无论是传统的MySQl还是分布式存储系统Hbase，在写入的时候会尽量提升系统的吞吐。一般来说，提升系统性能的方式是先将数据写入内存中，然后再刷盘到磁盘中进行持久化。
+刷盘对应于MySQL中的fsync和hbase中的flush，在mysql中标识将写入的redo log以及bin　Log持久化到磁盘中，这样就保证mysql可以持续的对外提供数">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="rapidjson Stream">
-<meta property="og:url" content="http://yoursite.com/2017/05/27/rapidJsonStream/index.html">
+<meta property="og:title" content="异步刷盘与同步刷盘的区别">
+<meta property="og:url" content="http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/index.html">
 <meta property="og:site_name" content="魏传柳">
-<meta property="og:description" content="rapidjson Stream(待更新)
-本系列文章以例子的方式进行呈现。
-
-123456789101112131415161718192021222324252627282930313233343536#include &amp;lt;iostream&amp;gt;#include &quot;rapidjson/rapidjson.h&quot;#include &quot;rapidjson/document.h&quot;#include">
-<meta property="og:updated_time" content="2017-05-27T01:40:41.516Z">
+<meta property="og:description" content="异步刷盘与同步刷盘的区别存储系统往往追求尽量高的吞吐,无论是传统的MySQl还是分布式存储系统Hbase，在写入的时候会尽量提升系统的吞吐。一般来说，提升系统性能的方式是先将数据写入内存中，然后再刷盘到磁盘中进行持久化。
+刷盘对应于MySQL中的fsync和hbase中的flush，在mysql中标识将写入的redo log以及bin　Log持久化到磁盘中，这样就保证mysql可以持续的对外提供数">
+<meta property="og:updated_time" content="2017-09-29T09:10:34.613Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="rapidjson Stream">
-<meta name="twitter:description" content="rapidjson Stream(待更新)
-本系列文章以例子的方式进行呈现。
-
-123456789101112131415161718192021222324252627282930313233343536#include &amp;lt;iostream&amp;gt;#include &quot;rapidjson/rapidjson.h&quot;#include &quot;rapidjson/document.h&quot;#include">
+<meta name="twitter:title" content="异步刷盘与同步刷盘的区别">
+<meta name="twitter:description" content="异步刷盘与同步刷盘的区别存储系统往往追求尽量高的吞吐,无论是传统的MySQl还是分布式存储系统Hbase，在写入的时候会尽量提升系统的吞吐。一般来说，提升系统性能的方式是先将数据写入内存中，然后再刷盘到磁盘中进行持久化。
+刷盘对应于MySQL中的fsync和hbase中的flush，在mysql中标识将写入的redo log以及bin　Log持久化到磁盘中，这样就保证mysql可以持续的对外提供数">
     
     
         
@@ -224,19 +218,19 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            rapidjson Stream
+            异步刷盘与同步刷盘的区别
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" datetime="2017-05-27T09:36:00+08:00">
+    <time itemprop="datePublished" datetime="2017-09-29T17:05:01+08:00">
 	
-		    5月 27, 2017
+		    9月 29, 2017
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
+    <a class="category-link" href="/categories/消息队列/">消息队列</a>
 
 
     
@@ -246,10 +240,21 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="rapidjson-Stream-待更新"><a href="#rapidjson-Stream-待更新" class="headerlink" title="rapidjson Stream(待更新)"></a>rapidjson Stream(待更新)</h1><blockquote>
-<p>本系列文章以例子的方式进行呈现。</p>
-</blockquote>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include "rapidjson/rapidjson.h"</div><div class="line">#include "rapidjson/document.h"</div><div class="line">#include "rapidjson/stringbuffer.h"</div><div class="line">#include "rapidjson/writer.h"</div><div class="line">#include "rapidjson/filereadstream.h"</div><div class="line">#include "cstdio"</div><div class="line"></div><div class="line">using namespace std;</div><div class="line">using namespace rapidjson;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  const char json[] = "[1, 2, 3]";</div><div class="line">  StringStream s(json);</div><div class="line">  Document document;</div><div class="line">  document.ParseStream(s);</div><div class="line"></div><div class="line">  for (int i = 0; i &lt; 3; i++)</div><div class="line">    std::cout &lt;&lt; document[i].GetInt() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  StringBuffer SB;</div><div class="line">  Writer&lt;StringBuffer&gt; writer(SB);</div><div class="line">  document.Accept(writer);</div><div class="line">  std::cout &lt;&lt; SB.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  FILE* fp = fopen("test.json", "rb");</div><div class="line"></div><div class="line">  char readBuffer[65535];</div><div class="line">  FileReadStream is(fp, readBuffer, sizeof(readBuffer));</div><div class="line"></div><div class="line">  document.ParseStream(is);</div><div class="line">  fclose(fp);</div><div class="line">  for (Value::ConstMemberIterator it = document.MemberBegin();</div><div class="line">        it != document.MemberEnd(); it++)</div><div class="line">        std::cout &lt;&lt; (it-&gt;name).GetString() &lt;&lt; std::endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+            <h1 id="异步刷盘与同步刷盘的区别"><a href="#异步刷盘与同步刷盘的区别" class="headerlink" title="异步刷盘与同步刷盘的区别"></a>异步刷盘与同步刷盘的区别</h1><p>存储系统往往追求尽量高的吞吐,无论是传统的MySQl还是分布式存储系统Hbase，在写入的时候会尽量提升系统的吞吐。一般来说，提升系统性能的方式是先将数据写入内存中，然后再刷盘到磁盘中进行持久化。</p>
+<p>刷盘对应于MySQL中的fsync和hbase中的flush，在mysql中标识将写入的redo log以及bin　Log持久化到磁盘中，这样就保证mysql可以持续的对外提供数据服务;在hbase中表示将MainStore中的数据持久化到磁盘中。一般来说刷盘的方式有<strong>同步刷盘和异步刷盘</strong>两种。</p>
+<p>同步刷盘和异步刷盘的区别如下:</p>
+<ul>
+<li>同步刷盘:当数据写如到内存中之后立刻刷盘(同步)，在保证刷盘成功的前提下响应client。</li>
+<li>异步刷盘:数据写入内存后，直接响应client。异步将内存中的数据持久化到磁盘上。</li>
+</ul>
+<p>同步刷盘和异步输盘的优劣:</p>
+<ul>
+<li>同步刷盘保证了数据的可靠性,保证数据不会丢失。</li>
+<li>同步刷盘效率较低,因为client获取响应需要等待刷盘时间，为了提升效率，通常采用批量输盘的方式，每次刷盘将会flush内存中的所有数据。(若底层的存储为mmap，则每次刷盘将刷新所有的dirty页)</li>
+<li>异步刷盘不能保证数据的可靠性.</li>
+<li>异步刷盘可以提高系统的吞吐量.</li>
+<li>常见的异步刷盘方式有两种,分别是定时刷盘和触发式刷盘。定时刷盘可设置为如每1s刷新一次内存.触发刷盘为当内存中数据到达一定的值，会触发异步刷盘程序进行刷盘。</li>
+</ul>
 
             
         </div>
@@ -259,7 +264,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/json/">json</a> <a class="tag tag--primary tag--small t-link" href="/tags/rapidjson/">rapidjson</a> <a class="tag tag--primary tag--small t-link" href="/tags/stream/">stream</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/同步刷盘/">同步刷盘</a> <a class="tag tag--primary tag--small t-link" href="/tags/异步刷盘/">异步刷盘</a> <a class="tag tag--primary tag--small t-link" href="/tags/消息队列/">消息队列</a>
 
             </div>
         
@@ -268,7 +273,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/硬链接和软链接的区别/"  data-tooltip="硬链接与软链接的区别">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -276,7 +281,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/rapidjson指针/" data-tooltip="rapidjson指针">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/29/LinuxPs命令使用/" data-tooltip="LinuxPs命令详解">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -291,17 +296,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -342,7 +347,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/硬链接和软链接的区别/"  data-tooltip="硬链接与软链接的区别">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -350,7 +355,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/rapidjson指针/" data-tooltip="rapidjson指针">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/29/LinuxPs命令使用/" data-tooltip="LinuxPs命令详解">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -365,17 +370,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -395,17 +400,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/27/rapidJsonStream/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-09-29T06:57:53.314Z</updated>
+  <updated>2017-09-29T09:10:34.613Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,47 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>异步刷盘与同步刷盘的区别</title>
+    <link href="http://yoursite.com/2017/09/29/Message%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1%E5%90%8C%E6%AD%A5%E5%88%B7%E7%9B%98%E4%B8%8E%E5%BC%82%E6%AD%A5%E5%88%B7%E7%9B%98/"/>
+    <id>http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/</id>
+    <published>2017-09-29T09:05:01.000Z</published>
+    <updated>2017-09-29T09:10:34.613Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="异步刷盘与同步刷盘的区别"><a href="#异步刷盘与同步刷盘的区别" class="headerlink" title="异步刷盘与同步刷盘的区别"></a>异步刷盘与同步刷盘的区别</h1><p>存储系统往往追求尽量高的吞吐,无论是传统的MySQl还是分布式存储系统Hbase，在写入的时候会尽量提升系统的吞吐。一般来说，提升系统性能的方式是先将数据写入内存中，然后再刷盘到磁盘中进行持久化。</p>
+<p>刷盘对应于MySQL中的fsync和hbase中的flush，在mysql中标识将写入的redo log以及bin　Log持久化到磁盘中，这样就保证mysql可以持续的对外提供数据服务;在hbase中表示将MainStore中的数据持久化到磁盘中。一般来说刷盘的方式有<strong>同步刷盘和异步刷盘</strong>两种。</p>
+<p>同步刷盘和异步刷盘的区别如下:</p>
+<ul>
+<li>同步刷盘:当数据写如到内存中之后立刻刷盘(同步)，在保证刷盘成功的前提下响应client。</li>
+<li>异步刷盘:数据写入内存后，直接响应client。异步将内存中的数据持久化到磁盘上。</li>
+</ul>
+<p>同步刷盘和异步输盘的优劣:</p>
+<ul>
+<li>同步刷盘保证了数据的可靠性,保证数据不会丢失。</li>
+<li>同步刷盘效率较低,因为client获取响应需要等待刷盘时间，为了提升效率，通常采用批量输盘的方式，每次刷盘将会flush内存中的所有数据。(若底层的存储为mmap，则每次刷盘将刷新所有的dirty页)</li>
+<li>异步刷盘不能保证数据的可靠性.</li>
+<li>异步刷盘可以提高系统的吞吐量.</li>
+<li>常见的异步刷盘方式有两种,分别是定时刷盘和触发式刷盘。定时刷盘可设置为如每1s刷新一次内存.触发刷盘为当内存中数据到达一定的值，会触发异步刷盘程序进行刷盘。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;异步刷盘与同步刷盘的区别&quot;&gt;&lt;a href=&quot;#异步刷盘与同步刷盘的区别&quot; class=&quot;headerlink&quot; title=&quot;异步刷盘与同步刷盘的区别&quot;&gt;&lt;/a&gt;异步刷盘与同步刷盘的区别&lt;/h1&gt;&lt;p&gt;存储系统往往追求尽量高的吞吐,无论是传统的MySQl还是分布
+    
+    </summary>
+    
+      <category term="消息队列" scheme="http://yoursite.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+    
+    
+      <category term="消息队列" scheme="http://yoursite.com/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+    
+      <category term="同步刷盘" scheme="http://yoursite.com/tags/%E5%90%8C%E6%AD%A5%E5%88%B7%E7%9B%98/"/>
+    
+      <category term="异步刷盘" scheme="http://yoursite.com/tags/%E5%BC%82%E6%AD%A5%E5%88%B7%E7%9B%98/"/>
+    
+  </entry>
   
   <entry>
     <title>LinuxPs命令详解</title>
@@ -668,6 +709,32 @@
   </entry>
   
   <entry>
+    <title>Linux常用命令混淆点记录</title>
+    <link href="http://yoursite.com/2017/08/20/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"/>
+    <id>http://yoursite.com/2017/08/20/Linux常用命令/</id>
+    <published>2017-08-20T06:25:01.000Z</published>
+    <updated>2017-09-29T06:53:42.070Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Linux常用命令混淆点记录"><a href="#Linux常用命令混淆点记录" class="headerlink" title="Linux常用命令混淆点记录"></a>Linux常用命令混淆点记录</h1><h2 id="ls命令单位问题"><a href="#ls命令单位问题" class="headerlink" title="ls命令单位问题"></a>ls命令单位问题</h2><p>ls命令的<strong>默认单位为字节</strong>。<br>若使用ls时需要指定单位显示的时候，需要添加参数-h或–block-size进行操作。具体操作方法如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#-h表示human，即人可读的方式</div><div class="line">#它会按照文件的大小显示单位,</div><div class="line">#若文件小于1k，则不显示单位，表示字节</div><div class="line">#若文件大于1k但是小于1M，显示的单位为k</div><div class="line">#文件大于1M小于1G会显示单位为M，</div><div class="line">#以此类推</div><div class="line">ls -h ~/test</div><div class="line"></div><div class="line">#按照指定的单位显示</div><div class="line">#注意使用此参数需要注意一个问题。若文件小于1G</div><div class="line">ls --block-size=g ~/test    #按照单位为g显示</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;a href=&quot;#Linux常用命令混淆点记录&quot; class=&quot;headerlink&quot; title=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;/a&gt;Linux常用命令混淆点记录&lt;/h1&gt;&lt;h2 id=&quot;ls命令单位问题&quot;&gt;&lt;a href
+    
+    </summary>
+    
+      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
+    
+      <category term="ls" scheme="http://yoursite.com/tags/ls/"/>
+    
+  </entry>
+  
+  <entry>
     <title>查找含有特定字符串的文件</title>
     <link href="http://yoursite.com/2017/08/20/Linux%E6%9F%A5%E6%89%BE%E5%90%AB%E6%9C%89%E7%89%B9%E5%AE%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%96%87%E4%BB%B6/"/>
     <id>http://yoursite.com/2017/08/20/Linux查找含有特定字符串的文件/</id>
@@ -692,32 +759,6 @@
       <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
     
       <category term="grep" scheme="http://yoursite.com/tags/grep/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux常用命令混淆点记录</title>
-    <link href="http://yoursite.com/2017/08/20/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"/>
-    <id>http://yoursite.com/2017/08/20/Linux常用命令/</id>
-    <published>2017-08-20T06:25:01.000Z</published>
-    <updated>2017-09-29T06:53:42.070Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Linux常用命令混淆点记录"><a href="#Linux常用命令混淆点记录" class="headerlink" title="Linux常用命令混淆点记录"></a>Linux常用命令混淆点记录</h1><h2 id="ls命令单位问题"><a href="#ls命令单位问题" class="headerlink" title="ls命令单位问题"></a>ls命令单位问题</h2><p>ls命令的<strong>默认单位为字节</strong>。<br>若使用ls时需要指定单位显示的时候，需要添加参数-h或–block-size进行操作。具体操作方法如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#-h表示human，即人可读的方式</div><div class="line">#它会按照文件的大小显示单位,</div><div class="line">#若文件小于1k，则不显示单位，表示字节</div><div class="line">#若文件大于1k但是小于1M，显示的单位为k</div><div class="line">#文件大于1M小于1G会显示单位为M，</div><div class="line">#以此类推</div><div class="line">ls -h ~/test</div><div class="line"></div><div class="line">#按照指定的单位显示</div><div class="line">#注意使用此参数需要注意一个问题。若文件小于1G</div><div class="line">ls --block-size=g ~/test    #按照单位为g显示</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;a href=&quot;#Linux常用命令混淆点记录&quot; class=&quot;headerlink&quot; title=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;/a&gt;Linux常用命令混淆点记录&lt;/h1&gt;&lt;h2 id=&quot;ls命令单位问题&quot;&gt;&lt;a href
-    
-    </summary>
-    
-      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
-    
-      <category term="ls" scheme="http://yoursite.com/tags/ls/"/>
     
   </entry>
   
@@ -803,9 +844,9 @@
       <category term="C++ problems" scheme="http://yoursite.com/categories/C-problems/"/>
     
     
-      <category term="C++" scheme="http://yoursite.com/tags/C/"/>
-    
       <category term="vector" scheme="http://yoursite.com/tags/vector/"/>
+    
+      <category term="C++" scheme="http://yoursite.com/tags/C/"/>
     
       <category term="struct" scheme="http://yoursite.com/tags/struct/"/>
     
@@ -1135,80 +1176,6 @@
       <category term="主机字节序" scheme="http://yoursite.com/tags/%E4%B8%BB%E6%9C%BA%E5%AD%97%E8%8A%82%E5%BA%8F/"/>
     
       <category term="网络字节序" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E5%AD%97%E8%8A%82%E5%BA%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unix网络编程基础之套接字结构</title>
-    <link href="http://yoursite.com/2017/06/12/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80%E4%B9%8B%E5%A5%97%E6%8E%A5%E5%AD%97%E7%BB%93%E6%9E%84/"/>
-    <id>http://yoursite.com/2017/06/12/Unix网络编程基础之套接字结构/</id>
-    <published>2017-06-12T08:57:47.000Z</published>
-    <updated>2017-06-13T02:14:26.431Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unix网络编程基础之套接字结构"><a href="#Unix网络编程基础之套接字结构" class="headerlink" title="Unix网络编程基础之套接字结构"></a>Unix网络编程基础之套接字结构</h1><p>大多数的套接字函数都使用到了套接字地址，它们以套接字地址的指针作为参数。每个协议族都定义了自己的套接字地址结构，这些套接字地址结构均以sockaddr_开头，以协议族唯一的后缀结尾。</p>
-<h2 id="IPv4套接字地址结构"><a href="#IPv4套接字地址结构" class="headerlink" title="IPv4套接字地址结构"></a>IPv4套接字地址结构</h2><p>IPv4的套接字以sockaddr_in命名，其具体定义如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> &#123;</span></div><div class="line">  <span class="keyword">in_addr_t</span> s_addr;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> &#123;</span></div><div class="line">  uint8 sin_len;            <span class="comment">//套接字的长度,sizeof(struct　sockaddr_in)</span></div><div class="line">  <span class="keyword">sa_family_t</span> sin_family;   <span class="comment">//协议族</span></div><div class="line">  <span class="keyword">in_port_t</span> sin_port;       <span class="comment">//套接字端口</span></div><div class="line"></div><div class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> <span class="title">sin_addr</span>;</span>  <span class="comment">//套接字地址</span></div><div class="line"></div><div class="line">  <span class="keyword">char</span> sin_zero[<span class="number">8</span>];         <span class="comment">//保留位</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<ul>
-<li>sin_len : 套接字的长度字段，类型为uint8_t,sizeof(struct sockaddr_in),不是所有的系统都支持。长度字段简化了可变长度的套接字的处理。<strong>在使用过程中无需设置和检查它</strong>，除非涉及路由套接字。</li>
-<li>sin_family : 协议族，IPv4的协议族为AF_INET.类型为无符号整形，其长度受系统的影响。若sockaddr_in中含有sin_len字段，其大小为16位，若含有长度字段，其大小为8位。</li>
-<li>sin_port : 套接字端口, 一般为uint16_t类型。</li>
-<li>sin_addr : 套接字Ip，其类型为in_addr，in_addr中的s_addr类型为uint32_t.</li>
-<li>sin_zero : 不常用，若需要在套接字中加入额外字段，使用到此字段，<strong>若不使用将其置为0，一般使用sockaddr_in首先将整个结构置0</strong>。</li>
-</ul>
-<blockquote>
-<p><strong>注意：套接字地址结构仅在本机上使用，虽然结构中的某些字段用在不同主机之间的通信，但是结构体本身不在主机之间传递。</strong></p>
-</blockquote>
-<h3 id="协议族参数说明"><a href="#协议族参数说明" class="headerlink" title="协议族参数说明"></a>协议族参数说明</h3><p>网络通信过程中有不同的协议族，通常我们在socket地址的sin_family中指出当前通信使用的协议族，不同协议族对应不同的参数，其对应参数如下所示：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">sin_family</th>
-<th>协议说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">AF_INET</td>
-<td>IPv4协议</td>
-</tr>
-<tr>
-<td style="text-align:center">AF_INET6</td>
-<td>IPv6协议</td>
-</tr>
-<tr>
-<td style="text-align:center">AF_LOCAL</td>
-<td>Unix域协议</td>
-</tr>
-<tr>
-<td style="text-align:center">AF_ROUTE</td>
-<td>路由套接字协议</td>
-</tr>
-<tr>
-<td style="text-align:center">AF_KEY</td>
-<td>密钥套接字</td>
-</tr>
-</tbody>
-</table>
-<h2 id="通用套接字地址结构"><a href="#通用套接字地址结构" class="headerlink" title="通用套接字地址结构"></a>通用套接字地址结构</h2><p>套接字函数以套接字地址结构指针作为参数的过程中，由于在C中没有继承的机制，这个时候向套接字函数传递参数的时候，由于不同协议的套接字地址不同，会出现问题。这个时候有一种解决办法就是<strong>传递void*指针给socket函数，但是void空指针的出现在socket函数之后</strong>，所以这个方案不可行。这个时候的解决方案是　<strong>定义一个通用的套接字函数，socket函数的参数为通用套接字地址的指针，传递参数的时候我们将特定的套接字指针强制转换为通用套接字地址指针。</strong>　如bind函数的函数原型为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span>, struct sockaddr*, <span class="keyword">socklen_t</span>)</span></span>;</div></pre></td></tr></table></figure></p>
-<p>通用套接字地址的定义如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> &#123;</span></div><div class="line">  <span class="keyword">uint8_t</span> sa_len;</div><div class="line">  <span class="keyword">sa_family_t</span> sa_family;</div><div class="line">  <span class="keyword">char</span> sa_data[<span class="number">14</span>];</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<h2 id="Ubuntu16-04中sockaddr-in的定义"><a href="#Ubuntu16-04中sockaddr-in的定义" class="headerlink" title="Ubuntu16.04中sockaddr_in的定义"></a>Ubuntu16.04中sockaddr_in的定义</h2><p>Ubuntu16.04中sockaddr_in的定义在/usr/include/netinet/in.h，注意其不支持sin_len字段，为了保持与通用套接字字符串兼容，其保留字符串的长度直接用通用套接字的大小减去其他字段。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span></span></div><div class="line">  &#123;</div><div class="line">    __SOCKADDR_COMMON (sin_);</div><div class="line">    <span class="keyword">in_port_t</span> sin_port;                 <span class="comment">// Port number.  </span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> <span class="title">sin_addr</span>;</span>            <span class="comment">// Internet address.  </span></div><div class="line"></div><div class="line">    <span class="comment">//Pad to size of struct sockaddr</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> sin_zero[<span class="keyword">sizeof</span> (struct sockaddr) -</div><div class="line">                          __SOCKADDR_COMMON_SIZE -</div><div class="line">                           <span class="keyword">sizeof</span> (<span class="keyword">in_port_t</span>) -</div><div class="line">                           <span class="keyword">sizeof</span> (struct in_addr)];</div><div class="line">  &#125;;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Unix网络编程基础之套接字结构&quot;&gt;&lt;a href=&quot;#Unix网络编程基础之套接字结构&quot; class=&quot;headerlink&quot; title=&quot;Unix网络编程基础之套接字结构&quot;&gt;&lt;/a&gt;Unix网络编程基础之套接字结构&lt;/h1&gt;&lt;p&gt;大多数的套接字函数都使用到了
-    
-    </summary>
-    
-      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-      <category term="socket" scheme="http://yoursite.com/tags/socket/"/>
     
   </entry>
   
