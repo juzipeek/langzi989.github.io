@@ -216,6 +216,123 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/22/Unix基础知识/">
+                            Unix体系结构
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-22T23:18:36+08:00">
+	
+		    5月 22, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix基础知识"><a href="#Unix基础知识" class="headerlink" title="Unix基础知识"></a>Unix基础知识</h1><h2 id="Unix体系结构"><a href="#Unix体系结构" class="headerlink" title="Unix体系结构"></a>Unix体系结构</h2><p>从严格意义上讲，可以将操作系统定义为一种软件，它相当于一种控制计算机硬件资源，为程序提供运行环境的软件。我们通常将这种软件叫做内核，因为它相对比较小，并且位于环境的核心。Unix体系结构如下图:<br><img src="/images/Unix体系结构.png" alt=""></p>
+<p>内核的接口被称为系统调用（system Call），公共库函数建立在系统调用接口之上，<strong>应用程序既可以使用公共函数库，也可以使用系统调用。</strong>shell是一个特殊的应用程序，为运行其他应用程序提供了接口。</p>
+<h2 id="Unix文件和目录"><a href="#Unix文件和目录" class="headerlink" title="Unix文件和目录"></a>Unix文件和目录</h2><h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><p>Unix文件系统是文件和目录的一种层次结构，所有文件的起点都是<strong>根目录(root)</strong>，名称为”/“.</p>
+<p>目录是一个包含目录项的文件。逻辑上，可以认为每个目录项都包含一个文件，同时还说明该文件属性的信息。<strong>文件属性包括文件类型(普通文件还是目录)、文件权限、；链接到改文件的进程数、文件所有者、文件所有者所在的组 文件大小以及文件最后修改的时间等</strong>。stat和fstat函数返回一个文件属性的信息结构。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//通过文件名获取文件信息，并保存在buf所指的结构体stat中</span></div><div class="line"><span class="comment">//返回值：成功返回0，失败-1，错误码存在errno中</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">stat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* file_name, struct stat* buf)</span></span>;</div><div class="line"></div><div class="line">数据类型：</div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">stat</span> &#123;</span></div><div class="line"><span class="keyword">dev_t</span>       st_dev;     <span class="comment">/* ID of device containing file -文件所在设备的ID*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">ino_t</span>       st_ino;     <span class="comment">/* inode number -inode节点号*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">mode_t</span>      st_mode;    <span class="comment">/* protection -保护模式?*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">nlink_t</span>     st_nlink;   <span class="comment">/* number of hard links -链向此文件的连接数(硬连接)*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">uid_t</span>       st_uid;     <span class="comment">/* user ID of owner -user id*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">gid_t</span>       st_gid;     <span class="comment">/* group ID of owner - group id*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">dev_t</span>       st_rdev;    <span class="comment">/* device ID (if special file) -设备号，针对设备文件*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">off_t</span>       st_size;    <span class="comment">/* total size, in bytes -文件大小，字节为单位*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">blksize_t</span>   st_blksize; <span class="comment">/* blocksize for filesystem I/O -系统块的大小*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">blkcnt_t</span>    st_blocks;  <span class="comment">/* number of blocks allocated -文件所占块数*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">time_t</span>      st_atime;   <span class="comment">/* time of last access -最近存取时间*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">time_t</span>      st_mtime;   <span class="comment">/* time of last modification -最近修改时间*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">time_t</span>      st_ctime;   <span class="comment">/* time of last status change - */</span>  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用C语言实现ls功能</p>
+<p>涉及到的相关函数：</p>
+<ul>
+<li>文件夹操作函数opendir，readdir,closedir</li>
+<li>opendir返回指向dir结构的指针，将该指针传递给readdir,无需关心dir结构中存在什么数据，直接读取即可。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">err_quit</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* message)</span> </span>&#123;</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, message);</div><div class="line">  <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">if</span> (argc &lt; <span class="number">2</span>)</div><div class="line">  &#123;</div><div class="line">    err_quit(<span class="string">"usage: ls directory_name\n"</span>);</div><div class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  DIR *dp;</div><div class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">dirent</span> *<span class="title">dirp</span>;</span></div><div class="line"></div><div class="line">  <span class="keyword">if</span> ((dp = opendir(argv[<span class="number">1</span>])) == <span class="literal">NULL</span>)</div><div class="line">    err_quit(<span class="string">"can not open file\n"</span>);</div><div class="line"></div><div class="line">  <span class="keyword">while</span> ((dirp = readdir(dp)) != <span class="literal">NULL</span>)</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, dirp-&gt;d_name);</div><div class="line">  closedir(dp);</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="输入和输出"><a href="#输入和输出" class="headerlink" title="输入和输出"></a>输入和输出</h2><h3 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h3><p>文件描述符是一个很小的非负整数，<strong>内核用文件描述符来标识一个特定进程正在访问的文件</strong>。当内核打开或创建文件时，他都会返回一个文件描述符。在读写文件时，都可以使用这个描述符（根据打开时的模式赋予权限）.</p>
+<h3 id="标准输入、标准输出和标准错误流"><a href="#标准输入、标准输出和标准错误流" class="headerlink" title="标准输入、标准输出和标准错误流"></a>标准输入、标准输出和标准错误流</h3><p>按照惯例，每当运行一个新程序的时候，所有的shell都会为改程序默认打开三个文件描述符，即标准输入，标准输出和标注错误。如果不做特殊处理，这三个描述符都连接到终端，也可以将其重定向到文件。如ls &gt; test.data</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/22/Unix基础知识/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/21/函数dup/">
+                            函数dup与dup2
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-21T23:31:31+08:00">
+	
+		    5月 21, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="函数dup与dup2"><a href="#函数dup与dup2" class="headerlink" title="函数dup与dup2"></a>函数dup与dup2</h1><h2 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup2</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> fd2)</span></span>;</div></pre></td></tr></table></figure>
+<h2 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h2><p>这两个函数的功能都是用来复制一个现有的文件描述符。返回的文件描述符与原有的文件描述符共用同一个文件表项，但是文件描述符标志将被清除，即当进程调用exec时文件描述符将不会被关闭。</p>
+<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><p>dup返回当前可用的最小的文件描述符。dup2返回fd2，若fd2所表示的文件已经打开，则将该文件描述符先关闭，然后再将fd复制到fd2上返回。若fd2与fd相同，则直接返回fd、.</p>
+<h2 id="等效函数"><a href="#等效函数" class="headerlink" title="等效函数"></a>等效函数</h2><p>dup函数与fcntl的F_DUPFD功能相同。</p>
+<p>dup(fd)等效于fcntl(fd, F_DUPFD, 0)</p>
+<p>dup2(fd, fd2)等效于close(fd), fcntl(fd, F_DUPFD, fd2)</p>
+<p>但是dup2是原子的上述先关闭然后在复制不是原子操作。</p>
+<h2 id="作用及用途"><a href="#作用及用途" class="headerlink" title="作用及用途"></a>作用及用途</h2><p>dup函数常用来重定向进程的stdin、stdout以及stderr。原理与CGI类似，即将标准输入标准输出重定向到一个文件或者socket流等。</p>
+<h2 id="重定向标准输出"><a href="#重定向标准输出" class="headerlink" title="重定向标准输出"></a>重定向标准输出</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> fd = dup(STDIN_FILENO);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"dup error\n"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">char</span> buf[] = <span class="string">"this is a test of dup\n"</span>;</div><div class="line">    write(fd, buf, <span class="keyword">sizeof</span>(buf));</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/21/函数dup/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/04/cgi原理/">
                             cgi原理
                         </a>
@@ -1174,189 +1291,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/01/07/UML时序图详解/">
-                            UML时序图详解
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-01-07T15:17:23+08:00">
-	
-		    1月 07, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="UML时序图详解"><a href="#UML时序图详解" class="headerlink" title="UML时序图详解"></a>UML时序图详解</h1><p>　　这几天在阅读《设计模式》一书，书中总结了前人在面向对象软件设计过程中针对特定的问题提出的简洁而优雅的解决方案。在阅读的过程中，我一边理解书中给出的实例，一边结合自己写过的项目或者用过的框架与当前模式进行对比，发现之前的项目有一些还是有很大的改进空间。在阅读本书的过程中，书中很多例子都是通过UML类图和UML时序图进行说明，所以，理解这些例子的前提是对UML类图以及UML时序图有一定的了解，UML类图在前面的博客(<a href="https://langzi989.github.io/2017/01/05/UML%E5%9B%BE%E8%A1%A8%E7%A4%BA%E5%B8%B8%E8%A7%81%E7%9A%84%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/)中已经讲解，现在我们主要来看一下UML时序图中的重要概念。" target="_blank" rel="external">https://langzi989.github.io/2017/01/05/UML%E5%9B%BE%E8%A1%A8%E7%A4%BA%E5%B8%B8%E8%A7%81%E7%9A%84%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/)中已经讲解，现在我们主要来看一下UML时序图中的重要概念。</a></p>
-<p>　　UML类关系以及时序图在大三上《系统分析与设计》课的时候学过，但是那个时候不知道这东西有什么用，所以没有认真学和理解。随着实战经验的增多，越来越能体会到这些在软件设计的过程中重中之重，不管是描述你的设计思想还是与团队中其他人进行交流。所以还是建议大家在学到这一部分的时候对这门课认真对待。</p>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>时序图是一种按照时间顺序显示对象之间的交互的图。时序图中显示的是参与交互的对象和对象之间消息传递的顺序。</p>
-<h2 id="基本元素"><a href="#基本元素" class="headerlink" title="基本元素"></a>基本元素</h2><p>时序图中包含的主要的元素有:</p>
-<ul>
-<li>角色(Actor)</li>
-<li>对象(Object)</li>
-<li>生命线(life line)</li>
-<li>控制焦点(focus of control)</li>
-<li>消息(message)</li>
-<li>自关联消息(self-associated message)</li>
-<li>组合片段(combined fragment)</li>
-</ul>
-<h2 id="基本元素详解"><a href="#基本元素详解" class="headerlink" title="基本元素详解"></a>基本元素详解</h2><h3 id="角色-actor"><a href="#角色-actor" class="headerlink" title="角色(actor)"></a>角色(actor)</h3><p>角色指的是系统角色，这个角色可以是人，其他系统或者子系统</p>
-<p>图形表示:</p>
-<p><img src="/images/actor.png" alt=""></p>
-<h3 id="对象-object"><a href="#对象-object" class="headerlink" title="对象(object)"></a>对象(object)</h3><p>对象包括三种:</p>
-<ul>
-<li>指定类名和对象名的对象objectName: className</li>
-<li>指定类名但没有对象名的对象(匿名对象) :className</li>
-<li>指定对象名但不指定类名的对象 objectName</li>
-</ul>
-<p>图形表示：<br>第一类:</p>
-<p><img src="/images/object1.png" alt=""></p>
-<p>第二类:</p>
-<p><img src="/images/object2.png" alt=""></p>
-<p>第三类:</p>
-<p><img src="/images/object3.png" alt=""></p>
-<h3 id="生命线-life-line"><a href="#生命线-life-line" class="headerlink" title="生命线(life line)"></a>生命线(life line)</h3><p>生命线在时序图中使用向下的虚线表示,它指的是其所对应的对象的存活时间。从上到下表示时间的推后。</p>
-<p>图像表示:</p>
-<p><img src="/images/lifeline.png" alt=""></p>
-<h3 id="控制焦点-focus-of-control"><a href="#控制焦点-focus-of-control" class="headerlink" title="控制焦点(focus of control)"></a>控制焦点(focus of control)</h3><p>控制焦点在时序图中以方块的形式出现，它是一种表示时间段的方式，对象在这一时间段中执行相应的操作。</p>
-<p>图像表示:</p>
-<p><img src="/images/control.png" alt=""></p>
-<h3 id="消息-message"><a href="#消息-message" class="headerlink" title="消息(message)"></a>消息(message)</h3><p>消息有三种类型</p>
-<ul>
-<li>同步消息：发送者发送请求后被阻塞，直到接受者返回消息或者做完其他处理之后发送者才能继续执行之后的操作</li>
-<li>异步消息：发送者发送消息给接受者之后不等待接受者返回响应而继续执行下面的操作。</li>
-<li>返回消息:接受者返回消息给发送者</li>
-</ul>
-<p>消息的图形表示：<br>同步消息:</p>
-<p><img src="/images/message1.png" alt=""></p>
-<p>异步消息:</p>
-<p><img src="/images/message2.png" alt=""></p>
-<p>返回消息:</p>
-<p><img src="/images/message3.png" alt=""></p>
-<h3 id="自关联消息-self-associated-message"><a href="#自关联消息-self-associated-message" class="headerlink" title="自关联消息(self-associated message)"></a>自关联消息(self-associated message)</h3><p>自关联消息一般指的是当前类调用自己的函数的情况</p>
-<h3 id="组合片段-combined-fragment"><a href="#组合片段-combined-fragment" class="headerlink" title="组合片段(combined fragment)"></a>组合片段(combined fragment)</h3><p>组合片段中包括四个部分:</p>
-<ul>
-<li><p>Alternative fragment(alt表示):与if…then…else…对应</p>
-</li>
-<li><p>option fragment(opt表示):与switch对应</p>
-</li>
-<li><p>parallel fragment(par表示):表示同时发生</p>
-</li>
-<li><p>Loop Fragment(loop表示):与循环对应</p>
-<p>图形表示:</p>
-<p>alt:</p>
-<p><img src="/images/alt.png" alt=""></p>
-</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/01/07/UML时序图详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/01/05/UML图表示常见的类之间的关系/">
-                            UML图表示常见的类之间的关系
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-01-05T21:12:28+08:00">
-	
-		    1月 05, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="UML图表示常见的类之间的关系"><a href="#UML图表示常见的类之间的关系" class="headerlink" title="UML图表示常见的类之间的关系"></a>UML图表示常见的类之间的关系</h1><p>类之间的关系常见的主要包括以下几种:</p>
-<ul>
-<li>继承</li>
-<li>实现</li>
-<li>依赖</li>
-<li>关联</li>
-<li>聚合</li>
-<li>组合</li>
-</ul>
-<h2 id="继承（inheritance）"><a href="#继承（inheritance）" class="headerlink" title="继承（inheritance）"></a>继承（inheritance）</h2><p>继承的概念大家都比较熟悉，他主要指的是派生类继承父类或者接口之间的继承，派生类继承了父类中原有的功能，并在此基础上添加了新的功能。例如public继承实质上是一种is-a的关系,(子类is a 基类)</p>
-<p>图形表示:</p>
-<p><img src="/images/继承.png" alt=""></p>
-<h2 id="实现-implement"><a href="#实现-implement" class="headerlink" title="实现(implement)"></a>实现(implement)</h2><p>实现指的是一个类实现一个接口,一个类可以实现一个或者多个接口。实现是类和接口之间常见的一种关系。在java中通常通过implements实现。</p>
-<p>图形表示：</p>
-<p><img src="/images/实现.png" alt=""></p>
-<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><p>依赖指的是一个类A使用另外一个类B,这种该使用关系是偶然性的，临时的，非常弱的一种关系。但是类B的变化会影响到类A;比如人要使用船过河中，这个时候人和船就是一种依赖关系。具体表现在代码中就是<strong>B是类A中的某个方法的参数。</strong></p>
-<p>图形表示:</p>
-<p><img src="/images/依赖.png" alt=""></p>
-<h2 id="关联"><a href="#关联" class="headerlink" title="关联"></a>关联</h2><p>关联是指俩个类之间的或者类和接口之间的一种强依赖关系。而这种强依赖关系不是偶然性的，而是长期的，而且双方的关系是平等的，关联可以是单向的，也可以是双向的。具体表现在代码中是<strong>(1):B以类属性的方式出现在类A中（２）A引用类型为B的全局变量</strong></p>
-<p>图形表示:</p>
-<p><img src="/images/关联.png" alt=""></p>
-<h2 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h2><p>聚合是关联关系的一种特例，它表现的是一种has-a的关系，即整体与部分的关系，此时整体与部分可以是分离的，他们可以具有各自的声明周期，部分可以属于多个整体对象，也可以被多个整体对象共享；如计算机与CPU的关系<strong>聚合中部分和整体都有各自的生命周期，并且互相影响</strong></p>
-<p>图形表示：</p>
-<p><img src="/images/聚合.png" alt=""></p>
-<h2 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h2><p>组合也是关联的一种特例，它体现的是一种contain-a的关系，这种关系比聚合强；这个时候整体和部分是不可分离的，<strong>整体的声明周期与部分的声明周期相同，当整体的周期结束时，部分的周期也随之结束</strong>。如人和大脑的关系</p>
-<p>图形表示：</p>
-<p><img src="/images/组合.png" alt=""></p>
-<h2 id="依赖性强弱"><a href="#依赖性强弱" class="headerlink" title="依赖性强弱:"></a>依赖性强弱:</h2><p>组合&gt;聚合&gt;关联&gt;依赖</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/01/05/UML图表示常见的类之间的关系/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1370,7 +1304,14 @@
         </li>
         
         
-        <li class="pagination-number">page 5 of 5</li>
+        <li class="pagination-next">
+            <a class="btn btn--default btn--small" href="/archives/2017/page/6/">
+                    <span>OLDER POSTS</span>
+                <i class="fa fa-angle-right text-base icon-ml"></i>
+            </a>
+        </li>
+        
+        <li class="pagination-number">page 5 of 6</li>
     </ul>
 </div>
 

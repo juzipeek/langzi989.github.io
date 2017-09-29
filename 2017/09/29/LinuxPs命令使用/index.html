@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>makefile详解 - 魏传柳</title>
+    <title>LinuxPs命令详解 - 魏传柳</title>
     <meta name="author" content="魏传柳(langzi989)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,22 +15,22 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="makefile详解
-makefile基础http://blog.csdn.net/ruglcc/article/details/7814546/
-makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlhttp://blog.csdn.net/aquester/article/details/48547685">
+    <meta name="description" content="Linux ps命令使用详解ps命令常见使用方法有两种，另外我们可以通过一写参数对ps结果进行筛选和过滤。分别是:12ps -efps aux
+那这两个命令有什么区别呢？下面将对这两个命令进行详细说明和解释。
+ps -ef返回信息的格式:12345678UID        PID  PPID  C STIME TTY          TIME CMDroot         1     0">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="makefile详解">
-<meta property="og:url" content="http://yoursite.com/2017/08/31/makefile详解/index.html">
+<meta property="og:title" content="LinuxPs命令详解">
+<meta property="og:url" content="http://yoursite.com/2017/09/29/LinuxPs命令使用/index.html">
 <meta property="og:site_name" content="魏传柳">
-<meta property="og:description" content="makefile详解
-makefile基础http://blog.csdn.net/ruglcc/article/details/7814546/
-makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlhttp://blog.csdn.net/aquester/article/details/48547685">
-<meta property="og:updated_time" content="2017-08-31T09:28:49.059Z">
+<meta property="og:description" content="Linux ps命令使用详解ps命令常见使用方法有两种，另外我们可以通过一写参数对ps结果进行筛选和过滤。分别是:12ps -efps aux
+那这两个命令有什么区别呢？下面将对这两个命令进行详细说明和解释。
+ps -ef返回信息的格式:12345678UID        PID  PPID  C STIME TTY          TIME CMDroot         1     0">
+<meta property="og:updated_time" content="2017-09-29T06:57:53.314Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="makefile详解">
-<meta name="twitter:description" content="makefile详解
-makefile基础http://blog.csdn.net/ruglcc/article/details/7814546/
-makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlhttp://blog.csdn.net/aquester/article/details/48547685">
+<meta name="twitter:title" content="LinuxPs命令详解">
+<meta name="twitter:description" content="Linux ps命令使用详解ps命令常见使用方法有两种，另外我们可以通过一写参数对ps结果进行筛选和过滤。分别是:12ps -efps aux
+那这两个命令有什么区别呢？下面将对这两个命令进行详细说明和解释。
+ps -ef返回信息的格式:12345678UID        PID  PPID  C STIME TTY          TIME CMDroot         1     0">
     
     
         
@@ -221,13 +221,13 @@ makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlht
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            makefile详解
+            LinuxPs命令详解
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" datetime="2017-08-31T17:22:57+08:00">
+    <time itemprop="datePublished" datetime="2017-09-29T14:05:01+08:00">
 	
-		    8月 31, 2017
+		    9月 29, 2017
     	
     </time>
     
@@ -243,9 +243,50 @@ makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlht
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <p>makefile详解</p>
-<p>makefile基础<br><a href="http://blog.csdn.net/ruglcc/article/details/7814546/" target="_blank" rel="external">http://blog.csdn.net/ruglcc/article/details/7814546/</a></p>
-<p>makefile依赖关系详解<br><a href="http://blog.chinaunix.net/uid-20682147-id-76330.html" target="_blank" rel="external">http://blog.chinaunix.net/uid-20682147-id-76330.html</a><br><a href="http://blog.csdn.net/aquester/article/details/48547685" target="_blank" rel="external">http://blog.csdn.net/aquester/article/details/48547685</a></p>
+            <h1 id="Linux-ps命令使用详解"><a href="#Linux-ps命令使用详解" class="headerlink" title="Linux ps命令使用详解"></a>Linux ps命令使用详解</h1><p>ps命令常见使用方法有两种，另外我们可以通过一写参数对ps结果进行筛选和过滤。分别是:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ps -ef</div><div class="line">ps aux</div></pre></td></tr></table></figure></p>
+<p>那这两个命令有什么区别呢？下面将对这两个命令进行详细说明和解释。</p>
+<h2 id="ps-ef"><a href="#ps-ef" class="headerlink" title="ps -ef"></a>ps -ef</h2><p>返回信息的格式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">UID        PID  PPID  C STIME TTY          TIME CMD</div><div class="line">root         1     0  0 9月24 ?       00:00:25 /sbin/init</div><div class="line">root         2     0  0 9月24 ?       00:00:00 [kthreadd]</div><div class="line">root         3     2  0 9月24 ?       00:00:00 [ksoftirqd/0]</div><div class="line">root         5     2  0 9月24 ?       00:00:00 [kworker/0:0H]</div><div class="line">root         7     2  0 9月24 ?       00:09:13 [rcu_sched]</div><div class="line">root         8     2  0 9月24 ?       00:00:00 [rcu_bh]</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>对以上各列信息进行解释:</p>
+<ul>
+<li>uid : 用户id</li>
+<li>pid : 当前进程的id</li>
+<li>ppid : 当前进程的父进程id</li>
+<li>C : 进程占用CPU的百分比</li>
+<li>STIME : 进程启动时间</li>
+<li>CMD : 进程启动命令</li>
+</ul>
+<p>上述返回值比较容易理解，不一一解释</p>
+<h2 id="ps-aux"><a href="#ps-aux" class="headerlink" title="ps aux"></a>ps aux</h2><p>返回信息的格式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND</div><div class="line">root         1  0.0  0.0 120060  5392 ?        Ss   9月24   0:25 /sbin/init</div><div class="line">root         2  0.0  0.0      0     0 ?        S    9月24   0:00 [kthreadd]</div><div class="line">root         3  0.0  0.0      0     0 ?        S    9月24   0:00 [ksoftirqd/0]</div><div class="line">root         5  0.0  0.0      0     0 ?        S&lt;   9月24   0:00 [kworker/0:0H]</div><div class="line">root         7  0.1  0.0      0     0 ?        S    9月24   9:14 [rcu_sched]</div><div class="line">root         8  0.0  0.0      0     0 ?        S    9月24   0:00 [rcu_bh]</div><div class="line">root         9  0.0  0.0      0     0 ?        S    9月24   0:00 [migration/0]</div></pre></td></tr></table></figure></p>
+<p>对以上信息解释：</p>
+<ul>
+<li>user : 用户名</li>
+<li>pid : 进程id</li>
+<li>%CPU : 进程运行占用CPU的百分比</li>
+<li>%MEM : 进程占用内存的百分比</li>
+<li>VSZ : 该进程使用的虚拟内存量，表示一个程序完全驻留在内存中占用的虚拟内存量</li>
+<li>RSS : 该进程占用的固定内存量</li>
+<li>TTY : 终端名</li>
+<li>START : 进程开启时间</li>
+<li>STAT : 进程的状态</li>
+<li>TIME : 该进程实际使用的CPU时间</li>
+<li>COMMAND : 进程运行指令</li>
+</ul>
+<p>上述比较重要的信息主要包括VSZ,RSS以及STAT。<br>VSZ表示一个程序完全驻留在内存中占用的内存量，其包括程序链接的动态链接库的大小,栈的大小以及代码段的大小。(手动算过，但是栈的大小很迷，貌似数组在栈中的大小与同类型变量的大小相同，待验证)。<br>RSS包括运行过程中实际被加载到内存中的动态链接库，可执行文件以及栈的大小。<br>STAT为当前进程的运行状态。其包括多种状态，具体解释如下所述:</p>
+<ul>
+<li>D : 不可中断(通常是IO进程)</li>
+<li>R : 正在运行或者在队列中的进程</li>
+<li>S : 处在休眠状态的进程</li>
+<li>T : 停止或者被追踪</li>
+<li>Z : 僵尸进程</li>
+<li>W : 进入内存交换</li>
+<li>X : 死掉的进程</li>
+<li>&lt; : 优先级较高的进程</li>
+<li>n : 优先级较低的进程</li>
+<li>s : 包含子进程</li>
+<li>+ : 位于后台进程组</li>
+</ul>
+<p><strong>可以在上述命令的基础上对查询结果进行筛选</strong>，如我们想要对内存占用量进行排序，方法如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ps aux --sort -pMEM</div></pre></td></tr></table></figure>
 
             
         </div>
@@ -255,7 +296,7 @@ makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlht
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/linux/">linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/makefile/">makefile</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/linux/">linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/ps/">ps</a>
 
             </div>
         
@@ -264,7 +305,7 @@ makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlht
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/08/C++函数指针学习/"  data-tooltip="C++函数指针学习">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -272,7 +313,7 @@ makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlht
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/08/20/Linux正则表达式/" data-tooltip="Linux正则表达式以及Sed使用学习">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/20/makefile自动变量与隐晦规则推导/" data-tooltip="makefile自动变量与隐晦规则推导">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -287,17 +328,17 @@ makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlht
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/08/31/makefile详解/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/29/LinuxPs命令使用/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/08/31/makefile详解/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/29/LinuxPs命令使用/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/08/31/makefile详解/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/29/LinuxPs命令使用/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -338,7 +379,7 @@ makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlht
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/08/C++函数指针学习/"  data-tooltip="C++函数指针学习">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -346,7 +387,7 @@ makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlht
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/08/20/Linux正则表达式/" data-tooltip="Linux正则表达式以及Sed使用学习">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/09/20/makefile自动变量与隐晦规则推导/" data-tooltip="makefile自动变量与隐晦规则推导">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -361,17 +402,17 @@ makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlht
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/08/31/makefile详解/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/29/LinuxPs命令使用/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/08/31/makefile详解/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/29/LinuxPs命令使用/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/08/31/makefile详解/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/29/LinuxPs命令使用/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -391,17 +432,17 @@ makefile依赖关系详解http://blog.chinaunix.net/uid-20682147-id-76330.htmlht
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/08/31/makefile详解/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/09/29/LinuxPs命令使用/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/08/31/makefile详解/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/09/29/LinuxPs命令使用/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/08/31/makefile详解/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/09/29/LinuxPs命令使用/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>

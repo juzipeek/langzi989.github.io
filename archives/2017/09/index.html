@@ -216,6 +216,97 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/09/29/LinuxPs命令使用/">
+                            LinuxPs命令详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-09-29T14:05:01+08:00">
+	
+		    9月 29, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Linux-ps命令使用详解"><a href="#Linux-ps命令使用详解" class="headerlink" title="Linux ps命令使用详解"></a>Linux ps命令使用详解</h1><p>ps命令常见使用方法有两种，另外我们可以通过一写参数对ps结果进行筛选和过滤。分别是:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ps -ef</div><div class="line">ps aux</div></pre></td></tr></table></figure></p>
+<p>那这两个命令有什么区别呢？下面将对这两个命令进行详细说明和解释。</p>
+<h2 id="ps-ef"><a href="#ps-ef" class="headerlink" title="ps -ef"></a>ps -ef</h2><p>返回信息的格式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">UID        PID  PPID  C STIME TTY          TIME CMD</div><div class="line">root         1     0  0 9月24 ?       00:00:25 /sbin/init</div><div class="line">root         2     0  0 9月24 ?       00:00:00 [kthreadd]</div><div class="line">root         3     2  0 9月24 ?       00:00:00 [ksoftirqd/0]</div><div class="line">root         5     2  0 9月24 ?       00:00:00 [kworker/0:0H]</div><div class="line">root         7     2  0 9月24 ?       00:09:13 [rcu_sched]</div><div class="line">root         8     2  0 9月24 ?       00:00:00 [rcu_bh]</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>对以上各列信息进行解释:</p>
+<ul>
+<li>uid : 用户id</li>
+<li>pid : 当前进程的id</li>
+<li>ppid : 当前进程的父进程id</li>
+<li>C : 进程占用CPU的百分比</li>
+<li>STIME : 进程启动时间</li>
+<li>CMD : 进程启动命令</li>
+</ul>
+<p>上述返回值比较容易理解，不一一解释</p>
+<h2 id="ps-aux"><a href="#ps-aux" class="headerlink" title="ps aux"></a>ps aux</h2><p>返回信息的格式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND</div><div class="line">root         1  0.0  0.0 120060  5392 ?        Ss   9月24   0:25 /sbin/init</div><div class="line">root         2  0.0  0.0      0     0 ?        S    9月24   0:00 [kthreadd]</div><div class="line">root         3  0.0  0.0      0     0 ?        S    9月24   0:00 [ksoftirqd/0]</div><div class="line">root         5  0.0  0.0      0     0 ?        S&lt;   9月24   0:00 [kworker/0:0H]</div><div class="line">root         7  0.1  0.0      0     0 ?        S    9月24   9:14 [rcu_sched]</div><div class="line">root         8  0.0  0.0      0     0 ?        S    9月24   0:00 [rcu_bh]</div><div class="line">root         9  0.0  0.0      0     0 ?        S    9月24   0:00 [migration/0]</div></pre></td></tr></table></figure></p>
+<p>对以上信息解释：</p>
+<ul>
+<li>user : 用户名</li>
+<li>pid : 进程id</li>
+<li>%CPU : 进程运行占用CPU的百分比</li>
+<li>%MEM : 进程占用内存的百分比</li>
+<li>VSZ : 该进程使用的虚拟内存量，表示一个程序完全驻留在内存中占用的虚拟内存量</li>
+<li>RSS : 该进程占用的固定内存量</li>
+<li>TTY : 终端名</li>
+<li>START : 进程开启时间</li>
+<li>STAT : 进程的状态</li>
+<li>TIME : 该进程实际使用的CPU时间</li>
+<li>COMMAND : 进程运行指令</li>
+</ul>
+<p>上述比较重要的信息主要包括VSZ,RSS以及STAT。<br>VSZ表示一个程序完全驻留在内存中占用的内存量，其包括程序链接的动态链接库的大小,栈的大小以及代码段的大小。(手动算过，但是栈的大小很迷，貌似数组在栈中的大小与同类型变量的大小相同，待验证)。<br>RSS包括运行过程中实际被加载到内存中的动态链接库，可执行文件以及栈的大小。<br>STAT为当前进程的运行状态。其包括多种状态，具体解释如下所述:</p>
+<ul>
+<li>D : 不可中断(通常是IO进程)</li>
+<li>R : 正在运行或者在队列中的进程</li>
+<li>S : 处在休眠状态的进程</li>
+<li>T : 停止或者被追踪</li>
+<li>Z : 僵尸进程</li>
+<li>W : 进入内存交换</li>
+<li>X : 死掉的进程</li>
+<li>&lt; : 优先级较高的进程</li>
+<li>n : 优先级较低的进程</li>
+<li>s : 包含子进程</li>
+<li>+ : 位于后台进程组</li>
+</ul>
+<p><strong>可以在上述命令的基础上对查询结果进行筛选</strong>，如我们想要对内存占用量进行排序，方法如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ps aux --sort -pMEM</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/09/29/LinuxPs命令使用/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/09/20/makefile自动变量与隐晦规则推导/">
                             makefile自动变量与隐晦规则推导
                         </a>
@@ -367,6 +458,16 @@
 <p>在文件中:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#define __S32_TYPE              int</div></pre></td></tr></table></figure>
 <p>故从上面的追踪，可以看出key_t的本质为int类型.</p>
+<h2 id="获取key-t方法"><a href="#获取key-t方法" class="headerlink" title="获取key_t方法"></a>获取key_t方法</h2><p>获取ket_t的方法三种</p>
+<ul>
+<li>随机选取一个整数值作为key值，多个进程共享一个key值。注意此时不能使用已经存在的key</li>
+<li>在创建IPC对象的get方法中用IPC_PRIVATE作为key值，这样会导致每个调用都会创建一个新的IPC对象</li>
+<li>使用ftok函数生成一个key,这个方法产生的key接近唯一。</li>
+</ul>
+<h3 id="IPC-PRIVATE"><a href="#IPC-PRIVATE" class="headerlink" title="IPC_PRIVATE"></a>IPC_PRIVATE</h3><p>IPC_PRIVATE本质上为0的宏定义.使用方法是直接使用IPC_PRIVATE作为key生成一个IPC对象。这种做法保证每次产生的都是全新的IPC对象。<br>这种做法适用于在父进程fork前创建IPC对象，从而达到子进程继承IPC对象的目的。</p>
+<h3 id="ftok生成key"><a href="#ftok生成key" class="headerlink" title="ftok生成key"></a>ftok生成key</h3><h4 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型:"></a>函数原型:</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt;</span></span></div><div class="line"><span class="keyword">key_t</span> ftok(<span class="keyword">char</span>* pathname, <span class="keyword">int</span> proj);</div></pre></td></tr></table></figure>
+<h4 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能:"></a>函数功能:</h4><p>此函数的功能是根据pathname和proj的值生成key，该算法只使用proj的最低的8个有效位，应用程序必须确保pathname引用一个可以应用stat()的既有文件。否则该函数会返回-1。</p>
+<p>在linux中，key_t一般是32位的值。它通过取<strong>proj参数的最低８个有效位，包含该文件所属的文件系统的设备的设备号的最低8个有效位以及pathname所引用文件的inode号的最低16个有效位组合而成，这样保证了唯一性</strong>。所以从上面可以看出，对于同意个文件的不同路径(inode值相同),proj值相同，此时产生的key是相同的。　</p>
 
                     
                         
@@ -374,6 +475,53 @@
                     
                         <p>
                             <a href="/2017/09/20/UnixIPC中key_t类型本质/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/09/20/UnixIPC关联数据结构与对象权限/">
+                            UnixIPC 关联数据结构与对象权限
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-09-20T20:09:08+08:00">
+	
+		    9月 20, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="UnixIPC-关联数据结构与对象权限"><a href="#UnixIPC-关联数据结构与对象权限" class="headerlink" title="UnixIPC 关联数据结构与对象权限"></a>UnixIPC 关联数据结构与对象权限</h1>
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/09/20/UnixIPC关联数据结构与对象权限/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
@@ -749,55 +897,6 @@
                     
                         <p>
                             <a href="/2017/09/08/C++函数指针学习/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/09/07/Linux常用命令/">
-                            Linux常用命令混淆点记录
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-09-07T17:05:01+08:00">
-	
-		    9月 07, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux常用命令混淆点记录"><a href="#Linux常用命令混淆点记录" class="headerlink" title="Linux常用命令混淆点记录"></a>Linux常用命令混淆点记录</h1><h2 id="ls命令单位问题"><a href="#ls命令单位问题" class="headerlink" title="ls命令单位问题"></a>ls命令单位问题</h2><p>ls命令的<strong>默认单位为字节</strong>。<br>若使用ls时需要指定单位显示的时候，需要添加参数-h或–block-size进行操作。具体操作方法如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#-h表示human，即人可读的方式</div><div class="line">#它会按照文件的大小显示单位,</div><div class="line">#若文件小于1k，则不显示单位，表示字节</div><div class="line">#若文件大于1k但是小于1M，显示的单位为k</div><div class="line">#文件大于1M小于1G会显示单位为M，</div><div class="line">#以此类推</div><div class="line">ls -h ~/test</div><div class="line"></div><div class="line">#按照指定的单位显示</div><div class="line">#注意使用此参数需要注意一个问题。若文件小于1G也显示1G。</div><div class="line">ls --block-size=g ~/test    #按照单位为g显示</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/09/07/Linux常用命令/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

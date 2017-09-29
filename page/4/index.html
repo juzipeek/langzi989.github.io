@@ -215,6 +215,108 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/27/rapidjsonSchema/">
+                            rapidjson Schema
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-27T09:35:00+08:00">
+	
+		    5月 27, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="rapidjson-Schema"><a href="#rapidjson-Schema" class="headerlink" title="rapidjson Schema"></a>rapidjson Schema</h1><blockquote>
+<p>本系列文章以例子的方式进行呈现。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line">* JsonSchema本质上是一个json，其作用是用于校验Json，使用schema对json进行校验，</div><div class="line">* 可以让代码安全的去当问DOM，而不需要去检查类型或者键值的存在等等。这也能确保输</div><div class="line">* 出的json符合特定的schema。</div><div class="line">*/</div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/schema.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/stringbuffer.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*使用JsonSchema校校验json格式的流程:</span></div><div class="line">*       1. 将schema(模板)解析成一个Document</div><div class="line">*       2. 然后将Document编译成一个SchemaDocument</div><div class="line">*       3. 通过上述SchemaDocument创建一个SchemaValidator。</div><div class="line">*       4. 然后通过document.Accept(validator)去校验一个json，获取校验结果。</div><div class="line">*注意：</div><div class="line">*       1. 一个SchemaDocument能被多个SchemaValidator引用，他不会被SchemaValidator修改。</div><div class="line">*       2. 可以重复使用SchemaValidator校验多个文件。在校验其他文件之前，必须先调用validator.Reset()。</div><div class="line">*JsonSchema的格式：</div><div class="line">*       1. JsonSchema实质上是一个json数据。</div><div class="line">*       2. JsonSchema与其他json数据不同的是它在每一个对象和元素中定义了他们的类型type，属性(如object的properties，以及integer的minimum等等)，</div><div class="line">*           同时，我们可以通过JsonSchema对json的值的类型以及取值范围等进行限定。schema中必须的值需要显示的声明在required中。</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ValidateJson</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> testSchema = <span class="string">"&#123;\"type\":\"object\", \"properties\":&#123;\"code\":&#123;\"type\":\"string\"&#125;, \"int\":&#123;\"type\":\"integer\", \"minimum\":0&#125;&#125;, \"required\":[\"int\",\"code\"]&#125;"</span>;</div><div class="line">  Document sd;</div><div class="line">  <span class="keyword">if</span> (sd.Parse(testSchema.c_str()).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"jsonSchema is not valid : %s"</span>, testSchema.c_str());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//创建SchemaDocument</span></div><div class="line">  <span class="function">SchemaDocument <span class="title">schema</span><span class="params">(sd)</span></span>;</div><div class="line"></div><div class="line">  Document d;</div><div class="line">  <span class="keyword">if</span> (d.Parse(<span class="string">"&#123;\"code\":123, \"int\":1&#125;"</span>).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Document is not a valid json"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">SchemaValidator <span class="title">validator</span><span class="params">(schema)</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!d.Accept(validator)) &#123;</div><div class="line">    StringBuffer sb;</div><div class="line">    validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid schema: %s\n"</span>, sb.GetString());</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid keyword: %s\n"</span>, validator.GetInvalidSchemaKeyword());</div><div class="line">    sb.Clear();</div><div class="line">    validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid document:%s\n "</span>, sb.GetString());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"符合schemas模式\n"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  ValidateJson();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/27/rapidjsonSchema/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/27/rapidjson指针/">
+                            rapidjson指针
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-27T09:35:00+08:00">
+	
+		    5月 27, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="rapidjson指针"><a href="#rapidjson指针" class="headerlink" title="rapidjson指针"></a>rapidjson指针</h1><blockquote>
+<p>本系列文章以例子的方式进行呈现。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/document.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/pointer.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">*     Json Pointer</div><div class="line">*     一个Json Pointer有一串（0至多个）token所组成，每个token之前都有/前缀。每个token</div><div class="line">*     可以是字符串或者数字。例如，给定一个json:&#123;</div><div class="line">*                                            "foo":["bar", "baz"],</div><div class="line">*                                            "pi":3.414</div><div class="line">*                                           &#125;</div><div class="line">*                               JsonPointer解析为:</div><div class="line">*                               1. "/foo"-&gt;["bar", "baz"]</div><div class="line">*                               2."/foo/0"-&gt;"bar"</div><div class="line">*                               3."/foo/1"-&gt;"baz"</div><div class="line">*                               4."pi"-&gt;3.414</div><div class="line">*       特别注意：一个空Json Pointer""解析为整个json</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  Document d;</div><div class="line"></div><div class="line">  <span class="comment">/*          创建、修改、访问dom元素</span></div><div class="line">  *           创建dom元素的方法: (两种都可以自动生成父值，可以同时创建几级)</div><div class="line">  *               1.Pointer("/Key").Set(document, "value"); key对应值为value</div><div class="line">  *               2.Pointer("/Key").Create(document). 此时创建出来的key对应的值为null</div><div class="line">  *           获取Dom元素的pointer：</div><div class="line">  *                1.Value* vptr = Pointer("/Key").Get(document)</div><div class="line">  *                2.Value&amp; vref = Pointer("/Key").GetWithDefault(document, "defaultValue");</div><div class="line">  *                       注意返回的是引用，如值不存在，则创建此键并深拷贝默认值。</div><div class="line">  *           交换:</div><div class="line">  *                 Pointer("/Key").Swap(document, value); //注意交换的是Value，不能为其他类型</div><div class="line">  *            删除：</div><div class="line">  *                 Pointer("/Key").Erase(document);</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*            针对上述函数的辅助函数</span></div><div class="line">  *           SetValueByPointer(document, "/Key", "KeyValue");</div><div class="line">  *           CreateValueByPointer(document, "/Key");</div><div class="line">  *           GetValueByPointer(document, "/Key");</div><div class="line">  *           GetValueByPointerWithDefault(document, "/default", "defaultValue");</div><div class="line">  *           SwapValueByPointer(document, "/Key", Value); //必须为Value</div><div class="line">  *           EraseValueByPointer(document, "/Key");</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*          Pointer相关函数说明</span></div><div class="line">  *           1.Pointer::Get() 或 GetValueByPointer() 函数并不修改 DOM。</div><div class="line">  *                  若那些 token 不能匹配 DOM 里的值，这些函数便返回 nullptr。</div><div class="line">  *                  使用者可利用这个方法来检查一个值是否存在。</div><div class="line">  *           2. Create()、GetWithDefault()、Set()、Swap()都会改变Dom.</div><div class="line">  *                  若一些父值不存在，就会创建它们。若父值类型不匹配 token，</div><div class="line">  *                   也会强行改变其类型。改变类型也意味着完全移除其 DOM 子树的内容</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*</span></div><div class="line">  *         Pointer中负号解析</div><div class="line">  *         1.在Get中,负号永远都是Key的名字</div><div class="line">  *         2.在Set中，若负号在数组的后面，则表示数组最后一个元素的下一个</div><div class="line">  *                   否则表示数组名。例：</div><div class="line">  *         d.Parse("&#123;\"foo\":[123]&#125;");</div><div class="line">  *         SetValueByPointer(d, "/foo/-", 456); // &#123; "foo" : [123, 456] &#125;</div><div class="line">  *         SetValueByPointer(d, "/-", 789);    // &#123; "foo" : [123, 456], "-" : 789 &#125;</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*      字符串化</span></div><div class="line">  *     可以将一个Pointe字符串化，存储于字符串或者其他输出流。</div><div class="line">  *     如：</div><div class="line">  *     Pointer p(...);</div><div class="line">  *     StringBuffer sb;</div><div class="line">  *     p.StringFy(sb);</div><div class="line">  *     std::cout &lt;&lt; sb.GetString() &lt;&lt; std::endl;</div><div class="line">  */</div><div class="line"></div><div class="line"></div><div class="line">  Pointer(<span class="string">"/project"</span>).Set(d, <span class="string">"RapidJson"</span>);</div><div class="line">  Pointer(<span class="string">"/stars"</span>).Set(d, <span class="number">10</span>);</div><div class="line"></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"project"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"stars"</span>].GetInt() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">if</span> (Value* stars = Pointer(<span class="string">"/stars"</span>).Get(d))</div><div class="line">  &#123;</div><div class="line">    stars-&gt;SetInt(stars-&gt;GetInt() + <span class="number">1</span>);</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"stars"</span>].GetInt() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  Pointer(<span class="string">"/default"</span>).GetWithDefault(d, <span class="string">"defaultValue"</span>);</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (d.HasMember(<span class="string">"default"</span>))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"default"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="function">Value <span class="title">swapValue</span><span class="params">(<span class="string">"SwapValue"</span>)</span></span>;</div><div class="line">  Pointer(<span class="string">"/default"</span>).Swap(d, swapValue);</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"default"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  Pointer(<span class="string">"/default"</span>).Erase(d);</div><div class="line">  <span class="keyword">if</span> (!d.HasMember(<span class="string">"default"</span>))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"d Erase default successful"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/27/rapidjson指针/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/27/rapidjson查询操作基本用法/">
                             rapidjson查询操作基本用法
                         </a>
@@ -1095,123 +1197,6 @@
                     
                         <p>
                             <a href="/2017/05/22/Unix错误处理/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/22/Unix基础知识/">
-                            Unix体系结构
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-22T23:18:36+08:00">
-	
-		    5月 22, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix基础知识"><a href="#Unix基础知识" class="headerlink" title="Unix基础知识"></a>Unix基础知识</h1><h2 id="Unix体系结构"><a href="#Unix体系结构" class="headerlink" title="Unix体系结构"></a>Unix体系结构</h2><p>从严格意义上讲，可以将操作系统定义为一种软件，它相当于一种控制计算机硬件资源，为程序提供运行环境的软件。我们通常将这种软件叫做内核，因为它相对比较小，并且位于环境的核心。Unix体系结构如下图:<br><img src="/images/Unix体系结构.png" alt=""></p>
-<p>内核的接口被称为系统调用（system Call），公共库函数建立在系统调用接口之上，<strong>应用程序既可以使用公共函数库，也可以使用系统调用。</strong>shell是一个特殊的应用程序，为运行其他应用程序提供了接口。</p>
-<h2 id="Unix文件和目录"><a href="#Unix文件和目录" class="headerlink" title="Unix文件和目录"></a>Unix文件和目录</h2><h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><p>Unix文件系统是文件和目录的一种层次结构，所有文件的起点都是<strong>根目录(root)</strong>，名称为”/“.</p>
-<p>目录是一个包含目录项的文件。逻辑上，可以认为每个目录项都包含一个文件，同时还说明该文件属性的信息。<strong>文件属性包括文件类型(普通文件还是目录)、文件权限、；链接到改文件的进程数、文件所有者、文件所有者所在的组 文件大小以及文件最后修改的时间等</strong>。stat和fstat函数返回一个文件属性的信息结构。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//通过文件名获取文件信息，并保存在buf所指的结构体stat中</span></div><div class="line"><span class="comment">//返回值：成功返回0，失败-1，错误码存在errno中</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">stat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* file_name, struct stat* buf)</span></span>;</div><div class="line"></div><div class="line">数据类型：</div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">stat</span> &#123;</span></div><div class="line"><span class="keyword">dev_t</span>       st_dev;     <span class="comment">/* ID of device containing file -文件所在设备的ID*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">ino_t</span>       st_ino;     <span class="comment">/* inode number -inode节点号*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">mode_t</span>      st_mode;    <span class="comment">/* protection -保护模式?*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">nlink_t</span>     st_nlink;   <span class="comment">/* number of hard links -链向此文件的连接数(硬连接)*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">uid_t</span>       st_uid;     <span class="comment">/* user ID of owner -user id*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">gid_t</span>       st_gid;     <span class="comment">/* group ID of owner - group id*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">dev_t</span>       st_rdev;    <span class="comment">/* device ID (if special file) -设备号，针对设备文件*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">off_t</span>       st_size;    <span class="comment">/* total size, in bytes -文件大小，字节为单位*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">blksize_t</span>   st_blksize; <span class="comment">/* blocksize for filesystem I/O -系统块的大小*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">blkcnt_t</span>    st_blocks;  <span class="comment">/* number of blocks allocated -文件所占块数*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">time_t</span>      st_atime;   <span class="comment">/* time of last access -最近存取时间*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">time_t</span>      st_mtime;   <span class="comment">/* time of last modification -最近修改时间*/</span>  </div><div class="line"></div><div class="line"><span class="keyword">time_t</span>      st_ctime;   <span class="comment">/* time of last status change - */</span>  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>使用C语言实现ls功能</p>
-<p>涉及到的相关函数：</p>
-<ul>
-<li>文件夹操作函数opendir，readdir,closedir</li>
-<li>opendir返回指向dir结构的指针，将该指针传递给readdir,无需关心dir结构中存在什么数据，直接读取即可。</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dirent.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">err_quit</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* message)</span> </span>&#123;</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, message);</div><div class="line">  <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">if</span> (argc &lt; <span class="number">2</span>)</div><div class="line">  &#123;</div><div class="line">    err_quit(<span class="string">"usage: ls directory_name\n"</span>);</div><div class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  DIR *dp;</div><div class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">dirent</span> *<span class="title">dirp</span>;</span></div><div class="line"></div><div class="line">  <span class="keyword">if</span> ((dp = opendir(argv[<span class="number">1</span>])) == <span class="literal">NULL</span>)</div><div class="line">    err_quit(<span class="string">"can not open file\n"</span>);</div><div class="line"></div><div class="line">  <span class="keyword">while</span> ((dirp = readdir(dp)) != <span class="literal">NULL</span>)</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, dirp-&gt;d_name);</div><div class="line">  closedir(dp);</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="输入和输出"><a href="#输入和输出" class="headerlink" title="输入和输出"></a>输入和输出</h2><h3 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h3><p>文件描述符是一个很小的非负整数，<strong>内核用文件描述符来标识一个特定进程正在访问的文件</strong>。当内核打开或创建文件时，他都会返回一个文件描述符。在读写文件时，都可以使用这个描述符（根据打开时的模式赋予权限）.</p>
-<h3 id="标准输入、标准输出和标准错误流"><a href="#标准输入、标准输出和标准错误流" class="headerlink" title="标准输入、标准输出和标准错误流"></a>标准输入、标准输出和标准错误流</h3><p>按照惯例，每当运行一个新程序的时候，所有的shell都会为改程序默认打开三个文件描述符，即标准输入，标准输出和标注错误。如果不做特殊处理，这三个描述符都连接到终端，也可以将其重定向到文件。如ls &gt; test.data</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/22/Unix基础知识/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/21/函数dup/">
-                            函数dup与dup2
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-21T23:31:31+08:00">
-	
-		    5月 21, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="函数dup与dup2"><a href="#函数dup与dup2" class="headerlink" title="函数dup与dup2"></a>函数dup与dup2</h1><h2 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup2</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> fd2)</span></span>;</div></pre></td></tr></table></figure>
-<h2 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h2><p>这两个函数的功能都是用来复制一个现有的文件描述符。返回的文件描述符与原有的文件描述符共用同一个文件表项，但是文件描述符标志将被清除，即当进程调用exec时文件描述符将不会被关闭。</p>
-<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><p>dup返回当前可用的最小的文件描述符。dup2返回fd2，若fd2所表示的文件已经打开，则将该文件描述符先关闭，然后再将fd复制到fd2上返回。若fd2与fd相同，则直接返回fd、.</p>
-<h2 id="等效函数"><a href="#等效函数" class="headerlink" title="等效函数"></a>等效函数</h2><p>dup函数与fcntl的F_DUPFD功能相同。</p>
-<p>dup(fd)等效于fcntl(fd, F_DUPFD, 0)</p>
-<p>dup2(fd, fd2)等效于close(fd), fcntl(fd, F_DUPFD, fd2)</p>
-<p>但是dup2是原子的上述先关闭然后在复制不是原子操作。</p>
-<h2 id="作用及用途"><a href="#作用及用途" class="headerlink" title="作用及用途"></a>作用及用途</h2><p>dup函数常用来重定向进程的stdin、stdout以及stderr。原理与CGI类似，即将标准输入标准输出重定向到一个文件或者socket流等。</p>
-<h2 id="重定向标准输出"><a href="#重定向标准输出" class="headerlink" title="重定向标准输出"></a>重定向标准输出</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> fd = dup(STDIN_FILENO);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"dup error\n"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">char</span> buf[] = <span class="string">"this is a test of dup\n"</span>;</div><div class="line">    write(fd, buf, <span class="keyword">sizeof</span>(buf));</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/21/函数dup/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
