@@ -215,32 +215,6 @@
   </entry>
   
   <entry>
-    <title>UnixIPC 关联数据结构与对象权限</title>
-    <link href="http://yoursite.com/2017/09/20/UnixIPC%E5%85%B3%E8%81%94%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E5%AF%B9%E8%B1%A1%E6%9D%83%E9%99%90/"/>
-    <id>http://yoursite.com/2017/09/20/UnixIPC关联数据结构与对象权限/</id>
-    <published>2017-09-20T12:09:08.000Z</published>
-    <updated>2017-09-24T11:34:39.183Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="UnixIPC-关联数据结构与对象权限"><a href="#UnixIPC-关联数据结构与对象权限" class="headerlink" title="UnixIPC 关联数据结构与对象权限"></a>UnixIPC 关联数据结构与对象权限</h1>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;UnixIPC-关联数据结构与对象权限&quot;&gt;&lt;a href=&quot;#UnixIPC-关联数据结构与对象权限&quot; class=&quot;headerlink&quot; title=&quot;UnixIPC 关联数据结构与对象权限&quot;&gt;&lt;/a&gt;UnixIPC 关联数据结构与对象权限&lt;/h1&gt;
-    
-    </summary>
-    
-      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-      <category term="ipc" scheme="http://yoursite.com/tags/ipc/"/>
-    
-      <category term="ipc_perm" scheme="http://yoursite.com/tags/ipc-perm/"/>
-    
-  </entry>
-  
-  <entry>
     <title>UnixIPC 机制和key_t本质类型</title>
     <link href="http://yoursite.com/2017/09/20/UnixIPC%E4%B8%ADkey_t%E7%B1%BB%E5%9E%8B%E6%9C%AC%E8%B4%A8/"/>
     <id>http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/</id>
@@ -292,6 +266,32 @@
       <category term="ipc" scheme="http://yoursite.com/tags/ipc/"/>
     
       <category term="key_t" scheme="http://yoursite.com/tags/key-t/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>UnixIPC 关联数据结构与对象权限</title>
+    <link href="http://yoursite.com/2017/09/20/UnixIPC%E5%85%B3%E8%81%94%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E5%AF%B9%E8%B1%A1%E6%9D%83%E9%99%90/"/>
+    <id>http://yoursite.com/2017/09/20/UnixIPC关联数据结构与对象权限/</id>
+    <published>2017-09-20T12:09:08.000Z</published>
+    <updated>2017-09-24T11:34:39.183Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="UnixIPC-关联数据结构与对象权限"><a href="#UnixIPC-关联数据结构与对象权限" class="headerlink" title="UnixIPC 关联数据结构与对象权限"></a>UnixIPC 关联数据结构与对象权限</h1>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;UnixIPC-关联数据结构与对象权限&quot;&gt;&lt;a href=&quot;#UnixIPC-关联数据结构与对象权限&quot; class=&quot;headerlink&quot; title=&quot;UnixIPC 关联数据结构与对象权限&quot;&gt;&lt;/a&gt;UnixIPC 关联数据结构与对象权限&lt;/h1&gt;
+    
+    </summary>
+    
+      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
+    
+      <category term="ipc" scheme="http://yoursite.com/tags/ipc/"/>
+    
+      <category term="ipc_perm" scheme="http://yoursite.com/tags/ipc-perm/"/>
     
   </entry>
   
