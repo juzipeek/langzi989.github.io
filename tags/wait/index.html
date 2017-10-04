@@ -278,10 +278,7 @@
 <ul>
 <li>-1:调用出错,此时出错信息在errno中</li>
 <li>0:若waitpid的options设置了WNOHANG，且调用中没有子进程退出，立即返回0</li>
-<li><blockquote>
-<p>0:若大于0,返回退出进程的pid。</p>
-</blockquote>
-</li>
+<li>>0:若大于0,返回退出进程的pid。</li>
 </ul>
 <h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
 <li>pid：要监听的进程的ID(&lt;-1, =-1, =0, &gt; 0)</li>
