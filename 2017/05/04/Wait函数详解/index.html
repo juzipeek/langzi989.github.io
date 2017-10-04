@@ -31,7 +31,7 @@ kill()函数的作">
 返回值：执行成功返回0，执行失败返回-1。
 参数说明pid为进程ID,sig标识要发送的信号。
 kill()函数的作">
-<meta property="og:updated_time" content="2017-09-09T03:42:33.336Z">
+<meta property="og:updated_time" content="2017-10-04T09:29:57.719Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Wait函数详解">
 <meta name="twitter:description" content="Wait函数详解kill头文件sys/types.hsignal.h
@@ -282,11 +282,20 @@ kill()函数的作">
 <p>killpg函数的作用是向同组的所有进程发送信号。相当于:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kill(-pgrpid, sig);</div></pre></td></tr></table></figure></p>
 <h2 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h2><p>raise函数的错误返回值只有一个,即EINVAL，表示信号无效。其他时候返回都为成功。<br>而killpg的返回值与kill类似。</p>
 <h2 id="wait-与waitpid"><a href="#wait-与waitpid" class="headerlink" title="wait()与waitpid()"></a>wait()与waitpid()</h2><h3 id="头文件-1"><a href="#头文件-1" class="headerlink" title="头文件"></a>头文件</h3><p>sys/wait.h</p>
-<h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><p>pid_t wait(int<em> status);<br>pid_t waitpid(pid_t pid, int</em> status, int options);</p>
+<h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">pid_t</span> wait(<span class="keyword">int</span>* status);</div><div class="line"><span class="keyword">pid_t</span> waitpid(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span>* status, <span class="keyword">int</span> options);</div></pre></td></tr></table></figure>
 <h3 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h3><p>父进程创建子进程之后，父进程使用wait和waitpid具有监视子进程的运行状态的能力。这两个函数用于<strong>等待子进程的状态发生变化回调并且获取状态发生变化的信息</strong>，所能获取的状态变化包括：<strong>子进程运行结束,子进程被信号量暂停，子进程被信号量回复运行</strong>。</p>
 <p>父进程执行wait函数之后，父进程会被阻塞在此处，如果子进程状态发生变化，则wait函数会立即返回结果；否则wait函数会一直阻塞直到子进程状态发生变化。</p>
 <p>通常意义上，，如果子进程状态发生了变化，但是还是未被其父进程或者其他系统回调执行wait函数，此时的子进程被称为可等待的。</p>
 <p>子进程运行结束后父进程执行wait函数可以推动系统释放与子进程相关的资源；否则子进程将会被维持在<strong>僵尸进程</strong>（子进程已结束，而父进程还在运行）的状态下一直存在。</p>
+<h3 id="返回值说明"><a href="#返回值说明" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>上述函数的返回值有-1,0,&gt;0三种情况。分别对应于以下三种情况返回。</p>
+<ul>
+<li>-1:调用出错,此时出错信息在errno中</li>
+<li>0:若waitpid的options设置了WNOHANG，且调用中没有子进程退出，立即返回0</li>
+<li><blockquote>
+<p>0:若大于0,返回退出进程的pid。</p>
+</blockquote>
+</li>
+</ul>
 <h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
 <li>pid：要监听的进程的ID(&lt;-1, =-1, =0, &gt; 0)</li>
 <li>status: 用于存储出发状态变化时的信号值和exit(code)中的code值。</li>
