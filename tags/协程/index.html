@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archives: 2017/10 - 魏传柳</title>
+    <title>Tag: 协程 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -17,7 +17,7 @@
     
     <meta property="og:type" content="blog">
 <meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/archives/2017/10/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/协程/index.html">
 <meta property="og:site_name" content="魏传柳">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="魏传柳">
@@ -280,80 +280,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/10/02/C语言内存对其相关/">
-                            C/C++语言内存对齐
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-10-02T14:30:08+08:00">
-	
-		    10月 02, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C-C-语言内存对齐"><a href="#C-C-语言内存对齐" class="headerlink" title="C/C++语言内存对齐"></a>C/C++语言内存对齐</h1><p><strong>内存对齐</strong>:在计算机中，内存空间按照字节划分，理论上可以从任何起始地址访问任何类型的变量。但实际上在访问特定类型的变量的时候需要从特定的地址开始，这就需要各种类型的数据按照一定的规则在空间上排列，而不是顺序的一个接一个的存放，这就是内存对齐，也叫字节对齐。</p>
-<p><strong>内存对齐的作用</strong>:</p>
-<ul>
-<li>可移植性:因为不同平台对数据的在内存中的访问规则不同,不是所有的硬件都可以访问任意地址上的数据，某些硬件平台只能在特定的地址开始访问数据。所以需要内存对齐。</li>
-<li>性能原因:一般使用内存对齐可以提高CPU访问内存的效率。如32位的intel处理器通过总线访问内存数据，每个总线周期从偶地址开始访问32位的内存数据，内存数据以字节为单位存放。如果32为的数据没有存放在４字节整除的内存地址处，那么处理器需要<strong>两个总线周期</strong>对数据进行访问，显然效率下降很多；另外合理的利用字节对齐可以有效的节省存储空间。</li>
-</ul>
-<p><strong>默认内存对齐影响因素</strong>:与平台架构(位数)和编译器的默认设置有关。</p>
-<blockquote>
-<p>总线周期:CPU通过总线和存储器或者IO设备进行一次数据传输需要的时间，通常为四个或者多个时钟周期组成。</p>
-</blockquote>
-<h2 id="内存对齐规则"><a href="#内存对齐规则" class="headerlink" title="内存对齐规则"></a>内存对齐规则</h2><ol>
-<li>整体类型的对齐规则:若设置了内存对齐为m个字节,类中的最大成员的对齐字节为n，则该数据类型的对齐字节为p=min(m,n)。(一般32位机器的默认pack为4位；64位机器的默认pack为8位,程序中可以显式设置pack的大小)</li>
-<li>类型中成员的对齐规则:类中的第一个成员放在offset为0的位置；对于其他成员，若设置了内存对齐为m个字节,假设该数据成员的对齐字节数(即当前成员所占的字节数)为k,则该数据成员的起始位置是min(m,k)的整数倍。</li>
-<li>整体对齐规则:最后整个类型的大小为p=min(m,n)的整数倍。</li>
-<li>当设置对齐字节数大于类中最大成员的对齐字节数的时候，这个设置实际不产生任何效果；当设置对齐字节数为1时,类的大小就是简单的把所有成员大小相加。</li>
-</ol>
-<p>实例:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stddef.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="comment">//前提条件:32位机器，当前编译器默认pack为4</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">T</span> &#123;</span></div><div class="line">  <span class="keyword">int</span> a;</div><div class="line">  <span class="keyword">short</span> b;</div><div class="line">  <span class="keyword">int</span> c;</div><div class="line">  <span class="keyword">double</span> d;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">cout</span> &lt;&lt; offsetof(T, a) &lt;&lt; <span class="built_in">endl</span></div><div class="line">       &lt;&lt; offsetof(T, b) &lt;&lt; <span class="built_in">endl</span></div><div class="line">       &lt;&lt; offsetof(T, c) &lt;&lt; <span class="built_in">endl</span></div><div class="line">       &lt;&lt; offsetof(T, d) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>根据上面的分析:</p>
-<ul>
-<li>a为第一个成员,offset为0。</li>
-<li>b为short，对齐字节数为2,所以其对齐字节为min(2,4)=2，故offset为4</li>
-<li>c为int,对齐字节数为4,所以其对齐字节数为min(4,4)=4，故offset为8</li>
-<li>d为double，对齐字节数为8,故对齐字节数为min(4,8)=8，故offset为12</li>
-<li>总的大小为20,是,min(8,4)的倍数．</li>
-</ul>
-<h2 id="使用pragma-pack修改系统默认pack"><a href="#使用pragma-pack修改系统默认pack" class="headerlink" title="使用pragma pack修改系统默认pack"></a>使用pragma pack修改系统默认pack</h2><p>修改系统的默认pack可以使用系统函数pragma的pack参数，但是修改之后的<strong>pack一定是2的n次幂</strong>。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(16)     <span class="comment">//修改pack修改为16</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()       <span class="comment">//恢复系统的默认pack</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(show)   <span class="comment">//返回系统当前的pack，由警告信息显示，注意gcc不支持。只有VS支持</span></span></div></pre></td></tr></table></figure></p>
-<p>此外pack还有push,pop其他参数可选，但是不同的编译器对这些参数的实现有不同的含义，如果需要了解可以参考对应的资料。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/10/02/C语言内存对其相关/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -363,7 +289,6 @@
 </div>
 
 </section>
-
 
 
                 <footer id="footer" class="main-content-wrap">
