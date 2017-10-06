@@ -215,6 +215,164 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2016/12/21/条款27-尽量少做转型动作/">
+                            条款27:尽量少做转型动作
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-21T20:57:15+08:00">
+	
+		    12月 21, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/effective-C/">effective C++</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="条款27-尽量少做转型动作-Effective-C"><a href="#条款27-尽量少做转型动作-Effective-C" class="headerlink" title="条款27:尽量少做转型动作(Effective C++)"></a>条款27:尽量少做转型动作(Effective C++)</h1><p>C++规则设计的目标之一是，保证类型错误决不可能发生。理论上如果你的程序很干净的通过编译，就表示它并不企图在任何对象身上执行任何不安全，无意义，愚蠢荒谬的操作。这是一个及其具有价值的保证，不要轻易放弃它。<br>但是在很多种情况下，我们不得不进行转型操作，转型操作破坏了类型系统。这可能会导致任何可能种类的麻烦，有些容易辨识，但是有些可能会很隐晦。所以在需要进行转型操作的时候一定要慎重，尽量通过设计避免不必要的转型操作。</p>
+<h2 id="类型转换的形式"><a href="#类型转换的形式" class="headerlink" title="类型转换的形式"></a>类型转换的形式</h2><p>首先我们回顾一下类型转换的语法，因为通常有三种不同的形式，可写出相同的类型转换动作。</p>
+<ul>
+<li>C风格类型转换： (T)expression    //将expression转换为类型T</li>
+<li>函数式风格类型转换： T(expression) //同上<br>上面的两种形式并无差别，纯粹只是把小括号摆放的位置不同而已，我们称上述两种转为为”旧式转型”(old style cast)。</li>
+</ul>
+<p>C++还提供四中新式转型(new style):</p>
+<ul>
+<li>const_cast&lt; T &gt;(expression)</li>
+<li>dynamic_cast&lt; T &gt;(expression)</li>
+<li>reinterpret_cast&lt; T &gt;(expression)</li>
+<li><p>static_cast&lt; T &gt;(expression)</p>
+</li>
+<li><p>const_cast通常被用来将对象的常量性移除(cast away the constness)。它也是唯一有此能力的C++-style转型操作符。</p>
+</li>
+<li>dynamic_cast主要用来执行类型向下转型(safe downcasting),也就是用来决定某对象是否归属继承体系中的某个类型。它是<strong>唯一无法由旧式语法执行的动作，也是唯一一个可能耗费重大运行成本的转型动作</strong>。</li>
+<li>reinterpret_cast 意图执行低级转型，实际动作及结果可能取决于编译器。这也就表示它<strong>不可移植</strong>，例如将一个pointer to int 转型为int。这一类型转换在低级代码以外很少见。</li>
+<li>static_cast 用来强迫隐式转换(implicit conversion)，例如将non-const对象转换为const对象，或者将int转换为double等等。也可以用来执行上述多种转换的反向转换,例如将void指针转换为type指针，将pointer to derive 转化为point to bas。但是无法将const转换为non-const。</li>
+</ul>
+<h2 id="dynamic-cast与static-cast详解"><a href="#dynamic-cast与static-cast详解" class="headerlink" title="dynamic_cast与static_cast详解"></a>dynamic_cast与static_cast详解</h2><p> static_cast是用来强迫隐式类型转换，它可以用于1.基本数据类型以及指针之间的转换；2.类层次中基类与子类成员函数指针的转换；3.类层次结构中基类与子类指针或者引用之间的转换。<br> dynamic_cast可以用于1.继承关系中类指针或者引用之间的转换；2.包含虚函数之间对象指针的转换3.以及保证转换的安全性。</p>
+<h3 id="static-cast"><a href="#static-cast" class="headerlink" title="static_cast"></a>static_cast</h3><h4 id="用于基本数据类型转换和指针之间的转换"><a href="#用于基本数据类型转换和指针之间的转换" class="headerlink" title="用于基本数据类型转换和指针之间的转换"></a>用于基本数据类型转换和指针之间的转换</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> a;</div><div class="line"><span class="keyword">int</span> b = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(a);</div><div class="line"><span class="keyword">char</span> c = <span class="keyword">static_cast</span>&lt;<span class="keyword">char</span>&gt;(b);</div><div class="line"><span class="keyword">char</span> *pa = <span class="literal">NULL</span>;</div><div class="line"><span class="keyword">int</span> *pb = (<span class="keyword">int</span>*)pa;</div><div class="line">pb = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>*&gt;(pa); <span class="comment">//编译错误static_cast只能用于void指针和type指针之间的转换</span></div><div class="line"><span class="keyword">void</span> *pv = <span class="keyword">static_cast</span>&lt;<span class="keyword">void</span>*&gt;(pa); <span class="comment">//正确</span></div><div class="line">pb = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>*&gt;(pv);</div></pre></td></tr></table></figure>
+<h4 id="类层次中基类与子类成员函数指针的转换"><a href="#类层次中基类与子类成员函数指针的转换" class="headerlink" title="类层次中基类与子类成员函数指针的转换"></a>类层次中基类与子类成员函数指针的转换</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">base</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">  base(<span class="keyword">int</span> t_data) : m_data(t_data) &#123;&#125;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">printData</span><span class="params">()</span> </span>&#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; m_data &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; &#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="keyword">int</span> m_data;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">child</span> :</span> <span class="keyword">public</span> base &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  child(<span class="keyword">int</span> t_data) : base(t_data) &#123;&#125;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">printData</span><span class="params">()</span> </span>&#123; <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"this is in the child"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; &#125;</div><div class="line">&#125;;</div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(base::*basefun)</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">base <span class="title">a</span><span class="params">(<span class="number">10</span>)</span></span>;</div><div class="line">  basefun func = &amp;base::printData;</div><div class="line">  func = <span class="keyword">static_cast</span>&lt;basefun&gt;(&amp;child::printData);</div><div class="line">  (a.*func)();  <span class="comment">//this is in the child</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="类层次结构中基类与子类指针或者引用之间的转换"><a href="#类层次结构中基类与子类指针或者引用之间的转换" class="headerlink" title="类层次结构中基类与子类指针或者引用之间的转换"></a>类层次结构中基类与子类指针或者引用之间的转换</h4><p>上行转换:子类指针或引用转换为基类的指针或引用 —安全<br>下行转换:基类的指针或者引用转换为子类的指针或引用 —危险(避免这样做)<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></div><div class="line">&#123;</div><div class="line">&#125;;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span>:</span><span class="keyword">public</span> A</div><div class="line">&#123;</div><div class="line">&#125;;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span>:</span><span class="keyword">public</span> A</div><div class="line">&#123;</div><div class="line">&#125;;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span></span></div><div class="line">&#123;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">A objA;</div><div class="line">B objB;</div><div class="line">A* pObjA = <span class="keyword">new</span> A();</div><div class="line">B* pObjB = <span class="keyword">new</span> B();</div><div class="line">C* pObjC = <span class="keyword">new</span> C();</div><div class="line">D* pObjD = <span class="keyword">new</span> D();</div><div class="line"></div><div class="line">objA = <span class="keyword">static_cast</span>&lt;A&amp;&gt;(objB);     <span class="comment">//转换为基类引用    </span></div><div class="line">objA = <span class="keyword">static_cast</span>&lt;A&gt;(objB);</div><div class="line">objB = <span class="keyword">static_cast</span>&lt;B&gt;(objA);      <span class="comment">//error 不能进行转换  </span></div><div class="line"></div><div class="line">pObjA = pObjB;                    <span class="comment">//right 基类指针指向子类对象</span></div><div class="line"><span class="comment">//objB = objA;                      //error 子类指针指向基类对象</span></div><div class="line">pObjA = <span class="keyword">static_cast</span>&lt;A*&gt;(pObjB);   <span class="comment">//right 基类指针指向子类</span></div><div class="line">pObjB = <span class="keyword">static_cast</span>&lt;B*&gt;(pObjA);   <span class="comment">//强制转换 OK 基类到子类</span></div><div class="line"><span class="comment">//pObjC = static_cast&lt;C*&gt;(pObjB);   //error 继承于统一类的派生指针之间转换</span></div><div class="line"><span class="comment">//pObjD = static_cast&lt;D*&gt;(pObjC);   //error 两个无关联之间转换</span></div></pre></td></tr></table></figure></p>
+<h3 id="dynamic-cast"><a href="#dynamic-cast" class="headerlink" title="dynamic_cast"></a>dynamic_cast</h3><h4 id="继承关系的类指针对象或者引用之间的转换"><a href="#继承关系的类指针对象或者引用之间的转换" class="headerlink" title="继承关系的类指针对象或者引用之间的转换"></a>继承关系的类指针对象或者引用之间的转换</h4><p>若积累中没有虚函数，使用dynamic_cast可以将子类的指针或引用转换为基类的指针或引用，与static_cast用法相同，不同的是,这个时候使用dynamic_cast将基类指针转换为子类指针的时候会出现编译错误(static_cast不会，但是很危险)。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></div><div class="line">&#123;</div><div class="line">&#125;;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span>:</span><span class="keyword">public</span> A</div><div class="line">&#123;</div><div class="line">&#125;;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span>:</span><span class="keyword">public</span> A</div><div class="line">&#123;</div><div class="line">&#125;;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span></span></div><div class="line">&#123;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">A objA;</div><div class="line">B objB;</div><div class="line">A* pObjA = <span class="keyword">new</span> A();</div><div class="line">B* pObjB = <span class="keyword">new</span> B();</div><div class="line">C* pObjC = <span class="keyword">new</span> C();</div><div class="line">D* pObjD = <span class="keyword">new</span> D();</div><div class="line"><span class="comment">//objA = dynamic_cast&lt;A&gt;(objB);         //error 非引用</span></div><div class="line"></div><div class="line">objA = <span class="keyword">dynamic_cast</span>&lt;A&amp;&gt;(objB);</div><div class="line"><span class="comment">//objB = dynamic_cast&lt;B&amp;&gt;(objA);      //error A 不是多态类型不能转换 若有虚函数则可以进行转换</span></div><div class="line"></div><div class="line">pObjA = <span class="keyword">dynamic_cast</span>&lt;A*&gt;(pObjB);</div><div class="line"><span class="comment">//pObjB = dynamic_cast&lt;B*&gt;(pObjA);    //error A 继承关系 不是多态类型不能转换</span></div><div class="line"><span class="comment">//pObjB = dynamic_cast&lt;B*&gt;(pObjC);    //error C 兄弟关系 不是多态类型不能转换</span></div><div class="line"><span class="comment">//pObjB = dynamic_cast&lt;B*&gt;(pObjD);    //error D 没有关系 不是多态类型不能转换</span></div></pre></td></tr></table></figure></p>
+<h4 id="包含有虚函数之间的对象指针的转换"><a href="#包含有虚函数之间的对象指针的转换" class="headerlink" title="包含有虚函数之间的对象指针的转换"></a>包含有虚函数之间的对象指针的转换</h4><p>使用dynamic_cast将基类指针转换为子类指针的时候并不是永远有效：只有基类指针本身指向的就是一个派生类对象的时候有效。其他时候结果为NULL;<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></div><div class="line">&#123;</div><div class="line">Public:</div><div class="line">     Virtual ~A()&#123;&#125;</div><div class="line">&#125;;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span>:</span><span class="keyword">public</span> A</div><div class="line">&#123;</div><div class="line">&#125;;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span>:</span><span class="keyword">public</span> A</div><div class="line">&#123;</div><div class="line">&#125;;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span></span></div><div class="line">&#123;</div><div class="line">Public:</div><div class="line">Virtual ~D()&#123;&#125;</div><div class="line">&#125;;</div><div class="line">pObjB = <span class="keyword">dynamic_cast</span>&lt;B*&gt;(pObjA);    <span class="comment">// worning 继承关系 父类具有虚函数 多态</span></div><div class="line">pObjB = <span class="keyword">dynamic_cast</span>&lt;B*&gt;(pObjD);    <span class="comment">//worning 没有关系 D是多态类型可以转换</span></div><div class="line"><span class="comment">//以上结果：pObjB == NULL 此处会发生一个运行时错误</span></div></pre></td></tr></table></figure></p>
+<h4 id="dynamic-cast转换的安全性"><a href="#dynamic-cast转换的安全性" class="headerlink" title="dynamic_cast转换的安全性"></a>dynamic_cast转换的安全性</h4><p>当涉及到基类和派生类对象之间的转换的时候，总使用dynamic_cast会避免很多错误，它是安全的，但是它会给程序运行带来巨大的开销。<br>当子类指针转换为基类指针的时候,两种转型都OK,dynamic_cast开销较大。<br>当基类指针转换为派生类指针的时候，若基类中没有虚函数，static_cast不会报错，但是做法很危险，dynamic_cast编译不通过。当含有虚函数的时候，若基类指针没有指向派生类，这个时候会返回NULL,所以也是安全的。</p>
+<h4 id="虚函数对于dynamic-cast转换的作用"><a href="#虚函数对于dynamic-cast转换的作用" class="headerlink" title="虚函数对于dynamic_cast转换的作用"></a>虚函数对于dynamic_cast转换的作用</h4><p>为什么dynamic_cast转换类指针的时候需要虚函数呢？<br>dynamic_cast转换是在运行时进行转换，运行时转换就需要知道类对象的信息(继承关系等)。<br>在运行时或者这个信息的是虚函数表指针，通过这个指针可以获取到该类对象的所有的虚函数，包括父类的。因为派生类会继承基类的虚函数表，所以通过这个虚函数表，我们就可以知道类对象的父类，在转换的时候就可以用来判断对象有无继承关系。<br><strong>所以虚函数对于正确的基类指针转换为子类指针是非常重要的。</strong></p>
+<h2 id="effective的三点建议"><a href="#effective的三点建议" class="headerlink" title="effective的三点建议"></a>effective的三点建议</h2><ul>
+<li>如果可以，尽量避免转型，特别是在注重效率的代码中避免dynamic_cast。如果有个设计需要转型动作，试着发展无需转型的替代设计。</li>
+<li>如果转型是必要的，试着将它隐藏与某个函数的背后。客户随后可以调用该函数，而不需要将转型放到他们自己的代码中。</li>
+<li>宁可使用C++-style转型，不要使用旧式转型。前者很容易辨识出来，而且也比较有着分门别类的职掌</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/21/条款27-尽量少做转型动作/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
+                            通过/proc/meminfo实时获取系统内存使用情况
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-19T23:43:49+08:00">
+	
+		    12月 19, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="通过-proc-meminfo实时获取系统内存使用情况-Linux"><a href="#通过-proc-meminfo实时获取系统内存使用情况-Linux" class="headerlink" title="通过/proc/meminfo实时获取系统内存使用情况(Linux)"></a>通过/proc/meminfo实时获取系统内存使用情况(Linux)</h1><p>linux内核提供了一种通过/proc文件系统来在运行时访问内核内部数据结构，改变内核设置的机制，各种硬件平台上的linux系统的/proc文件系统的基本概念都是相同的。<br>/proc文件系统是一种内核和内核模块用来向进程发送信息的机制。这个伪文件系统可以和内核内部的数据结构进行交互，获取实时的进程信息。注意，<strong>/proc文件系统是存储与内存而不是硬盘,/proc虚拟文件系统实质是以文件系统的形式访问内核数据的接口</strong>。</p>
+<h2 id="proc-meminfo"><a href="#proc-meminfo" class="headerlink" title="/proc/meminfo"></a>/proc/meminfo</h2><p>linux系统中/proc/meminfo这个文件用来记录了系统内存使用的详细情况。其中top，free命令中的数据是通过这个文件中的信息计算并按照特定的格式进行显示。<br>/proc/meminfo内容详解：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$cat</span> /proc/meminfo</div><div class="line">MemTotal:        <span class="number">8052444</span> kB</div><div class="line">MemFree:         <span class="number">2754588</span> kB</div><div class="line">MemAvailable:    <span class="number">3934252</span> kB</div><div class="line">Buffers:          <span class="number">137128</span> kB</div><div class="line">Cached:          <span class="number">1948128</span> kB</div><div class="line">SwapCached:            <span class="number">0</span> kB</div><div class="line">Active:          <span class="number">3650920</span> kB</div><div class="line">Inactive:        <span class="number">1343420</span> kB</div><div class="line">Active(anon):    <span class="number">2913304</span> kB</div><div class="line">Inactive(anon):   <span class="number">727808</span> kB</div><div class="line">Active(file):     <span class="number">737616</span> kB</div><div class="line">Inactive(file):   <span class="number">615612</span> kB</div><div class="line">Unevictable:         <span class="number">196</span> kB</div><div class="line">Mlocked:             <span class="number">196</span> kB</div><div class="line">SwapTotal:       <span class="number">8265724</span> kB</div><div class="line">SwapFree:        <span class="number">8265724</span> kB</div><div class="line">Dirty:               <span class="number">104</span> kB</div><div class="line">Writeback:             <span class="number">0</span> kB</div><div class="line">AnonPages:       <span class="number">2909332</span> kB</div><div class="line">Mapped:           <span class="number">815524</span> kB</div><div class="line">Shmem:            <span class="number">732032</span> kB</div><div class="line">Slab:             <span class="number">153096</span> kB</div><div class="line">SReclaimable:      <span class="number">99684</span> kB</div><div class="line">SUnreclaim:        <span class="number">53412</span> kB</div><div class="line">KernelStack:       <span class="number">14288</span> kB</div><div class="line">PageTables:        <span class="number">62192</span> kB</div><div class="line">NFS_Unstable:          <span class="number">0</span> kB</div><div class="line">Bounce:                <span class="number">0</span> kB</div><div class="line">WritebackTmp:          <span class="number">0</span> kB</div><div class="line">CommitLimit:    <span class="number">12291944</span> kB</div><div class="line">Committed_AS:   <span class="number">11398920</span> kB</div><div class="line">VmallocTotal:   <span class="number">34359738367</span> kB</div><div class="line">VmallocUsed:           <span class="number">0</span> kB</div><div class="line">VmallocChunk:          <span class="number">0</span> kB</div><div class="line">HardwareCorrupted:     <span class="number">0</span> kB</div><div class="line">AnonHugePages:   <span class="number">1380352</span> kB</div><div class="line">CmaTotal:              <span class="number">0</span> kB</div><div class="line">CmaFree:               <span class="number">0</span> kB</div><div class="line">HugePages_Total:       <span class="number">0</span></div><div class="line">HugePages_Free:        <span class="number">0</span></div><div class="line">HugePages_Rsvd:        <span class="number">0</span></div><div class="line">HugePages_Surp:        <span class="number">0</span></div><div class="line">Hugepagesize:       <span class="number">2048</span> kB</div><div class="line">DirectMap4k:      <span class="number">201472</span> kB</div><div class="line">DirectMap2M:     <span class="number">5967872</span> kB</div><div class="line">DirectMap1G:     <span class="number">3145728</span> kB</div></pre></td></tr></table></figure></p>
+<p>详解：</p>
+<ul>
+<li>MemTotal: 所有内存(RAM)大小,减去一些预留空间和内核的大小。</li>
+<li>MemFree: 完全没有用到的物理内存，lowFree+highFree</li>
+<li>MemAvailable: 在不使用交换空间的情况下，启动一个新的应用最大可用内存的大小，计算方式：MemFree+Active(file)+Inactive(file)-(watermark+min(watermark,Active(file)+Inactive(file)/2))</li>
+<li>Buffers:  块设备所占用的缓存页，包括：直接读写块设备以及文件系统元数据(metadata)，比如superblock使用的缓存页。</li>
+<li>Cached:  表示普通文件数据所占用的缓存页。</li>
+<li>SwapCached:  swap cache中包含的是被确定要swapping换页，但是尚未写入物理交换区的匿名内存页。那些匿名内存页，比如用户进程malloc申请的内存页是没有关联任何文件的，如果发生swapping换页，这类内存会被写入到交换区。</li>
+<li>Active:  active包含active anon和active file</li>
+<li>Inactive:  inactive包含inactive anon和inactive file</li>
+<li>Active(anon):  anonymous pages（匿名页），用户进程的内存页分为两种：与文件关联的内存页(比如程序文件,数据文件对应的内存页)和与内存无关的内存页（比如进程的堆栈，用malloc申请的内存），前者称为file pages或mapped pages,后者称为匿名页。</li>
+<li>Inactive(anon):   见上</li>
+<li>Active(file):  见上</li>
+<li>Inactive(file): 见上</li>
+<li>SwapTotal:  可用的swap空间的总的大小(swap分区在物理内存不够的情况下，把硬盘空间的一部分释放出来，以供当前程序使用)</li>
+<li>SwapFree:   当前剩余的swap的大小</li>
+<li>Dirty:   需要写入磁盘的内存去的大小</li>
+<li>Writeback:  正在被写回的内存区的大小</li>
+<li>AnonPages:  未映射页的内存的大小</li>
+<li>Mapped:   设备和文件等映射的大小</li>
+<li>Slab:  内核数据结构slab的大小</li>
+<li>SReclaimable:  可回收的slab的大小</li>
+<li>SUnreclaim:   不可回收的slab的大小</li>
+<li>PageTables:   管理内存页页面的大小</li>
+<li>NFS_Unstable:   不稳定页表的大小</li>
+<li>VmallocTotal:   Vmalloc内存区的大小</li>
+<li>VmallocUsed:     已用Vmalloc内存区的大小</li>
+<li>VmallocChunk:  vmalloc区可用的连续最大快的大小</li>
+</ul>
+<h2 id="通过-proc-meminfo实时获取系统内存使用情况"><a href="#通过-proc-meminfo实时获取系统内存使用情况" class="headerlink" title="通过/proc/meminfo实时获取系统内存使用情况"></a>通过/proc/meminfo实时获取系统内存使用情况</h2><p><a href="http://man.linuxde.net/free" target="_blank" rel="external">http://man.linuxde.net/free</a><br>目前我们希望实时获取系统中内存的使用情况，实际可以挪用的内存数为free+cache+buffer,实际使用的内存数为used-cache-buffer(total-free-cache-buffer),</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/">
                             通过/proc/stat计算linux系统即时CPU使用率
                         </a>

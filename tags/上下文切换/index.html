@@ -216,6 +216,71 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/10/06/C++协程实现/">
+                            C++协程实现及原理
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-10-06T17:00:48+08:00">
+	
+		    10月 06, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C-协程及其原理"><a href="#C-协程及其原理" class="headerlink" title="C++协程及其原理"></a>C++协程及其原理</h1><h2 id="协程的几种实现方式及原理"><a href="#协程的几种实现方式及原理" class="headerlink" title="协程的几种实现方式及原理"></a>协程的几种实现方式及原理</h2><p>协程又可以称为用户线程,微线程，可以将其理解为单个进程或线程中的多个<strong>用户态线程</strong>，这些微线程在用户态进程控制和调度.协程的实现方式有很多种，包括</p>
+<ol>
+<li>使用glibc中的ucontext库实现</li>
+<li>利用汇编代码切换上下文</li>
+<li>利用C语言语法中的switch-case的奇淫技巧实现(protothreads)</li>
+<li>利用C语言的setjmp和longjmp实现</li>
+</ol>
+<p>实际上，无论是上述那种方式实现协程,其原理是相同的，都是通过保存和恢复寄存器的状态，来进行各协程上下文的保存和切换。</p>
+<h2 id="协程较于函数和线程的优点"><a href="#协程较于函数和线程的优点" class="headerlink" title="协程较于函数和线程的优点"></a>协程较于函数和线程的优点</h2><ul>
+<li>相比于函数:协程避免了传统的函数调用栈，几乎可以无限地递归</li>
+<li>相比与线程:协程没有内核态的上下文切换，近乎可以无限并发。协程在用户态进程显式的调度，可以把异步操作转换为同步操作，也意味着不需要加锁,避免了加锁过程中不必要的开销。</li>
+</ul>
+<p>进程,线程以及协程的设计都是为了并发任务可以更好的利用CPU资源，他们之间最大的区别在于CPU资源的使用上:</p>
+<ul>
+<li>进程和线程的任务调度是由内核控制的，是抢占式的；</li>
+<li>协程的任务调度是在用户态完成,需要代码里显式地将CPU交给其他协程,是协作式的</li>
+</ul>
+<p>由于我们可以在用户态调度协程任务，所以我们可以把<strong>一组相互依赖的任务设计为协程。这样,当一个协程任务完成之后,可以手动的进行任务切换，把当前任务挂起(yield),切换到另一个协程区工作</strong>.由于我们可以控制程序主动让出资源，很多情况下将不需要对资源进行加锁。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/10/06/C++协程实现/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/10/06/ucontext函数详解/">
                             ucontext族函数详解
                         </a>

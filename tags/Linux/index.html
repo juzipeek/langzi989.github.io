@@ -216,6 +216,302 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/10/06/汇编基础之寄存器与简单指令分析/">
+                            汇编基础之寄存器及汇编指令
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-10-06T19:00:48+08:00">
+	
+		    10月 06, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/汇编/">汇编</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="汇编基础之寄存器及汇编指令"><a href="#汇编基础之寄存器及汇编指令" class="headerlink" title="汇编基础之寄存器及汇编指令"></a>汇编基础之寄存器及汇编指令</h1><blockquote>
+<p>参考链接:<br><a href="http://www.cnblogs.com/technology/archive/2010/05/16/1736782.html" target="_blank" rel="external">http://www.cnblogs.com/technology/archive/2010/05/16/1736782.html</a><br><a href="http://anonymalias.github.io/2017/01/09/ucontext-theory/" target="_blank" rel="external">http://anonymalias.github.io/2017/01/09/ucontext-theory/</a></p>
+</blockquote>
+<p>最近在学习协程方面的知识,在协程的一种实现方式中有一种是用汇编实现的,所以这里再把汇编知识复习一下。</p>
+<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>寄存器按照其用途可分为以下4类:</p>
+<ul>
+<li>数据寄存器</li>
+<li>指针及变址寄存器</li>
+<li>段寄存器</li>
+<li>控制寄存器</li>
+</ul>
+<h3 id="数据寄存器"><a href="#数据寄存器" class="headerlink" title="数据寄存器"></a>数据寄存器</h3><p>数据寄存器包括４个16位的寄存器(AX,BX,CX,DX)或者8个8位的寄存器(AH,AL,BH,BL,CH,CL,DH,DL)，这些寄存器都是用来暂时存放操作数，运算结果或者其他信息，但同时又具有某些专门的用途。</p>
+<ul>
+<li>AX(累加寄存器):算术运算中的主要寄存器,在乘除运算中用来指定除数和被除数,也是乘除运算后积和商的默认存储单元。,另外<strong>IO指令均使用该寄存器与IO设备传送信息</strong></li>
+<li>BX(基址寄存器):指令寻址时常用作基址寄存器，存入偏移量或者偏移量的构成部分。</li>
+<li>CX(计数寄存器):在循环指令操作或者串处理指令中隐含计数</li>
+<li>DX(数据寄存器):在双字节运算中，与AX构成32位操作数，DX为高16位。在某些IO指令中,DX被用来存放端口地址</li>
+</ul>
+<h3 id="指针及变址寄存器"><a href="#指针及变址寄存器" class="headerlink" title="指针及变址寄存器"></a>指针及变址寄存器</h3><p>这些寄存器都是16位的寄存器,用来存放16为的操作数或者中间结果，但是更常见的是存放偏移量或者位移量</p>
+<ul>
+<li>SP(堆栈指针寄存器):指向栈顶的位置,与SS寄存器一起组成栈顶数据的物理地址</li>
+<li>BP(基址指针寄存器):系统默认其指向堆栈中的某一单元，即提供栈中该单元偏移量，加段前缀后，BP可作为非堆栈段的地址指针。</li>
+<li>SI(源变址寄存器):与DS联用, 指示数据段中某操作的偏移量. 在做串处理时, SI指示源操作数地址, 并有自动增量或自动减量的功能. 变址寻址时, SI与某一位移量共同构成操作数的偏移量</li>
+<li>DI(目的变址寄存器):与DS联用, 指示数据段中某操作数的偏移量, 或与某一位移量共同构成操作数的偏移量. 串处理操作时, DI指示附加段中目的地址, 并有自动增量或减量的功能</li>
+</ul>
+<h3 id="段寄存器"><a href="#段寄存器" class="headerlink" title="段寄存器"></a>段寄存器</h3><ul>
+<li>CS(代码段):存放当前程序的指令代码</li>
+<li>DS(数据段):存放程序所涉及的源数据以及结果</li>
+<li>SS(堆栈段):以先进后出原则的数据区</li>
+<li>ES(附加段):辅助数据区，存放串或者其他数据</li>
+</ul>
+<h3 id="控制寄存器"><a href="#控制寄存器" class="headerlink" title="控制寄存器"></a>控制寄存器</h3><ul>
+<li>IP（指令寄存器）: 存放下一条要执行的指令的偏移量</li>
+<li>FR(控制标志位):<ul>
+<li>CF(进位标识位):进行加减运算时, 如果最高二进制位产生进位或错位, CF则为1, 否则为0. 程序设计中, 常用条件转移指令JC, JNC指令据此标志位实现转移</li>
+<li>PF(奇偶标志位):操作结果中二进制位1的个数为偶数是, PF为1, 某则为0</li>
+<li>AF(辅助进位标志位):运算时半字节产生进位或借位时, AF为1, 某则为0. 主要用于BCD码的调整</li>
+<li>ZF(零标志位):运算结果为0时, ZF为1, 否则为0</li>
+<li>SF(符号标志位):当运算结果的最高位为1时, SF为1, 否则为0. 最高位表示符号数的正和负</li>
+<li>TF(跟踪标志位):用于调试程序时进入单步方式工作. TF=1时, 每条指令执行完后产生一个内部中断, 让用户检查指令运行后寄存器, 存储器和各标志位的内容. TF=0时, CPU工作正常, 不产生内部中断</li>
+<li>IF(中断允许标志位):IF=1同时中断屏蔽寄存器的相应位为0, 允许系统响应可屏蔽中断, 反之, 不接收外部发出的中断请求</li>
+<li>DF(方向位标志位):用于控制串操作时地址指针位移方向. 当DF=1时, 指针向高地址方向移动</li>
+<li>OF(溢出标志位):算术运算时结果超出系统所能表示的数的范围. 溢出时, OF=1</li>
+</ul>
+</li>
+</ul>
+<p>注意:上述为16位处理其器中的寄存器的名字，在32和64位系统中，寄存器中名字有相应的变化，具体看下面(32位在前面加E,64在前面加R):</p>
+<p><img src="/images/register.png" alt=""></p>
+<h2 id="汇编指令"><a href="#汇编指令" class="headerlink" title="汇编指令"></a>汇编指令</h2><h3 id="汇编指令格式"><a href="#汇编指令格式" class="headerlink" title="汇编指令格式"></a>汇编指令格式</h3><p>汇编指令的格式如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[标号:]　指令助记符[[目的操作数][,源操作数]][;注释]</div></pre></td></tr></table></figure></p>
+<ul>
+<li>指令助记符:如MOV,ADD之类标识传送,加法。不区分大小写</li>
+<li>目的操作数:作用有两个,1.参与指令操作2,暂时存储操作结果</li>
+<li>源操作数:主要提供原始数据或操作对象。面向所有寻址方式</li>
+<li>注释:用分号隔开</li>
+</ul>
+<p>汇编指令中常见的符号:</p>
+<ul>
+<li>imme:立即数</li>
+<li>DST:目的操作数</li>
+<li>SRC:源操作数</li>
+<li>mem:存储器操作数</li>
+<li>OPR:操作数</li>
+<li>reg:通用寄存器</li>
+<li>EA:偏移地址</li>
+<li>Sreg:段寄存器</li>
+<li>Port:端口地址</li>
+<li>Lable:标号</li>
+</ul>
+<p>汇编指令可以分成六类:</p>
+<ul>
+<li>数据传送指令</li>
+<li>算数运算指</li>
+<li>逻辑运算与移位指令</li>
+<li>串操作指令</li>
+<li>程序控制指令</li>
+<li>处理器控制指令<h3 id="数据传送指令"><a href="#数据传送指令" class="headerlink" title="数据传送指令"></a>数据传送指令</h3><h4 id="数据传送指令-1"><a href="#数据传送指令-1" class="headerlink" title="数据传送指令"></a>数据传送指令</h4></li>
+<li>MOV DST,SRC(传送指令):把源操作数的内容送入目的操作数<ul>
+<li>立即数做源操作数时,立即数的长度必须小于等于目的操作数的长度</li>
+<li>操作数分别为reg,reg或reg,sreg或sreg,sreg或reg,sreg时，两者的长度必须保持一致</li>
+<li>立即数不能作为目的操作数</li>
+<li>CS和IP寄存器不能做目的操作数,不允许用立即数为段寄存器赋值</li>
+<li>不能将一个段寄存器的内容直接送到另一个段寄存器中, 可借助通用寄存器或PUSH, POP指令实现这一要求</li>
+</ul>
+</li>
+<li>PUSH SRC(压栈指令): 将一个字数据压入当前栈顶, 位移量disp=-2的地址单元. 数据进栈时, 栈指针SP首先向低地址方向移动两个字节位置, 接着数据进栈, 形成新的栈顶</li>
+<li>POP DST(出栈指令):弹出栈顶元素, 后将栈顶指针向栈底方向移动一个字</li>
+<li>XCHG OPR1, OPR2(交换指令):交换指令: 将这两个操作数交换</li>
+</ul>
+<h4 id="地址传送指令"><a href="#地址传送指令" class="headerlink" title="地址传送指令"></a>地址传送指令</h4><ul>
+<li>LEA DST, SRC(装载有效指令):该指令将源操作数的偏移量OA装载到目的操作数中</li>
+<li>LDS DST, SRC(装载数据段指针指令):将当前数据段中的一个双字数据装入到一个通用寄存器SI(双字数据的低字)和数据段寄存器DS(双字数据的高字)中</li>
+<li>LES DST,SRC(装载附加段指针指令):将附加数据段中的一个32位地址数据指针(附加段指针)送到DI(低字)和ES(高字)寄存器中</li>
+</ul>
+<h4 id="标志传送指令"><a href="#标志传送指令" class="headerlink" title="标志传送指令"></a>标志传送指令</h4><ul>
+<li>LAHF(标志寄存器送AH指令): 将标志寄存器的低字节送入AH中</li>
+<li>SAHF(AH送标志寄存器指令): 将AH寄存器内容送标志寄存器FR的低字节</li>
+<li>PUSHF(标志进栈指令): 标志寄存器进栈</li>
+<li>POPF (标志出栈指令): 标志寄存器出栈</li>
+</ul>
+<h4 id="累加器专用传送指令"><a href="#累加器专用传送指令" class="headerlink" title="累加器专用传送指令"></a>累加器专用传送指令</h4><ul>
+<li>IN   AL, Port:从端口读入数据, 存放在AL中</li>
+<li>OUT PORT,AL:传送AL中的数据到端口</li>
+<li>XLAT OPR或XLAT:用于将AL中当前内容转换为一种代码</li>
+</ul>
+<h3 id="算术运算指令"><a href="#算术运算指令" class="headerlink" title="算术运算指令"></a>算术运算指令</h3><h4 id="加法指令"><a href="#加法指令" class="headerlink" title="加法指令"></a>加法指令</h4><ul>
+<li>ADD DST, SRC:DST+SRC的和存放到DST中去</li>
+<li>ADC DST, SRC:带进位加法指令, DST+SRC+CF</li>
+<li>INC DST:增1指令</li>
+</ul>
+<h4 id="减法指令"><a href="#减法指令" class="headerlink" title="减法指令"></a>减法指令</h4><ul>
+<li>SUB DST, RSC:DST-SRC, 存放到DST中</li>
+<li>SBB DST, SRC:带借位减法指令, DST-SRC-CF</li>
+<li>DEC DST :减1指令</li>
+<li>NEG DST:求补指令, 求补码</li>
+<li>CMP OPR1, OPR2:比较指令</li>
+</ul>
+<h4 id="乘法指令"><a href="#乘法指令" class="headerlink" title="乘法指令"></a>乘法指令</h4><ul>
+<li>MUL SRC:无符号数乘指令, AL*SRC, 结果放入AX中</li>
+<li>IMUL SRC:有符号数乘指令, AL*SRC, 结果放入AX中</li>
+</ul>
+<h4 id="除法指令"><a href="#除法指令" class="headerlink" title="除法指令"></a>除法指令</h4><ul>
+<li>DIV SRC :无符号数除指令, AX/SRC, 商放入AL中, 余数放在AH中</li>
+<li>IDIV SRC:符号数除指令, AX/SRC, 上放入AL中, 余数放在AH中</li>
+<li>CBW, CWD:都是符号扩展指令. 将AL的符号扩到AX中; 将AX的符号扩到DX</li>
+</ul>
+<h3 id="逻辑运算与移位指令"><a href="#逻辑运算与移位指令" class="headerlink" title="逻辑运算与移位指令"></a>逻辑运算与移位指令</h3><h4 id="逻辑运算指令"><a href="#逻辑运算指令" class="headerlink" title="逻辑运算指令"></a>逻辑运算指令</h4><ul>
+<li>NOT OPR:逻辑非指令</li>
+<li>AND OPR:逻辑与指令</li>
+<li>OR OPR:逻辑或指令</li>
+<li>XOR OPR :逻辑异或指令</li>
+</ul>
+<h4 id="移位指令"><a href="#移位指令" class="headerlink" title="移位指令:"></a>移位指令:</h4><ul>
+<li>SHL DST, CNT:逻辑左移</li>
+<li>SHR DST, CNT:逻辑右移</li>
+<li>SAL DST, CNT:算术左移</li>
+<li>SAR DST, CNT:算术右移</li>
+</ul>
+<h4 id="循环移位指令"><a href="#循环移位指令" class="headerlink" title="循环移位指令"></a>循环移位指令</h4><ul>
+<li>ROL              DST, CNT:循环左移</li>
+<li>ROR       DST, CNT:循环右移</li>
+<li>RCL        DST, CNT:带进位循环左移</li>
+<li>RCR              DST, CNT:带进位循环右移</li>
+</ul>
+<h3 id="串操作指令"><a href="#串操作指令" class="headerlink" title="串操作指令"></a>串操作指令</h3><ul>
+<li>MOVS:串传送指令</li>
+<li>CMPS:串比较指令</li>
+<li>SCAS:串扫描指令</li>
+<li>LODS:装入串指令</li>
+<li>STOS:存储串指令</li>
+</ul>
+<h3 id="控制转移指令"><a href="#控制转移指令" class="headerlink" title="控制转移指令"></a>控制转移指令</h3><h4 id="转移指令"><a href="#转移指令" class="headerlink" title="转移指令:"></a>转移指令:</h4><ul>
+<li>JMP:无条件转移指令</li>
+<li>JX:条件转移指令(JC/JNC, JZ/JNZ, JE/JNE, JS/JNS, JO/JNO, JP/JNP…)</li>
+</ul>
+<h4 id="循环指令"><a href="#循环指令" class="headerlink" title="循环指令"></a>循环指令</h4><ul>
+<li>LOOP 标号:该指令执行时, 技术寄存器CXX首先减1, 然后判断CX, 若为0, 跳出循环</li>
+</ul>
+<h4 id="条件循环指令"><a href="#条件循环指令" class="headerlink" title="条件循环指令"></a>条件循环指令</h4><ul>
+<li>LOOPZ/LOOPE, LOOPNZ/LOOPNE:前者用于找到第一个不为0的事件, 后者用于找到第一个为0的事件</li>
+</ul>
+<h4 id="子程序调用指令"><a href="#子程序调用指令" class="headerlink" title="子程序调用指令"></a>子程序调用指令</h4><ul>
+<li>CALL  子程序名:段内直接调用</li>
+<li>RET</li>
+</ul>
+<h4 id="中断指令"><a href="#中断指令" class="headerlink" title="中断指令"></a>中断指令</h4><ul>
+<li>INT N(中断类型号):软中断指令</li>
+<li>IRET:中断返回指令</li>
+</ul>
+<h3 id="处理器控制指令"><a href="#处理器控制指令" class="headerlink" title="处理器控制指令"></a>处理器控制指令</h3><h4 id="标志处理指令"><a href="#标志处理指令" class="headerlink" title="标志处理指令:"></a>标志处理指令:</h4><ul>
+<li>CLC:进位标志CF置0</li>
+<li>CMC:进位标志CF求反</li>
+<li>STC:进位标志值1</li>
+<li>CLD:方向标志置0</li>
+<li>STD:方向标志置1</li>
+<li>CLI:中断允许标志置0</li>
+<li>STI:中断允许标志置1</li>
+</ul>
+<h4 id="其他处理器控制指令"><a href="#其他处理器控制指令" class="headerlink" title="其他处理器控制指令:"></a>其他处理器控制指令:</h4><ul>
+<li>NOP:空操作</li>
+<li>HLT:停机</li>
+<li>WAIT:等待</li>
+<li>ESC:换码</li>
+<li>LOCK:封锁</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/10/06/汇编基础之寄存器与简单指令分析/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/10/06/C++协程实现/">
+                            C++协程实现及原理
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-10-06T17:00:48+08:00">
+	
+		    10月 06, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C-协程及其原理"><a href="#C-协程及其原理" class="headerlink" title="C++协程及其原理"></a>C++协程及其原理</h1><h2 id="协程的几种实现方式及原理"><a href="#协程的几种实现方式及原理" class="headerlink" title="协程的几种实现方式及原理"></a>协程的几种实现方式及原理</h2><p>协程又可以称为用户线程,微线程，可以将其理解为单个进程或线程中的多个<strong>用户态线程</strong>，这些微线程在用户态进程控制和调度.协程的实现方式有很多种，包括</p>
+<ol>
+<li>使用glibc中的ucontext库实现</li>
+<li>利用汇编代码切换上下文</li>
+<li>利用C语言语法中的switch-case的奇淫技巧实现(protothreads)</li>
+<li>利用C语言的setjmp和longjmp实现</li>
+</ol>
+<p>实际上，无论是上述那种方式实现协程,其原理是相同的，都是通过保存和恢复寄存器的状态，来进行各协程上下文的保存和切换。</p>
+<h2 id="协程较于函数和线程的优点"><a href="#协程较于函数和线程的优点" class="headerlink" title="协程较于函数和线程的优点"></a>协程较于函数和线程的优点</h2><ul>
+<li>相比于函数:协程避免了传统的函数调用栈，几乎可以无限地递归</li>
+<li>相比与线程:协程没有内核态的上下文切换，近乎可以无限并发。协程在用户态进程显式的调度，可以把异步操作转换为同步操作，也意味着不需要加锁,避免了加锁过程中不必要的开销。</li>
+</ul>
+<p>进程,线程以及协程的设计都是为了并发任务可以更好的利用CPU资源，他们之间最大的区别在于CPU资源的使用上:</p>
+<ul>
+<li>进程和线程的任务调度是由内核控制的，是抢占式的；</li>
+<li>协程的任务调度是在用户态完成,需要代码里显式地将CPU交给其他协程,是协作式的</li>
+</ul>
+<p>由于我们可以在用户态调度协程任务，所以我们可以把<strong>一组相互依赖的任务设计为协程。这样,当一个协程任务完成之后,可以手动的进行任务切换，把当前任务挂起(yield),切换到另一个协程区工作</strong>.由于我们可以控制程序主动让出资源，很多情况下将不需要对资源进行加锁。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/10/06/C++协程实现/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/10/06/ucontext函数详解/">
                             ucontext族函数详解
                         </a>
@@ -270,6 +566,53 @@
                     
                         <p>
                             <a href="/2017/10/06/ucontext函数详解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/09/20/UnixIPC关联数据结构与对象权限/">
+                            UnixIPC 关联数据结构与对象权限
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-09-20T20:09:08+08:00">
+	
+		    9月 20, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="UnixIPC-关联数据结构与对象权限"><a href="#UnixIPC-关联数据结构与对象权限" class="headerlink" title="UnixIPC 关联数据结构与对象权限"></a>UnixIPC 关联数据结构与对象权限</h1>
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/09/20/UnixIPC关联数据结构与对象权限/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
@@ -346,53 +689,6 @@
                     
                         <p>
                             <a href="/2017/09/20/UnixIPC中key_t类型本质/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/09/20/UnixIPC关联数据结构与对象权限/">
-                            UnixIPC 关联数据结构与对象权限
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-09-20T20:09:08+08:00">
-	
-		    9月 20, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="UnixIPC-关联数据结构与对象权限"><a href="#UnixIPC-关联数据结构与对象权限" class="headerlink" title="UnixIPC 关联数据结构与对象权限"></a>UnixIPC 关联数据结构与对象权限</h1>
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/09/20/UnixIPC关联数据结构与对象权限/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
@@ -862,320 +1158,6 @@
                     
                         <p>
                             <a href="/2017/05/24/Unix标准IO缓冲类型/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/22/Unix环境变量/">
-                            Unix环境变量
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-22T23:53:53+08:00">
-	
-		    5月 22, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix环境变量"><a href="#Unix环境变量" class="headerlink" title="Unix环境变量"></a>Unix环境变量</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在Unix中，<strong>每个进程都有自己的一组环境变量</strong>，这些环境变量，要么是一组全局字符串，要么是子进程从父进程继承而来的,如果子进程不对其修改则与父进程的环境变量一模一样。<br>Unix内核并不查看这些字符串，它们的解释权完全取决于各个应用程序。例如shell是Unix中一个可执行程序，通常shell的启动文件中会对环境变量进行设置。所以当我们进入shell之后可以查看path等环境变量。在当前shell中启动的进程会继承其父进程shell的环境变量，也就可以查看path等环境变量，环境变量可以在登录的时候自动设置，也可以由用户自行设置。</p>
-<h2 id="环境变量相关变量"><a href="#环境变量相关变量" class="headerlink" title="环境变量相关变量"></a>环境变量相关变量</h2><p>每个程序都会接收到一张环境表。与参数表一样，环境表也是一个字符指针数组。其中每个指针都包含一个以NULL结尾的字符串的地址。全局变量<br>environ指向了这个数组的地址。</p>
-<p>代码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">extern char **environ;</div><div class="line">if (environ!= NULL) &#123;</div><div class="line">        for (i = 0; environ[i] != NULL; i++) &#123;</div><div class="line">            printf(&quot;env: %s\n&quot;, environ[i]);</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="环境变量相关的函数"><a href="#环境变量相关的函数" class="headerlink" title="环境变量相关的函数"></a>环境变量相关的函数</h2><p>与环境变量相关的函数包括以下几种：取环境变量的值，添加环境变量、修改环境变量、以及删除环境变量.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">//获取环境变量的值</div><div class="line">char* getenv(const char* name); //若包含此key返回对应的值，否则返回NULL</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 修改环境变量的值 前面两个分别为键值对，最后一个表示是否需要删除原有的定义重写。</div><div class="line">* params：键没有存在，则创建此键值对。若键已经存在：rewrite=0时不覆盖原来的值；rewrite!=0覆盖原来的值</div><div class="line">* return：成功返回0， 出错返回非0。</div><div class="line">*/</div><div class="line">int setenv(const char* name, const char* value, int rewrite);</div><div class="line"></div><div class="line">/*</div><div class="line">* function： 添加环境变量，若存在则删除原有的，添加新的，不存在则直接添加</div><div class="line">* params:  参数为一个键值对字符串，如&quot;name=test&quot;</div><div class="line">* return: 成功返回0,不成功返回-1</div><div class="line">*/</div><div class="line">int putenv(char *str);</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 删除name的定义，即使不存在也不出错。</div><div class="line">* params: 参数为键</div><div class="line">* return：出错返回-1,不出错返回0</div><div class="line">*/</div><div class="line">int unsetenv(const char*name);</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 清除所有的环境变量</div><div class="line">* return: 成功返回0, 失败返回-1。</div><div class="line">*/</div><div class="line">int clearenv();</div></pre></td></tr></table></figure>
-<h3 id="putenv和setenv的区别"><a href="#putenv和setenv的区别" class="headerlink" title="putenv和setenv的区别"></a>putenv和setenv的区别</h3><p>putenv可以使用程序中已经定义的且形如”name=value”的字符串作为参数。此时<strong>系统不再为该环境变量分配内存</strong>，环境变量将使用程序中定义变量的内存。<br>并将该字符串的地址保存在环境变量中。所以要<strong>使用putenv一定要用全局变量作为参数</strong>，否则程序退出栈内存被释放，再次访问环境变量将会出现未定义行为，<br>导致环境变量不可用。</p>
-<p>putenv也可用字符串常量做参数，这个时候系统将为其分配内存。</p>
-<p>但是setenv去设置环境变量系统将会先malloc出一块内存给环境变量使用，所以此时不需要担心环境不可用的情况。</p>
-<h2 id="环境变量在进程空间中的存储位置"><a href="#环境变量在进程空间中的存储位置" class="headerlink" title="环境变量在进程空间中的存储位置"></a>环境变量在进程空间中的存储位置</h2><p><strong>环境变量和环境字符串通常放在进程存储空间的顶部，也就是栈内存之上</strong>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">extern char **environ;</div><div class="line">int main() &#123;</div><div class="line">    int i;</div><div class="line">    printf(&quot;the address of the environment: %p\n&quot;, environ);</div><div class="line">    printf(&quot;the adress of first i: %p\n&quot;, &amp;i);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="环境变量中进行增删改操作的实现机制"><a href="#环境变量中进行增删改操作的实现机制" class="headerlink" title="环境变量中进行增删改操作的实现机制"></a>环境变量中进行增删改操作的实现机制</h2><p>删除环境变量比较容易，当增加或者修改环境变量的时候由于环境表和环境字符串通常占用的是进程地址空间的顶部，所以它不能再向<br>高地址（向上）扩展，同时也不能在移动在它之下的各栈帧，所以也不能向下扩展。两者的组合使得该空间的长度不能再增加。</p>
-<ul>
-<li><strong>删除环境变量</strong>：删除环境变量时只需要先找到该指针，然后将所有后续指针都向环境表的首部顺序移一个位置。</li>
-<li><strong>修改环境变量</strong>:<ul>
-<li>若新的环境变量value长度小于或者等于原有的值，则直接将其复制到旧值。</li>
-<li>否则，先调用malloc在堆上分配一块内存，然后将新字符串指向该空间，接着使环境变量表中针对name的指针指向新分区。</li>
-</ul>
-</li>
-<li><strong>增加环境变量</strong>： 增加新环境变量比较复杂。必须首先通过调用malloc为新的name=value分配内存空间，然后将字符串复制到此空间中。<ul>
-<li>如果该name是第一次增加，则必须调用malloc为<strong>新的指针表</strong>分配内存空间，然后将原来的环境表复制到新的内存，并将指向新的name=value字符串<br>的指针存放在该指针表的表尾，然后将空指针放在其后面。最后<strong>使environ指向新的环境表</strong>。这样就导致原来位于栈顶之上的环境表移到了堆内存中。<br>但是大多数的环境指针仍然指向栈顶之上的name=value字符串。</li>
-<li>如果不是第一次新增加一个name，可知之前已经将环境表迁移到堆内存中，所以只需要调用realloc，以分配比原空间多存放一个指针的空间。然后将指针指向name=value<br>字符串的指针，最后是一个NULL指针。</li>
-</ul>
-</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/22/Unix环境变量/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/22/Unix文件IO相关函数/">
-                            Unix文件IO相关函数
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-22T23:31:31+08:00">
-	
-		    5月 22, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix文件IO相关函数"><a href="#Unix文件IO相关函数" class="headerlink" title="Unix文件IO相关函数"></a>Unix文件IO相关函数</h1><p>Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。</p>
-<h2 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h2><p>对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用于IO的数据结构一章中讲了STDIN_FILENO、STDOUT_FILENO以及STDERR_FILENO所对应的文件描述符。</p>
-<p>为了保证系统资源的合理使用和安全性，Unix系统对于系统和用户能打开的文件描述符的格式都做了一定的限制。通过一下命令我们可以进行查看：</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sysctl -a | grep fs.file-max //查看系统级限制的文件描述符的个数</div><div class="line">ulimit -n //查看用户（进程）级别限制的文件描述符的个数，</div></pre></td></tr></table></figure>
-<h3 id="文件描述符与文件指针的关系"><a href="#文件描述符与文件指针的关系" class="headerlink" title="文件描述符与文件指针的关系"></a>文件描述符与文件指针的关系</h3><p>文件描述符：内核会为每一个运行中的进程在进程控制块(pcb)中维护一个打开文件的记录表，每个表项都有一个指针指向打开的文件，文件描述符就是记录表的索引。</p>
-<p>文件指针：C语言使用文件指针而不是文件描述符作为文件IO的句柄，文件指针是指向进程的用户空间中的一个FILE结构的数据结构，FILE结构中包括一个IO缓冲区和一个文件描述符，而文件描述符是<br>文件描述符表的一个索引，从某种意义上可以将文件指针理解为文件句柄的句柄。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></div><div class="line">  <span class="keyword">char</span>*	_ptr;</div><div class="line">  <span class="keyword">int</span>	_cnt;</div><div class="line">  <span class="keyword">char</span>*	_base;</div><div class="line">  <span class="keyword">int</span>	_flag;</div><div class="line">  <span class="keyword">int</span>	_file;</div><div class="line">  <span class="keyword">int</span>	_charbuf;</div><div class="line">  <span class="keyword">int</span>	_bufsiz;</div><div class="line">  <span class="keyword">char</span>*	_tmpfname;</div><div class="line">&#125; FILE;</div></pre></td></tr></table></figure>
-<ul>
-<li>文件指针相比于文件描述符是高级的接口.</li>
-<li>文件指针使用fread()和fwrite()函数进行操作,文件描述符使用write()和read()函数进行操作</li>
-<li>文件指针具有缓冲区，是较高级别的IO，读写时具有缓冲，具有错误指示和EOF检测；文件描述符没有</li>
-<li>文件指针具有移植性，文件描述符不能移植到除Unix之外的系统。</li>
-<li>fopen在stdio.h中，open在fcntl.h中</li>
-<li>fopen是标准C中定义的，而open是posix中定义的。</li>
-<li>fwrite/fread处理的速度快于read/write，但是在内存方面read/write性能较好。</li>
-</ul>
-<h2 id="函数open-和openat"><a href="#函数open-和openat" class="headerlink" title="函数open()和openat()"></a>函数open()和openat()</h2><h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* path, <span class="keyword">int</span> oflag, ...<span class="comment">/*mode_t mode*/</span>)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">openat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* path, <span class="keyword">int</span> oflag, ...<span class="comment">/*mode_t mode*/</span>)</span></span></div></pre></td></tr></table></figure>
-<h3 id="返回值说明"><a href="#返回值说明" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若文件打开失败返回-1，打开失败原因可以通过errno或者strerror(errno)查看;</p>
-<p>若成功将返回最小的未用的文件描述符的值。</p>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
-<li>path为要打开的文件的文件路径</li>
-<li>oflag为文件打开模式.</li>
-<li>…为可变参数，可以视情况添加</li>
-</ul>
-<h4 id="文件打开模式"><a href="#文件打开模式" class="headerlink" title="文件打开模式"></a>文件打开模式</h4><p>文件打开模式标识当前进程对打开文件的操作权限。通常用一个或者多个权限的或来表示。权限列表如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">flag</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">O_RDONLY</td>
-<td>只读权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_WRONLY</td>
-<td>只写权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_RDWR</td>
-<td>读写权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_EXEC</td>
-<td>可执行权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_SEARCH</td>
-<td>搜索权限(针对目录)</td>
-</tr>
-<tr>
-<td style="text-align:center">O_APPEND</td>
-<td>每次写都追加到文件的末端</td>
-</tr>
-<tr>
-<td style="text-align:center">O_CLOEXEC</td>
-<td>把close_on_exec设置为文件描述符标识</td>
-</tr>
-<tr>
-<td style="text-align:center">O_CREATE</td>
-<td>若文件不存在，则创建它。使用此选项的时候，需要使用第三个参数指定该新文件的访问权限位</td>
-</tr>
-<tr>
-<td style="text-align:center">O_DIRECTORY</td>
-<td>如果path不是目录则出错</td>
-</tr>
-<tr>
-<td style="text-align:center">O_EXCL</td>
-<td>若同时执行了O_CREATE，若文件存在则出错，可以用此选项测试文件是否存在</td>
-</tr>
-<tr>
-<td style="text-align:center">O_NOCTTY</td>
-<td>如果PATH引用的是终端设备，则不将该终端设备作为该进程的控制终端</td>
-</tr>
-<tr>
-<td style="text-align:center">O_NOFOLLOW</td>
-<td>若PATH引用的是符号链接，则出错</td>
-</tr>
-<tr>
-<td style="text-align:center">O_NONBLOCK</td>
-<td>如果path引用的是FIFO,一个块特殊文件或者一个字符特殊文件，则将文本打开操作和后续的IO设置为非阻塞模式</td>
-</tr>
-<tr>
-<td style="text-align:center">O_SYNC</td>
-<td>使每次write等待物理IO完成，包括该write属性引起的文件属性更新需要的IO</td>
-</tr>
-<tr>
-<td style="text-align:center">O_TRUNC</td>
-<td>如果文件存在，且打开模式为只写或者读写，则将文件内容截断为0</td>
-</tr>
-<tr>
-<td style="text-align:center">O_TTY_INIT</td>
-<td>如果打开一个还未打开的终端设备，设置非标准termios参数值，使其符合Single Unix Specification</td>
-</tr>
-<tr>
-<td style="text-align:center">O_DSYNC</td>
-<td>每次write要等待物理IO操作完成，但是如果该写操作并不影响读取刚写入的数据，则不需要等待文件属性被更新</td>
-</tr>
-<tr>
-<td style="text-align:center">O_RSYNC</td>
-<td>使每一个以文件描述符作为参数进行的read操作等待，直至所有对文件同一部分挂起的写操作完成</td>
-</tr>
-</tbody>
-</table>
-<h4 id="文件访问权限mode-t"><a href="#文件访问权限mode-t" class="headerlink" title="文件访问权限mode_t"></a>文件访问权限mode_t</h4><p>mode的值表示了对文件的访问权限。这个访问权限与使用shell命令chmod去修改文件的权限的含义相同，文件的权限包括三大类，分别是当前文件对于文件所有者(u)，文件所有者所在的组(g)以及其他<br>用户(o)而言,对这三种角色又分别具有读写可执行的权限。所以这个参数只有在创建文件的时候才用到，用来指定当前创建的文件所对应的权限。</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">mode</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">S_IRUSR</td>
-<td>用户读</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IWUSR</td>
-<td>用户写</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IXUSR</td>
-<td>用户可执行</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IRGRP</td>
-<td>组读</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IWGRP</td>
-<td>组写</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IXGRP</td>
-<td>组可执行</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IROTH</td>
-<td>其他读</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IWOTH</td>
-<td>其他写</td>
-</tr>
-<tr>
-<td style="text-align:center">S_IXOTH</td>
-<td>其他可执行</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>需要注意的是，目录的可执行权限以及读权限与文件的相应权限完全不同。目录的可执行权限表示搜索位，即可搜索权限，若目录不具有可执行权限则不能cd进入文件；<br>目录的读权限是可以查看目录中文件内容的权限，若文件夹不具有读权限，则ls不能显示目录内的内容。</p>
-</blockquote>
-<h3 id="open与openat的区别"><a href="#open与openat的区别" class="headerlink" title="open与openat的区别"></a>open与openat的区别</h3><p>open和openat的区别主要在fd上</p>
-<ul>
-<li>path参数指定的是绝对路径名，在这种情况下，open与openat相同，fd忽略.</li>
-<li>path参数是相对路径名，fd参数指出了相对路径名在文件系统中的开始地址。fd参数通过打开相对路径名所在的文件目录获取。即此时fd为打开相对路径所获取的文件描述符。</li>
-<li>path参数为相对路径，fd参数为AT_FDCWD，此时相对路径为当前目录，作用于open相同。</li>
-</ul>
-<h2 id="函数create"><a href="#函数create" class="headerlink" title="函数create()"></a>函数create()</h2><h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">create</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">mode_t</span> mode)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="返回值说明-1"><a href="#返回值说明-1" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若文件创建失败返回-1;<br>若创建成功返回当前创建文件的文件描述符。</p>
-<h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><p>参数与open中对应的参数含义相同</p>
-<h3 id="函数功能说明"><a href="#函数功能说明" class="headerlink" title="函数功能说明"></a>函数功能说明</h3><p>create(path, mode)函数功能为创建新文件，与open(path, O_CREATE|O_TRUNC|O_WRONLY)功能相同。</p>
-<h2 id="函数close"><a href="#函数close" class="headerlink" title="函数close()"></a>函数close()</h2><h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="返回值说明-2"><a href="#返回值说明-2" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>文件关闭成功返回0,关闭失败返回-1.</p>
-<h3 id="函数功能介绍"><a href="#函数功能介绍" class="headerlink" title="函数功能介绍"></a>函数功能介绍</h3><p>该函数的作用是关闭指定文件描述符的文件，关闭文件时还会释放该进程加在该文件上的所有的记录锁。当一个进程终止时，内核自动关闭它所有打开的文件。很多程序都是利用这一功能而不是close<br>函数关闭打开的文件。但是对于长期运行的函数，最好还是使用close关闭打开的文件。</p>
-<h2 id="lseek-函数"><a href="#lseek-函数" class="headerlink" title="lseek()函数"></a>lseek()函数</h2><p>每个打开的文件在文件表项中存在着对应的当前文件的偏移量(current file offset)，通常为非负整数。文件的读写操作都是从当前偏移量开始，并在操作后将偏移量增加相应的字节数。当打开文件<br>模式为O_APPEND时，该文件的offset是文件末尾，除此之外，其他情况都被初始化为0.</p>
-<h3 id="函数原型-3"><a href="#函数原型-3" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lseek</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">off_t</span> offset, <span class="keyword">int</span> whence)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="返回值说明-3"><a href="#返回值说明-3" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>成功则返回新的文件的偏移量；<br>失败则返回-1.</p>
-<h3 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h3><p>使用lseek()函数显式的为一个打开的文件设置偏移量。lseek仅将文件的偏移量记录在内核中，并不引起IO开销。</p>
-<h3 id="参数说明-2"><a href="#参数说明-2" class="headerlink" title="参数说明"></a>参数说明</h3><p>参数offset的解释与whence相关。</p>
-<ul>
-<li>若whence为SEEK_SET，则将该文件的偏移量设置为距离<strong>当前文件开始处offset</strong>字节。</li>
-<li>若whence为SEEK_CUR，则将该文件的偏移量设置为距离<strong>当前偏移量加offset</strong>个字节,此时offset可正可负。</li>
-<li>若whence为SEEK_END，则将该文件的偏移量设置为<strong>当前文件长度加offser</strong>个字节，此时offset可正可负。</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> fd = open(<span class="string">"./data"</span>, O_WRONLY | O_CREAT | O_TRUNC);</div><div class="line">    lseek(fd, <span class="number">20</span>, SEEK_END);</div><div class="line">    write(fd, <span class="string">"haha"</span>, <span class="number">4</span>);</div><div class="line"></div><div class="line">    <span class="comment">//可以用这种方法查看打开文件的当前偏移量。</span></div><div class="line">    <span class="comment">//这种方法可以用来确定当前文件是否可以设置偏移量</span></div><div class="line">    <span class="comment">//若文件是管道、FIFO或者网络套接字，则lseek返回-1，并将errno设置为ESPIPE</span></div><div class="line">    <span class="keyword">off_t</span> currpos;</div><div class="line">    currpos = lseek(fd, <span class="number">0</span>, SEEK_CUR);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>注意一般情况下文件的偏移量不能为负值，但是一些特殊的文件允许偏移量为负值，如在FreeBSD上运行的设备/dev/kmem支持负的偏移量。<br>因为偏移量可能为负值，所以在比较偏移量的时候不能直接判断其是否小于0，而是要判断其是否等于-1.</p>
-<p>文件的偏移量允许大于文件的长度，这时会在文件中出现一些空洞，但是是被允许的。文件中的空洞并不在文件中占磁盘块（block）。</p>
-</blockquote>
-<h2 id="read-函数"><a href="#read-函数" class="headerlink" title="read()函数"></a>read()函数</h2><h3 id="函数原型-4"><a href="#函数原型-4" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> read(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes);</div></pre></td></tr></table></figure>
-<h3 id="返回值说明-4"><a href="#返回值说明-4" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若读取成功，读到文件末尾返回0，未读到文件末尾返回当前读的字节数。<br>若读取失败，返回-1。</p>
-<h3 id="参数说明-3"><a href="#参数说明-3" class="headerlink" title="参数说明"></a>参数说明</h3><p>fd为要读取文件的文件描述符。buf为读取文件数据缓冲区，nbytes为期待读取的字节数，通常为sizeof(buf)。</p>
-<blockquote>
-<p>注意read函数默认读入多行，遇到换行不会停止读入，直到读到文件末尾，下一次读取返回值为0.</p>
-</blockquote>
-<h2 id="write-函数"><a href="#write-函数" class="headerlink" title="write()函数"></a>write()函数</h2><h3 id="函数原型-5"><a href="#函数原型-5" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> write(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span>* buf, <span class="keyword">size_t</span> ntyes);</div></pre></td></tr></table></figure>
-<h3 id="返回值说明-5"><a href="#返回值说明-5" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若写入成功则返回写入的字节数；失败返回-1.</p>
-<h3 id="参数说明-4"><a href="#参数说明-4" class="headerlink" title="参数说明"></a>参数说明</h3><p>buf为写入内容的缓冲区，ntyes为期待写入的字节数，通常为sizeof(buf)。一般情况下返回值与ntypes相等，否则写入失败。</p>
-<blockquote>
-<p>当指定O_APPEND选项，内容将从文件末尾写入，否则从文件开始写入。一般情况下将缓冲区的长度设置为磁盘块的大小可以最大程度的提升程序读写的性能。</p>
-</blockquote>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/22/Unix文件IO相关函数/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

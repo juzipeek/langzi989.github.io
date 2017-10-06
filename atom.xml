@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-10-06T08:04:14.143Z</updated>
+  <updated>2017-10-06T11:48:30.592Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,268 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>汇编基础之寄存器及汇编指令</title>
+    <link href="http://yoursite.com/2017/10/06/%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E4%B9%8B%E5%AF%84%E5%AD%98%E5%99%A8%E4%B8%8E%E7%AE%80%E5%8D%95%E6%8C%87%E4%BB%A4%E5%88%86%E6%9E%90/"/>
+    <id>http://yoursite.com/2017/10/06/汇编基础之寄存器与简单指令分析/</id>
+    <published>2017-10-06T11:00:48.000Z</published>
+    <updated>2017-10-06T11:48:30.592Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="汇编基础之寄存器及汇编指令"><a href="#汇编基础之寄存器及汇编指令" class="headerlink" title="汇编基础之寄存器及汇编指令"></a>汇编基础之寄存器及汇编指令</h1><blockquote>
+<p>参考链接:<br><a href="http://www.cnblogs.com/technology/archive/2010/05/16/1736782.html" target="_blank" rel="external">http://www.cnblogs.com/technology/archive/2010/05/16/1736782.html</a><br><a href="http://anonymalias.github.io/2017/01/09/ucontext-theory/" target="_blank" rel="external">http://anonymalias.github.io/2017/01/09/ucontext-theory/</a></p>
+</blockquote>
+<p>最近在学习协程方面的知识,在协程的一种实现方式中有一种是用汇编实现的,所以这里再把汇编知识复习一下。</p>
+<h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>寄存器按照其用途可分为以下4类:</p>
+<ul>
+<li>数据寄存器</li>
+<li>指针及变址寄存器</li>
+<li>段寄存器</li>
+<li>控制寄存器</li>
+</ul>
+<h3 id="数据寄存器"><a href="#数据寄存器" class="headerlink" title="数据寄存器"></a>数据寄存器</h3><p>数据寄存器包括４个16位的寄存器(AX,BX,CX,DX)或者8个8位的寄存器(AH,AL,BH,BL,CH,CL,DH,DL)，这些寄存器都是用来暂时存放操作数，运算结果或者其他信息，但同时又具有某些专门的用途。</p>
+<ul>
+<li>AX(累加寄存器):算术运算中的主要寄存器,在乘除运算中用来指定除数和被除数,也是乘除运算后积和商的默认存储单元。,另外<strong>IO指令均使用该寄存器与IO设备传送信息</strong></li>
+<li>BX(基址寄存器):指令寻址时常用作基址寄存器，存入偏移量或者偏移量的构成部分。</li>
+<li>CX(计数寄存器):在循环指令操作或者串处理指令中隐含计数</li>
+<li>DX(数据寄存器):在双字节运算中，与AX构成32位操作数，DX为高16位。在某些IO指令中,DX被用来存放端口地址</li>
+</ul>
+<h3 id="指针及变址寄存器"><a href="#指针及变址寄存器" class="headerlink" title="指针及变址寄存器"></a>指针及变址寄存器</h3><p>这些寄存器都是16位的寄存器,用来存放16为的操作数或者中间结果，但是更常见的是存放偏移量或者位移量</p>
+<ul>
+<li>SP(堆栈指针寄存器):指向栈顶的位置,与SS寄存器一起组成栈顶数据的物理地址</li>
+<li>BP(基址指针寄存器):系统默认其指向堆栈中的某一单元，即提供栈中该单元偏移量，加段前缀后，BP可作为非堆栈段的地址指针。</li>
+<li>SI(源变址寄存器):与DS联用, 指示数据段中某操作的偏移量. 在做串处理时, SI指示源操作数地址, 并有自动增量或自动减量的功能. 变址寻址时, SI与某一位移量共同构成操作数的偏移量</li>
+<li>DI(目的变址寄存器):与DS联用, 指示数据段中某操作数的偏移量, 或与某一位移量共同构成操作数的偏移量. 串处理操作时, DI指示附加段中目的地址, 并有自动增量或减量的功能</li>
+</ul>
+<h3 id="段寄存器"><a href="#段寄存器" class="headerlink" title="段寄存器"></a>段寄存器</h3><ul>
+<li>CS(代码段):存放当前程序的指令代码</li>
+<li>DS(数据段):存放程序所涉及的源数据以及结果</li>
+<li>SS(堆栈段):以先进后出原则的数据区</li>
+<li>ES(附加段):辅助数据区，存放串或者其他数据</li>
+</ul>
+<h3 id="控制寄存器"><a href="#控制寄存器" class="headerlink" title="控制寄存器"></a>控制寄存器</h3><ul>
+<li>IP（指令寄存器）: 存放下一条要执行的指令的偏移量</li>
+<li>FR(控制标志位):<ul>
+<li>CF(进位标识位):进行加减运算时, 如果最高二进制位产生进位或错位, CF则为1, 否则为0. 程序设计中, 常用条件转移指令JC, JNC指令据此标志位实现转移</li>
+<li>PF(奇偶标志位):操作结果中二进制位1的个数为偶数是, PF为1, 某则为0</li>
+<li>AF(辅助进位标志位):运算时半字节产生进位或借位时, AF为1, 某则为0. 主要用于BCD码的调整</li>
+<li>ZF(零标志位):运算结果为0时, ZF为1, 否则为0</li>
+<li>SF(符号标志位):当运算结果的最高位为1时, SF为1, 否则为0. 最高位表示符号数的正和负</li>
+<li>TF(跟踪标志位):用于调试程序时进入单步方式工作. TF=1时, 每条指令执行完后产生一个内部中断, 让用户检查指令运行后寄存器, 存储器和各标志位的内容. TF=0时, CPU工作正常, 不产生内部中断</li>
+<li>IF(中断允许标志位):IF=1同时中断屏蔽寄存器的相应位为0, 允许系统响应可屏蔽中断, 反之, 不接收外部发出的中断请求</li>
+<li>DF(方向位标志位):用于控制串操作时地址指针位移方向. 当DF=1时, 指针向高地址方向移动</li>
+<li>OF(溢出标志位):算术运算时结果超出系统所能表示的数的范围. 溢出时, OF=1</li>
+</ul>
+</li>
+</ul>
+<p>注意:上述为16位处理其器中的寄存器的名字，在32和64位系统中，寄存器中名字有相应的变化，具体看下面(32位在前面加E,64在前面加R):</p>
+<p><img src="/images/register.png" alt=""></p>
+<h2 id="汇编指令"><a href="#汇编指令" class="headerlink" title="汇编指令"></a>汇编指令</h2><h3 id="汇编指令格式"><a href="#汇编指令格式" class="headerlink" title="汇编指令格式"></a>汇编指令格式</h3><p>汇编指令的格式如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[标号:]　指令助记符[[目的操作数][,源操作数]][;注释]</div></pre></td></tr></table></figure></p>
+<ul>
+<li>指令助记符:如MOV,ADD之类标识传送,加法。不区分大小写</li>
+<li>目的操作数:作用有两个,1.参与指令操作2,暂时存储操作结果</li>
+<li>源操作数:主要提供原始数据或操作对象。面向所有寻址方式</li>
+<li>注释:用分号隔开</li>
+</ul>
+<p>汇编指令中常见的符号:</p>
+<ul>
+<li>imme:立即数</li>
+<li>DST:目的操作数</li>
+<li>SRC:源操作数</li>
+<li>mem:存储器操作数</li>
+<li>OPR:操作数</li>
+<li>reg:通用寄存器</li>
+<li>EA:偏移地址</li>
+<li>Sreg:段寄存器</li>
+<li>Port:端口地址</li>
+<li>Lable:标号</li>
+</ul>
+<p>汇编指令可以分成六类:</p>
+<ul>
+<li>数据传送指令</li>
+<li>算数运算指</li>
+<li>逻辑运算与移位指令</li>
+<li>串操作指令</li>
+<li>程序控制指令</li>
+<li>处理器控制指令<h3 id="数据传送指令"><a href="#数据传送指令" class="headerlink" title="数据传送指令"></a>数据传送指令</h3><h4 id="数据传送指令-1"><a href="#数据传送指令-1" class="headerlink" title="数据传送指令"></a>数据传送指令</h4></li>
+<li>MOV DST,SRC(传送指令):把源操作数的内容送入目的操作数<ul>
+<li>立即数做源操作数时,立即数的长度必须小于等于目的操作数的长度</li>
+<li>操作数分别为reg,reg或reg,sreg或sreg,sreg或reg,sreg时，两者的长度必须保持一致</li>
+<li>立即数不能作为目的操作数</li>
+<li>CS和IP寄存器不能做目的操作数,不允许用立即数为段寄存器赋值</li>
+<li>不能将一个段寄存器的内容直接送到另一个段寄存器中, 可借助通用寄存器或PUSH, POP指令实现这一要求</li>
+</ul>
+</li>
+<li>PUSH SRC(压栈指令): 将一个字数据压入当前栈顶, 位移量disp=-2的地址单元. 数据进栈时, 栈指针SP首先向低地址方向移动两个字节位置, 接着数据进栈, 形成新的栈顶</li>
+<li>POP DST(出栈指令):弹出栈顶元素, 后将栈顶指针向栈底方向移动一个字</li>
+<li>XCHG OPR1, OPR2(交换指令):交换指令: 将这两个操作数交换</li>
+</ul>
+<h4 id="地址传送指令"><a href="#地址传送指令" class="headerlink" title="地址传送指令"></a>地址传送指令</h4><ul>
+<li>LEA DST, SRC(装载有效指令):该指令将源操作数的偏移量OA装载到目的操作数中</li>
+<li>LDS DST, SRC(装载数据段指针指令):将当前数据段中的一个双字数据装入到一个通用寄存器SI(双字数据的低字)和数据段寄存器DS(双字数据的高字)中</li>
+<li>LES DST,SRC(装载附加段指针指令):将附加数据段中的一个32位地址数据指针(附加段指针)送到DI(低字)和ES(高字)寄存器中</li>
+</ul>
+<h4 id="标志传送指令"><a href="#标志传送指令" class="headerlink" title="标志传送指令"></a>标志传送指令</h4><ul>
+<li>LAHF(标志寄存器送AH指令): 将标志寄存器的低字节送入AH中</li>
+<li>SAHF(AH送标志寄存器指令): 将AH寄存器内容送标志寄存器FR的低字节</li>
+<li>PUSHF(标志进栈指令): 标志寄存器进栈</li>
+<li>POPF (标志出栈指令): 标志寄存器出栈</li>
+</ul>
+<h4 id="累加器专用传送指令"><a href="#累加器专用传送指令" class="headerlink" title="累加器专用传送指令"></a>累加器专用传送指令</h4><ul>
+<li>IN   AL, Port:从端口读入数据, 存放在AL中</li>
+<li>OUT PORT,AL:传送AL中的数据到端口</li>
+<li>XLAT OPR或XLAT:用于将AL中当前内容转换为一种代码</li>
+</ul>
+<h3 id="算术运算指令"><a href="#算术运算指令" class="headerlink" title="算术运算指令"></a>算术运算指令</h3><h4 id="加法指令"><a href="#加法指令" class="headerlink" title="加法指令"></a>加法指令</h4><ul>
+<li>ADD DST, SRC:DST+SRC的和存放到DST中去</li>
+<li>ADC DST, SRC:带进位加法指令, DST+SRC+CF</li>
+<li>INC DST:增1指令</li>
+</ul>
+<h4 id="减法指令"><a href="#减法指令" class="headerlink" title="减法指令"></a>减法指令</h4><ul>
+<li>SUB DST, RSC:DST-SRC, 存放到DST中</li>
+<li>SBB DST, SRC:带借位减法指令, DST-SRC-CF</li>
+<li>DEC DST :减1指令</li>
+<li>NEG DST:求补指令, 求补码</li>
+<li>CMP OPR1, OPR2:比较指令</li>
+</ul>
+<h4 id="乘法指令"><a href="#乘法指令" class="headerlink" title="乘法指令"></a>乘法指令</h4><ul>
+<li>MUL SRC:无符号数乘指令, AL*SRC, 结果放入AX中</li>
+<li>IMUL SRC:有符号数乘指令, AL*SRC, 结果放入AX中</li>
+</ul>
+<h4 id="除法指令"><a href="#除法指令" class="headerlink" title="除法指令"></a>除法指令</h4><ul>
+<li>DIV SRC :无符号数除指令, AX/SRC, 商放入AL中, 余数放在AH中</li>
+<li>IDIV SRC:符号数除指令, AX/SRC, 上放入AL中, 余数放在AH中</li>
+<li>CBW, CWD:都是符号扩展指令. 将AL的符号扩到AX中; 将AX的符号扩到DX</li>
+</ul>
+<h3 id="逻辑运算与移位指令"><a href="#逻辑运算与移位指令" class="headerlink" title="逻辑运算与移位指令"></a>逻辑运算与移位指令</h3><h4 id="逻辑运算指令"><a href="#逻辑运算指令" class="headerlink" title="逻辑运算指令"></a>逻辑运算指令</h4><ul>
+<li>NOT OPR:逻辑非指令</li>
+<li>AND OPR:逻辑与指令</li>
+<li>OR OPR:逻辑或指令</li>
+<li>XOR OPR :逻辑异或指令</li>
+</ul>
+<h4 id="移位指令"><a href="#移位指令" class="headerlink" title="移位指令:"></a>移位指令:</h4><ul>
+<li>SHL DST, CNT:逻辑左移</li>
+<li>SHR DST, CNT:逻辑右移</li>
+<li>SAL DST, CNT:算术左移</li>
+<li>SAR DST, CNT:算术右移</li>
+</ul>
+<h4 id="循环移位指令"><a href="#循环移位指令" class="headerlink" title="循环移位指令"></a>循环移位指令</h4><ul>
+<li>ROL              DST, CNT:循环左移</li>
+<li>ROR       DST, CNT:循环右移</li>
+<li>RCL        DST, CNT:带进位循环左移</li>
+<li>RCR              DST, CNT:带进位循环右移</li>
+</ul>
+<h3 id="串操作指令"><a href="#串操作指令" class="headerlink" title="串操作指令"></a>串操作指令</h3><ul>
+<li>MOVS:串传送指令</li>
+<li>CMPS:串比较指令</li>
+<li>SCAS:串扫描指令</li>
+<li>LODS:装入串指令</li>
+<li>STOS:存储串指令</li>
+</ul>
+<h3 id="控制转移指令"><a href="#控制转移指令" class="headerlink" title="控制转移指令"></a>控制转移指令</h3><h4 id="转移指令"><a href="#转移指令" class="headerlink" title="转移指令:"></a>转移指令:</h4><ul>
+<li>JMP:无条件转移指令</li>
+<li>JX:条件转移指令(JC/JNC, JZ/JNZ, JE/JNE, JS/JNS, JO/JNO, JP/JNP…)</li>
+</ul>
+<h4 id="循环指令"><a href="#循环指令" class="headerlink" title="循环指令"></a>循环指令</h4><ul>
+<li>LOOP 标号:该指令执行时, 技术寄存器CXX首先减1, 然后判断CX, 若为0, 跳出循环</li>
+</ul>
+<h4 id="条件循环指令"><a href="#条件循环指令" class="headerlink" title="条件循环指令"></a>条件循环指令</h4><ul>
+<li>LOOPZ/LOOPE, LOOPNZ/LOOPNE:前者用于找到第一个不为0的事件, 后者用于找到第一个为0的事件</li>
+</ul>
+<h4 id="子程序调用指令"><a href="#子程序调用指令" class="headerlink" title="子程序调用指令"></a>子程序调用指令</h4><ul>
+<li>CALL  子程序名:段内直接调用</li>
+<li>RET</li>
+</ul>
+<h4 id="中断指令"><a href="#中断指令" class="headerlink" title="中断指令"></a>中断指令</h4><ul>
+<li>INT N(中断类型号):软中断指令</li>
+<li>IRET:中断返回指令</li>
+</ul>
+<h3 id="处理器控制指令"><a href="#处理器控制指令" class="headerlink" title="处理器控制指令"></a>处理器控制指令</h3><h4 id="标志处理指令"><a href="#标志处理指令" class="headerlink" title="标志处理指令:"></a>标志处理指令:</h4><ul>
+<li>CLC:进位标志CF置0</li>
+<li>CMC:进位标志CF求反</li>
+<li>STC:进位标志值1</li>
+<li>CLD:方向标志置0</li>
+<li>STD:方向标志置1</li>
+<li>CLI:中断允许标志置0</li>
+<li>STI:中断允许标志置1</li>
+</ul>
+<h4 id="其他处理器控制指令"><a href="#其他处理器控制指令" class="headerlink" title="其他处理器控制指令:"></a>其他处理器控制指令:</h4><ul>
+<li>NOP:空操作</li>
+<li>HLT:停机</li>
+<li>WAIT:等待</li>
+<li>ESC:换码</li>
+<li>LOCK:封锁</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;汇编基础之寄存器及汇编指令&quot;&gt;&lt;a href=&quot;#汇编基础之寄存器及汇编指令&quot; class=&quot;headerlink&quot; title=&quot;汇编基础之寄存器及汇编指令&quot;&gt;&lt;/a&gt;汇编基础之寄存器及汇编指令&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;参考链接:&lt;br&gt;&lt;a h
+    
+    </summary>
+    
+      <category term="汇编" scheme="http://yoursite.com/categories/%E6%B1%87%E7%BC%96/"/>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
+    
+      <category term="寄存器" scheme="http://yoursite.com/tags/%E5%AF%84%E5%AD%98%E5%99%A8/"/>
+    
+      <category term="汇编" scheme="http://yoursite.com/tags/%E6%B1%87%E7%BC%96/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>C++协程实现及原理</title>
+    <link href="http://yoursite.com/2017/10/06/C++%E5%8D%8F%E7%A8%8B%E5%AE%9E%E7%8E%B0/"/>
+    <id>http://yoursite.com/2017/10/06/C++协程实现/</id>
+    <published>2017-10-06T09:00:48.000Z</published>
+    <updated>2017-10-06T09:20:40.546Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="C-协程及其原理"><a href="#C-协程及其原理" class="headerlink" title="C++协程及其原理"></a>C++协程及其原理</h1><h2 id="协程的几种实现方式及原理"><a href="#协程的几种实现方式及原理" class="headerlink" title="协程的几种实现方式及原理"></a>协程的几种实现方式及原理</h2><p>协程又可以称为用户线程,微线程，可以将其理解为单个进程或线程中的多个<strong>用户态线程</strong>，这些微线程在用户态进程控制和调度.协程的实现方式有很多种，包括</p>
+<ol>
+<li>使用glibc中的ucontext库实现</li>
+<li>利用汇编代码切换上下文</li>
+<li>利用C语言语法中的switch-case的奇淫技巧实现(protothreads)</li>
+<li>利用C语言的setjmp和longjmp实现</li>
+</ol>
+<p>实际上，无论是上述那种方式实现协程,其原理是相同的，都是通过保存和恢复寄存器的状态，来进行各协程上下文的保存和切换。</p>
+<h2 id="协程较于函数和线程的优点"><a href="#协程较于函数和线程的优点" class="headerlink" title="协程较于函数和线程的优点"></a>协程较于函数和线程的优点</h2><ul>
+<li>相比于函数:协程避免了传统的函数调用栈，几乎可以无限地递归</li>
+<li>相比与线程:协程没有内核态的上下文切换，近乎可以无限并发。协程在用户态进程显式的调度，可以把异步操作转换为同步操作，也意味着不需要加锁,避免了加锁过程中不必要的开销。</li>
+</ul>
+<p>进程,线程以及协程的设计都是为了并发任务可以更好的利用CPU资源，他们之间最大的区别在于CPU资源的使用上:</p>
+<ul>
+<li>进程和线程的任务调度是由内核控制的，是抢占式的；</li>
+<li>协程的任务调度是在用户态完成,需要代码里显式地将CPU交给其他协程,是协作式的</li>
+</ul>
+<p>由于我们可以在用户态调度协程任务，所以我们可以把<strong>一组相互依赖的任务设计为协程。这样,当一个协程任务完成之后,可以手动的进行任务切换，把当前任务挂起(yield),切换到另一个协程区工作</strong>.由于我们可以控制程序主动让出资源，很多情况下将不需要对资源进行加锁。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;C-协程及其原理&quot;&gt;&lt;a href=&quot;#C-协程及其原理&quot; class=&quot;headerlink&quot; title=&quot;C++协程及其原理&quot;&gt;&lt;/a&gt;C++协程及其原理&lt;/h1&gt;&lt;h2 id=&quot;协程的几种实现方式及原理&quot;&gt;&lt;a href=&quot;#协程的几种实现方式及原理&quot; c
+    
+    </summary>
+    
+      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
+    
+      <category term="ucontext_t" scheme="http://yoursite.com/tags/ucontext-t/"/>
+    
+      <category term="上下文切换" scheme="http://yoursite.com/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/"/>
+    
+      <category term="协程" scheme="http://yoursite.com/tags/%E5%8D%8F%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
     <title>ucontext族函数详解</title>
     <link href="http://yoursite.com/2017/10/06/ucontext%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3/"/>
     <id>http://yoursite.com/2017/10/06/ucontext函数详解/</id>
     <published>2017-10-06T08:00:48.000Z</published>
-    <updated>2017-10-06T08:04:14.143Z</updated>
+    <updated>2017-10-06T08:05:11.962Z</updated>
     
     <content type="html"><![CDATA[<h1 id="ucontext族函数详解"><a href="#ucontext族函数详解" class="headerlink" title="ucontext族函数详解"></a>ucontext族函数详解</h1><blockquote>
 <p>the ucontext_t type is a structure type suitable for holding the context for the user thread of execution. A thread’s context include stack,saved registersm a list of block signals</p>
@@ -321,32 +578,6 @@
   </entry>
   
   <entry>
-    <title>UnixIPC 关联数据结构与对象权限</title>
-    <link href="http://yoursite.com/2017/09/20/UnixIPC%E5%85%B3%E8%81%94%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E5%AF%B9%E8%B1%A1%E6%9D%83%E9%99%90/"/>
-    <id>http://yoursite.com/2017/09/20/UnixIPC关联数据结构与对象权限/</id>
-    <published>2017-09-20T12:09:08.000Z</published>
-    <updated>2017-09-24T11:34:39.183Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="UnixIPC-关联数据结构与对象权限"><a href="#UnixIPC-关联数据结构与对象权限" class="headerlink" title="UnixIPC 关联数据结构与对象权限"></a>UnixIPC 关联数据结构与对象权限</h1>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;UnixIPC-关联数据结构与对象权限&quot;&gt;&lt;a href=&quot;#UnixIPC-关联数据结构与对象权限&quot; class=&quot;headerlink&quot; title=&quot;UnixIPC 关联数据结构与对象权限&quot;&gt;&lt;/a&gt;UnixIPC 关联数据结构与对象权限&lt;/h1&gt;
-    
-    </summary>
-    
-      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-      <category term="ipc" scheme="http://yoursite.com/tags/ipc/"/>
-    
-      <category term="ipc_perm" scheme="http://yoursite.com/tags/ipc-perm/"/>
-    
-  </entry>
-  
-  <entry>
     <title>UnixIPC 机制和key_t本质类型</title>
     <link href="http://yoursite.com/2017/09/20/UnixIPC%E4%B8%ADkey_t%E7%B1%BB%E5%9E%8B%E6%9C%AC%E8%B4%A8/"/>
     <id>http://yoursite.com/2017/09/20/UnixIPC中key_t类型本质/</id>
@@ -398,6 +629,32 @@
       <category term="ipc" scheme="http://yoursite.com/tags/ipc/"/>
     
       <category term="key_t" scheme="http://yoursite.com/tags/key-t/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>UnixIPC 关联数据结构与对象权限</title>
+    <link href="http://yoursite.com/2017/09/20/UnixIPC%E5%85%B3%E8%81%94%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E5%AF%B9%E8%B1%A1%E6%9D%83%E9%99%90/"/>
+    <id>http://yoursite.com/2017/09/20/UnixIPC关联数据结构与对象权限/</id>
+    <published>2017-09-20T12:09:08.000Z</published>
+    <updated>2017-09-24T11:34:39.183Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="UnixIPC-关联数据结构与对象权限"><a href="#UnixIPC-关联数据结构与对象权限" class="headerlink" title="UnixIPC 关联数据结构与对象权限"></a>UnixIPC 关联数据结构与对象权限</h1>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;UnixIPC-关联数据结构与对象权限&quot;&gt;&lt;a href=&quot;#UnixIPC-关联数据结构与对象权限&quot; class=&quot;headerlink&quot; title=&quot;UnixIPC 关联数据结构与对象权限&quot;&gt;&lt;/a&gt;UnixIPC 关联数据结构与对象权限&lt;/h1&gt;
+    
+    </summary>
+    
+      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
+    
+      <category term="ipc" scheme="http://yoursite.com/tags/ipc/"/>
+    
+      <category term="ipc_perm" scheme="http://yoursite.com/tags/ipc-perm/"/>
     
   </entry>
   
@@ -489,9 +746,9 @@
       <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="signal" scheme="http://yoursite.com/tags/signal/"/>
-    
       <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
+    
+      <category term="signal" scheme="http://yoursite.com/tags/signal/"/>
     
       <category term="sigaction" scheme="http://yoursite.com/tags/sigaction/"/>
     
@@ -980,97 +1237,6 @@
       <category term="rapidjson" scheme="http://yoursite.com/tags/rapidjson/"/>
     
       <category term="json" scheme="http://yoursite.com/tags/json/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unix网络编程之socket异步编程</title>
-    <link href="http://yoursite.com/2017/06/15/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B9%8Bsocket%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/"/>
-    <id>http://yoursite.com/2017/06/15/Unix网络编程之socket异步编程/</id>
-    <published>2017-06-15T01:48:43.000Z</published>
-    <updated>2017-06-15T03:20:13.063Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unix网络编程之socket异步编程"><a href="#Unix网络编程之socket异步编程" class="headerlink" title="Unix网络编程之socket异步编程"></a>Unix网络编程之socket异步编程</h1><h2 id="ioctl"><a href="#ioctl" class="headerlink" title="ioctl"></a>ioctl</h2><p>我们常用ioctlsocket的FIONBIO模式对socket进行设置是否启用异步。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">ioctlsocket</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">long</span> cmd, <span class="keyword">unsigned</span> <span class="keyword">long</span>* args)</span></span>;</div></pre></td></tr></table></figure></p>
-<p>ioctlsocket函数的作用是获取<strong>与套接字sockfd相关的操作参数，可用于任何状态的任一套接字，与具体的协议无关</strong>.</p>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
-<li>sockfd : 待操作的socket描述符</li>
-<li>cmd : 对sockfd的做操类型,包括以下几种<ul>
-<li>FIONBIO : 允许或者禁止套接字sockfd的费阻塞模式，若args为1，则是允许非阻塞模式；若args为0，禁止非阻塞模式。</li>
-<li>FIONREAD : 确定套接字sockfd自动读入设为数量，arg存储ioctlsocket的返回值.若sockfd是SOCKET_STREAM类型，则FIONREAD返回一次recv所接受的所有的数据量，这通常与套接字中排队的数据总量相同。如果sockfd是SOC_DGRAM类型,则FIONREAD返回套接字上排队的第一个数据报的大小。</li>
-<li>SIOCATMARK : 确定是否所有的带外数据都已经被读入，这个类型只适用于SOCK_STREAM套接字接口。</li>
-</ul>
-</li>
-<li>args :　指示参数</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Unix网络编程之socket异步编程&quot;&gt;&lt;a href=&quot;#Unix网络编程之socket异步编程&quot; class=&quot;headerlink&quot; title=&quot;Unix网络编程之socket异步编程&quot;&gt;&lt;/a&gt;Unix网络编程之socket异步编程&lt;/h1&gt;&lt;h2 i
-    
-    </summary>
-    
-      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-      <category term="socket" scheme="http://yoursite.com/tags/socket/"/>
-    
-      <category term="ioctlsocket" scheme="http://yoursite.com/tags/ioctlsocket/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unix网络编程之读写相关函数</title>
-    <link href="http://yoursite.com/2017/06/14/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0/"/>
-    <id>http://yoursite.com/2017/06/14/Unix网络编程之读写相关函数/</id>
-    <published>2017-06-14T13:37:41.000Z</published>
-    <updated>2017-06-14T13:48:18.796Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unix网络编程之读写相关函数"><a href="#Unix网络编程之读写相关函数" class="headerlink" title="Unix网络编程之读写相关函数"></a>Unix网络编程之读写相关函数</h1><p>socket编程中常用的输入输出函数(读写函数)总共有五对,它们<strong>都是默认阻塞的</strong>，这就意味着当发出一个不能立即完成的套接字调用的时候，其进程将被投入睡眠，等待相应的进程操作完成，函数才返回继续往下执行。常用的函数如下：</p>
-<ul>
-<li>read, write</li>
-<li>readv, writev</li>
-<li>recv, send</li>
-<li>recvfrom, sendto</li>
-<li>recvmsg, sendmsg</li>
-</ul>
-<h2 id="read-write函数"><a href="#read-write函数" class="headerlink" title="read/write函数"></a>read/write函数</h2><p>read和write函数的详细用法已经在Unix文件IO中已经讲解，在socket编程中的使用方法与文件IO使用方法相同。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Unix网络编程之读写相关函数&quot;&gt;&lt;a href=&quot;#Unix网络编程之读写相关函数&quot; class=&quot;headerlink&quot; title=&quot;Unix网络编程之读写相关函数&quot;&gt;&lt;/a&gt;Unix网络编程之读写相关函数&lt;/h1&gt;&lt;p&gt;socket编程中常用的输入输出函数
-    
-    </summary>
-    
-      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="read" scheme="http://yoursite.com/tags/read/"/>
-    
-      <category term="write" scheme="http://yoursite.com/tags/write/"/>
-    
-      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-      <category term="socket" scheme="http://yoursite.com/tags/socket/"/>
-    
-      <category term="readv" scheme="http://yoursite.com/tags/readv/"/>
-    
-      <category term="writev" scheme="http://yoursite.com/tags/writev/"/>
-    
-      <category term="recv" scheme="http://yoursite.com/tags/recv/"/>
-    
-      <category term="send" scheme="http://yoursite.com/tags/send/"/>
-    
-      <category term="recvfrom" scheme="http://yoursite.com/tags/recvfrom/"/>
-    
-      <category term="sendto" scheme="http://yoursite.com/tags/sendto/"/>
-    
-      <category term="recvmsg" scheme="http://yoursite.com/tags/recvmsg/"/>
-    
-      <category term="senfmsg" scheme="http://yoursite.com/tags/senfmsg/"/>
     
   </entry>
   
