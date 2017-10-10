@@ -249,6 +249,8 @@
 <p>故我们再回去看<strong>SOCKADDR_COMMON的宏定义.
 </strong>SOCKADDR<em>COMMON (sin</em>);将被解释为sa_family_t sin_family;</p>
 <h2 id="详解-1"><a href="#详解-1" class="headerlink" title="#详解"></a>#详解</h2><p>在宏定义中,#符号的作用是将宏定义参数用””括起来,<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> example(test) printf(<span class="meta-string">"%s"</span>, #test);</span></div><div class="line">example(<span class="number">123</span> <span class="number">456</span>); <span class="comment">//printf("%s", "123 456");</span></div></pre></td></tr></table></figure></p>
+<h2 id="宏定义中占位符理解"><a href="#宏定义中占位符理解" class="headerlink" title="宏定义中占位符理解"></a>宏定义中占位符理解</h2><p>在宏定义中我们可以使用字母或者单词作为占位符,初次之外，我们也可以使用_1,_2作为占位符，不要被它蒙骗了，其作用与单词作为占位符相同。如:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> sum(a,b) (a+b)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> sum(_1,_2) (_1+_2)<span class="comment">//作用同上</span></span></div></pre></td></tr></table></figure>
 
                     
                         
