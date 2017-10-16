@@ -242,7 +242,11 @@
                     <h1 id="Linux中dlfcn库相关学习"><a href="#Linux中dlfcn库相关学习" class="headerlink" title="Linux中dlfcn库相关学习"></a>Linux中dlfcn库相关学习</h1><p>在linux中静态链接库和动态链接库是进程之间代码共享的两种方式。Linux在<dlfnc.h>库中提供了加载和处理动态连接库的系统调用,使用非常方便。具体用法如下:</dlfnc.h></p>
 <h2 id="dlfcn库中函数说明"><a href="#dlfcn库中函数说明" class="headerlink" title="dlfcn库中函数说明"></a>dlfcn库中函数说明</h2><p>dlfcn库中主要包括四个函数:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>*, <span class="keyword">int</span> flag)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span>* <span class="title">dlerror</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlsym</span><span class="params">(<span class="keyword">void</span>* handler, <span class="keyword">char</span>* symbol)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dlclose</span><span class="params">(<span class="keyword">void</span>* handler)</span></span>;</div></pre></td></tr></table></figure></p>
 <ul>
-<li>dlopen : 打开一个动态连接库，并返回一个类型为void*的handler</li>
+<li>dlopen : 打开一个动态连接库，并返回一个类型为void*的handler,flag为打开模式，可选的模式有两种<ul>
+<li>RTLD_LAZY 暂缓决定，等有需要时再解出符号</li>
+<li>RTLD_NOW 立即决定，返回前解除所有未决定的符号。</li>
+</ul>
+</li>
 <li>dlerror : 返回dl操作的错误，若没有出现错误，则返回NUlL，否则打印错误信息</li>
 <li>dlsym : 查找动态链接库中的符号symbol,并返回该符号所在的地址</li>
 <li>dlclose : 关闭动态链接库句柄</li>
