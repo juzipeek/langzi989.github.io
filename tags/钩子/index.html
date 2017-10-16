@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Tag: dlopen - 魏传柳</title>
+    <title>Tag: 钩子 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -17,7 +17,7 @@
     
     <meta property="og:type" content="blog">
 <meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/tags/dlopen/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/钩子/index.html">
 <meta property="og:site_name" content="魏传柳">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="魏传柳">
@@ -253,71 +253,6 @@
                     
                         <p>
                             <a href="/2017/10/16/Unix系统hook函数以及使用dl库实现/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/10/16/Unix中dl库学习/">
-                            Linux中dlfcn库相关学习.md
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-10-16T16:30:08+08:00">
-	
-		    10月 16, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux中dlfcn库相关学习"><a href="#Linux中dlfcn库相关学习" class="headerlink" title="Linux中dlfcn库相关学习"></a>Linux中dlfcn库相关学习</h1><p>在linux中静态链接库和动态链接库是进程之间代码共享的两种方式。Linux在<dlfnc.h>库中提供了加载和处理动态连接库的系统调用,使用非常方便。具体用法如下:</dlfnc.h></p>
-<h2 id="dlfcn库中函数说明"><a href="#dlfcn库中函数说明" class="headerlink" title="dlfcn库中函数说明"></a>dlfcn库中函数说明</h2><p>dlfcn库中主要包括四个函数:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>*, <span class="keyword">int</span> flag)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span>* <span class="title">dlerror</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlsym</span><span class="params">(<span class="keyword">void</span>* handler, <span class="keyword">char</span>* symbol)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dlclose</span><span class="params">(<span class="keyword">void</span>* handler)</span></span>;</div></pre></td></tr></table></figure></p>
-<ul>
-<li>dlopen : 打开一个动态连接库，并返回一个类型为void*的handler,flag为打开模式，可选的模式有两种<ul>
-<li>RTLD_LAZY 暂缓决定，等有需要时再解出符号</li>
-<li>RTLD_NOW 立即决定，返回前解除所有未决定的符号。</li>
-</ul>
-</li>
-<li>dlerror : 返回dl操作的错误，若没有出现错误，则返回NUlL，否则打印错误信息</li>
-<li>dlsym : 查找动态链接库中的符号symbol,并返回该符号所在的地址</li>
-<li>dlclose : 关闭动态链接库句柄</li>
-</ul>
-<h2 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h2><p>动态链接库cal.cpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//cal.cpp</span></div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a - b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mul</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a * b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">div</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a / b;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>生成动态链接库libcal.so<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ -shared -fPIC cal.cpp libcal.so</div></pre></td></tr></table></figure></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//main.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> LIB_LIBRARY_PATH_1 <span class="meta-string">"./libcal.so"</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*CAC_FUNC)</span><span class="params">(<span class="keyword">int</span> ,<span class="keyword">int</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">void</span>* handler = <span class="literal">NULL</span>;</div><div class="line">	<span class="keyword">char</span>* error = <span class="literal">NULL</span>;</div><div class="line">	CAC_FUNC cac_func = <span class="literal">NULL</span>;</div><div class="line"></div><div class="line">	handler = dlopen(LIB_LIBRARY_PATH_1, RTLD_LAZY);</div><div class="line">	<span class="keyword">if</span> (!handler) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s\n"</span>, dlerror());</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	dlerror();</div><div class="line"></div><div class="line">  <span class="comment">//此处取对应函数地址,</span></div><div class="line">	*(<span class="keyword">void</span> **) (&amp;cac_func) = dlsym(handler, <span class="string">"add"</span>);</div><div class="line">	<span class="keyword">if</span> ((error = dlerror()) != <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s"</span>, error);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"add:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"sub"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"sub:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"mul"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"mul:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"div"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"div:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	dlclose(handler);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>编译函数main:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ main.cpp -rdynamic -ldl</div></pre></td></tr></table></figure></p>
-<p>执行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">add:3</div><div class="line">sub:-1</div><div class="line">mul:2</div><div class="line">div:0</div></pre></td></tr></table></figure></p>
-<h2 id="注意问题"><a href="#注意问题" class="headerlink" title="注意问题"></a>注意问题</h2><p><strong>特别注意，若使用c++编译动态链接库，一定要在需要使用的符号处添加extern “C”,否则会出现符号找不到的问题。即undefined symbol</strong></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/10/16/Unix中dl库学习/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

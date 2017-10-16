@@ -215,6 +215,57 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/08/20/Linux查找含有特定字符串的文件/">
+                            查找含有特定字符串的文件
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
+	
+		    8月 20, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Linux查找含有特定字符串的文件"><a href="#Linux查找含有特定字符串的文件" class="headerlink" title="Linux查找含有特定字符串的文件"></a>Linux查找含有特定字符串的文件</h1><p>Linux查找含有特定字符串的文件命令为grep。以下为详细的使用方法</p>
+<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><h3 id="Linux命令"><a href="#Linux命令" class="headerlink" title="Linux命令:"></a>Linux命令:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">grep [OPTIONS] PATTERN [FILE...]</div><div class="line"></div><div class="line">#实例:递归查找当前文件夹下所有含有test的文件，并显示行号</div><div class="line">grep -rn &quot;test&quot; *</div></pre></td></tr></table></figure>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">-r      递归查找</div><div class="line">-n      显示行号</div><div class="line">-i      忽略大小写</div><div class="line">-w      只匹配整个单词，而不是字符串的字部分(如pattern为&quot;test&quot;, 不匹配&quot;test1&quot;或&quot;atest&quot;)</div><div class="line">-C num  显示匹配到的行上下n行  </div><div class="line">-l      只列出匹配成功的文件名</div><div class="line">-L      列出不匹配的文件名</div><div class="line">\&lt;      标注单词的开头</div><div class="line">\&gt;      标注单词的结尾</div><div class="line">^       指匹配字符串在行首</div><div class="line">$       指匹配字符串在行尾</div></pre></td></tr></table></figure>
+<h3 id="常用实例"><a href="#常用实例" class="headerlink" title="常用实例"></a>常用实例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#显示匹配pattern1或pattern2的行</div><div class="line">grep pattern1 | pattern2 file</div><div class="line"># 显示即匹配pattern1又匹配pattern2的行</div><div class="line">grep pattern1 file | grep pattern2</div><div class="line">#只匹配test或testA，不匹配Atest</div><div class="line">grep &quot;\&lt;man&quot; *</div><div class="line">#只匹配test或Atest，不匹配testA</div><div class="line">grep &quot;man\&gt;&quot; *</div><div class="line">#只匹配test　不匹配testA和Atest</div><div class="line">grep &quot;\&lt;test\&gt;&quot; *</div><div class="line"></div><div class="line">#匹配行首为test的行:</div><div class="line">grep -rn &quot;^test&quot; *</div><div class="line">#匹配行尾为test的行</div><div class="line">grep -rn &quot;test$&quot; *</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/08/20/Linux查找含有特定字符串的文件/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/07/17/C中编码问题/">
                             C中编码问题
                         </a>
@@ -944,66 +995,6 @@
                     
                         <p>
                             <a href="/2017/06/11/Unix时间相关函数总结-md/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/11/C语言宏定义相关/">
-                            C语言宏定义相关
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-06-11T16:39:20+08:00">
-	
-		    6月 11, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C语言宏定义相关"><a href="#C语言宏定义相关" class="headerlink" title="C语言宏定义相关"></a>C语言宏定义相关</h1><p>C语言宏定义在代码编写中很常见，它常会带来一些很高的性能和很方便的写法，在看Linux源码中sockaddr_in的时候遇到宏定义中##。特地在此记录.</p>
-<h2 id="宏定义中-用法"><a href="#宏定义中-用法" class="headerlink" title="宏定义中##用法"></a>宏定义中##用法</h2><h3 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h3><p>Linux中sockaddr_in的定义在文件/netinet/in.h文件中。具体如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Structure describing an Internet socket address.  */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span></span></div><div class="line">  &#123;</div><div class="line">    __SOCKADDR_COMMON (sin_);</div><div class="line">    <span class="keyword">in_port_t</span> sin_port;                 <span class="comment">// Port number.  </span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> <span class="title">sin_addr</span>;</span>            <span class="comment">// Internet address.  </span></div><div class="line"></div><div class="line">    <span class="comment">// Pad to size of struct sockaddr.</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> sin_zero[<span class="keyword">sizeof</span> (struct sockaddr) -</div><div class="line">                           __SOCKADDR_COMMON_SIZE -</div><div class="line">                           <span class="keyword">sizeof</span> (<span class="keyword">in_port_t</span>) -</div><div class="line">                           <span class="keyword">sizeof</span> (struct in_addr)];</div><div class="line">  &#125;;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __SOCKADDR_COMMON(sa_prefix)\</span></div><div class="line">  sa_family_t sa_prefix##family</div></pre></td></tr></table></figure></p>
-<p>从上面可以看出，__SOCKADDR_COMMON的宏定义中出现了##的使用方法。那它在宏定义中的意思是什么呢？</p>
-<h3 id="详解"><a href="#详解" class="headerlink" title="##详解"></a>##详解</h3><p>##是一种分隔连接方式。它的作用是先分隔，然后进行强制连接。</p>
-<p>在普通的宏定义中，预处理器一般吧空格解释为分段标志，然后进行相应的替换工作。但是这样做的结果是被替换的段之间会出现空格。如果我们不希望这些空格出现，可以使用##来代替空格。</p>
-<p>如：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> type1(type,name) type name_##type##_type</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> type2(type,name) type name##_##type##_type</span></div></pre></td></tr></table></figure></p>
-<p>上述type1(int,c)将被替换为：int name_int_type<br>上述type2(int,c)将被替换为：int c_int_type</p>
-<p>故我们再回去看<strong>SOCKADDR_COMMON的宏定义.
-</strong>SOCKADDR<em>COMMON (sin</em>);将被解释为sa_family_t sin_family;</p>
-<h2 id="注意在函数参数中使用-可以将空字符串过滤掉，否则会出现问题。如"><a href="#注意在函数参数中使用-可以将空字符串过滤掉，否则会出现问题。如" class="headerlink" title="注意在函数参数中使用##可以将空字符串过滤掉，否则会出现问题。如:"></a>注意在函数参数中使用##可以将空字符串过滤掉，否则会出现问题。如:</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_get_args_cnt( ... ) comac_arg_n( __VA_ARGS__ )</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_arg_n( _0,_1,_2,_3,_4,_5,_6,_7,N,...) N</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_args_seqs() 7,6,5,4,3,2,1,0</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_join_1( x,y ) x##y</span></div><div class="line"></div><div class="line"><span class="comment">//计算可变参数...中参数的个数.注意由于seq的范围为7-0，该宏可识别的参数个数的范围为0-7个。超过7个参数识别有问题</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_argc( ... ) comac_get_args_cnt( 0,##__VA_ARGS__,comac_args_seqs() )</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="comment">//若上述comac_get_cnt中的__VA_ARGS__去掉##,结果为1,加上为0。</span></div><div class="line">  comac_argc();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="详解-1"><a href="#详解-1" class="headerlink" title="#详解"></a>#详解</h2><p>在宏定义中,#符号的作用是将宏定义参数用””括起来,<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> example(test) printf(<span class="meta-string">"%s"</span>, #test);</span></div><div class="line">example(<span class="number">123</span> <span class="number">456</span>); <span class="comment">//printf("%s", "123 456");</span></div></pre></td></tr></table></figure></p>
-<h2 id="宏定义中占位符理解"><a href="#宏定义中占位符理解" class="headerlink" title="宏定义中占位符理解"></a>宏定义中占位符理解</h2><p>在宏定义中我们可以使用字母或者单词作为占位符,初次之外，我们也可以使用_1,_2作为占位符，不要被它蒙骗了，其作用与单词作为占位符相同。如:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> sum(a,b) (a+b)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> sum(_1,_2) (_1+_2)<span class="comment">//作用同上</span></span></div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/06/11/C语言宏定义相关/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

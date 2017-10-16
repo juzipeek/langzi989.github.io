@@ -215,6 +215,115 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/09/20/makefile自动变量与隐晦规则推导/">
+                            makefile自动变量与隐晦规则推导
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-09-20T20:48:59+08:00">
+	
+		    9月 20, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="makefile自动变量与隐晦规则推导"><a href="#makefile自动变量与隐晦规则推导" class="headerlink" title="makefile自动变量与隐晦规则推导"></a>makefile自动变量与隐晦规则推导</h1><p>makefile的使用可以大大简化程序编译的过程，不过对于新手来说makefile的执行规则理解起来还是很让人迷糊的。其中最重要的原因是makefile中使用了大量的隐晦规则和自动变量来简化makefile的编写.本节将记录一下makefile自动变量和隐晦规则的推导过程以及makefile的执行流程。</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">%.o:%.c</div><div class="line">  $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<p>对于上面的推导规则，makefile是怎么将%c文件编译汇编成.o文件的？下面将针对这个问题进行讲解</p>
+</blockquote>
+<h2 id="自动变量"><a href="#自动变量" class="headerlink" title="自动变量"></a>自动变量</h2><p>makefile中的自动变量实质上是对一类变量的简写，当我们在模式规则中对这类变量处理的时候可以直接使用自动变量简化makefile代码的编写。自动变量包括如目标文件,依赖文件等。下面以实例的方式列出了一些常用的自动变量:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a: a.o b.o c.o d.o</div><div class="line">  g++ -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<ul>
+<li>$@: 表示模式规则中的目标文件,对于上面的模式规则,$@表示a</li>
+<li>$&lt;: 表示依赖中的第一个文件.对于上述规则,$&lt;表示a.o</li>
+<li>$^: 表示所有依赖文件的集合,对于上述规则$^表示a.o b.o c.o d.o</li>
+<li>$+: 表示所有依赖文件的集合(不去重).对于上述规则$+表示a.o b.o c.o d.o</li>
+<li>$%: 仅当目标是函数库文件(.a)文件时，表示规则中目标成员名。如一个目标是(test.a(a.o)),此时$%表示a.o, $@表示test.a</li>
+<li>$?: 所有比目标新的依赖目标的集合</li>
+<li>$*: 表示目标规则中%以及%之前的部分。如若目标文件为”src/test.o”,目标文件模式为”src/%.o”,此时$*表示”src/test”。</li>
+</ul>
+<h2 id="隐晦规则自动规则推导"><a href="#隐晦规则自动规则推导" class="headerlink" title="隐晦规则自动规则推导"></a>隐晦规则自动规则推导</h2><p>使用makefile的makefile的隐晦自动规则推导功能也可以让我们的makefile的代码大大简化。使用隐晦规则，我们没必要为每一个类似的规则生成都去写类似的规则。makefile会自动推导依赖文件,并根据隐含规则推导出生成当前目标的命令。<br>如下面的makefile:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">target: a.o b.o c.o</div><div class="line">  g++ -o $@　$^ $(LIB) $(INC) $(LINKER)</div><div class="line">a.o: a.c</div><div class="line">  g++ -c $(CFLAGS) -o a.o a.c</div><div class="line">b.o: b.c</div><div class="line">  g++ -c $(CFLAGS) -o b.o b.c</div><div class="line">c.o: c.c</div><div class="line">  g++ -c $(CFLAGS) -o c.o c.c</div></pre></td></tr></table></figure></p>
+<p>上述规则没有使用隐晦规则,对于每一个.o文件的生成都写了一条规则语句.若使用隐晦规则推导，上述makefile可写为如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SOURCE := $(shell find ./ -type f -name *.c)</div><div class="line">OBJECTS := $(patsubst *.c,*.o,$(SOURCE))</div><div class="line"></div><div class="line">target : $(OBJECTS)</div><div class="line">  g++ -o $@ $^ $(LIB) $(INC) $(LINKER)</div><div class="line">%.o:%.c</div><div class="line">   $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<p>从上面的隐晦规则可以看出,对于.o文件的生成命令，makefile都可以由隐晦规则” $(CC) -c $(CFLAGS) -o $@ $&lt;”推导出。即如当目标需要a.隐晦规则将推导出命令”g++ -c $(CFLAGS) -o a.o a.c”用于生成该目标.</p>
+<h2 id="makefile执行过程"><a href="#makefile执行过程" class="headerlink" title="makefile执行过程"></a>makefile执行过程</h2><p>由上一节中的makefile简单说一下makefile的执行规则。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SOURCE := $(shell find ./ -type f -name *.c)</div><div class="line">OBJECTS := $(patsubst *.c,*.o,$(SOURCE))</div><div class="line"></div><div class="line">target : $(OBJECTS)</div><div class="line">  g++ -o $@ $^ $(LIB) $(INC) $(LINKER)</div><div class="line">%.o:%.c</div><div class="line">   $(CC) -c $(CFLAGS) -o $@ $&lt;</div></pre></td></tr></table></figure>
+<p>makefile中首先声明了变量SOURCE和OBJECTS，SOURCE是当前文件夹下的所有.c文件的集合，OBJECTS是所有.c文件对应的目标文件.o的集合.</p>
+<p>执行过程:<br>首先,目标target依赖所有的目标文件.o，即a.o,b.o,c.o。当需要依赖a.o时，makefile会根据隐晦规则自动推导出生成a.o文件的命令，(“g++ -c $(CFLAGS) -o a.o a.c”)，生成a.o；类似的也会根据同样的过程生成b.o和c.o文件,这三个文件生成之后,再根据上述规则生成target。</p>
+<h2 id="makefile中常用函数"><a href="#makefile中常用函数" class="headerlink" title="makefile中常用函数"></a>makefile中常用函数</h2><h3 id="wildcard函数"><a href="#wildcard函数" class="headerlink" title="wildcard函数"></a>wildcard函数</h3><p>函数参数:一个正则表达式<br>函数功能:wildcard的中文意思是通配符，它的功能类似于正则表达式，用于展开一列所有符合其参数描述的文件名，文件之间用空格分割。</p>
+<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SOURCE=$(wildcard *.cpp)</div></pre></td></tr></table></figure></p>
+<p>此时SOURCE的值为所有的以.cpp为后缀的文件集合，以空格隔开。</p>
+<h3 id="patsubst函数"><a href="#patsubst函数" class="headerlink" title="patsubst函数"></a>patsubst函数</h3><p>函数参数:　第一个是需要匹配的样式，第二个是表示用什么替换它，第三个被处理的以空格隔开的字符串。<br>函数功能:其功能是一个匹配替换的函数(pattern substitute)。</p>
+<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#TARGET表示与SOURCE中同名的目标文件.</div><div class="line">TARGET = $(patsubst *.cpp, *.o, $(SOURCE))</div></pre></td></tr></table></figure></p>
+<h3 id="subst函数"><a href="#subst函数" class="headerlink" title="subst函数"></a>subst函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(subst &lt;from&gt;,&lt;to&gt;,&lt;text&gt;)</div></pre></td></tr></table></figure>
+<p>功能:字符串替换,将text中的from 替换为to<br>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#返回值：this is b</div><div class="line">$(subst a, b, this is a)</div></pre></td></tr></table></figure></p>
+<h3 id="strip函数"><a href="#strip函数" class="headerlink" title="strip函数"></a>strip函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(strip &lt;string&gt;)</div></pre></td></tr></table></figure>
+<p>功能:去除<string>头部和尾部的空格<br>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#源字符串为&quot;a b c &quot;，返回值为&quot;a b c&quot;</div><div class="line">$(strip a b c )</div></pre></td></tr></table></figure></string></p>
+<h3 id="filter函数"><a href="#filter函数" class="headerlink" title="filter函数"></a>filter函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(filter &lt;pattern...&gt;,&lt;text...&gt;)</div></pre></td></tr></table></figure>
+<p>功能:过滤特定模式的字符串<br>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#如source为a.c b.s c.h,则下列的返回值为a.c b.s</div><div class="line">$(filter *.c *.s, $(source))</div></pre></td></tr></table></figure></p>
+<h3 id="word函数"><a href="#word函数" class="headerlink" title="word函数"></a>word函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(word &lt;n&gt;,&lt;text&gt;)</div></pre></td></tr></table></figure>
+<p>函数功能:取单词函数。取出<text>中的第n个单词(从1开始)，若越界，返回为空</text></p>
+<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#此函数返回值为bar</div><div class="line">$(word 2,foo bar fun)</div></pre></td></tr></table></figure></p>
+<h3 id="words函数"><a href="#words函数" class="headerlink" title="words函数"></a>words函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(words &lt;text&gt;)</div></pre></td></tr></table></figure>
+<p>功能:统计字符串中单词的个数,返回个数<br>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#此函数返回值为3</div><div class="line">$(word foo bar fun)</div></pre></td></tr></table></figure></p>
+<h3 id="wordlist函数"><a href="#wordlist函数" class="headerlink" title="wordlist函数"></a>wordlist函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(wordlist &lt;s&gt;,&lt;e&gt;,&lt;text&gt;)</div></pre></td></tr></table></figure>
+<p>功能:取<text>中s-e个单词<br>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#返回bar fun</div><div class="line">$(wordlist 2,3, foo bar fun)</div></pre></td></tr></table></figure></text></p>
+<h3 id="firstword函数"><a href="#firstword函数" class="headerlink" title="firstword函数"></a>firstword函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(firstword &lt;text&gt;)</div></pre></td></tr></table></figure>
+<p>函数功能：取<text>中的首个单词<br>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#返回值为foo</div><div class="line">$(firstword foo bar fun)</div></pre></td></tr></table></figure></text></p>
+<h3 id="dir函数"><a href="#dir函数" class="headerlink" title="dir函数"></a>dir函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(dir ...)</div></pre></td></tr></table></figure>
+<p>功能：取给定文件名序列中的目录（即/前面的部分）。如没有/，则返回./<br>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#返回值为/home/ ./</div><div class="line">$(dir /home/test testfile)</div></pre></td></tr></table></figure></p>
+<h3 id="notdir函数"><a href="#notdir函数" class="headerlink" title="notdir函数"></a>notdir函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(notdir ...)</div></pre></td></tr></table></figure>
+<p>功能：取给定文件名序列中的取出非目录部分（即/后面的部分）。<br>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#返回值为test testfile</div><div class="line">$(notdir /home/test testfile)</div></pre></td></tr></table></figure></p>
+<h3 id="suffix函数"><a href="#suffix函数" class="headerlink" title="suffix函数"></a>suffix函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(suffix ..)</div></pre></td></tr></table></figure>
+<p>功能:取后缀函数,若没有后缀返回为空<br>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#返回值:.c .c</div><div class="line">$(suffix a.c b.c)</div></pre></td></tr></table></figure></p>
+<h3 id="basename函数"><a href="#basename函数" class="headerlink" title="basename函数"></a>basename函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(basename ...)</div></pre></td></tr></table></figure>
+<p>功能:取前缀函数,包括目录。<br>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#返回值:/home/test a</div><div class="line">$(basename /home/test.cpp a.cpp)</div></pre></td></tr></table></figure></p>
+<h3 id="addsuffix函数"><a href="#addsuffix函数" class="headerlink" title="addsuffix函数"></a>addsuffix函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(addsuffix &lt;suffix&gt; &lt;name....&gt;)</div></pre></td></tr></table></figure>
+<p>功能：给指定文件序列<name...>添加后缀名<suffix><br>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#返回值:a.c b.c c.c</div><div class="line">$(addsuffix .c a b c)</div></pre></td></tr></table></figure></suffix></name...></p>
+<h3 id="addprefix"><a href="#addprefix" class="headerlink" title="addprefix"></a>addprefix</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(addprefix &lt;prefix&gt; &lt;name...&gt;)</div></pre></td></tr></table></figure>
+<p>功能：给指定文件序列添加前缀<br>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#返回值:src/a src/b src/c</div><div class="line">$(addprefix src/ a b c)</div></pre></td></tr></table></figure></p>
+<h3 id="join函数"><a href="#join函数" class="headerlink" title="join函数"></a>join函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$(join &lt;list1&gt; &lt;list2&gt;)</div></pre></td></tr></table></figure>
+<p>功能:将两个字符串中的list对应项连接<br>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#返回值:an 2b 3</div><div class="line">$(join 1 2 3, a b)</div><div class="line">#返回值:1a 2b c</div><div class="line">$(join 1 2, a b c)</div></pre></td></tr></table></figure></p>
+<h2 id="makefile中链接静态库顺序问题"><a href="#makefile中链接静态库顺序问题" class="headerlink" title="makefile中链接静态库顺序问题"></a>makefile中链接静态库顺序问题</h2><p>在链接静态库的时候，如果多个静态库之间存在依赖关系，则有依赖的静态库之间存在顺序问题，若顺序出现错误，则可能出现函数未定义或符号找不到等错误。</p>
+<p>静态库链接的顺序的原则是：<strong>被依赖的库一定要放在后面</strong>，因为makefile在链接静态库时的顺序是从右往左(或从后向前).如libb.a依赖于liba.a，此时的链接顺序应该是:-Llibb.a -Lliba.a。</p>
+<p>会出现上述问题的原因是:我们在生成静态库的时候并未把依赖库的定义编到生成的库中。如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">gcc -c a.c</div><div class="line">ar cr liba.a a.o</div><div class="line">gcc -c b.c</div><div class="line">ar cr libb.a b.o # 虽然libb.a使用到了liba.o中的一些函数,但并不会将它们的定义包含进来,所以在链接test时需要指定这两个库</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/09/20/makefile自动变量与隐晦规则推导/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/09/20/UnixIPC中key_t类型本质/">
                             UnixIPC 机制和key_t本质类型
                         </a>
@@ -912,57 +1021,6 @@
                     
                         <p>
                             <a href="/2017/08/20/Linux常用命令/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/08/20/Linux查找含有特定字符串的文件/">
-                            查找含有特定字符串的文件
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
-	
-		    8月 20, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux查找含有特定字符串的文件"><a href="#Linux查找含有特定字符串的文件" class="headerlink" title="Linux查找含有特定字符串的文件"></a>Linux查找含有特定字符串的文件</h1><p>Linux查找含有特定字符串的文件命令为grep。以下为详细的使用方法</p>
-<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><h3 id="Linux命令"><a href="#Linux命令" class="headerlink" title="Linux命令:"></a>Linux命令:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">grep [OPTIONS] PATTERN [FILE...]</div><div class="line"></div><div class="line">#实例:递归查找当前文件夹下所有含有test的文件，并显示行号</div><div class="line">grep -rn &quot;test&quot; *</div></pre></td></tr></table></figure>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">-r      递归查找</div><div class="line">-n      显示行号</div><div class="line">-i      忽略大小写</div><div class="line">-w      只匹配整个单词，而不是字符串的字部分(如pattern为&quot;test&quot;, 不匹配&quot;test1&quot;或&quot;atest&quot;)</div><div class="line">-C num  显示匹配到的行上下n行  </div><div class="line">-l      只列出匹配成功的文件名</div><div class="line">-L      列出不匹配的文件名</div><div class="line">\&lt;      标注单词的开头</div><div class="line">\&gt;      标注单词的结尾</div><div class="line">^       指匹配字符串在行首</div><div class="line">$       指匹配字符串在行尾</div></pre></td></tr></table></figure>
-<h3 id="常用实例"><a href="#常用实例" class="headerlink" title="常用实例"></a>常用实例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#显示匹配pattern1或pattern2的行</div><div class="line">grep pattern1 | pattern2 file</div><div class="line"># 显示即匹配pattern1又匹配pattern2的行</div><div class="line">grep pattern1 file | grep pattern2</div><div class="line">#只匹配test或testA，不匹配Atest</div><div class="line">grep &quot;\&lt;man&quot; *</div><div class="line">#只匹配test或Atest，不匹配testA</div><div class="line">grep &quot;man\&gt;&quot; *</div><div class="line">#只匹配test　不匹配testA和Atest</div><div class="line">grep &quot;\&lt;test\&gt;&quot; *</div><div class="line"></div><div class="line">#匹配行首为test的行:</div><div class="line">grep -rn &quot;^test&quot; *</div><div class="line">#匹配行尾为test的行</div><div class="line">grep -rn &quot;test$&quot; *</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/08/20/Linux查找含有特定字符串的文件/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

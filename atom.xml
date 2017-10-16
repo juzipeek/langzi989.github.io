@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-10-16T08:47:11.916Z</updated>
+  <updated>2017-10-16T14:02:34.814Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,50 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Unix系统调用hook函数以及使用dl库实现.md</title>
+    <link href="http://yoursite.com/2017/10/16/Unix%E7%B3%BB%E7%BB%9Fhook%E5%87%BD%E6%95%B0%E4%BB%A5%E5%8F%8A%E4%BD%BF%E7%94%A8dl%E5%BA%93%E5%AE%9E%E7%8E%B0/"/>
+    <id>http://yoursite.com/2017/10/16/Unix系统hook函数以及使用dl库实现/</id>
+    <published>2017-10-16T12:30:08.000Z</published>
+    <updated>2017-10-16T14:02:34.814Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unix系统调用hook函数以及使用dl库实现"><a href="#Unix系统调用hook函数以及使用dl库实现" class="headerlink" title="Unix系统调用hook函数以及使用dl库实现"></a>Unix系统调用hook函数以及使用dl库实现</h1><blockquote>
+<p>参考链接:<a href="http://www.it165.net/os/html/201407/8847.html" target="_blank" rel="external">http://www.it165.net/os/html/201407/8847.html</a></p>
+</blockquote>
+<p>系统调用属于一种软中断机制(内中断陷阱)，它有操作系统提供的功能入口(sys_call)以及CPU提供的硬件支持(int 3 trap)共同完成。<br>hook系统调用：为当用户代码调用系统调用的时候,我们通过某种手段入侵该系统调用，使得系统调用中除了执行原有的操作,还可以完成我们需要其完成的一些自定义特性，也可以理解为我们为这个函数做了一个钩子。这样我们就可以实现如当一个文件发生写操作的时候，通知所有关注此文件的进程或线程等等。</p>
+<h2 id="通过动态链接库挟持系统调用"><a href="#通过动态链接库挟持系统调用" class="headerlink" title="通过动态链接库挟持系统调用"></a>通过动态链接库挟持系统调用</h2><p>在linux操作系统的动态链接库的世界中，LD_PRELOAD就是这样一个环境变量，它可以影响程序的运行时的链接(Runtime linker)，它允许你定义在程序运行前优先加载的动态链接库。loader在进行动态链接的时候，会将有相同符号名的符号覆盖成LD_PRELOAD指定的so文件中的符号。换句话说，可以用我们自己的so库中的函数替换原来库里有的函数，从而达到hook的目的。</p>
+<p>上述hook系统调用的方法可以使用dlfcn.h库中的一系列函数实现。<br>example,此函数hook了fcntl系统调用:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*<span class="keyword">fcntl_pfn_t</span>)</span><span class="params">(<span class="keyword">int</span> fildes, <span class="keyword">int</span> cmd, ...)</span></span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fildes, <span class="keyword">int</span> cmd, ...)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">fcntl_pfn_t</span> g_sys_fcntl_func    = (<span class="keyword">fcntl_pfn_t</span>)dlsym(RTLD_NEXT,<span class="string">"fcntl"</span>);</div><div class="line"></div><div class="line">	va_list arg_list;</div><div class="line">	va_start( arg_list,cmd );</div><div class="line"></div><div class="line">	<span class="keyword">int</span> ret = <span class="number">-1</span>;</div><div class="line">	<span class="keyword">switch</span>( cmd )</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">case</span> F_DUPFD:</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">int</span> param = va_arg(arg_list,<span class="keyword">int</span>);</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_GETFD:</div><div class="line">		&#123;</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_SETFD:</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">int</span> param = va_arg(arg_list,<span class="keyword">int</span>);</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_GETFL:</div><div class="line">		&#123;</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_SETFL:</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">int</span> param = va_arg(arg_list,<span class="keyword">int</span>);</div><div class="line">			<span class="keyword">int</span> flag = param;</div><div class="line">			flag |= O_NONBLOCK;</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,flag );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_GETOWN:</div><div class="line">		&#123;</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_SETOWN:</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">int</span> param = va_arg(arg_list,<span class="keyword">int</span>);</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_GETLK:</div><div class="line">		&#123;</div><div class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">flock</span> *<span class="title">param</span> = <span class="title">va_arg</span>(<span class="title">arg_list</span>,<span class="title">struct</span> <span class="title">flock</span> *);</span></div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_SETLK:</div><div class="line">		&#123;</div><div class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">flock</span> *<span class="title">param</span> = <span class="title">va_arg</span>(<span class="title">arg_list</span>,<span class="title">struct</span> <span class="title">flock</span> *);</span></div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_SETLKW:</div><div class="line">		&#123;</div><div class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">flock</span> *<span class="title">param</span> = <span class="title">va_arg</span>(<span class="title">arg_list</span>,<span class="title">struct</span> <span class="title">flock</span> *);</span></div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	va_end( arg_list );</div><div class="line"></div><div class="line">	<span class="keyword">return</span> ret;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">int</span> old = fcntl(STDIN_FILENO, F_GETFL);</div><div class="line">	<span class="built_in">printf</span> (<span class="string">"old:%d\n"</span>, old);</div><div class="line"></div><div class="line">	fcntl(STDIN_FILENO, F_SETFL, old);</div><div class="line"></div><div class="line">	<span class="keyword">int</span> _new = fcntl(STDIN_FILENO, F_GETFL);</div><div class="line">	<span class="built_in">printf</span> (<span class="string">"new:%d\n"</span>, _new);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Unix系统调用hook函数以及使用dl库实现&quot;&gt;&lt;a href=&quot;#Unix系统调用hook函数以及使用dl库实现&quot; class=&quot;headerlink&quot; title=&quot;Unix系统调用hook函数以及使用dl库实现&quot;&gt;&lt;/a&gt;Unix系统调用hook函数以及使
+    
+    </summary>
+    
+      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
+    
+      <category term="dlopen" scheme="http://yoursite.com/tags/dlopen/"/>
+    
+      <category term="dlsym" scheme="http://yoursite.com/tags/dlsym/"/>
+    
+      <category term="动态链接库" scheme="http://yoursite.com/tags/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93/"/>
+    
+      <category term="钩子" scheme="http://yoursite.com/tags/%E9%92%A9%E5%AD%90/"/>
+    
+      <category term="hook" scheme="http://yoursite.com/tags/hook/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Linux中dlfcn库相关学习.md</title>
     <link href="http://yoursite.com/2017/10/16/Unix%E4%B8%ADdl%E5%BA%93%E5%AD%A6%E4%B9%A0/"/>
     <id>http://yoursite.com/2017/10/16/Unix中dl库学习/</id>
     <published>2017-10-16T08:30:08.000Z</published>
-    <updated>2017-10-16T08:47:11.916Z</updated>
+    <updated>2017-10-16T08:47:35.412Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Linux中dlfcn库相关学习"><a href="#Linux中dlfcn库相关学习" class="headerlink" title="Linux中dlfcn库相关学习"></a>Linux中dlfcn库相关学习</h1><p>在linux中静态链接库和动态链接库是进程之间代码共享的两种方式。Linux在<dlfnc.h>库中提供了加载和处理动态连接库的系统调用,使用非常方便。具体用法如下:</dlfnc.h></p>
 <h2 id="dlfcn库中函数说明"><a href="#dlfcn库中函数说明" class="headerlink" title="dlfcn库中函数说明"></a>dlfcn库中函数说明</h2><p>dlfcn库中主要包括四个函数:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>*, <span class="keyword">int</span> flag)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span>* <span class="title">dlerror</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlsym</span><span class="params">(<span class="keyword">void</span>* handler, <span class="keyword">char</span>* symbol)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dlclose</span><span class="params">(<span class="keyword">void</span>* handler)</span></span>;</div></pre></td></tr></table></figure></p>
@@ -1411,34 +1450,6 @@
       <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
     
       <category term="ls" scheme="http://yoursite.com/tags/ls/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>查找含有特定字符串的文件</title>
-    <link href="http://yoursite.com/2017/08/20/Linux%E6%9F%A5%E6%89%BE%E5%90%AB%E6%9C%89%E7%89%B9%E5%AE%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%96%87%E4%BB%B6/"/>
-    <id>http://yoursite.com/2017/08/20/Linux查找含有特定字符串的文件/</id>
-    <published>2017-08-20T06:25:01.000Z</published>
-    <updated>2017-08-20T06:40:10.997Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Linux查找含有特定字符串的文件"><a href="#Linux查找含有特定字符串的文件" class="headerlink" title="Linux查找含有特定字符串的文件"></a>Linux查找含有特定字符串的文件</h1><p>Linux查找含有特定字符串的文件命令为grep。以下为详细的使用方法</p>
-<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><h3 id="Linux命令"><a href="#Linux命令" class="headerlink" title="Linux命令:"></a>Linux命令:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">grep [OPTIONS] PATTERN [FILE...]</div><div class="line"></div><div class="line">#实例:递归查找当前文件夹下所有含有test的文件，并显示行号</div><div class="line">grep -rn &quot;test&quot; *</div></pre></td></tr></table></figure>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">-r      递归查找</div><div class="line">-n      显示行号</div><div class="line">-i      忽略大小写</div><div class="line">-w      只匹配整个单词，而不是字符串的字部分(如pattern为&quot;test&quot;, 不匹配&quot;test1&quot;或&quot;atest&quot;)</div><div class="line">-C num  显示匹配到的行上下n行  </div><div class="line">-l      只列出匹配成功的文件名</div><div class="line">-L      列出不匹配的文件名</div><div class="line">\&lt;      标注单词的开头</div><div class="line">\&gt;      标注单词的结尾</div><div class="line">^       指匹配字符串在行首</div><div class="line">$       指匹配字符串在行尾</div></pre></td></tr></table></figure>
-<h3 id="常用实例"><a href="#常用实例" class="headerlink" title="常用实例"></a>常用实例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#显示匹配pattern1或pattern2的行</div><div class="line">grep pattern1 | pattern2 file</div><div class="line"># 显示即匹配pattern1又匹配pattern2的行</div><div class="line">grep pattern1 file | grep pattern2</div><div class="line">#只匹配test或testA，不匹配Atest</div><div class="line">grep &quot;\&lt;man&quot; *</div><div class="line">#只匹配test或Atest，不匹配testA</div><div class="line">grep &quot;man\&gt;&quot; *</div><div class="line">#只匹配test　不匹配testA和Atest</div><div class="line">grep &quot;\&lt;test\&gt;&quot; *</div><div class="line"></div><div class="line">#匹配行首为test的行:</div><div class="line">grep -rn &quot;^test&quot; *</div><div class="line">#匹配行尾为test的行</div><div class="line">grep -rn &quot;test$&quot; *</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Linux查找含有特定字符串的文件&quot;&gt;&lt;a href=&quot;#Linux查找含有特定字符串的文件&quot; class=&quot;headerlink&quot; title=&quot;Linux查找含有特定字符串的文件&quot;&gt;&lt;/a&gt;Linux查找含有特定字符串的文件&lt;/h1&gt;&lt;p&gt;Linux查找含有特
-    
-    </summary>
-    
-      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
-    
-      <category term="grep" scheme="http://yoursite.com/tags/grep/"/>
     
   </entry>
   
