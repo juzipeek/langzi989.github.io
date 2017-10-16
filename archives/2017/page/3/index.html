@@ -216,6 +216,140 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/07/17/C中编码问题/">
+                            C中编码问题
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-07-17T14:40:31+08:00">
+	
+		    7月 17, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-学习/">C++学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C中编码问题"><a href="#C中编码问题" class="headerlink" title="C中编码问题"></a>C中编码问题</h1><h2 id="编码介绍"><a href="#编码介绍" class="headerlink" title="编码介绍"></a>编码介绍</h2><p>在代码中我们通常不可避免的出现一些中文，这个时候我们就要考虑到中文的编码格式，如果不注意可能会导致乱码或者信息失真等问题。我们常用的中文编码有GBK,gb2312,Unicode等等。具体详细的介绍看下面几篇文章：</p>
+<ul>
+<li><a href="http://www.cnblogs.com/lizhenghn/p/3690406.html" target="_blank" rel="external">http://www.cnblogs.com/lizhenghn/p/3690406.html</a></li>
+<li><a href="http://docs.linuxtone.org/ebooks/C&amp;CPP/c/apas03.html" target="_blank" rel="external">http://docs.linuxtone.org/ebooks/C&amp;CPP/c/apas03.html</a></li>
+</ul>
+<h2 id="C语言编码转换"><a href="#C语言编码转换" class="headerlink" title="C语言编码转换"></a>C语言编码转换</h2><p>在C语言中，如果需要讲编码进行转换，可以使用iconv系列函数。<br>头文件以及常用函数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iconv.h&gt;</span></span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">void</span>* <span class="keyword">iconv_t</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> iconv_t <span class="title">iconv_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* to_code, <span class="keyword">const</span> <span class="keyword">char</span>* from_code)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">iconv_close</span><span class="params">(<span class="keyword">iconv_t</span> cd)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="iconv-open"><a href="#iconv-open" class="headerlink" title="iconv_open"></a>iconv_open</h3><h4 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h4><p>此函数说明将要进行哪两种编码的转换，并返回一个转化句柄。</p>
+<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
+<li>tocode:目标编码</li>
+<li>fromcode : 原编码</li>
+</ul>
+<h3 id="iconv"><a href="#iconv" class="headerlink" title="iconv"></a>iconv</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div></pre></td></tr></table></figure>
+<h4 id="函数说明-1"><a href="#函数说明-1" class="headerlink" title="函数说明"></a>函数说明</h4><p>此函数用于从inbuf中读取数据并将转换到指定编码的的数据输出到outbuf中，若转换成功，则输出本次转化的字节数，否则返回sizeof_t(-1)</p>
+<h4 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
+<li>cd : 转换描述符,由iconv_open获得</li>
+<li>inbuf:输入缓冲区</li>
+<li>in_left_buf :输入缓冲区还未转换的字符数</li>
+<li>outbuf : 输出缓冲区</li>
+<li>out_len_buf:输出缓冲区的剩余空间.</li>
+</ul>
+<h3 id="iconv-close"><a href="#iconv-close" class="headerlink" title="iconv_close"></a>iconv_close</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">iconv_close</span><span class="params">(<span class="keyword">iconv_t</span> cd)</span></span>;</div></pre></td></tr></table></figure>
+<p>用于关闭iconv_open打开的文件描述符</p>
+<h2 id="举例转换函数"><a href="#举例转换函数" class="headerlink" title="举例转换函数"></a>举例转换函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iconv.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="built_in">string</span> <span class="title">convertCode</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; p_str, <span class="keyword">const</span> <span class="keyword">char</span>* from, <span class="keyword">const</span> <span class="keyword">char</span>* to)</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span> * <span class="built_in">sin</span>, * sout;</div><div class="line">  <span class="keyword">int</span> lenin, lenout, ret;</div><div class="line">  <span class="keyword">const</span> <span class="keyword">int</span> BUF_LEN = <span class="number">10240</span>;</div><div class="line">  <span class="keyword">char</span> bufOut[BUF_LEN];</div><div class="line">  <span class="function"><span class="built_in">string</span> <span class="title">result</span><span class="params">(<span class="string">""</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">memset</span>(bufOut, <span class="number">0x0</span>, <span class="keyword">sizeof</span>(bufOut));</div><div class="line"></div><div class="line"></div><div class="line">  <span class="keyword">iconv_t</span> cd;</div><div class="line">  <span class="keyword">if</span> ((cd = iconv_open(to, from)) == (<span class="keyword">iconv_t</span>)(<span class="number">-1</span>)) &#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"open iconv error"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span> <span class="string">""</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  lenin = p_str.length();</div><div class="line">  lenout = BUF_LEN;</div><div class="line"></div><div class="line">  <span class="built_in">sin</span> = (<span class="keyword">char</span>*)p_str.c_str();</div><div class="line">  sout = bufOut;</div><div class="line"><span class="comment">//  std::cout &lt;&lt; sin &lt;&lt; std::endl;</span></div><div class="line">  <span class="comment">//std::cout &lt;&lt; lenin &lt;&lt; std::endl;</span></div><div class="line">  <span class="comment">//std::cout &lt;&lt; lenout &lt;&lt; std::endl;</span></div><div class="line"></div><div class="line">  ret = iconv(cd, &amp;<span class="built_in">sin</span>, <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span> * &gt;(&amp;lenin), &amp;sout, <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span> * &gt;(&amp;lenout));</div><div class="line"></div><div class="line">  <span class="comment">//errno:84:Invalid or incomplate multibyte or wide character</span></div><div class="line">  <span class="keyword">if</span> (<span class="number">-1</span> == ret) &#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; strerror(errno) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">if</span> (errno != <span class="number">84</span>) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="string">""</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"bufout:"</span> &lt;&lt; bufOut &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"bufout end"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  iconv_close(cd);</div><div class="line"></div><div class="line">  result.assign(bufOut, BUF_LEN - lenout);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> result;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> s = <span class="string">"哈哈"</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; s.length() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  s = convertCode(s, <span class="string">"gbk"</span>, <span class="string">"utf-8//IGNORE"</span>);</div><div class="line">  <span class="comment">//std::cout &lt;&lt; s &lt;&lt; std::endl;</span></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; s.length() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="iconv函数出现段错误的原因"><a href="#iconv函数出现段错误的原因" class="headerlink" title="iconv函数出现段错误的原因"></a>iconv函数出现段错误的原因</h2><p>使用iconv函数进行转换的时候可能会出现段错误，这里出现这个错误的主要原因是注意看iconv函数的函数原型:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>长度为size_t的指针，<strong>int指针转换为size_t指针在一些系统的转换过程会出现问题</strong>，导致长度出现错误，内存越界，出现段错误。错误信息如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Program received signal SIGSEGV, Segmentation fault.</div><div class="line">from_gbk (irreversible=0x7fffffffb188, outend=0x61d7c0 &quot;&quot;, outptrp=&lt;synthetic pointer&gt;,</div><div class="line">    inend=0xa7ffffffdb76 &lt;error: Cannot access memory at address 0xa7ffffffdb76&gt;,</div><div class="line">    inptrp=0x7fffffffb2e8, step_data=0x6157d0, step=0x615030) at ../iconv/loop.c:325</div><div class="line">325	../iconv/loop.c: No such file or directory.</div></pre></td></tr></table></figure>
+<h3 id="size-t与int类型"><a href="#size-t与int类型" class="headerlink" title="size_t与int类型"></a>size_t与int类型</h3><p>size_t类型是在stddef.h文件中定义。size_t的类型与操作系统相关，在32位架构中被普遍定义为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">size_t</span>;</div></pre></td></tr></table></figure></p>
+<p>在64为机器中被定义为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">size_t</span>;</div></pre></td></tr></table></figure></p>
+<p>int类型在32和64为机器上的长度都是4位，long在32位机器为4位，在64位机器为8位。所以在64为机器上,size_t和int指针转换的过程中一定会出现问题，在32为系统中的正整数指针不会指针，但是负整数也会出现问题。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/07/17/C中编码问题/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/07/15/C++中find_if查找vector中的特定struct以及值域查询/">
+                            C++中find_if查找vector中的特定struct以及值域查询
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-07-15T17:47:20+08:00">
+	
+		    7月 15, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C-中find-if查找vector中的特定struct以及值域查询"><a href="#C-中find-if查找vector中的特定struct以及值域查询" class="headerlink" title="C++中find_if查找vector中的特定struct以及值域查询"></a>C++中find_if查找vector中的特定struct以及值域查询</h1><p>由于struct不是C++中的内置类型所以不能用std::find直接查找，而且find函数不能满足值域的查询。这个时候需要使用find_if来进行查询。</p>
+<h2 id="find-if函数"><a href="#find-if函数" class="headerlink" title="find_if函数"></a>find_if函数</h2><p>find_if是一个模板函数，函数原型及函数定义：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">InputIterator</span>, <span class="title">class</span> <span class="title">Predicate</span>&gt;</span></div><div class="line"><span class="title">InputIterator</span> <span class="title">find_if</span>(<span class="title">InputIterator</span> <span class="title">first</span>, <span class="title">InputIterator</span> <span class="title">end</span>, <span class="title">Predicate</span> <span class="title">pred</span>) &#123;</div><div class="line">  <span class="keyword">while</span> (first != last &amp;&amp; !pred(*first)) ++first;</div><div class="line">  <span class="keyword">return</span> first;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
+<li>first : 起始迭代器</li>
+<li>end :   结束迭代器</li>
+<li>pred : 用于比较数值的函数或者函数对象(仿函数)。遍历条件即为pred()为真.</li>
+</ul>
+<h3 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h3><p>若有满足pred条件的元素，返回该元素的迭代器，否则返回end.</p>
+<h3 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h3><p>该函数最重要的环节是pred，它的<strong>核心环节是重载()运算符，因为每个容器迭代器的*运算符得到的结果都是该容器的value_type的值，所以改重载函数的参数类型是value_type的引用类型</strong>。</p>
+<h2 id="find-if函数应用"><a href="#find-if函数应用" class="headerlink" title="find_if函数应用"></a>find_if函数应用</h2><p>在struct的vector中查找特定的对象.<strong>特别注意的是：仿函数的参数类型是值的const引用，但是finder的构造参数是实际要比较的值的类型，在使用过程中,向构造函数中传的值是要比较的值。</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">book</span>&#123;</span></div><div class="line">	<span class="keyword">int</span> m_iID;</div><div class="line">	<span class="built_in">string</span> m_strName;</div><div class="line"></div><div class="line">	book(<span class="keyword">int</span> t_id, <span class="built_in">string</span> t_name):m_iID(t_id), m_strName(t_name) &#123;&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">book_finder</span>&#123;</span></div><div class="line">	<span class="keyword">int</span> m_iID;</div><div class="line">	book_finder(<span class="keyword">int</span> t_id):m_iID(t_id) &#123;&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> book&amp; t)</span> </span>&#123;<span class="keyword">return</span> t.m_iID == m_iID;&#125;</div><div class="line">&#125;;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="built_in">vector</span>&lt;book&gt; bookVc;</div><div class="line">	<span class="function">book <span class="title">book1</span><span class="params">(<span class="number">0</span>, <span class="string">"书0"</span>)</span></span>;</div><div class="line">	<span class="function">book <span class="title">book2</span><span class="params">(<span class="number">1</span>, <span class="string">"书1"</span>)</span></span>;</div><div class="line">	<span class="function">book <span class="title">book3</span><span class="params">(<span class="number">2</span>, <span class="string">"书2"</span>)</span></span>;</div><div class="line">	<span class="function">book <span class="title">book4</span><span class="params">(<span class="number">3</span>, <span class="string">"书3"</span>)</span></span>;</div><div class="line"></div><div class="line">	bookVc.push_back(book1);</div><div class="line">	bookVc.push_back(book2);</div><div class="line">	bookVc.push_back(book3);</div><div class="line">	bookVc.push_back(book4);</div><div class="line"></div><div class="line">	<span class="function">book <span class="title">target</span><span class="params">(<span class="number">1</span>, <span class="string">"书"</span>)</span></span>;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (<span class="built_in">std</span>::find_if(bookVc.begin(), bookVc.end(), book_finder(target.m_iID)) != bookVc.end()) &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"存在1"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"不存在1"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	target.m_iID = <span class="number">10</span>;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (<span class="built_in">std</span>::find_if(bookVc.begin(), bookVc.end(), book_finder(target.m_iID)) != bookVc.end()) &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"存在10"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"不存在10"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/07/15/C++中find_if查找vector中的特定struct以及值域查询/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/06/21/rapidjson创建型/">
                             rapidjson创建型
                         </a>
@@ -860,6 +994,7 @@
 <p>上述type1(int,c)将被替换为：int name_int_type<br>上述type2(int,c)将被替换为：int c_int_type</p>
 <p>故我们再回去看<strong>SOCKADDR_COMMON的宏定义.
 </strong>SOCKADDR<em>COMMON (sin</em>);将被解释为sa_family_t sin_family;</p>
+<h2 id="注意在函数参数中使用-可以将空字符串过滤掉，否则会出现问题。如"><a href="#注意在函数参数中使用-可以将空字符串过滤掉，否则会出现问题。如" class="headerlink" title="注意在函数参数中使用##可以将空字符串过滤掉，否则会出现问题。如:"></a>注意在函数参数中使用##可以将空字符串过滤掉，否则会出现问题。如:</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_get_args_cnt( ... ) comac_arg_n( __VA_ARGS__ )</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_arg_n( _0,_1,_2,_3,_4,_5,_6,_7,N,...) N</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_args_seqs() 7,6,5,4,3,2,1,0</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_join_1( x,y ) x##y</span></div><div class="line"></div><div class="line"><span class="comment">//计算可变参数...中参数的个数.注意由于seq的范围为7-0，该宏可识别的参数个数的范围为0-7个。超过7个参数识别有问题</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_argc( ... ) comac_get_args_cnt( 0,##__VA_ARGS__,comac_args_seqs() )</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="comment">//若上述comac_get_cnt中的__VA_ARGS__去掉##,结果为1,加上为0。</span></div><div class="line">  comac_argc();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="详解-1"><a href="#详解-1" class="headerlink" title="#详解"></a>#详解</h2><p>在宏定义中,#符号的作用是将宏定义参数用””括起来,<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> example(test) printf(<span class="meta-string">"%s"</span>, #test);</span></div><div class="line">example(<span class="number">123</span> <span class="number">456</span>); <span class="comment">//printf("%s", "123 456");</span></div></pre></td></tr></table></figure></p>
 <h2 id="宏定义中占位符理解"><a href="#宏定义中占位符理解" class="headerlink" title="宏定义中占位符理解"></a>宏定义中占位符理解</h2><p>在宏定义中我们可以使用字母或者单词作为占位符,初次之外，我们也可以使用_1,_2作为占位符，不要被它蒙骗了，其作用与单词作为占位符相同。如:</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> sum(a,b) (a+b)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> sum(_1,_2) (_1+_2)<span class="comment">//作用同上</span></span></div></pre></td></tr></table></figure>
@@ -870,173 +1005,6 @@
                     
                         <p>
                             <a href="/2017/06/11/C语言宏定义相关/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/07/protoBuffer中string与byte类型区别/">
-                            protobuffer中string和bytes类型
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-06-07T18:04:59+08:00">
-	
-		    6月 07, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/序列化与反序列化/">序列化与反序列化</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="protobuffer中string和bytes类型"><a href="#protobuffer中string和bytes类型" class="headerlink" title="protobuffer中string和bytes类型"></a>protobuffer中string和bytes类型</h1><p>从上一节protobuffer的介绍中我们知道字符串类型在protobuffer中有string和bytes两种类型，那这两种类型有什么区别呢,什么时候用string,什么时候用bytes。在C++中两种类型分别对应的是什么类型.下面将揭开迷雾</p>
-<h2 id="string与bytes区别"><a href="#string与bytes区别" class="headerlink" title="string与bytes区别"></a>string与bytes区别</h2><p>按照经验我们知道bytes一般适用于存储二进制数据的，但在C++中,string既可以存储ASCII文本字符串，也能存储任意多个\0的二进制序列，那两者的区别在哪里呢？</p>
-<ul>
-<li>string类型（protobuffer中的string，与C++区别开）不能存储非法的UTF-8字符，如果遇到该字符，序列化的时候将会出错。</li>
-</ul>
-<blockquote>
-<p>[libprotobuf ERROR google/protobuf/wire_format.cc:1091] String field ‘str’ contains invalid UTF-8 data when serializing a protocol buffer. Use the ‘bytes’ type if you intend to send raw bytes.</p>
-</blockquote>
-<p>###出现上述错误的原因<br>这里从ProtoBuf的源码进行分析。protoBuf在序列化的过程中，都会调用SerializeFieldWithCachedSizes这个函数。我们看一下序列化string和bytes在序列化过程中的区别。</p>
-<p>对于<strong>string</strong>类型：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> FieldDescriptor::TYPE_STRING: &#123;</div><div class="line">  <span class="built_in">string</span> scratch;</div><div class="line">  <span class="keyword">const</span> <span class="built_in">string</span>&amp; value = field-&gt;is_repeated() ?</div><div class="line">    message_reflection-&gt;GetRepeatedStringReference(</div><div class="line">      message, field, j, &amp;scratch) :</div><div class="line">    message_reflection-&gt;GetStringReference(message, field, &amp;scratch);</div><div class="line">  VerifyUTF8StringNamedField(value.data(), value.length(), SERIALIZE,</div><div class="line">                             field-&gt;name().c_str());</div><div class="line">  WireFormatLite::WriteString(field-&gt;number(), value, output);</div><div class="line">  <span class="keyword">break</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>对于<strong>bytes</strong>类型：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> FieldDescriptor::TYPE_BYTES: &#123;</div><div class="line">        <span class="built_in">string</span> scratch;</div><div class="line">        <span class="keyword">const</span> <span class="built_in">string</span>&amp; value = field-&gt;is_repeated() ?</div><div class="line">          message_reflection-&gt;GetRepeatedStringReference(</div><div class="line">            message, field, j, &amp;scratch) :</div><div class="line">          message_reflection-&gt;GetStringReference(message, field, &amp;scratch);</div><div class="line">        WireFormatLite::WriteBytes(field-&gt;number(), value, output);</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>从上面可以看到，序列化string和bytes的区别主要在于:<strong>string类型序列化调用了VerifyUTF8StringNamedField函数检验string中是否有非法的UTF-8字符</strong>。其中VerifyUTF8StringNamedField实现如下：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> WireFormat::VerifyUTF8StringFallback(<span class="keyword">const</span> <span class="keyword">char</span>* data,</div><div class="line">                                          <span class="keyword">int</span> size,</div><div class="line">                                          Operation op,</div><div class="line">                                          <span class="keyword">const</span> <span class="keyword">char</span>* field_name) &#123;</div><div class="line">  <span class="keyword">if</span> (!IsStructurallyValidUTF8(data, size)) &#123;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* operation_str = <span class="literal">NULL</span>;</div><div class="line">    <span class="keyword">switch</span> (op) &#123;</div><div class="line">      <span class="keyword">case</span> PARSE:</div><div class="line">        operation_str = <span class="string">"parsing"</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="keyword">case</span> SERIALIZE:</div><div class="line">        operation_str = <span class="string">"serializing"</span>;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">      <span class="comment">// no default case: have the compiler warn if a case is not covered.</span></div><div class="line">    &#125;</div><div class="line">    <span class="built_in">string</span> quoted_field_name = <span class="string">""</span>;</div><div class="line">    <span class="keyword">if</span> (field_name != <span class="literal">NULL</span>) &#123;</div><div class="line">      quoted_field_name = StringPrintf(<span class="string">" '%s'"</span>, field_name);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// no space below to avoid double space when the field name is missing.</span></div><div class="line">    GOOGLE_LOG(ERROR) &lt;&lt; <span class="string">"String field"</span> &lt;&lt; quoted_field_name &lt;&lt; <span class="string">" contains invalid "</span></div><div class="line">               &lt;&lt; <span class="string">"UTF-8 data when "</span> &lt;&lt; operation_str &lt;&lt; <span class="string">" a protocol "</span></div><div class="line">               &lt;&lt; <span class="string">"buffer. Use the 'bytes' type if you intend to send raw "</span></div><div class="line">               &lt;&lt; <span class="string">"bytes. "</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="string和bytes类型在C-和Java中的区别"><a href="#string和bytes类型在C-和Java中的区别" class="headerlink" title="string和bytes类型在C++和Java中的区别"></a>string和bytes类型在C++和Java中的区别</h2><p>protobuf类型在C++和java中的类型对应如下：</p>
-<ul>
-<li>在C++中，string和bytes的实现都是std::string类型。</li>
-<li>在Java中string和bytes类型的实现分别是String和ByteString。</li>
-</ul>
-<p><strong>为什么bytes类型可以描述string类型，还需要string呢？</strong></p>
-<p>根据论坛上说的，string类型在Java中有较多的API可供使用，而bytes较少，所以能定义为string的尽量定义为string，如果字段值确定或者可能含有非法的utf-8编码，则使用bytes类型。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/06/07/protoBuffer中string与byte类型区别/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/04/linux正则表达式库/">
-                            Linux Regex正则表达式库
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-06-04T17:08:00+08:00">
-	
-		    6月 04, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux-Regex正则表达式库"><a href="#Linux-Regex正则表达式库" class="headerlink" title="Linux Regex正则表达式库"></a>Linux Regex正则表达式库</h1><p>标准的C/C++库不支持正则表达式。在Posix函数库中包含了<regex.h>正则表达式库。</regex.h></p>
-<p>##　正则表达式匹配框架</p>
-<p>标准的正则表达式匹配框架：</p>
-<ul>
-<li>编译正则表达式.</li>
-<li>匹配正则表达式.</li>
-<li>释放正则表达式.</li>
-</ul>
-<h3 id="编译正则表达式"><a href="#编译正则表达式" class="headerlink" title="编译正则表达式"></a>编译正则表达式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;regex.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">Regcomp</span><span class="params">(<span class="keyword">regex_t</span>* preg, <span class="keyword">const</span> <span class="keyword">char</span>* regex, <span class="keyword">int</span> cflags)</span></span>;</div></pre></td></tr></table></figure>
-<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
-<li>preg : 用来保存编译之后的结果</li>
-<li>regex :　正则表达式字符串，表示被编译的正则表达式。</li>
-<li>cflags : 编译控制参数<ul>
-<li>REG_EXTENDED : 使用扩展正则表达式模式</li>
-<li>REG_ICASE　:　对规则中字符串不区分大小写</li>
-<li>REG_NOSUB : 只检查是否有符合规则的子串。</li>
-</ul>
-</li>
-</ul>
-<h4 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h4><p>编译成功返回0,否则返回非0</p>
-<h3 id="匹配正则表达式"><a href="#匹配正则表达式" class="headerlink" title="匹配正则表达式"></a>匹配正则表达式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></div><div class="line">  <span class="keyword">regoff_t</span> rm_so;</div><div class="line">  <span class="keyword">regoff_t</span> rm_eo;</div><div class="line">&#125; <span class="keyword">regmatch_t</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">regexec</span><span class="params">(<span class="keyword">const</span> <span class="keyword">regex_t</span>* preg,</span></span></div><div class="line">            <span class="keyword">const</span> <span class="keyword">char</span>* <span class="built_in">string</span>,</div><div class="line">            <span class="keyword">size_t</span> nmatch,</div><div class="line">            <span class="keyword">regmatch_t</span> pmatch[],</div><div class="line">            <span class="keyword">int</span> eflags);</div></pre></td></tr></table></figure>
-<h4 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
-<li>preg : 上述编译之后的正则表达式regex_t指针。</li>
-<li>string : 被匹配的字符串。</li>
-<li>match :　被匹配的个数。告诉函数regexec最多可以把多少个匹配结果写入pmatch，一般为pmatch数组的长度。</li>
-<li>pmatch : 匹配结果数组。<ul>
-<li>rm_so : 满足子串在string中的起始偏移量</li>
-<li>rm_eo : 满足子串在string中的结束偏移量</li>
-</ul>
-</li>
-<li>eflags : 匹配的特性<ul>
-<li>REG_NOTBOL : 是否为第一行</li>
-<li>REG_NOTEOL : 是否是最后一行</li>
-</ul>
-</li>
-</ul>
-<h4 id="返回值-1"><a href="#返回值-1" class="headerlink" title="返回值"></a>返回值</h4><p>0表示匹配成功，1表示REG_NOMATCH。</p>
-<h3 id="报错信息"><a href="#报错信息" class="headerlink" title="报错信息"></a>报错信息</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">size_t</span> regerror(<span class="keyword">int</span> errcode, <span class="keyword">const</span> <span class="keyword">regex_t</span>* preg, <span class="keyword">char</span>* buf, <span class="keyword">size_t</span> buffer_size);</div></pre></td></tr></table></figure>
-<h4 id="参数说明-2"><a href="#参数说明-2" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
-<li>errcode : 来自regcomp和regexec的错误码。</li>
-<li>preg : 编译后的正则表达式</li>
-<li>buf : 缓冲区错误信息字符串</li>
-<li>buffer_size : 缓冲区最大长度。</li>
-</ul>
-<h3 id="释放正则表达式"><a href="#释放正则表达式" class="headerlink" title="释放正则表达式"></a>释放正则表达式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//释放reget_t指针，无返回值。</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">regfree</span><span class="params">(<span class="keyword">reget_t</span>* preg)</span></span>;</div></pre></td></tr></table></figure>
-<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;regex.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">regex_t</span> preg;</div><div class="line">	<span class="keyword">int</span> iErr = <span class="number">0</span>;</div><div class="line">	<span class="keyword">regmatch_t</span> subs[<span class="number">256</span>];</div><div class="line">	<span class="keyword">char</span> acReg[] = <span class="string">"[0-9a-zA-Z]+$"</span>;</div><div class="line"></div><div class="line">	iErr = regcomp(&amp;preg, acReg, REG_EXTENDED);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (iErr) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"compile reg error\n"</span>);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	iErr = regexec(&amp;preg, <span class="string">"12345"</span>, <span class="number">256</span>, subs, <span class="number">0</span>);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (REG_NOMATCH == iErr) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"no match\n"</span>);</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"match\n"</span>);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>参考资料:</p>
-<ul>
-<li><a href="http://crocodile.blog.51cto.com/2691566/967202" target="_blank" rel="external">http://crocodile.blog.51cto.com/2691566/967202</a></li>
-<li><a href="http://crocodile.blog.51cto.com/2691566/967202" target="_blank" rel="external">http://crocodile.blog.51cto.com/2691566/967202</a></li>
-<li><a href="http://crocodile.blog.51cto.com/2691566/967202" target="_blank" rel="external">http://crocodile.blog.51cto.com/2691566/967202</a></li>
-</ul>
-</blockquote>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/06/04/linux正则表达式库/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

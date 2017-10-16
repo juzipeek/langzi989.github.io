@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-10-09T08:17:37.544Z</updated>
+  <updated>2017-10-16T08:43:15.537Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,107 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Linux中dlfcn库相关学习.md</title>
+    <link href="http://yoursite.com/2017/10/16/Unix%E4%B8%ADdl%E5%BA%93%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://yoursite.com/2017/10/16/Unix中dl库学习/</id>
+    <published>2017-10-16T08:30:08.000Z</published>
+    <updated>2017-10-16T08:43:15.537Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Linux中dlfcn库相关学习"><a href="#Linux中dlfcn库相关学习" class="headerlink" title="Linux中dlfcn库相关学习"></a>Linux中dlfcn库相关学习</h1><p>在linux中静态链接库和动态链接库是进程之间代码共享的两种方式。Linux在<dlfnc.h>库中提供了加载和处理动态连接库的系统调用,使用非常方便。具体用法如下:</dlfnc.h></p>
+<h2 id="dlfcn库中函数说明"><a href="#dlfcn库中函数说明" class="headerlink" title="dlfcn库中函数说明"></a>dlfcn库中函数说明</h2><p>dlfcn库中主要包括四个函数:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>*, <span class="keyword">int</span> flag)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span>* <span class="title">dlerror</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlsym</span><span class="params">(<span class="keyword">void</span>* handler, <span class="keyword">char</span>* symbol)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dlclose</span><span class="params">(<span class="keyword">void</span>* handler)</span></span>;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>dlopen : 打开一个动态连接库，并返回一个类型为void*的handler</li>
+<li>dlerror : 返回dl操作的错误，若没有出现错误，则返回NUlL，否则打印错误信息</li>
+<li>dlsym : 查找动态链接库中的符号symbol,并返回该符号所在的地址</li>
+<li>dlclose : 关闭动态链接库句柄</li>
+</ul>
+<h2 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h2><p>动态链接库cal.cpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//cal.cpp</span></div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a - b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mul</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a * b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">div</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a / b;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>生成动态链接库libcal.so<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ -shared -fPIC cal.cpp libcal.so</div></pre></td></tr></table></figure></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//main.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> LIB_LIBRARY_PATH_1 <span class="meta-string">"./libcal.so"</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*CAC_FUNC)</span><span class="params">(<span class="keyword">int</span> ,<span class="keyword">int</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">void</span>* handler = <span class="literal">NULL</span>;</div><div class="line">	<span class="keyword">char</span>* error = <span class="literal">NULL</span>;</div><div class="line">	CAC_FUNC cac_func = <span class="literal">NULL</span>;</div><div class="line"></div><div class="line">	handler = dlopen(LIB_LIBRARY_PATH_1, RTLD_LAZY);</div><div class="line">	<span class="keyword">if</span> (!handler) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s\n"</span>, dlerror());</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	dlerror();</div><div class="line"></div><div class="line">  <span class="comment">//此处取对应函数地址,</span></div><div class="line">	*(<span class="keyword">void</span> **) (&amp;cac_func) = dlsym(handler, <span class="string">"add"</span>);</div><div class="line">	<span class="keyword">if</span> ((error = dlerror()) != <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s"</span>, error);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"add:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"sub"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"sub:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"mul"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"mul:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"div"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"div:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	dlclose(handler);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编译函数main:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ main.cpp -rdynamic -ldl</div></pre></td></tr></table></figure></p>
+<p>执行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">add:3</div><div class="line">sub:-1</div><div class="line">mul:2</div><div class="line">div:0</div></pre></td></tr></table></figure></p>
+<h2 id="注意问题"><a href="#注意问题" class="headerlink" title="注意问题"></a>注意问题</h2><p><strong>特别注意，若使用c++编译动态链接库，一定要在需要使用的符号处添加extern “C”,否则会出现符号找不到的问题。即undefined symbol</strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Linux中dlfcn库相关学习&quot;&gt;&lt;a href=&quot;#Linux中dlfcn库相关学习&quot; class=&quot;headerlink&quot; title=&quot;Linux中dlfcn库相关学习&quot;&gt;&lt;/a&gt;Linux中dlfcn库相关学习&lt;/h1&gt;&lt;p&gt;在linux中静态链接库和动
+    
+    </summary>
+    
+      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
+    
+      <category term="dlopen" scheme="http://yoursite.com/tags/dlopen/"/>
+    
+      <category term="dlsym" scheme="http://yoursite.com/tags/dlsym/"/>
+    
+      <category term="动态链接库" scheme="http://yoursite.com/tags/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="http://yoursite.com/2017/10/11/AT&amp;T%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://yoursite.com/2017/10/11/AT&amp;T汇编学习/</id>
+    <published>2017-10-11T02:38:55.297Z</published>
+    <updated>2017-10-11T02:38:55.297Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="AT-amp-T汇编学习"><a href="#AT-amp-T汇编学习" class="headerlink" title="AT&amp;T汇编学习"></a>AT&amp;T汇编学习</h1><p>汇编格式主要包括Intel和AT&amp;T汇编格式两种，两种汇编语言的格式在使用上有较大的差别，我们上一章讲解的汇编格式是以intel的风格为例的,但是在Unix和Linux系统中，大部分的汇编语言采用的是AT&amp;T格式。</p>
+<blockquote>
+<p>注:本节中的实例均以i386处理器中汇编指令为例</p>
+</blockquote>
+<h2 id="AT-amp-T汇编与intel汇编格式对比"><a href="#AT-amp-T汇编与intel汇编格式对比" class="headerlink" title="AT&amp;T汇编与intel汇编格式对比"></a>AT&amp;T汇编与intel汇编格式对比</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">AT&amp;T</th>
+<th style="text-align:center">intel</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">pushl %eax</td>
+<td style="text-align:center">push eax</td>
+<td style="text-align:left">在AT&amp;T格式中，需要在寄存器前面加上%</td>
+</tr>
+<tr>
+<td style="text-align:center">pushl $1</td>
+<td style="text-align:center">push 1</td>
+<td style="text-align:left">在AT&amp;T中使用$作为前缀表示立即数操作</td>
+</tr>
+<tr>
+<td style="text-align:center">addl $1 %eax</td>
+<td style="text-align:center">add eax 1</td>
+<td style="text-align:left">AT&amp;T格式的目的操作数和源操作数的顺序与intel格式相反</td>
+</tr>
+<tr>
+<td style="text-align:center">movl val,%al</td>
+<td style="text-align:center">mov al, byte ptr val</td>
+<td style="text-align:left">AT&amp;T格式操作数的长度由操作符的最后一个字母标识,分别是(movw[word],movl(long)movb[byte])</td>
+</tr>
+<tr>
+<td style="text-align:center">section:disp(base, index, scale)</td>
+<td style="text-align:center">section:[base + index*scale + disp]</td>
+<td style="text-align:left">内存寻址方式不同</td>
+</tr>
+</tbody>
+</table>
+<h2 id="简单汇编代码分析"><a href="#简单汇编代码分析" class="headerlink" title="简单汇编代码分析"></a>简单汇编代码分析</h2><p>下面一段代码的作用是在屏幕上打印helloworld。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">.data                             # 数据段，该段的数据为初始化数据</div><div class="line">        msg: .string &quot;helloworld&quot; #定义string类型变量msg，并赋初始值helloworld</div><div class="line">        len = . - msg             #使用段的起始地址和msg地址相减的方式计算msg的长度</div><div class="line">.text                             #代码段初始位置</div><div class="line">.global _start                    #使得连接程序看得到该symbol，这样就可以在其他文件中引用</div><div class="line"></div><div class="line">_start:                 </div><div class="line">        movl    $len,%edx         #edx中存储要打印的数据的长度</div><div class="line">        movl    $msg,%ecx         #ecx中存储打印为数据内容</div><div class="line">        movl    $1,%ebx           #ebx中为文件描述符,其中1为标准输出流的文件描述符</div><div class="line">        movl    $4,%eax           #eax中为系统调用号,4表示sys_write</div><div class="line">        int     $0x80             #调用内核功能执行,此段代码执行后屏幕上打印出helloworld</div><div class="line"></div><div class="line">        movl    $0,%ebx           #0标识退出代码</div><div class="line">        movl    $1,%eax           #1为系统调用号(sys_exit)</div><div class="line">        int     $0x80             #调用内核功能运行代码</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;AT-amp-T汇编学习&quot;&gt;&lt;a href=&quot;#AT-amp-T汇编学习&quot; class=&quot;headerlink&quot; title=&quot;AT&amp;amp;T汇编学习&quot;&gt;&lt;/a&gt;AT&amp;amp;T汇编学习&lt;/h1&gt;&lt;p&gt;汇编格式主要包括Intel和AT&amp;amp;T汇编格式两种，两
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>Unix中select,poll,epoll详解</title>
@@ -220,7 +321,7 @@
     <link href="http://yoursite.com/2017/10/06/%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E4%B9%8B%E5%AF%84%E5%AD%98%E5%99%A8%E4%B8%8E%E7%AE%80%E5%8D%95%E6%8C%87%E4%BB%A4%E5%88%86%E6%9E%90/"/>
     <id>http://yoursite.com/2017/10/06/汇编基础之寄存器与简单指令分析/</id>
     <published>2017-10-06T11:00:48.000Z</published>
-    <updated>2017-10-09T13:50:39.637Z</updated>
+    <updated>2017-10-11T02:38:49.492Z</updated>
     
     <content type="html"><![CDATA[<h1 id="汇编基础之寄存器及汇编指令"><a href="#汇编基础之寄存器及汇编指令" class="headerlink" title="汇编基础之寄存器及汇编指令"></a>汇编基础之寄存器及汇编指令</h1><blockquote>
 <p>参考链接:<br><a href="http://www.cnblogs.com/technology/archive/2010/05/16/1736782.html" target="_blank" rel="external">http://www.cnblogs.com/technology/archive/2010/05/16/1736782.html</a><br><a href="http://anonymalias.github.io/2017/01/09/ucontext-theory/" target="_blank" rel="external">http://anonymalias.github.io/2017/01/09/ucontext-theory/</a></p>
@@ -270,6 +371,18 @@
 </ul>
 <p>注意:上述为16位处理其器中的寄存器的名字，在32和64位系统中，寄存器中名字有相应的变化，具体看下面(32位在前面加E,64在前面加R，64位系统的中含有16个64位的通用寄存器):</p>
 <p><img src="/images/register.png" alt=""></p>
+<h2 id="i386常用的16个寄存器"><a href="#i386常用的16个寄存器" class="headerlink" title="i386常用的16个寄存器"></a>i386常用的16个寄存器</h2><ul>
+<li>EAX、EBX、ECX、EDX这四个寄存器，主要就是用来暂时存放计算过程中所用的操作数、结果或其它信息。</li>
+<li>ESP为堆栈指针寄存，它和堆栈段寄存器SS共同决定了当前的栈指针，每当执行push,pull操作时，或者因为某些原因（如中断），CPU自动将数据入栈时，就会使用该指针来找到堆栈栈顶（或栈底）的位置，然后执行压栈、出栈的操作。系统管理软件，如操作系统会根据其分配的栈空间地址来设定这两个寄存器的值。</li>
+<li>EBP称为基址指针寄存器，它和ESP都可以与堆栈段寄存器SS联用来确定堆栈中的某一存储单元的地址，ESP用来指示段顶的偏移地址，而EBP可作为堆栈区中的一个基地址以便访问堆栈中的信息。</li>
+<li>ESI（源变址寄存器）和EDI（目的变址寄存器）一般与数据段寄存器DS联用，用来确定数据段中某一存储单元的地址。这两个变址寄存器有自动增量和自动减量的功能，可以很方便地用于变址。在串处理指令中，ESI和EDI作为隐含的源变址和目的变址寄存器时，ESI和DS联用，EDI和附加段ES联用，分别达到在数据段和附加段中寻址的目的。</li>
+<li>EIP指令指针寄存器，它用来存放代码段中的偏移地址。在程序运行的过程中，它始终指向下一条指令的首地址。它与段寄存器CS联用确定下一条指令的物理地址。当这一地址送到存储器后，控制器可以取得下一条要执行的指令，而控制器一旦取得这条指令就马上修改EIP的内容，使它始终指向下一条指令的首地址。那些跳转指令，就是通过修改EIP的值来达到相应的目的的</li>
+<li>FLAGS标志寄存器，又称PSW(program status word)，即程序状态寄存器。这一个是存放条件标志码、控制标志和系统标志的寄存器。</li>
+<li>段寄存器：一共六个，分别是CS代码段，DS数据段，ES附加段，SS堆栈段，FS以及GS这两个还是附加段。<br>EFLAGS寄存器中的IF位表示是否允许中断，为1允许，否则不允许。</li>
+<li>TR寄存器:用来指向当前任务的TSS段</li>
+<li>IDTR寄存器:用来指向当前IDT（中断表述符表或者说是中断向量表），因为在保护模式下，IDT的起始地址可以在任何位置，而不仅限于地址0。</li>
+<li>GDT和LDT : 前者是全局描述符表，位置由GDTR寄存器确定，后者是局部描述符表，位置由LDTR寄存器确定，具体使用哪一个，取决于段选择码中的TI位。</li>
+</ul>
 <h2 id="汇编指令"><a href="#汇编指令" class="headerlink" title="汇编指令"></a>汇编指令</h2><h3 id="汇编指令格式"><a href="#汇编指令格式" class="headerlink" title="汇编指令格式"></a>汇编指令格式</h3><p>汇编指令的格式如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[标号:]　指令助记符[[目的操作数][,源操作数]][;注释]</div></pre></td></tr></table></figure></p>
 <ul>
 <li>指令助记符:如MOV,ADD之类标识传送,加法。不区分大小写</li>
@@ -946,9 +1059,9 @@
       <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="signal" scheme="http://yoursite.com/tags/signal/"/>
-    
       <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
+    
+      <category term="signal" scheme="http://yoursite.com/tags/signal/"/>
     
       <category term="sigaction" scheme="http://yoursite.com/tags/sigaction/"/>
     
@@ -1272,32 +1385,6 @@
   </entry>
   
   <entry>
-    <title>Linux常用命令混淆点记录</title>
-    <link href="http://yoursite.com/2017/08/20/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"/>
-    <id>http://yoursite.com/2017/08/20/Linux常用命令/</id>
-    <published>2017-08-20T06:25:01.000Z</published>
-    <updated>2017-09-29T06:53:42.070Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Linux常用命令混淆点记录"><a href="#Linux常用命令混淆点记录" class="headerlink" title="Linux常用命令混淆点记录"></a>Linux常用命令混淆点记录</h1><h2 id="ls命令单位问题"><a href="#ls命令单位问题" class="headerlink" title="ls命令单位问题"></a>ls命令单位问题</h2><p>ls命令的<strong>默认单位为字节</strong>。<br>若使用ls时需要指定单位显示的时候，需要添加参数-h或–block-size进行操作。具体操作方法如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#-h表示human，即人可读的方式</div><div class="line">#它会按照文件的大小显示单位,</div><div class="line">#若文件小于1k，则不显示单位，表示字节</div><div class="line">#若文件大于1k但是小于1M，显示的单位为k</div><div class="line">#文件大于1M小于1G会显示单位为M，</div><div class="line">#以此类推</div><div class="line">ls -h ~/test</div><div class="line"></div><div class="line">#按照指定的单位显示</div><div class="line">#注意使用此参数需要注意一个问题。若文件小于1G</div><div class="line">ls --block-size=g ~/test    #按照单位为g显示</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;a href=&quot;#Linux常用命令混淆点记录&quot; class=&quot;headerlink&quot; title=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;/a&gt;Linux常用命令混淆点记录&lt;/h1&gt;&lt;h2 id=&quot;ls命令单位问题&quot;&gt;&lt;a href
-    
-    </summary>
-    
-      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
-    
-      <category term="ls" scheme="http://yoursite.com/tags/ls/"/>
-    
-  </entry>
-  
-  <entry>
     <title>查找含有特定字符串的文件</title>
     <link href="http://yoursite.com/2017/08/20/Linux%E6%9F%A5%E6%89%BE%E5%90%AB%E6%9C%89%E7%89%B9%E5%AE%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%96%87%E4%BB%B6/"/>
     <id>http://yoursite.com/2017/08/20/Linux查找含有特定字符串的文件/</id>
@@ -1326,92 +1413,28 @@
   </entry>
   
   <entry>
-    <title>C中编码问题</title>
-    <link href="http://yoursite.com/2017/07/17/C%E4%B8%AD%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98/"/>
-    <id>http://yoursite.com/2017/07/17/C中编码问题/</id>
-    <published>2017-07-17T06:40:31.000Z</published>
-    <updated>2017-07-17T12:20:47.012Z</updated>
+    <title>Linux常用命令混淆点记录</title>
+    <link href="http://yoursite.com/2017/08/20/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"/>
+    <id>http://yoursite.com/2017/08/20/Linux常用命令/</id>
+    <published>2017-08-20T06:25:01.000Z</published>
+    <updated>2017-09-29T06:53:42.070Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="C中编码问题"><a href="#C中编码问题" class="headerlink" title="C中编码问题"></a>C中编码问题</h1><h2 id="编码介绍"><a href="#编码介绍" class="headerlink" title="编码介绍"></a>编码介绍</h2><p>在代码中我们通常不可避免的出现一些中文，这个时候我们就要考虑到中文的编码格式，如果不注意可能会导致乱码或者信息失真等问题。我们常用的中文编码有GBK,gb2312,Unicode等等。具体详细的介绍看下面几篇文章：</p>
-<ul>
-<li><a href="http://www.cnblogs.com/lizhenghn/p/3690406.html" target="_blank" rel="external">http://www.cnblogs.com/lizhenghn/p/3690406.html</a></li>
-<li><a href="http://docs.linuxtone.org/ebooks/C&amp;CPP/c/apas03.html" target="_blank" rel="external">http://docs.linuxtone.org/ebooks/C&amp;CPP/c/apas03.html</a></li>
-</ul>
-<h2 id="C语言编码转换"><a href="#C语言编码转换" class="headerlink" title="C语言编码转换"></a>C语言编码转换</h2><p>在C语言中，如果需要讲编码进行转换，可以使用iconv系列函数。<br>头文件以及常用函数:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iconv.h&gt;</span></span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">void</span>* <span class="keyword">iconv_t</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> iconv_t <span class="title">iconv_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* to_code, <span class="keyword">const</span> <span class="keyword">char</span>* from_code)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">iconv_close</span><span class="params">(<span class="keyword">iconv_t</span> cd)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="iconv-open"><a href="#iconv-open" class="headerlink" title="iconv_open"></a>iconv_open</h3><h4 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h4><p>此函数说明将要进行哪两种编码的转换，并返回一个转化句柄。</p>
-<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
-<li>tocode:目标编码</li>
-<li>fromcode : 原编码</li>
-</ul>
-<h3 id="iconv"><a href="#iconv" class="headerlink" title="iconv"></a>iconv</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div></pre></td></tr></table></figure>
-<h4 id="函数说明-1"><a href="#函数说明-1" class="headerlink" title="函数说明"></a>函数说明</h4><p>此函数用于从inbuf中读取数据并将转换到指定编码的的数据输出到outbuf中，若转换成功，则输出本次转化的字节数，否则返回sizeof_t(-1)</p>
-<h4 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
-<li>cd : 转换描述符,由iconv_open获得</li>
-<li>inbuf:输入缓冲区</li>
-<li>in_left_buf :输入缓冲区还未转换的字符数</li>
-<li>outbuf : 输出缓冲区</li>
-<li>out_len_buf:输出缓冲区的剩余空间.</li>
-</ul>
-<h3 id="iconv-close"><a href="#iconv-close" class="headerlink" title="iconv_close"></a>iconv_close</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">iconv_close</span><span class="params">(<span class="keyword">iconv_t</span> cd)</span></span>;</div></pre></td></tr></table></figure>
-<p>用于关闭iconv_open打开的文件描述符</p>
-<h2 id="举例转换函数"><a href="#举例转换函数" class="headerlink" title="举例转换函数"></a>举例转换函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iconv.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="built_in">string</span> <span class="title">convertCode</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; p_str, <span class="keyword">const</span> <span class="keyword">char</span>* from, <span class="keyword">const</span> <span class="keyword">char</span>* to)</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span> * <span class="built_in">sin</span>, * sout;</div><div class="line">  <span class="keyword">int</span> lenin, lenout, ret;</div><div class="line">  <span class="keyword">const</span> <span class="keyword">int</span> BUF_LEN = <span class="number">10240</span>;</div><div class="line">  <span class="keyword">char</span> bufOut[BUF_LEN];</div><div class="line">  <span class="function"><span class="built_in">string</span> <span class="title">result</span><span class="params">(<span class="string">""</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">memset</span>(bufOut, <span class="number">0x0</span>, <span class="keyword">sizeof</span>(bufOut));</div><div class="line"></div><div class="line"></div><div class="line">  <span class="keyword">iconv_t</span> cd;</div><div class="line">  <span class="keyword">if</span> ((cd = iconv_open(to, from)) == (<span class="keyword">iconv_t</span>)(<span class="number">-1</span>)) &#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"open iconv error"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span> <span class="string">""</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  lenin = p_str.length();</div><div class="line">  lenout = BUF_LEN;</div><div class="line"></div><div class="line">  <span class="built_in">sin</span> = (<span class="keyword">char</span>*)p_str.c_str();</div><div class="line">  sout = bufOut;</div><div class="line"><span class="comment">//  std::cout &lt;&lt; sin &lt;&lt; std::endl;</span></div><div class="line">  <span class="comment">//std::cout &lt;&lt; lenin &lt;&lt; std::endl;</span></div><div class="line">  <span class="comment">//std::cout &lt;&lt; lenout &lt;&lt; std::endl;</span></div><div class="line"></div><div class="line">  ret = iconv(cd, &amp;<span class="built_in">sin</span>, <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span> * &gt;(&amp;lenin), &amp;sout, <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span> * &gt;(&amp;lenout));</div><div class="line"></div><div class="line">  <span class="comment">//errno:84:Invalid or incomplate multibyte or wide character</span></div><div class="line">  <span class="keyword">if</span> (<span class="number">-1</span> == ret) &#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; strerror(errno) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">if</span> (errno != <span class="number">84</span>) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="string">""</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"bufout:"</span> &lt;&lt; bufOut &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"bufout end"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  iconv_close(cd);</div><div class="line"></div><div class="line">  result.assign(bufOut, BUF_LEN - lenout);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> result;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> s = <span class="string">"哈哈"</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; s.length() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  s = convertCode(s, <span class="string">"gbk"</span>, <span class="string">"utf-8//IGNORE"</span>);</div><div class="line">  <span class="comment">//std::cout &lt;&lt; s &lt;&lt; std::endl;</span></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; s.length() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="iconv函数出现段错误的原因"><a href="#iconv函数出现段错误的原因" class="headerlink" title="iconv函数出现段错误的原因"></a>iconv函数出现段错误的原因</h2><p>使用iconv函数进行转换的时候可能会出现段错误，这里出现这个错误的主要原因是注意看iconv函数的函数原型:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div></pre></td></tr></table></figure></p>
-<p>长度为size_t的指针，<strong>int指针转换为size_t指针在一些系统的转换过程会出现问题</strong>，导致长度出现错误，内存越界，出现段错误。错误信息如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Program received signal SIGSEGV, Segmentation fault.</div><div class="line">from_gbk (irreversible=0x7fffffffb188, outend=0x61d7c0 &quot;&quot;, outptrp=&lt;synthetic pointer&gt;,</div><div class="line">    inend=0xa7ffffffdb76 &lt;error: Cannot access memory at address 0xa7ffffffdb76&gt;,</div><div class="line">    inptrp=0x7fffffffb2e8, step_data=0x6157d0, step=0x615030) at ../iconv/loop.c:325</div><div class="line">325	../iconv/loop.c: No such file or directory.</div></pre></td></tr></table></figure>
-<h3 id="size-t与int类型"><a href="#size-t与int类型" class="headerlink" title="size_t与int类型"></a>size_t与int类型</h3><p>size_t类型是在stddef.h文件中定义。size_t的类型与操作系统相关，在32位架构中被普遍定义为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">size_t</span>;</div></pre></td></tr></table></figure></p>
-<p>在64为机器中被定义为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">size_t</span>;</div></pre></td></tr></table></figure></p>
-<p>int类型在32和64为机器上的长度都是4位，long在32位机器为4位，在64位机器为8位。所以在64为机器上,size_t和int指针转换的过程中一定会出现问题，在32为系统中的正整数指针不会指针，但是负整数也会出现问题。</p>
+    <content type="html"><![CDATA[<h1 id="Linux常用命令混淆点记录"><a href="#Linux常用命令混淆点记录" class="headerlink" title="Linux常用命令混淆点记录"></a>Linux常用命令混淆点记录</h1><h2 id="ls命令单位问题"><a href="#ls命令单位问题" class="headerlink" title="ls命令单位问题"></a>ls命令单位问题</h2><p>ls命令的<strong>默认单位为字节</strong>。<br>若使用ls时需要指定单位显示的时候，需要添加参数-h或–block-size进行操作。具体操作方法如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#-h表示human，即人可读的方式</div><div class="line">#它会按照文件的大小显示单位,</div><div class="line">#若文件小于1k，则不显示单位，表示字节</div><div class="line">#若文件大于1k但是小于1M，显示的单位为k</div><div class="line">#文件大于1M小于1G会显示单位为M，</div><div class="line">#以此类推</div><div class="line">ls -h ~/test</div><div class="line"></div><div class="line">#按照指定的单位显示</div><div class="line">#注意使用此参数需要注意一个问题。若文件小于1G</div><div class="line">ls --block-size=g ~/test    #按照单位为g显示</div></pre></td></tr></table></figure>
 ]]></content>
     
     <summary type="html">
     
-      &lt;h1 id=&quot;C中编码问题&quot;&gt;&lt;a href=&quot;#C中编码问题&quot; class=&quot;headerlink&quot; title=&quot;C中编码问题&quot;&gt;&lt;/a&gt;C中编码问题&lt;/h1&gt;&lt;h2 id=&quot;编码介绍&quot;&gt;&lt;a href=&quot;#编码介绍&quot; class=&quot;headerlink&quot; title=&quot;编
+      &lt;h1 id=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;a href=&quot;#Linux常用命令混淆点记录&quot; class=&quot;headerlink&quot; title=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;/a&gt;Linux常用命令混淆点记录&lt;/h1&gt;&lt;h2 id=&quot;ls命令单位问题&quot;&gt;&lt;a href
     
     </summary>
     
-      <category term="C++学习" scheme="http://yoursite.com/categories/C-%E5%AD%A6%E4%B9%A0/"/>
+      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="C++" scheme="http://yoursite.com/tags/C/"/>
+      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
     
-      <category term="编码" scheme="http://yoursite.com/tags/%E7%BC%96%E7%A0%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>C++中find_if查找vector中的特定struct以及值域查询</title>
-    <link href="http://yoursite.com/2017/07/15/C++%E4%B8%ADfind_if%E6%9F%A5%E6%89%BEvector%E4%B8%AD%E7%9A%84%E7%89%B9%E5%AE%9Astruct%E4%BB%A5%E5%8F%8A%E5%80%BC%E5%9F%9F%E6%9F%A5%E8%AF%A2/"/>
-    <id>http://yoursite.com/2017/07/15/C++中find_if查找vector中的特定struct以及值域查询/</id>
-    <published>2017-07-15T09:47:20.000Z</published>
-    <updated>2017-07-15T10:30:01.726Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="C-中find-if查找vector中的特定struct以及值域查询"><a href="#C-中find-if查找vector中的特定struct以及值域查询" class="headerlink" title="C++中find_if查找vector中的特定struct以及值域查询"></a>C++中find_if查找vector中的特定struct以及值域查询</h1><p>由于struct不是C++中的内置类型所以不能用std::find直接查找，而且find函数不能满足值域的查询。这个时候需要使用find_if来进行查询。</p>
-<h2 id="find-if函数"><a href="#find-if函数" class="headerlink" title="find_if函数"></a>find_if函数</h2><p>find_if是一个模板函数，函数原型及函数定义：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">InputIterator</span>, <span class="title">class</span> <span class="title">Predicate</span>&gt;</span></div><div class="line"><span class="title">InputIterator</span> <span class="title">find_if</span>(<span class="title">InputIterator</span> <span class="title">first</span>, <span class="title">InputIterator</span> <span class="title">end</span>, <span class="title">Predicate</span> <span class="title">pred</span>) &#123;</div><div class="line">  <span class="keyword">while</span> (first != last &amp;&amp; !pred(*first)) ++first;</div><div class="line">  <span class="keyword">return</span> first;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
-<li>first : 起始迭代器</li>
-<li>end :   结束迭代器</li>
-<li>pred : 用于比较数值的函数或者函数对象(仿函数)。遍历条件即为pred()为真.</li>
-</ul>
-<h3 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h3><p>若有满足pred条件的元素，返回该元素的迭代器，否则返回end.</p>
-<h3 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h3><p>该函数最重要的环节是pred，它的<strong>核心环节是重载()运算符，因为每个容器迭代器的*运算符得到的结果都是该容器的value_type的值，所以改重载函数的参数类型是value_type的引用类型</strong>。</p>
-<h2 id="find-if函数应用"><a href="#find-if函数应用" class="headerlink" title="find_if函数应用"></a>find_if函数应用</h2><p>在struct的vector中查找特定的对象.<strong>特别注意的是：仿函数的参数类型是值的const引用，但是finder的构造参数是实际要比较的值的类型，在使用过程中,向构造函数中传的值是要比较的值。</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">book</span>&#123;</span></div><div class="line">	<span class="keyword">int</span> m_iID;</div><div class="line">	<span class="built_in">string</span> m_strName;</div><div class="line"></div><div class="line">	book(<span class="keyword">int</span> t_id, <span class="built_in">string</span> t_name):m_iID(t_id), m_strName(t_name) &#123;&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">book_finder</span>&#123;</span></div><div class="line">	<span class="keyword">int</span> m_iID;</div><div class="line">	book_finder(<span class="keyword">int</span> t_id):m_iID(t_id) &#123;&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> book&amp; t)</span> </span>&#123;<span class="keyword">return</span> t.m_iID == m_iID;&#125;</div><div class="line">&#125;;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="built_in">vector</span>&lt;book&gt; bookVc;</div><div class="line">	<span class="function">book <span class="title">book1</span><span class="params">(<span class="number">0</span>, <span class="string">"书0"</span>)</span></span>;</div><div class="line">	<span class="function">book <span class="title">book2</span><span class="params">(<span class="number">1</span>, <span class="string">"书1"</span>)</span></span>;</div><div class="line">	<span class="function">book <span class="title">book3</span><span class="params">(<span class="number">2</span>, <span class="string">"书2"</span>)</span></span>;</div><div class="line">	<span class="function">book <span class="title">book4</span><span class="params">(<span class="number">3</span>, <span class="string">"书3"</span>)</span></span>;</div><div class="line"></div><div class="line">	bookVc.push_back(book1);</div><div class="line">	bookVc.push_back(book2);</div><div class="line">	bookVc.push_back(book3);</div><div class="line">	bookVc.push_back(book4);</div><div class="line"></div><div class="line">	<span class="function">book <span class="title">target</span><span class="params">(<span class="number">1</span>, <span class="string">"书"</span>)</span></span>;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (<span class="built_in">std</span>::find_if(bookVc.begin(), bookVc.end(), book_finder(target.m_iID)) != bookVc.end()) &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"存在1"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"不存在1"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	target.m_iID = <span class="number">10</span>;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (<span class="built_in">std</span>::find_if(bookVc.begin(), bookVc.end(), book_finder(target.m_iID)) != bookVc.end()) &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"存在10"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"不存在10"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;C-中find-if查找vector中的特定struct以及值域查询&quot;&gt;&lt;a href=&quot;#C-中find-if查找vector中的特定struct以及值域查询&quot; class=&quot;headerlink&quot; title=&quot;C++中find_if查找vector中的特定s
-    
-    </summary>
-    
-      <category term="C++ problems" scheme="http://yoursite.com/categories/C-problems/"/>
-    
-    
-      <category term="vector" scheme="http://yoursite.com/tags/vector/"/>
-    
-      <category term="C++" scheme="http://yoursite.com/tags/C/"/>
-    
-      <category term="struct" scheme="http://yoursite.com/tags/struct/"/>
+      <category term="ls" scheme="http://yoursite.com/tags/ls/"/>
     
   </entry>
   

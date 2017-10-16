@@ -216,6 +216,67 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/10/16/Unix中dl库学习/">
+                            Linux中dlfcn库相关学习.md
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-10-16T16:30:08+08:00">
+	
+		    10月 16, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Linux中dlfcn库相关学习"><a href="#Linux中dlfcn库相关学习" class="headerlink" title="Linux中dlfcn库相关学习"></a>Linux中dlfcn库相关学习</h1><p>在linux中静态链接库和动态链接库是进程之间代码共享的两种方式。Linux在<dlfnc.h>库中提供了加载和处理动态连接库的系统调用,使用非常方便。具体用法如下:</dlfnc.h></p>
+<h2 id="dlfcn库中函数说明"><a href="#dlfcn库中函数说明" class="headerlink" title="dlfcn库中函数说明"></a>dlfcn库中函数说明</h2><p>dlfcn库中主要包括四个函数:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>*, <span class="keyword">int</span> flag)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span>* <span class="title">dlerror</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlsym</span><span class="params">(<span class="keyword">void</span>* handler, <span class="keyword">char</span>* symbol)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dlclose</span><span class="params">(<span class="keyword">void</span>* handler)</span></span>;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>dlopen : 打开一个动态连接库，并返回一个类型为void*的handler</li>
+<li>dlerror : 返回dl操作的错误，若没有出现错误，则返回NUlL，否则打印错误信息</li>
+<li>dlsym : 查找动态链接库中的符号symbol,并返回该符号所在的地址</li>
+<li>dlclose : 关闭动态链接库句柄</li>
+</ul>
+<h2 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h2><p>动态链接库cal.cpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//cal.cpp</span></div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a - b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mul</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a * b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">div</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a / b;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>生成动态链接库libcal.so<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ -shared -fPIC cal.cpp libcal.so</div></pre></td></tr></table></figure></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//main.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> LIB_LIBRARY_PATH_1 <span class="meta-string">"./libcal.so"</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*CAC_FUNC)</span><span class="params">(<span class="keyword">int</span> ,<span class="keyword">int</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">void</span>* handler = <span class="literal">NULL</span>;</div><div class="line">	<span class="keyword">char</span>* error = <span class="literal">NULL</span>;</div><div class="line">	CAC_FUNC cac_func = <span class="literal">NULL</span>;</div><div class="line"></div><div class="line">	handler = dlopen(LIB_LIBRARY_PATH_1, RTLD_LAZY);</div><div class="line">	<span class="keyword">if</span> (!handler) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s\n"</span>, dlerror());</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	dlerror();</div><div class="line"></div><div class="line">  <span class="comment">//此处取对应函数地址,</span></div><div class="line">	*(<span class="keyword">void</span> **) (&amp;cac_func) = dlsym(handler, <span class="string">"add"</span>);</div><div class="line">	<span class="keyword">if</span> ((error = dlerror()) != <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s"</span>, error);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"add:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"sub"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"sub:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"mul"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"mul:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"div"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"div:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	dlclose(handler);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编译函数main:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ main.cpp -rdynamic -ldl</div></pre></td></tr></table></figure></p>
+<p>执行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">add:3</div><div class="line">sub:-1</div><div class="line">mul:2</div><div class="line">div:0</div></pre></td></tr></table></figure></p>
+<h2 id="注意问题"><a href="#注意问题" class="headerlink" title="注意问题"></a>注意问题</h2><p><strong>特别注意，若使用c++编译动态链接库，一定要在需要使用的符号处添加extern “C”,否则会出现符号找不到的问题。即undefined symbol</strong></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/10/16/Unix中dl库学习/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/10/06/C++协程实现/">
                             C++协程实现及原理
                         </a>
@@ -953,84 +1014,6 @@
                     
                         <p>
                             <a href="/2017/06/03/Unix标准IO库函数之读写流(二)/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/31/Unix标准IO库函数之打开关闭流(一)/">
-                            Unix标准IO库相关函数总结之打开关闭流(一)
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-31T20:04:00+08:00">
-	
-		    5月 31, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix标准IO库相关函数总结之打开关闭流-一"><a href="#Unix标准IO库相关函数总结之打开关闭流-一" class="headerlink" title="Unix标准IO库相关函数总结之打开关闭流(一)"></a>Unix标准IO库相关函数总结之打开关闭流(一)</h1><h2 id="Unix标准IO类型FILE"><a href="#Unix标准IO类型FILE" class="headerlink" title="Unix标准IO类型FILE"></a>Unix标准IO类型FILE</h2><p>在Unix相关的文件IO中几乎所有的函数都用到了文件描述符，文件描述符是打开一个文件时返回的一个可用的最小的文件描述标识。相应的在Unix标准IO相关的函数中，几乎每个函数都用到了FILE数据类型。本小结简单介绍一下FILE结构体的内容。</p>
-<p>FILE实际上是一个struct的typedef,可以在/usr/include/stdio.h中找到它的定义为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> _IO_FILE FILE;</div></pre></td></tr></table></figure></p>
-<p>_IO_FILE_的定义在文件/usr/include/libio.h中，我们可以看到它的具体定义为：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE</span> &#123;</span></div><div class="line">  <span class="keyword">int</span> _flags;           <span class="comment">/* High-order word is _IO_MAGIC; rest is flags. */</span></div><div class="line">  <span class="meta">#<span class="meta-keyword">define</span> _IO_file_flags _flags</span></div><div class="line"></div><div class="line">  <span class="comment">/* The following pointers correspond to the C++ streambuf protocol. */</span></div><div class="line">  <span class="comment">/* Note:  Tk uses the _IO_read_ptr and _IO_read_end fields directly. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_ptr;   <span class="comment">/* Current read pointer */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_end;   <span class="comment">/* End of get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_read_base;  <span class="comment">/* Start of putback+get area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_base; <span class="comment">/* Start of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_ptr;  <span class="comment">/* Current put pointer. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_write_end;  <span class="comment">/* End of put area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_base;   <span class="comment">/* Start of reserve area. */</span></div><div class="line">  <span class="keyword">char</span>* _IO_buf_end;    <span class="comment">/* End of reserve area. */</span></div><div class="line">  <span class="comment">/* The following fields are used to support backing up and undo. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_base; <span class="comment">/* Pointer to start of non-current get area. */</span></div><div class="line">  <span class="keyword">char</span> *_IO_backup_base;  <span class="comment">/* Pointer to first valid character of backup area */</span></div><div class="line">  <span class="keyword">char</span> *_IO_save_end; <span class="comment">/* Pointer to end of non-current get area. */</span></div><div class="line"></div><div class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_marker</span> *_<span class="title">markers</span>;</span></div><div class="line"></div><div class="line">  <span class="class"><span class="keyword">struct</span> _<span class="title">IO_FILE</span> *_<span class="title">chain</span>;</span></div><div class="line"></div><div class="line">  <span class="keyword">int</span> _fileno;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> 0</span></div><div class="line">  <span class="keyword">int</span> _blksize;</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">  <span class="keyword">int</span> _flags2;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">  _IO_off_t _old_offset; <span class="comment">/* This used to be _offset but it's too small.  */</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __HAVE_COLUMN <span class="comment">/* temporary */</span></span></div><div class="line">  <span class="comment">/* 1+column number of pbase(); 0 is unknown. */</span></div><div class="line">  <span class="keyword">unsigned</span> <span class="keyword">short</span> _cur_column;</div><div class="line">  <span class="keyword">signed</span> <span class="keyword">char</span> _vtable_offset;</div><div class="line">  <span class="keyword">char</span> _shortbuf[<span class="number">1</span>];</div><div class="line"></div><div class="line">  <span class="comment">/*  char* _save_gptr;  char* _save_egptr; */</span></div><div class="line"></div><div class="line">  _IO_lock_t *_lock;</div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _IO_USE_OLD_IO_FILE</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>从上面的struct中可以观察到FILE中是有文件描述符标志的，即为fileno参数。</p>
-<h2 id="打开标准IO流"><a href="#打开标准IO流" class="headerlink" title="打开标准IO流"></a>打开标准IO流</h2><p>打开标准文件IO流的方法有如下三个：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function">FILE* <span class="title">fopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">freopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> pathname, <span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">restrict</span> type, FILE* <span class="keyword">restrict</span> fp)</span></span>;</div><div class="line"></div><div class="line"><span class="function">FILE* <span class="title">fdopen</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* type)</span></span>;</div></pre></td></tr></table></figure></p>
-<p>上述三个函数<strong>区别以及使用场景</strong>说明:</p>
-<ul>
-<li>fopen的作用是打开一个指定文件路径的文件流。</li>
-<li>freopen的作用是在一个指定的留上打开一个指定文件。如果当前流已经打开，则先关闭该流；若该流被重定向，则清除重定向。该函数常用于<strong>将一个指定的文件打开为一个默认的流</strong>，如若想使用printf函数将打印出来的内容输出到一个指定文件中，此时可以讲stdout重定向到指定的文件路径并指定打开模式。</li>
-<li>fdopen的作用是将一个已经打开的文件描述符(该文件描述符可能是open,dup,socket等获取的)绑定到一个标准IO流上。此函数<strong>常用于由管道和网络通信通道函数返回的文件描述符</strong>，因为这些无法显式的指定文件。</li>
-</ul>
-<p><strong>参数说明：</strong></p>
-<ul>
-<li>pathname: 文件路径，相对或绝对</li>
-<li>type： 打开模式（r,w,a,r+,w+,a+以及所有后面加b）</li>
-</ul>
-<p><strong>打开模式说明：</strong></p>
-<ul>
-<li>r  : 读模式</li>
-<li>w  : 写模式，在写之前将原有文件内容全部清楚</li>
-<li>a  : 追加模式，offset为文件结尾</li>
-<li>r+ : 读写模式(不删除文件原有内容，offset初始为文件开头)。如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc456”。</li>
-<li>w+ : 读写模式(删除文件原有内容，offset为文件开头).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”abc”。</li>
-<li>a+ : 读写模式(offset为文件结尾).如原有文件内容为”123456”,若以此模式打开文件并写入”abc”，此时写入之后的结果是”123456abc”。</li>
-</ul>
-<p>上述所有的模式后面都加上b表示对二进制文件的操作(rb,wb,ab,rb+,wb+,ab+)。</p>
-<blockquote>
-<p>注意：对于fdopen函数由于文件已经由文件描述符打开，此时w模式时将不清除文件内容，追加模式不常见文件。</p>
-<p>当以读写模式打开文件时候，将有一些限制。如果中间没有fflush,fseek,fsetpos以及rewind函数，标注输出之后不能直接进行输入;如果没有fseek,fsetpos或者rewind，或者一个输入没有到达文件尾，则输入操作之后不能跟输出操作。</p>
-</blockquote>
-<h2 id="关闭标准文件流"><a href="#关闭标准文件流" class="headerlink" title="关闭标准文件流"></a>关闭标准文件流</h2><p>一般情况下在关闭文件流之前通常先使用fflush刷新缓冲区防止数据丢失，关闭标准文件流使用的函数为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">int fclose(FILE* fp);</div></pre></td></tr></table></figure></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/31/Unix标准IO库函数之打开关闭流(一)/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

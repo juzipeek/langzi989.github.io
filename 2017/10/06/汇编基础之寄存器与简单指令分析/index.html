@@ -30,7 +30,7 @@
 最近在学习协程方面的知识,在协程的一种实现方式中有一种是用汇编实现的,所以这里再把汇编知识复习一下。
 寄存器寄存器按">
 <meta property="og:image" content="http://yoursite.com/images/register.png">
-<meta property="og:updated_time" content="2017-10-09T13:50:39.637Z">
+<meta property="og:updated_time" content="2017-10-11T02:38:49.492Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="汇编基础之寄存器及汇编指令">
 <meta name="twitter:description" content="汇编基础之寄存器及汇编指令
@@ -299,6 +299,18 @@
 </ul>
 <p>注意:上述为16位处理其器中的寄存器的名字，在32和64位系统中，寄存器中名字有相应的变化，具体看下面(32位在前面加E,64在前面加R，64位系统的中含有16个64位的通用寄存器):</p>
 <p><img src="/images/register.png" alt=""></p>
+<h2 id="i386常用的16个寄存器"><a href="#i386常用的16个寄存器" class="headerlink" title="i386常用的16个寄存器"></a>i386常用的16个寄存器</h2><ul>
+<li>EAX、EBX、ECX、EDX这四个寄存器，主要就是用来暂时存放计算过程中所用的操作数、结果或其它信息。</li>
+<li>ESP为堆栈指针寄存，它和堆栈段寄存器SS共同决定了当前的栈指针，每当执行push,pull操作时，或者因为某些原因（如中断），CPU自动将数据入栈时，就会使用该指针来找到堆栈栈顶（或栈底）的位置，然后执行压栈、出栈的操作。系统管理软件，如操作系统会根据其分配的栈空间地址来设定这两个寄存器的值。</li>
+<li>EBP称为基址指针寄存器，它和ESP都可以与堆栈段寄存器SS联用来确定堆栈中的某一存储单元的地址，ESP用来指示段顶的偏移地址，而EBP可作为堆栈区中的一个基地址以便访问堆栈中的信息。</li>
+<li>ESI（源变址寄存器）和EDI（目的变址寄存器）一般与数据段寄存器DS联用，用来确定数据段中某一存储单元的地址。这两个变址寄存器有自动增量和自动减量的功能，可以很方便地用于变址。在串处理指令中，ESI和EDI作为隐含的源变址和目的变址寄存器时，ESI和DS联用，EDI和附加段ES联用，分别达到在数据段和附加段中寻址的目的。</li>
+<li>EIP指令指针寄存器，它用来存放代码段中的偏移地址。在程序运行的过程中，它始终指向下一条指令的首地址。它与段寄存器CS联用确定下一条指令的物理地址。当这一地址送到存储器后，控制器可以取得下一条要执行的指令，而控制器一旦取得这条指令就马上修改EIP的内容，使它始终指向下一条指令的首地址。那些跳转指令，就是通过修改EIP的值来达到相应的目的的</li>
+<li>FLAGS标志寄存器，又称PSW(program status word)，即程序状态寄存器。这一个是存放条件标志码、控制标志和系统标志的寄存器。</li>
+<li>段寄存器：一共六个，分别是CS代码段，DS数据段，ES附加段，SS堆栈段，FS以及GS这两个还是附加段。<br>EFLAGS寄存器中的IF位表示是否允许中断，为1允许，否则不允许。</li>
+<li>TR寄存器:用来指向当前任务的TSS段</li>
+<li>IDTR寄存器:用来指向当前IDT（中断表述符表或者说是中断向量表），因为在保护模式下，IDT的起始地址可以在任何位置，而不仅限于地址0。</li>
+<li>GDT和LDT : 前者是全局描述符表，位置由GDTR寄存器确定，后者是局部描述符表，位置由LDTR寄存器确定，具体使用哪一个，取决于段选择码中的TI位。</li>
+</ul>
 <h2 id="汇编指令"><a href="#汇编指令" class="headerlink" title="汇编指令"></a>汇编指令</h2><h3 id="汇编指令格式"><a href="#汇编指令格式" class="headerlink" title="汇编指令格式"></a>汇编指令格式</h3><p>汇编指令的格式如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[标号:]　指令助记符[[目的操作数][,源操作数]][;注释]</div></pre></td></tr></table></figure></p>
 <ul>
 <li>指令助记符:如MOV,ADD之类标识传送,加法。不区分大小写</li>

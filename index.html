@@ -215,6 +215,149 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/10/16/Unix中dl库学习/">
+                            Linux中dlfcn库相关学习.md
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-10-16T16:30:08+08:00">
+	
+		    10月 16, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Linux中dlfcn库相关学习"><a href="#Linux中dlfcn库相关学习" class="headerlink" title="Linux中dlfcn库相关学习"></a>Linux中dlfcn库相关学习</h1><p>在linux中静态链接库和动态链接库是进程之间代码共享的两种方式。Linux在<dlfnc.h>库中提供了加载和处理动态连接库的系统调用,使用非常方便。具体用法如下:</dlfnc.h></p>
+<h2 id="dlfcn库中函数说明"><a href="#dlfcn库中函数说明" class="headerlink" title="dlfcn库中函数说明"></a>dlfcn库中函数说明</h2><p>dlfcn库中主要包括四个函数:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>*, <span class="keyword">int</span> flag)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span>* <span class="title">dlerror</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlsym</span><span class="params">(<span class="keyword">void</span>* handler, <span class="keyword">char</span>* symbol)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dlclose</span><span class="params">(<span class="keyword">void</span>* handler)</span></span>;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>dlopen : 打开一个动态连接库，并返回一个类型为void*的handler</li>
+<li>dlerror : 返回dl操作的错误，若没有出现错误，则返回NUlL，否则打印错误信息</li>
+<li>dlsym : 查找动态链接库中的符号symbol,并返回该符号所在的地址</li>
+<li>dlclose : 关闭动态链接库句柄</li>
+</ul>
+<h2 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h2><p>动态链接库cal.cpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//cal.cpp</span></div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a - b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mul</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a * b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">div</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a / b;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>生成动态链接库libcal.so<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ -shared -fPIC cal.cpp libcal.so</div></pre></td></tr></table></figure></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//main.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> LIB_LIBRARY_PATH_1 <span class="meta-string">"./libcal.so"</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*CAC_FUNC)</span><span class="params">(<span class="keyword">int</span> ,<span class="keyword">int</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">void</span>* handler = <span class="literal">NULL</span>;</div><div class="line">	<span class="keyword">char</span>* error = <span class="literal">NULL</span>;</div><div class="line">	CAC_FUNC cac_func = <span class="literal">NULL</span>;</div><div class="line"></div><div class="line">	handler = dlopen(LIB_LIBRARY_PATH_1, RTLD_LAZY);</div><div class="line">	<span class="keyword">if</span> (!handler) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s\n"</span>, dlerror());</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	dlerror();</div><div class="line"></div><div class="line">  <span class="comment">//此处取对应函数地址,</span></div><div class="line">	*(<span class="keyword">void</span> **) (&amp;cac_func) = dlsym(handler, <span class="string">"add"</span>);</div><div class="line">	<span class="keyword">if</span> ((error = dlerror()) != <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s"</span>, error);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"add:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"sub"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"sub:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"mul"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"mul:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"div"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"div:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	dlclose(handler);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编译函数main:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ main.cpp -rdynamic -ldl</div></pre></td></tr></table></figure></p>
+<p>执行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">add:3</div><div class="line">sub:-1</div><div class="line">mul:2</div><div class="line">div:0</div></pre></td></tr></table></figure></p>
+<h2 id="注意问题"><a href="#注意问题" class="headerlink" title="注意问题"></a>注意问题</h2><p><strong>特别注意，若使用c++编译动态链接库，一定要在需要使用的符号处添加extern “C”,否则会出现符号找不到的问题。即undefined symbol</strong></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/10/16/Unix中dl库学习/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/10/11/AT&T汇编学习/">
+                            (no title)
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-10-11T10:38:55+08:00">
+	
+		    10月 11, 2017
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="AT-amp-T汇编学习"><a href="#AT-amp-T汇编学习" class="headerlink" title="AT&amp;T汇编学习"></a>AT&amp;T汇编学习</h1><p>汇编格式主要包括Intel和AT&amp;T汇编格式两种，两种汇编语言的格式在使用上有较大的差别，我们上一章讲解的汇编格式是以intel的风格为例的,但是在Unix和Linux系统中，大部分的汇编语言采用的是AT&amp;T格式。</p>
+<blockquote>
+<p>注:本节中的实例均以i386处理器中汇编指令为例</p>
+</blockquote>
+<h2 id="AT-amp-T汇编与intel汇编格式对比"><a href="#AT-amp-T汇编与intel汇编格式对比" class="headerlink" title="AT&amp;T汇编与intel汇编格式对比"></a>AT&amp;T汇编与intel汇编格式对比</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">AT&amp;T</th>
+<th style="text-align:center">intel</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">pushl %eax</td>
+<td style="text-align:center">push eax</td>
+<td style="text-align:left">在AT&amp;T格式中，需要在寄存器前面加上%</td>
+</tr>
+<tr>
+<td style="text-align:center">pushl $1</td>
+<td style="text-align:center">push 1</td>
+<td style="text-align:left">在AT&amp;T中使用$作为前缀表示立即数操作</td>
+</tr>
+<tr>
+<td style="text-align:center">addl $1 %eax</td>
+<td style="text-align:center">add eax 1</td>
+<td style="text-align:left">AT&amp;T格式的目的操作数和源操作数的顺序与intel格式相反</td>
+</tr>
+<tr>
+<td style="text-align:center">movl val,%al</td>
+<td style="text-align:center">mov al, byte ptr val</td>
+<td style="text-align:left">AT&amp;T格式操作数的长度由操作符的最后一个字母标识,分别是(movw[word],movl(long)movb[byte])</td>
+</tr>
+<tr>
+<td style="text-align:center">section:disp(base, index, scale)</td>
+<td style="text-align:center">section:[base + index*scale + disp]</td>
+<td style="text-align:left">内存寻址方式不同</td>
+</tr>
+</tbody>
+</table>
+<h2 id="简单汇编代码分析"><a href="#简单汇编代码分析" class="headerlink" title="简单汇编代码分析"></a>简单汇编代码分析</h2><p>下面一段代码的作用是在屏幕上打印helloworld。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">.data                             # 数据段，该段的数据为初始化数据</div><div class="line">        msg: .string &quot;helloworld&quot; #定义string类型变量msg，并赋初始值helloworld</div><div class="line">        len = . - msg             #使用段的起始地址和msg地址相减的方式计算msg的长度</div><div class="line">.text                             #代码段初始位置</div><div class="line">.global _start                    #使得连接程序看得到该symbol，这样就可以在其他文件中引用</div><div class="line"></div><div class="line">_start:                 </div><div class="line">        movl    $len,%edx         #edx中存储要打印的数据的长度</div><div class="line">        movl    $msg,%ecx         #ecx中存储打印为数据内容</div><div class="line">        movl    $1,%ebx           #ebx中为文件描述符,其中1为标准输出流的文件描述符</div><div class="line">        movl    $4,%eax           #eax中为系统调用号,4表示sys_write</div><div class="line">        int     $0x80             #调用内核功能执行,此段代码执行后屏幕上打印出helloworld</div><div class="line"></div><div class="line">        movl    $0,%ebx           #0标识退出代码</div><div class="line">        movl    $1,%eax           #1为系统调用号(sys_exit)</div><div class="line">        int     $0x80             #调用内核功能运行代码</div></pre></td></tr></table></figure></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/10/11/AT&T汇编学习/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/10/08/Unix中SelectPollEpoll详解/">
                             Unix中select,poll,epoll详解
                         </a>
@@ -501,6 +644,18 @@
 </ul>
 <p>注意:上述为16位处理其器中的寄存器的名字，在32和64位系统中，寄存器中名字有相应的变化，具体看下面(32位在前面加E,64在前面加R，64位系统的中含有16个64位的通用寄存器):</p>
 <p><img src="/images/register.png" alt=""></p>
+<h2 id="i386常用的16个寄存器"><a href="#i386常用的16个寄存器" class="headerlink" title="i386常用的16个寄存器"></a>i386常用的16个寄存器</h2><ul>
+<li>EAX、EBX、ECX、EDX这四个寄存器，主要就是用来暂时存放计算过程中所用的操作数、结果或其它信息。</li>
+<li>ESP为堆栈指针寄存，它和堆栈段寄存器SS共同决定了当前的栈指针，每当执行push,pull操作时，或者因为某些原因（如中断），CPU自动将数据入栈时，就会使用该指针来找到堆栈栈顶（或栈底）的位置，然后执行压栈、出栈的操作。系统管理软件，如操作系统会根据其分配的栈空间地址来设定这两个寄存器的值。</li>
+<li>EBP称为基址指针寄存器，它和ESP都可以与堆栈段寄存器SS联用来确定堆栈中的某一存储单元的地址，ESP用来指示段顶的偏移地址，而EBP可作为堆栈区中的一个基地址以便访问堆栈中的信息。</li>
+<li>ESI（源变址寄存器）和EDI（目的变址寄存器）一般与数据段寄存器DS联用，用来确定数据段中某一存储单元的地址。这两个变址寄存器有自动增量和自动减量的功能，可以很方便地用于变址。在串处理指令中，ESI和EDI作为隐含的源变址和目的变址寄存器时，ESI和DS联用，EDI和附加段ES联用，分别达到在数据段和附加段中寻址的目的。</li>
+<li>EIP指令指针寄存器，它用来存放代码段中的偏移地址。在程序运行的过程中，它始终指向下一条指令的首地址。它与段寄存器CS联用确定下一条指令的物理地址。当这一地址送到存储器后，控制器可以取得下一条要执行的指令，而控制器一旦取得这条指令就马上修改EIP的内容，使它始终指向下一条指令的首地址。那些跳转指令，就是通过修改EIP的值来达到相应的目的的</li>
+<li>FLAGS标志寄存器，又称PSW(program status word)，即程序状态寄存器。这一个是存放条件标志码、控制标志和系统标志的寄存器。</li>
+<li>段寄存器：一共六个，分别是CS代码段，DS数据段，ES附加段，SS堆栈段，FS以及GS这两个还是附加段。<br>EFLAGS寄存器中的IF位表示是否允许中断，为1允许，否则不允许。</li>
+<li>TR寄存器:用来指向当前任务的TSS段</li>
+<li>IDTR寄存器:用来指向当前IDT（中断表述符表或者说是中断向量表），因为在保护模式下，IDT的起始地址可以在任何位置，而不仅限于地址0。</li>
+<li>GDT和LDT : 前者是全局描述符表，位置由GDTR寄存器确定，后者是局部描述符表，位置由LDTR寄存器确定，具体使用哪一个，取决于段选择码中的TI位。</li>
+</ul>
 <h2 id="汇编指令"><a href="#汇编指令" class="headerlink" title="汇编指令"></a>汇编指令</h2><h3 id="汇编指令格式"><a href="#汇编指令格式" class="headerlink" title="汇编指令格式"></a>汇编指令格式</h3><p>汇编指令的格式如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[标号:]　指令助记符[[目的操作数][,源操作数]][;注释]</div></pre></td></tr></table></figure></p>
 <ul>
 <li>指令助记符:如MOV,ADD之类标识传送,加法。不区分大小写</li>
@@ -1126,129 +1281,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/09/20/UnixIPC关联数据结构与对象权限/">
-                            UnixIPC 关联数据结构与对象权限
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-09-20T20:09:08+08:00">
-	
-		    9月 20, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="UnixIPC-关联数据结构与对象权限"><a href="#UnixIPC-关联数据结构与对象权限" class="headerlink" title="UnixIPC 关联数据结构与对象权限"></a>UnixIPC 关联数据结构与对象权限</h1>
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/09/20/UnixIPC关联数据结构与对象权限/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/09/20/UnixIPC中key_t类型本质/">
-                            UnixIPC 机制和key_t本质类型
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-09-20T20:09:08+08:00">
-	
-		    9月 20, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="System-V-IPC-机制和key-t本质类型"><a href="#System-V-IPC-机制和key-t本质类型" class="headerlink" title="System V IPC 机制和key_t本质类型"></a>System V IPC 机制和key_t本质类型</h1><h2 id="System-V三种IPC机制"><a href="#System-V三种IPC机制" class="headerlink" title="System V三种IPC机制"></a>System V三种IPC机制</h2><p>System V IPC包括三种不同的通信机制</p>
-<ul>
-<li>消息队列:消息队列类似于管道,但是又有很大的差别。第一,消息队列是有边界的，所以消息队列的通信机制是通过消息进行传递，而管道是通过字节流进行通信。第二，每条消息包括一个完整的整形字段，消息队列可以通过类型来选择消息。</li>
-<li>信号量:用于同步两个进程。</li>
-<li>共享内存:共享内存允许两个进程共享同一个内存段。即一块内存被映射到不同进程的虚拟内存中。</li>
-</ul>
-<h2 id="key-t本质"><a href="#key-t本质" class="headerlink" title="key_t本质"></a>key_t本质</h2><p>System V系统调用都有一个相关的get系统调用，它与文件io中的open函数类似，不同的是它的参数是一个整数，给定一个整数之后，系统会做以下操作:</p>
-<ul>
-<li>使用给定key创建一个新的IPC对象，并将IPC对象标识key_t返回给调用者.</li>
-<li>若该key对应的IPC对象存在，直接将标识返回给调用者，相当于使用key换取标识,而不做创建操作.</li>
-</ul>
-<p>上述IPC对象的标识类型为key_t。key_t的本质是什么?我们可以通过grep命令追踪到</p>
-<p>在文件/usr/include/sys/ipc.h中:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#ifndef __key_t_defined</div><div class="line">typedef __key_t key_t;</div><div class="line"># define __key_t_defined</div><div class="line">#endif</div></pre></td></tr></table></figure></p>
-<p>在文件/usr/include/bits/types.h中:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">__STD_TYPE __KEY_T_TYPE __key_t;        /* Type of an IPC key.  */</div></pre></td></tr></table></figure></p>
-<p>在文件/usr/include/bits/typesizes.h中:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#define __KEY_T_TYPE            __S32_TYPE</div></pre></td></tr></table></figure>
-<p>在文件中:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#define __S32_TYPE              int</div></pre></td></tr></table></figure>
-<p>故从上面的追踪，可以看出key_t的本质为int类型.</p>
-<h2 id="获取key-t方法"><a href="#获取key-t方法" class="headerlink" title="获取key_t方法"></a>获取key_t方法</h2><p>获取ket_t的方法三种</p>
-<ul>
-<li>随机选取一个整数值作为key值，多个进程共享一个key值。注意此时不能使用已经存在的key</li>
-<li>在创建IPC对象的get方法中用IPC_PRIVATE作为key值，这样会导致每个调用都会创建一个新的IPC对象</li>
-<li>使用ftok函数生成一个key,这个方法产生的key接近唯一。</li>
-</ul>
-<h3 id="IPC-PRIVATE"><a href="#IPC-PRIVATE" class="headerlink" title="IPC_PRIVATE"></a>IPC_PRIVATE</h3><p>IPC_PRIVATE本质上为0的宏定义.使用方法是直接使用IPC_PRIVATE作为key生成一个IPC对象。这种做法保证每次产生的都是全新的IPC对象。<br>这种做法适用于在父进程fork前创建IPC对象，从而达到子进程继承IPC对象的目的。</p>
-<h3 id="ftok生成key"><a href="#ftok生成key" class="headerlink" title="ftok生成key"></a>ftok生成key</h3><h4 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型:"></a>函数原型:</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt;</span></span></div><div class="line"><span class="keyword">key_t</span> ftok(<span class="keyword">char</span>* pathname, <span class="keyword">int</span> proj);</div></pre></td></tr></table></figure>
-<h4 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能:"></a>函数功能:</h4><p>此函数的功能是根据pathname和proj的值生成key，该算法只使用proj的最低的8个有效位，应用程序必须确保pathname引用一个可以应用stat()的既有文件。否则该函数会返回-1。</p>
-<p>在linux中，key_t一般是32位的值。它通过取<strong>proj参数的最低８个有效位，包含该文件所属的文件系统的设备的设备号的最低8个有效位以及pathname所引用文件的inode号的最低16个有效位组合而成，这样保证了唯一性</strong>。所以从上面可以看出，对于同意个文件的不同路径(inode值相同),proj值相同，此时产生的key是相同的。　</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/09/20/UnixIPC中key_t类型本质/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1260,7 +1292,7 @@
             </a>
         </li>
         
-        <li class="pagination-number">page 1 of 7</li>
+        <li class="pagination-number">page 1 of 8</li>
     </ul>
 </div>
 
