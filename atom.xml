@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-10-16T14:02:34.814Z</updated>
+  <updated>2017-11-09T03:26:13.511Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,83 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>C++截取定长utf8字符及字符集与字符编码总结.md</title>
+    <link href="http://yoursite.com/2017/11/09/C++%E6%88%AA%E5%8F%96utf8%E5%AD%97%E7%AC%A6%E4%BB%A5%E5%8F%8A%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81%E8%AE%B0%E5%BD%95/"/>
+    <id>http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/</id>
+    <published>2017-11-09T02:20:08.000Z</published>
+    <updated>2017-11-09T03:26:13.511Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="C-截取定长utf8字符及字符集与字符编码总结"><a href="#C-截取定长utf8字符及字符集与字符编码总结" class="headerlink" title="C++截取定长utf8字符及字符集与字符编码总结"></a>C++截取定长utf8字符及字符集与字符编码总结</h1><p>之前有个需求要求从一段utf8编码的文字中截取前n个字符，由于文字中包含既有中文又有数字字母等，这些字符所占的字节数都不相同，所以直接截取前Ｍ个字符可能会导致乱码问题。在完成截取之前，需要先了解utf8编码字符的存储规则。后面简单介绍一下常见的字符集及字符编码</p>
+<h2 id="utf8编码规则"><a href="#utf8编码规则" class="headerlink" title="utf8编码规则"></a>utf8编码规则</h2><p>在理解utf8编码规则之前先说一下utf16和utf32的编码规则，utf32规定所有的unicode字符集上的所有字符都是用32bit来存储，即可存储的字符数可达2^32个,接近40亿，这明显可以容纳已有的所有字符。utf16编码使用2个字节存储，超过此范围的使用其他特殊技巧处理。使用utf16和utf32有一个问题，就是会受到计算机存储大端规则和小端规则的影响。所以utf16又有utf16_LE和utf16_BE之分。为了解决这个问题，需要在文本文件的开头定义一个BOM(Byte order Mark)，这是一个非打印标志,用此标志来标志当前文本存储是大端存储还是小端存储。</p>
+<p>utf8是一种针对unicode的可变长度字符编码，也是一种前缀码，它可以表示unicode标准中的任何字符。且与ascii码兼容，这使得我们处理ascii字符的时候不许做特殊修改。</p>
+<p>utf8使用1~6个字符为每个字符编码,但实际使用中只使用了4个。</p>
+<p><strong>utf8编码规则</strong>:</p>
+<p>(1)对于单字节字符,字节的第一位为0，后面7位为这个字符的unicode码，因此对于ascii码，unicode与ascii保持一致。<br>(2)对于n字节符号(n&gt;1),第一个字节的前n位都为1,第n+1位为0,其他字节的前两位都为10,其余位为实际的unicode位。</p>
+<p>规则:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">unicode范围</th>
+<th style="text-align:left">二进制表示范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">U-00000000 - U-0000007F</td>
+<td style="text-align:left">0xxxxxxx</td>
+</tr>
+<tr>
+<td style="text-align:center">U-00000080 - U-000007FF</td>
+<td style="text-align:left">110xxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td style="text-align:center">U-00000800 - U-0000FFFF</td>
+<td style="text-align:left">1110xxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td style="text-align:center">U-00010000 - U-001FFFFF</td>
+<td style="text-align:left">11110xxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td style="text-align:center">U-00200000 - U-03FFFFFF</td>
+<td style="text-align:left">111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td style="text-align:center">U-04000000 - U-7FFFFFFF</td>
+<td style="text-align:left">1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+</tbody>
+</table>
+<p>利用上述utf8编码规则实现C++截取定长字符串。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">const</span> <span class="built_in">string</span> <span class="title">utf8Cut</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;src, <span class="keyword">int</span> utf8Len)</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> ret;</div><div class="line">  <span class="keyword">int</span> utf8LenCnt = <span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> srcIdx = <span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> srcLen = src.length();</div><div class="line">  <span class="keyword">int</span> cutLen = <span class="number">0</span>;</div><div class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span> tmp;</div><div class="line">  <span class="keyword">while</span> (utf8LenCnt &lt; utf8Len &amp;&amp;  srcIdx &lt; srcLen) &#123;</div><div class="line">    tmp = (<span class="keyword">unsigned</span> <span class="keyword">char</span>)src[srcIdx];</div><div class="line">    <span class="keyword">if</span> (tmp &gt;= <span class="number">252</span>)</div><div class="line">      cutLen = <span class="number">6</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">248</span>)</div><div class="line">      cutLen = <span class="number">5</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">240</span>)</div><div class="line">      cutLen = <span class="number">4</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">224</span>)</div><div class="line">      cutLen = <span class="number">3</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">192</span>)</div><div class="line">      cutLen = <span class="number">2</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">65</span> &amp;&amp; tmp &lt;=<span class="number">90</span>)</div><div class="line">      cutLen = <span class="number">1</span>;</div><div class="line">    <span class="keyword">else</span></div><div class="line">      cutLen = <span class="number">1</span>;</div><div class="line">      ret += src.substr(srcIdx, cutLen);</div><div class="line">      srcIdx += cutLen;</div><div class="line">      ++utf8LenCnt;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> ret;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="字符集与字符编码"><a href="#字符集与字符编码" class="headerlink" title="字符集与字符编码"></a>字符集与字符编码</h2><p><strong>字符集</strong>是一个系统所支持的字符的集合，常见的字符集包括ascii字符集,GB2312字符集,GBK字符集以及unicode字符集。其中ascii字符集包括所有的英文字母数字以及控制字符等等。</p>
+<p><strong>字符编码</strong>是用来定义计算机中某个字符的存储和传输规则。</p>
+<p>区别：字符集仅仅是一个字符集合，与计算机的存储和传输没有关系,而字符编码规定了计算机中字符的编码规则。</p>
+<h3 id="常见的字符集及字符编码"><a href="#常见的字符集及字符编码" class="headerlink" title="常见的字符集及字符编码"></a>常见的字符集及字符编码</h3><ul>
+<li>ascii字符集及字符编码:使用一个字符编码,包括所有的字母数字,换行以及控制字符等。</li>
+<li>GB*字符集及编码:是一种多字节编码标准,GB表示国标,包括GB2312,GBK等编码，2312是标准号，GB2312涵盖了绝大多数的中文，但是一些生僻字不包含在其中，GBK是对GB2312的扩展.</li>
+<li>BIG*:常见的为BIG5字符集及编码，BIG5中收录了大部分的中文繁体，常用语香港台湾等地区。</li>
+<li>unicode字符集及编码:unicode又称为统一码，几乎涵盖了所有国家和地区的所有字符，并还在不断的扩充新字符。unicode是一个字符集，而不是编码规则，我们常见的utf8,utf16以及utf32是unicode常见的字符编码.</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;C-截取定长utf8字符及字符集与字符编码总结&quot;&gt;&lt;a href=&quot;#C-截取定长utf8字符及字符集与字符编码总结&quot; class=&quot;headerlink&quot; title=&quot;C++截取定长utf8字符及字符集与字符编码总结&quot;&gt;&lt;/a&gt;C++截取定长utf8字符及字符
+    
+    </summary>
+    
+      <category term="C++学习" scheme="http://yoursite.com/categories/C-%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="编码" scheme="http://yoursite.com/tags/%E7%BC%96%E7%A0%81/"/>
+    
+      <category term="utf8" scheme="http://yoursite.com/tags/utf8/"/>
+    
+      <category term="字符串截取" scheme="http://yoursite.com/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%88%AA%E5%8F%96/"/>
+    
+  </entry>
   
   <entry>
     <title>Unix系统调用hook函数以及使用dl库实现.md</title>
@@ -1102,9 +1179,9 @@
       <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
       <category term="signal" scheme="http://yoursite.com/tags/signal/"/>
+    
+      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
     
       <category term="sigaction" scheme="http://yoursite.com/tags/sigaction/"/>
     
@@ -1424,32 +1501,6 @@
       <category term="sed" scheme="http://yoursite.com/tags/sed/"/>
     
       <category term="regex" scheme="http://yoursite.com/tags/regex/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux常用命令混淆点记录</title>
-    <link href="http://yoursite.com/2017/08/20/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"/>
-    <id>http://yoursite.com/2017/08/20/Linux常用命令/</id>
-    <published>2017-08-20T06:25:01.000Z</published>
-    <updated>2017-09-29T06:53:42.070Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Linux常用命令混淆点记录"><a href="#Linux常用命令混淆点记录" class="headerlink" title="Linux常用命令混淆点记录"></a>Linux常用命令混淆点记录</h1><h2 id="ls命令单位问题"><a href="#ls命令单位问题" class="headerlink" title="ls命令单位问题"></a>ls命令单位问题</h2><p>ls命令的<strong>默认单位为字节</strong>。<br>若使用ls时需要指定单位显示的时候，需要添加参数-h或–block-size进行操作。具体操作方法如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#-h表示human，即人可读的方式</div><div class="line">#它会按照文件的大小显示单位,</div><div class="line">#若文件小于1k，则不显示单位，表示字节</div><div class="line">#若文件大于1k但是小于1M，显示的单位为k</div><div class="line">#文件大于1M小于1G会显示单位为M，</div><div class="line">#以此类推</div><div class="line">ls -h ~/test</div><div class="line"></div><div class="line">#按照指定的单位显示</div><div class="line">#注意使用此参数需要注意一个问题。若文件小于1G</div><div class="line">ls --block-size=g ~/test    #按照单位为g显示</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;a href=&quot;#Linux常用命令混淆点记录&quot; class=&quot;headerlink&quot; title=&quot;Linux常用命令混淆点记录&quot;&gt;&lt;/a&gt;Linux常用命令混淆点记录&lt;/h1&gt;&lt;h2 id=&quot;ls命令单位问题&quot;&gt;&lt;a href
-    
-    </summary>
-    
-      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
-    
-      <category term="ls" scheme="http://yoursite.com/tags/ls/"/>
     
   </entry>
   

@@ -1,0 +1,507 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="魏传柳">
+    <title>C++截取定长utf8字符及字符集与字符编码总结.md - 魏传柳</title>
+    <meta name="author" content="魏传柳(2824759538@qq.com)">
+    
+        <meta name="keywords" content="hexo,javascript,">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="C++截取定长utf8字符及字符集与字符编码总结之前有个需求要求从一段utf8编码的文字中截取前n个字符，由于文字中包含既有中文又有数字字母等，这些字符所占的字节数都不相同，所以直接截取前Ｍ个字符可能会导致乱码问题。在完成截取之前，需要先了解utf8编码字符的存储规则。后面简单介绍一下常见的字符集及字符编码
+utf8编码规则在理解utf8编码规则之前先说一下utf16和utf32的编码规则，utf">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="C++截取定长utf8字符及字符集与字符编码总结.md">
+<meta property="og:url" content="http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/index.html">
+<meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="C++截取定长utf8字符及字符集与字符编码总结之前有个需求要求从一段utf8编码的文字中截取前n个字符，由于文字中包含既有中文又有数字字母等，这些字符所占的字节数都不相同，所以直接截取前Ｍ个字符可能会导致乱码问题。在完成截取之前，需要先了解utf8编码字符的存储规则。后面简单介绍一下常见的字符集及字符编码
+utf8编码规则在理解utf8编码规则之前先说一下utf16和utf32的编码规则，utf">
+<meta property="og:updated_time" content="2017-11-09T03:26:13.511Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C++截取定长utf8字符及字符集与字符编码总结.md">
+<meta name="twitter:description" content="C++截取定长utf8字符及字符集与字符编码总结之前有个需求要求从一段utf8编码的文字中截取前n个字符，由于文字中包含既有中文又有数字字母等，这些字符所占的字节数都不相同，所以直接截取前Ｍ个字符可能会导致乱码问题。在完成截取之前，需要先了解utf8编码字符的存储规则。后面简单介绍一下常见的字符集及字符编码
+utf8编码规则在理解utf8编码规则之前先说一下utf16和utf32的编码规则，utf">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://yoursite.com/assets/images/avar.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-nuvue6sithwirecbhvw3dkaobiojqvtadsnhguwi7k04xklybw5djl1smadp.min.css">
+    <!--STYLES END-->
+    
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">魏传柳</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="/assets/images/avar.jpg"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/avar.jpg"/>
+            </a>
+            <span class="sidebar-profile-name">魏传柳(2824759538@qq.com)</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">home</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">search</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">about</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/langzi989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://blog.csdn.net/u014630623" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-csdn"></i>
+                    <span class="sidebar-button-desc">CSDN</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            C++截取定长utf8字符及字符集与字符编码总结.md
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" datetime="2017-11-09T10:20:08+08:00">
+	
+		    11月 09, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-学习/">C++学习</a>
+
+
+    
+</div>
+
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="C-截取定长utf8字符及字符集与字符编码总结"><a href="#C-截取定长utf8字符及字符集与字符编码总结" class="headerlink" title="C++截取定长utf8字符及字符集与字符编码总结"></a>C++截取定长utf8字符及字符集与字符编码总结</h1><p>之前有个需求要求从一段utf8编码的文字中截取前n个字符，由于文字中包含既有中文又有数字字母等，这些字符所占的字节数都不相同，所以直接截取前Ｍ个字符可能会导致乱码问题。在完成截取之前，需要先了解utf8编码字符的存储规则。后面简单介绍一下常见的字符集及字符编码</p>
+<h2 id="utf8编码规则"><a href="#utf8编码规则" class="headerlink" title="utf8编码规则"></a>utf8编码规则</h2><p>在理解utf8编码规则之前先说一下utf16和utf32的编码规则，utf32规定所有的unicode字符集上的所有字符都是用32bit来存储，即可存储的字符数可达2^32个,接近40亿，这明显可以容纳已有的所有字符。utf16编码使用2个字节存储，超过此范围的使用其他特殊技巧处理。使用utf16和utf32有一个问题，就是会受到计算机存储大端规则和小端规则的影响。所以utf16又有utf16_LE和utf16_BE之分。为了解决这个问题，需要在文本文件的开头定义一个BOM(Byte order Mark)，这是一个非打印标志,用此标志来标志当前文本存储是大端存储还是小端存储。</p>
+<p>utf8是一种针对unicode的可变长度字符编码，也是一种前缀码，它可以表示unicode标准中的任何字符。且与ascii码兼容，这使得我们处理ascii字符的时候不许做特殊修改。</p>
+<p>utf8使用1~6个字符为每个字符编码,但实际使用中只使用了4个。</p>
+<p><strong>utf8编码规则</strong>:</p>
+<p>(1)对于单字节字符,字节的第一位为0，后面7位为这个字符的unicode码，因此对于ascii码，unicode与ascii保持一致。<br>(2)对于n字节符号(n&gt;1),第一个字节的前n位都为1,第n+1位为0,其他字节的前两位都为10,其余位为实际的unicode位。</p>
+<p>规则:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">unicode范围</th>
+<th style="text-align:left">二进制表示范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">U-00000000 - U-0000007F</td>
+<td style="text-align:left">0xxxxxxx</td>
+</tr>
+<tr>
+<td style="text-align:center">U-00000080 - U-000007FF</td>
+<td style="text-align:left">110xxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td style="text-align:center">U-00000800 - U-0000FFFF</td>
+<td style="text-align:left">1110xxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td style="text-align:center">U-00010000 - U-001FFFFF</td>
+<td style="text-align:left">11110xxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td style="text-align:center">U-00200000 - U-03FFFFFF</td>
+<td style="text-align:left">111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td style="text-align:center">U-04000000 - U-7FFFFFFF</td>
+<td style="text-align:left">1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+</tbody>
+</table>
+<p>利用上述utf8编码规则实现C++截取定长字符串。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">const</span> <span class="built_in">string</span> <span class="title">utf8Cut</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;src, <span class="keyword">int</span> utf8Len)</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> ret;</div><div class="line">  <span class="keyword">int</span> utf8LenCnt = <span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> srcIdx = <span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> srcLen = src.length();</div><div class="line">  <span class="keyword">int</span> cutLen = <span class="number">0</span>;</div><div class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span> tmp;</div><div class="line">  <span class="keyword">while</span> (utf8LenCnt &lt; utf8Len &amp;&amp;  srcIdx &lt; srcLen) &#123;</div><div class="line">    tmp = (<span class="keyword">unsigned</span> <span class="keyword">char</span>)src[srcIdx];</div><div class="line">    <span class="keyword">if</span> (tmp &gt;= <span class="number">252</span>)</div><div class="line">      cutLen = <span class="number">6</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">248</span>)</div><div class="line">      cutLen = <span class="number">5</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">240</span>)</div><div class="line">      cutLen = <span class="number">4</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">224</span>)</div><div class="line">      cutLen = <span class="number">3</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">192</span>)</div><div class="line">      cutLen = <span class="number">2</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">65</span> &amp;&amp; tmp &lt;=<span class="number">90</span>)</div><div class="line">      cutLen = <span class="number">1</span>;</div><div class="line">    <span class="keyword">else</span></div><div class="line">      cutLen = <span class="number">1</span>;</div><div class="line">      ret += src.substr(srcIdx, cutLen);</div><div class="line">      srcIdx += cutLen;</div><div class="line">      ++utf8LenCnt;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> ret;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="字符集与字符编码"><a href="#字符集与字符编码" class="headerlink" title="字符集与字符编码"></a>字符集与字符编码</h2><p><strong>字符集</strong>是一个系统所支持的字符的集合，常见的字符集包括ascii字符集,GB2312字符集,GBK字符集以及unicode字符集。其中ascii字符集包括所有的英文字母数字以及控制字符等等。</p>
+<p><strong>字符编码</strong>是用来定义计算机中某个字符的存储和传输规则。</p>
+<p>区别：字符集仅仅是一个字符集合，与计算机的存储和传输没有关系,而字符编码规定了计算机中字符的编码规则。</p>
+<h3 id="常见的字符集及字符编码"><a href="#常见的字符集及字符编码" class="headerlink" title="常见的字符集及字符编码"></a>常见的字符集及字符编码</h3><ul>
+<li>ascii字符集及字符编码:使用一个字符编码,包括所有的字母数字,换行以及控制字符等。</li>
+<li>GB*字符集及编码:是一种多字节编码标准,GB表示国标,包括GB2312,GBK等编码，2312是标准号，GB2312涵盖了绝大多数的中文，但是一些生僻字不包含在其中，GBK是对GB2312的扩展.</li>
+<li>BIG*:常见的为BIG5字符集及编码，BIG5中收录了大部分的中文繁体，常用语香港台湾等地区。</li>
+<li>unicode字符集及编码:unicode又称为统一码，几乎涵盖了所有国家和地区的所有字符，并还在不断的扩充新字符。unicode是一个字符集，而不是编码规则，我们常见的utf8,utf16以及utf32是unicode常见的字符编码.</li>
+</ul>
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/utf8/">utf8</a> <a class="tag tag--primary tag--small t-link" href="/tags/字符串截取/">字符串截取</a> <a class="tag tag--primary tag--small t-link" href="/tags/编码/">编码</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/10/16/Unix系统hook函数以及使用dl库实现/" data-tooltip="Unix系统调用hook函数以及使用dl库实现.md">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2017 魏传柳(2824759538@qq.com). All Rights Reserved.
+    </span>
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+     </script>
+   </br></br>本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/10/16/Unix系统hook函数以及使用dl库实现/" data-tooltip="Unix系统调用hook函数以及使用dl库实现.md">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/avar.jpg"/>
+        
+            <h4 id="about-card-name">魏传柳(2824759538@qq.com)</h4>
+        
+            <h5 id="about-card-bio"><p>author.bio</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Guangzhou,China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+</html>
