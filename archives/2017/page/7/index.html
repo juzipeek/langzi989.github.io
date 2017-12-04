@@ -216,6 +216,128 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/01/08/创建型设计模式之build模式/">
+                            创建型设计模式之build模式
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-01-08T01:36:19+08:00">
+	
+		    1月 08, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="创建型设计模式之build模式"><a href="#创建型设计模式之build模式" class="headerlink" title="创建型设计模式之build模式"></a>创建型设计模式之build模式</h1><p>最近在读《设计模式-可复用面向对象软件设计的基础》一书，在阅读的过程中我会结合书中的相关知识和实例以及在网络上的博客对相关的模式的理解进行总结，并在此基础上加入自己的一些理解，总结模式中需要注意的一些点，记录在此博客，以供大家交流分享，同时防止自己对内容遗忘，如有不正确指出，欢迎批评指正。</p>
+<p>本节的主要内容是设计模式中的创建型模式之一:builder模式</p>
+<p>要用好builder模式，必须对其机制了解透彻，将该模式用在合适的软件中才能显出它真正的威力，第五部分中实例将为您展示它的真正威力。</p>
+<p>本文内容分为以下几个方面:</p>
+<ul>
+<li>builder模式的意图</li>
+<li>builder模式的适用性</li>
+<li>builder模式的结构(通用UML类图)及详解</li>
+<li>builder模式中的参与者</li>
+<li>builder模式中各个成分之间的交互</li>
+<li>builder模式比较好的一个实例</li>
+<li>builder模式使用过程中注意的点</li>
+<li>KFC套餐实例代码</li>
+</ul>
+<p><strong>builder模式的精髓都隐藏于builder模式的意图和实用性中，让你真正理解这两个方面，可以说你已经掌握了builder模式（以下意图和模式都摘自《设计模式》书中）</strong></p>
+<h2 id="builder模式的意图"><a href="#builder模式的意图" class="headerlink" title="builder模式的意图"></a>builder模式的意图</h2><p>builder模式的意图是将一个<strong>复杂对象的构建</strong>与它的<strong>表示</strong>分离，使得同样的构建过程可以创建不同的表示。</p>
+<h2 id="builder模式的适用性"><a href="#builder模式的适用性" class="headerlink" title="builder模式的适用性"></a>builder模式的适用性</h2><ul>
+<li>当<strong>创建复杂对象的算法</strong>应该独立于<strong>该对象的组成部分</strong>以及<strong>它们的装配方式</strong>时。</li>
+<li>当构造过程必须<strong>允许被构造的对象有不同的表示</strong>时。</li>
+</ul>
+<p>提前记录一下:装配的工作是由导向器(director)完成的，复杂对象的创建是由具体的建造器完成(concreteBuilder)，这里不明白没问题，等你看完全文再过来看这里你就理解了。</p>
+<blockquote>
+<p> 当且仅当上面两个条件均满足的情况下我们要使用builder模式（完全理解这两条不一件重要的事情，但是不要着急,当你读完这篇文章的时候就会拨开它的庐山真面目了）</p>
+</blockquote>
+<h2 id="builder模式的结构-UML类图-及详解"><a href="#builder模式的结构-UML类图-及详解" class="headerlink" title="builder模式的结构(UML类图)及详解"></a>builder模式的结构(UML类图)及详解</h2><p>builder模式的UML类图关系如下:</p>
+<p><img src="/images/build_diagram.png" alt=""></p>
+<p>注意的问题:</p>
+<ul>
+<li>在builder中一般不声明纯虚函数，而是把它们定义为空方法，这使客户只重定义他们感兴趣的操作。</li>
+<li>在director中，注意我们不是把所有的buildPart都去执行一次，而是根据需要的客户的需求，进行定制的去buildPart部分构建，可以构建一次，也可以构建多次。</li>
+<li>一般将m_product声明为protected成员，因为这样既保证了封装性，又能使得concreteBuilder能够正常操作product；</li>
+</ul>
+<h2 id="builder模式种的参与者"><a href="#builder模式种的参与者" class="headerlink" title="builder模式种的参与者"></a>builder模式种的参与者</h2><p>从上面的类图中我们也可以看出,在builder模式中的参与者有以下四种,以及他们的职责分别是:(此处为个人理解，与书中内容可能不一致,如果有问题欢迎指正)</p>
+<ul>
+<li>Director: 负责装配product的各个部件，使用Builder的类方法进行实现。它的作用是隔离了客户与product的具体生产过程；并负责控制product的生产过程。</li>
+<li>Builder: 为创建一个product对象的各个部件指定抽象接口。一般情况下默认builderPart的操作默认为空。</li>
+<li>concreteBuilder: 具体实现每一个部件的具体的复杂生产过程，如buildPartA()的具体实现，并提供一个检索产品的接口。</li>
+<li>Product: 这个争议不大，即为被构造的复杂对象。此类对象会有不同的表示。</li>
+</ul>
+<h2 id="builder模式各个成分之间的交互方式"><a href="#builder模式各个成分之间的交互方式" class="headerlink" title="builder模式各个成分之间的交互方式"></a>builder模式各个成分之间的交互方式</h2><p>先上一张时序图:</p>
+<p><img src="/images/builder_sequence.png" alt=""></p>
+<p>从上面的时序图可以分析出，各个成分之间的交互方式如下:</p>
+<ul>
+<li>客户首先创建一个concreteBuilder对象,然后创建一个Director,</li>
+<li>创建结束之后，使用concreteBuilder修饰对象Director,</li>
+<li>然后调用Director的construct()方法，进行构造Product,</li>
+<li>最后客户通过concreteBuilder的getResult()方法取回生成的Product</li>
+</ul>
+<h2 id="builder模式中一个较好的实例"><a href="#builder模式中一个较好的实例" class="headerlink" title="builder模式中一个较好的实例"></a>builder模式中一个较好的实例</h2><p>两个实例来自网络对两本书籍实例的纠正,改编</p>
+<p>上面这篇文章深刻的分析了builder模式的本质以及诸多误区的分析，收益颇多，在此感谢博主分享。</p>
+<p>在本例中,设备(Equipment)是一个复杂对象，由一个machine和一个或多个输入端口(InputPort)或者输出端口(outputPort)组成；其中输入或输出端口可能有不同的类型(ordinary和super)。现在要你设计一个生成不同型号的产品，要求产品可能包含一进一出(普通或super)，一进两出(普通或super)。</p>
+<p>　　在设计中,我们首先定义一个LCDFactory对象充当director，一个设备生成器(EQPBuilder),相当于Builder。</p>
+<p>​    首先ordinary和super是port的内部实现方式不同，所以我们需要定义两个具体类，即 ordinaryEQPBuilder和superEQPBuilder。</p>
+<p>​    在EQPbuilder中，我们将定义四个函数，分别是:buildMachine(), addInputPort(), addOutputPort()和getEQP()。两个concrete类继承EQPBuilder。</p>
+<p>​    当我们需要获取不同数目的port的设备，这属于组装方面的范畴，所以我们将在LCDFactory中的createEQP中做。其UML类图如下:</p>
+<p><img src="/images/BuilderEquipment_thumb.jpg" alt=""></p>
+<h2 id="builder模式在使用的过程中需要注意的问题"><a href="#builder模式在使用的过程中需要注意的问题" class="headerlink" title="builder模式在使用的过程中需要注意的问题"></a>builder模式在使用的过程中需要注意的问题</h2><p>这里所说的注意的问题可能上面已经提到了，但是这里还是要着重强调一下，因为我们稍不注意，就可能将模式滥用，导致系统设计的失败。</p>
+<ul>
+<li>在builder模式中Builder一定不要定义纯虚函数成员函数，而是定义为空方法的虚函数，这样就可以使得客户可以只定义他们感兴趣的操作。</li>
+<li>Director负责<strong>装配产品</strong>，concreteBuilder负责实现<strong>复杂产品部件的具体实现</strong></li>
+<li>在Director中调用Builder的buildPart函数的时候，并不是每个函数都被调用，而是根据要生成的product对其选择性调用，可能调用零次，也可能调用多次。</li>
+<li>Builder中的m_product声明为protected,即保证对象的封装性，又能让具体类方便的使用。(这是我在写代码的时候的解决方法，如果有更好的将m_product声明为private的解决方法欢迎交流2824759538@qq.com)</li>
+</ul>
+<h2 id="KFC套餐实例代码"><a href="#KFC套餐实例代码" class="headerlink" title="KFC套餐实例代码"></a>KFC套餐实例代码</h2><p>这是本人使用KFC服务员生成套餐时的一种模拟，其实实际情况中并不需要使用builder模式，但是这里为了练手强行写成了builder模式，希望大家不要吐槽。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//KFCWaiter.hpp 注意此处water相当于Director的作用</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> KFCWAITER_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> KFCWAITER_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">KFCWaiter</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">setMealBuilder</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; t_builder)</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">construct</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; m_builder;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//KFCWaiter.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"KFCWaiter.hpp"</span></span></div><div class="line"><span class="keyword">void</span> KFCWaiter::setMealBuilder(<span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; t_builder) &#123;</div><div class="line">  m_builder = t_builder;</div><div class="line">&#125;</div><div class="line"><span class="keyword">void</span> KFCWaiter::construct() &#123;</div><div class="line">  m_builder-&gt;buildFood();</div><div class="line">  m_builder-&gt;buildDrink();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Meal.hpp Meal相当于Product</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MEAL_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MEAL_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Meal</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">  Meal(<span class="built_in">std</span>::<span class="built_in">string</span> t_food = <span class="string">"hanbao"</span>, <span class="built_in">std</span>::<span class="built_in">string</span> t_drink = <span class="string">"kele"</span>);</div><div class="line">  ~Meal();</div><div class="line">  <span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">getFood</span><span class="params">()</span> <span class="keyword">const</span></span>;</div><div class="line">  <span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">getDrink</span><span class="params">()</span> <span class="keyword">const</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">getMeal</span><span class="params">()</span> <span class="keyword">const</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">buildFood</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_food)</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_drink)</span></span>;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> m_food;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> m_drink;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Meal.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Meal.hpp"</span></span></div><div class="line">Meal::Meal(<span class="built_in">std</span>::<span class="built_in">string</span> t_food, <span class="built_in">std</span>::<span class="built_in">string</span> t_drink)</div><div class="line">    : m_food(t_food), m_drink(t_drink) &#123;&#125;</div><div class="line">Meal::~Meal() &#123;&#125;</div><div class="line"><span class="built_in">std</span>::<span class="built_in">string</span> Meal::getFood() <span class="keyword">const</span> &#123; <span class="keyword">return</span> m_food; &#125;</div><div class="line"><span class="built_in">std</span>::<span class="built_in">string</span> Meal::getDrink() <span class="keyword">const</span> &#123; <span class="keyword">return</span> m_drink; &#125;</div><div class="line"><span class="keyword">void</span> Meal::getMeal() <span class="keyword">const</span> &#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"套餐为:"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"食物:"</span> &lt;&lt; m_food &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"饮料:"</span> &lt;&lt; m_drink &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"><span class="keyword">void</span> Meal::buildFood(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_food) &#123; m_food = t_food; &#125;</div><div class="line"><span class="keyword">void</span> Meal::buildDrink(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;t_drink) &#123; m_drink = t_drink; &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilder.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> BUILDER_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> BUILDER_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Meal.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MealBuilder</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">  MealBuilder();</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildFood</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; getResult();</div><div class="line">  <span class="keyword">virtual</span> ~MealBuilder()&#123;&#125;;</div><div class="line"></div><div class="line"><span class="keyword">protected</span>:</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; m_meal;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilder.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line">MealBuilder::MealBuilder() : m_meal(<span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt;(<span class="keyword">new</span> Meal())) &#123;&#125;</div><div class="line"><span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; MealBuilder::getResult() &#123; <span class="keyword">return</span> m_meal; &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderA.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MEALBUILDERA_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MEALBUILDERA_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MealBuilderA</span> :</span> <span class="keyword">public</span> MealBuilder &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildFood</span><span class="params">()</span></span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">()</span></span>;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderA.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderA.hpp"</span></span></div><div class="line"><span class="keyword">void</span> MealBuilderA::buildFood() &#123; m_meal-&gt;buildFood(<span class="string">"套餐A食物"</span>); &#125;</div><div class="line"></div><div class="line"><span class="keyword">void</span> MealBuilderA::buildDrink() &#123; m_meal-&gt;buildDrink(<span class="string">"套餐A饮料"</span>); &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderB.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MEALBUILDERB_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> MEALBUILDERB_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilder.hpp"</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MealBuilderB</span> :</span> <span class="keyword">public</span> MealBuilder &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildFood</span><span class="params">()</span></span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">buildDrink</span><span class="params">()</span></span>;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//MealBuilderB.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderB.hpp"</span></span></div><div class="line"><span class="keyword">void</span> MealBuilderB::buildFood() &#123; m_meal-&gt;buildFood(<span class="string">"套餐B食物"</span>); &#125;</div><div class="line"></div><div class="line"><span class="keyword">void</span> MealBuilderB::buildDrink() &#123; m_meal-&gt;buildDrink(<span class="string">"套餐B饮料"</span>); &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//main.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"KFCWaiter.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderA.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"MealBuilderB.hpp"</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt; Aptr =</div><div class="line">      <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;MealBuilder&gt;(<span class="keyword">new</span> MealBuilderA());</div><div class="line">  KFCWaiter k;</div><div class="line">  k.setMealBuilder(Aptr);</div><div class="line">  k.construct();</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Meal&gt; current_meal = Aptr-&gt;getResult();</div><div class="line"></div><div class="line">  current_meal-&gt;getMeal();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/01/08/创建型设计模式之build模式/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/01/07/UML时序图详解/">
                             UML时序图详解
                         </a>

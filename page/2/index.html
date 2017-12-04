@@ -215,6 +215,68 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/09/29/Message存储服务同步刷盘与异步刷盘/">
+                            异步刷盘与同步刷盘的区别
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-09-29T17:05:01+08:00">
+	
+		    9月 29, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/消息队列/">消息队列</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="异步刷盘与同步刷盘的区别"><a href="#异步刷盘与同步刷盘的区别" class="headerlink" title="异步刷盘与同步刷盘的区别"></a>异步刷盘与同步刷盘的区别</h1><p>存储系统往往追求尽量高的吞吐,无论是传统的MySQl还是分布式存储系统Hbase，在写入的时候会尽量提升系统的吞吐。一般来说，提升系统性能的方式是先将数据写入内存中，然后再刷盘到磁盘中进行持久化。</p>
+<p>刷盘对应于MySQL中的fsync和hbase中的flush，在mysql中标识将写入的redo log以及bin　Log持久化到磁盘中，这样就保证mysql可以持续的对外提供数据服务;在hbase中表示将MainStore中的数据持久化到磁盘中。一般来说刷盘的方式有<strong>同步刷盘和异步刷盘</strong>两种。</p>
+<p>同步刷盘和异步刷盘的区别如下:</p>
+<ul>
+<li>同步刷盘:当数据写如到内存中之后立刻刷盘(同步)，在保证刷盘成功的前提下响应client。</li>
+<li>异步刷盘:数据写入内存后，直接响应client。异步将内存中的数据持久化到磁盘上。</li>
+</ul>
+<p>同步刷盘和异步输盘的优劣:</p>
+<ul>
+<li>同步刷盘保证了数据的可靠性,保证数据不会丢失。</li>
+<li>同步刷盘效率较低,因为client获取响应需要等待刷盘时间，为了提升效率，通常采用批量输盘的方式，每次刷盘将会flush内存中的所有数据。(若底层的存储为mmap，则每次刷盘将刷新所有的dirty页)</li>
+<li>异步刷盘不能保证数据的可靠性.</li>
+<li>异步刷盘可以提高系统的吞吐量.</li>
+<li>常见的异步刷盘方式有两种,分别是定时刷盘和触发式刷盘。定时刷盘可设置为如每1s刷新一次内存.触发刷盘为当内存中数据到达一定的值，会触发异步刷盘程序进行刷盘。</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/09/29/Message存储服务同步刷盘与异步刷盘/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/09/29/LinuxPs命令使用/">
                             LinuxPs命令详解
                         </a>
@@ -946,123 +1008,6 @@
                     
                         <p>
                             <a href="/2017/08/31/makefile详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/08/20/Linux正则表达式/">
-                            Linux正则表达式以及Sed使用学习
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-08-20T15:11:12+08:00">
-	
-		    8月 20, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux正则表达式以及Sed使用学习"><a href="#Linux正则表达式以及Sed使用学习" class="headerlink" title="Linux正则表达式以及Sed使用学习"></a>Linux正则表达式以及Sed使用学习</h1><p>正则表达式是熟悉和使用Linux系统的最重要的基础，其中grep,find,awk以及sed等对其依赖更大。本节将总结一下Linux中常用的正则表达式使用方法。</p>
-<h2 id="正则表达式中特殊字符"><a href="#正则表达式中特殊字符" class="headerlink" title="正则表达式中特殊字符"></a>正则表达式中特殊字符</h2><ul>
-<li>.   : 表示任何单个字符</li>
-<li>[]  : 包含一个字符序列，表示匹配序列中其中一个字符</li>
-<li>-  : 出现在[]中,表示一个序列范围.如[a-z]表示26个小写的英文字母</li>
-<li>^   : 出现在[]中，表示对序列去反。如[^a-z]表示匹配不是a-z的其他字符</li>
-<li>*  : 匹配某一个字符的０个或1个或多个实例</li>
-<li>?   : 匹配某一个字符的0个或1个实例</li>
-<li>+  : 匹配某一个字符的1个或多个实例</li>
-<li>$   : 匹配行尾。如test$指匹配以test结尾的行</li>
-<li>^   : 匹配行首。如^test指匹配以test开始的行</li>
-<li>\&lt;  : 匹配词首</li>
-<li>>  :　匹配词尾</li>
-<li>\   : 转移特殊字符,如果需要匹配上述特殊字符，用反斜杠转义</li>
-</ul>
-<h2 id="sed使用说明"><a href="#sed使用说明" class="headerlink" title="sed使用说明"></a>sed使用说明</h2><h3 id="sed命令："><a href="#sed命令：" class="headerlink" title="sed命令："></a>sed命令：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed [OPTION]... &#123;script-only-if-no-other-script&#125; [input-file]...</div></pre></td></tr></table></figure>
-<h3 id="sed使用"><a href="#sed使用" class="headerlink" title="sed使用"></a>sed使用</h3><p>data文件内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
-<h4 id="用s命令进行替换"><a href="#用s命令进行替换" class="headerlink" title="用s命令进行替换"></a>用s命令进行替换</h4><p>替换时若出现单引号，直接将脚本用双引号括起来即可。<br>1.将一行中第一个匹配的特定字符串替换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/&quot; data</div></pre></td></tr></table></figure></p>
-<p>注意不会改变原文件，只是会打印到标准输出流。若要保存可以重定向到新的文件中。</p>
-<p>2.讲一行中所有匹配的特定字符串匹配，使用g参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/g&quot; data</div></pre></td></tr></table></figure></p>
-<p>3.使用-i参数直接修改文件内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed -i &quot;s/a/an/g&quot; data</div></pre></td></tr></table></figure></p>
-<p>4.在每一行的开头添加内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/^/#/&quot; data</div></pre></td></tr></table></figure></p>
-<p>5.在每一行的结尾添加内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/$/#/&quot; data</div></pre></td></tr></table></figure></p>
-<p>6.指定特定行替换,或指定特定范围内的行替换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sed &quot;3s/an/a/&quot; data</div><div class="line">sed &quot;1,2s/an/a/&quot; data</div></pre></td></tr></table></figure></p>
-<p>7.只替换每一行的第一个a:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/1&quot; data</div></pre></td></tr></table></figure></p>
-<p>8.只替换每一行的第二个a:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/2&quot; data</div></pre></td></tr></table></figure></p>
-<p>9.只替换每一行第二个以后的所有a<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/2g&quot; data</div></pre></td></tr></table></figure></p>
-<h4 id="多个匹配"><a href="#多个匹配" class="headerlink" title="多个匹配"></a>多个匹配</h4><p>多个匹配可以用分好将匹配规则连接。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/an/a/g;s/dog/cat/g&quot; data</div></pre></td></tr></table></figure></p>
-<p>上述命令等价于:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed -e &quot;s/an/a/g&quot; -e &quot;s/dog/cat/g&quot; data</div></pre></td></tr></table></figure></p>
-<h4 id="显示被匹配的变量"><a href="#显示被匹配的变量" class="headerlink" title="显示被匹配的变量"></a>显示被匹配的变量</h4><p>&amp;可以表示被匹配的变量,即若被匹配的变量为”abc”,则&amp;代表abc。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#功能为在每个an外加[]</div><div class="line">sed -e &quot;s/an/[&amp;]/g&quot; data</div></pre></td></tr></table></figure></p>
-<h3 id="圆括号匹配"><a href="#圆括号匹配" class="headerlink" title="圆括号匹配"></a>圆括号匹配</h3><p>被圆括号括起来的匹配可以当做变量使用，注意圆括号匹配时括号需要”\”转义。变量按顺序使用\1,\2指代。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/this \(.*\) an \(.*\)/\1:\2/&quot; data</div></pre></td></tr></table></figure></p>
-<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">is:dog an</div><div class="line">is:cant</div><div class="line">is:money</div><div class="line">is:fish</div></pre></td></tr></table></figure></p>
-<h2 id="sed命令"><a href="#sed命令" class="headerlink" title="sed命令"></a>sed命令</h2><p>data内容:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
-<h3 id="N命令"><a href="#N命令" class="headerlink" title="N命令"></a>N命令</h3><p>N命令的作用是把下一行的命令纳入当做缓冲区。也就是缓冲区包括两行.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#只匹配缓冲区的第一个this</div><div class="line">sed &quot;N;s/this/that/&quot; data</div></pre></td></tr></table></figure></p>
-<p>执行命令结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">that is a dog a</div><div class="line">this is a cat</div><div class="line">that is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;N;s/\n/,/&quot; data</div></pre></td></tr></table></figure>
-<p>执行命令结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a,this is a cat</div><div class="line">this is a money,this is a fish</div></pre></td></tr></table></figure></p>
-<h3 id="a命令和i命令"><a href="#a命令和i命令" class="headerlink" title="a命令和i命令"></a>a命令和i命令</h3><ol>
-<li><p>i命令的作用是在指定行前面插入一行，行号写在i前面，中间空格可有可无；如果不写行号默认在所有行的前面插入</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#在第一行前面插入 this is my test i</div><div class="line">sed &quot;1i this is my test i&quot; data</div></pre></td></tr></table></figure>
-</li>
-<li><p>a命令的作用是在指定行后追加内容,行号写在a前面，若不写表示所有行后。也可用$代表最后一行，不过一定要有空格.</p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#在第一行后插入 this is my test a</div><div class="line">sed &quot;1a this is my test a&quot; data</div></pre></td></tr></table></figure>
-<ol>
-<li>可以使用匹配来添加</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#若匹配到cat，则在当前行后追加一行 this is test match a</div><div class="line">sed &quot;/cat/a this is test match a&quot; data</div></pre></td></tr></table></figure>
-<h3 id="c命令"><a href="#c命令" class="headerlink" title="c命令"></a>c命令</h3><p>c命令是替换匹配的行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#替换第二行</div><div class="line">sed &quot;2 c this is test c&quot; data</div></pre></td></tr></table></figure></p>
-<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is test c</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#用匹配替换</div><div class="line">sed &quot;/fish/c this is the test c&quot; data</div></pre></td></tr></table></figure>
-<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div><div class="line">this is the test c</div></pre></td></tr></table></figure></p>
-<h3 id="d命令"><a href="#d命令" class="headerlink" title="d命令"></a>d命令</h3><p>d命令删除指定的行，可指定范围<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除第２到3行</div><div class="line">sed &quot;2,3 d&quot; data</div></pre></td></tr></table></figure></p>
-<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除找到cat指定的行</div><div class="line">sed &quot;/cat/d&quot; data</div></pre></td></tr></table></figure>
-<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除第二行到结尾</div><div class="line">sed &quot;2,$ d&quot; data</div></pre></td></tr></table></figure>
-<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div></pre></td></tr></table></figure></p>
-<h3 id="p命令"><a href="#p命令" class="headerlink" title="p命令"></a>p命令</h3><p>p命令的作用是打印匹配到的行.注意打印的时候使用-n参数。sed默认输出处理后的文本，使用-n参数阻止默认输出。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印匹配到cat的行</div><div class="line">sed -n &quot;/cat/p&quot; data</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印符合从一个模式当另一个模式的行</div><div class="line">sed -n &quot;/dog/,/money/p&quot; data</div></pre></td></tr></table></figure>
-<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印从第一行到匹配到的哪一行</div><div class="line">sed -n &quot;1,/cat/p&quot; data</div></pre></td></tr></table></figure>
-<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div></pre></td></tr></table></figure></p>
-<h3 id="命令"><a href="#命令" class="headerlink" title="=命令"></a>=命令</h3><p>=参数用于打印匹配到的行号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印含有cat的行号</div><div class="line">sed -n &quot;/cat/=&quot; data</div></pre></td></tr></table></figure></p>
-<h2 id="综合运用"><a href="#综合运用" class="headerlink" title="综合运用"></a>综合运用</h2><p>将下列中所有的100替换为当前行号</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div></pre></td></tr></table></figure>
-<p>shell命令如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed = data | sed &quot;N;s/\([0-9]*\)\n\(hmset &apos;99_p_\)[0-9]*\(&apos; &apos;m_19&apos; \)[0-9]*\( &apos;t_19&apos; \)[0-9]*\( &apos;semm_19&apos; \)[0-9]*/\2\1\3\1\4\1\5\1/&quot;</div></pre></td></tr></table></figure></p>
-<p>结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">hmset &apos;99_p_1&apos; &apos;m_19&apos; 1 &apos;t_19&apos; 1 &apos;semm_19&apos; 1</div><div class="line">hmset &apos;99_p_2&apos; &apos;m_19&apos; 2 &apos;t_19&apos; 2 &apos;semm_19&apos; 2</div><div class="line">hmset &apos;99_p_3&apos; &apos;m_19&apos; 3 &apos;t_19&apos; 3 &apos;semm_19&apos; 3</div><div class="line">hmset &apos;99_p_4&apos; &apos;m_19&apos; 4 &apos;t_19&apos; 4 &apos;semm_19&apos; 4</div><div class="line">hmset &apos;99_p_5&apos; &apos;m_19&apos; 5 &apos;t_19&apos; 5 &apos;semm_19&apos; 5</div><div class="line">hmset &apos;99_p_6&apos; &apos;m_19&apos; 6 &apos;t_19&apos; 6 &apos;semm_19&apos; 6</div><div class="line">hmset &apos;99_p_7&apos; &apos;m_19&apos; 7 &apos;t_19&apos; 7 &apos;semm_19&apos; 7</div><div class="line">hmset &apos;99_p_8&apos; &apos;m_19&apos; 8 &apos;t_19&apos; 8 &apos;semm_19&apos; 8</div><div class="line">hmset &apos;99_p_9&apos; &apos;m_19&apos; 9 &apos;t_19&apos; 9 &apos;semm_19&apos; 9</div><div class="line">hmset &apos;99_p_10&apos; &apos;m_19&apos; 10 &apos;t_19&apos; 10 &apos;semm_19&apos; 10</div><div class="line">hmset &apos;99_p_11&apos; &apos;m_19&apos; 11 &apos;t_19&apos; 11 &apos;semm_19&apos; 11</div><div class="line">hmset &apos;99_p_12&apos; &apos;m_19&apos; 12 &apos;t_19&apos; 12 &apos;semm_19&apos; 12</div><div class="line">hmset &apos;99_p_13&apos; &apos;m_19&apos; 13 &apos;t_19&apos; 13 &apos;semm_19&apos; 13</div></pre></td></tr></table></figure></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/08/20/Linux正则表达式/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
