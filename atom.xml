@@ -68,6 +68,33 @@
   </entry>
   
   <entry>
+    <title>VS code配置</title>
+    <link href="http://yoursite.com/2017/12/01/VS%E9%85%8D%E7%BD%AE/"/>
+    <id>http://yoursite.com/2017/12/01/VS配置/</id>
+    <published>2017-12-01T06:08:00.000Z</published>
+    <updated>2017-12-08T08:10:02.048Z</updated>
+    
+    <content type="html"><![CDATA[<p>#VS Code配置管理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">&quot;[cpp]&quot;: &#123;</div><div class="line">&quot;editor.quickSuggestions&quot;: false</div><div class="line">&#125;,</div><div class="line">&quot;[c]&quot;: &#123;</div><div class="line">&quot;editor.quickSuggestions&quot;: false</div><div class="line">&#125;,</div><div class="line">&quot;window.zoomLevel&quot;: 0,</div><div class="line">&quot;workbench.colorTheme&quot;: &quot;Monokai&quot;,</div><div class="line">&quot;editor.fontSize&quot;: 22,</div><div class="line">// insert space when type tab</div><div class="line">&quot;editor.insertSpaces&quot;: true,</div><div class="line">&quot;http.proxy&quot;: &quot;http://dev-proxy.oa.com:8080&quot;,</div><div class="line">&quot;files.autoGuessEncoding&quot;: false,</div><div class="line">&quot;files.trimTrailingWhitespace&quot;: true,</div><div class="line">&quot;files.eol&quot;: &quot;\n&quot;,</div><div class="line">&quot;editor.wordWrap&quot;: &quot;on&quot;,</div><div class="line">&quot;editor.minimap.enabled&quot;: false,</div><div class="line">&quot;workbench.editor.enablePreview&quot;: false,</div><div class="line">&quot;codegnuglobal.executable&quot;: &quot;C:\\Program Files\\glo656wb\\bin\\global.exe&quot;,</div><div class="line">&quot;C_Cpp.clang_format_path&quot;: &quot;C:\\Program Files\\LLVM\\bin\\clang-format.exe&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;#VS Code配置管理&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;di
+    
+    </summary>
+    
+      <category term="配置管理" scheme="http://yoursite.com/categories/%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/"/>
+    
+    
+      <category term="vscode" scheme="http://yoursite.com/tags/vscode/"/>
+    
+      <category term="配置" scheme="http://yoursite.com/tags/%E9%85%8D%E7%BD%AE/"/>
+    
+  </entry>
+  
+  <entry>
     <title>C++截取定长utf8字符及字符集与字符编码总结.md</title>
     <link href="http://yoursite.com/2017/11/09/C++%E6%88%AA%E5%8F%96utf8%E5%AD%97%E7%AC%A6%E4%BB%A5%E5%8F%8A%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81%E8%AE%B0%E5%BD%95/"/>
     <id>http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/</id>
@@ -1429,34 +1456,6 @@
       <category term="回调函数" scheme="http://yoursite.com/tags/%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0/"/>
     
       <category term="signal" scheme="http://yoursite.com/tags/signal/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>makefile详解</title>
-    <link href="http://yoursite.com/2017/08/31/makefile%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://yoursite.com/2017/08/31/makefile详解/</id>
-    <published>2017-08-31T09:22:57.000Z</published>
-    <updated>2017-08-31T09:28:49.059Z</updated>
-    
-    <content type="html"><![CDATA[<p>makefile详解</p>
-<p>makefile基础<br><a href="http://blog.csdn.net/ruglcc/article/details/7814546/" target="_blank" rel="external">http://blog.csdn.net/ruglcc/article/details/7814546/</a></p>
-<p>makefile依赖关系详解<br><a href="http://blog.chinaunix.net/uid-20682147-id-76330.html" target="_blank" rel="external">http://blog.chinaunix.net/uid-20682147-id-76330.html</a><br><a href="http://blog.csdn.net/aquester/article/details/48547685" target="_blank" rel="external">http://blog.csdn.net/aquester/article/details/48547685</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;makefile详解&lt;/p&gt;
-&lt;p&gt;makefile基础&lt;br&gt;&lt;a href=&quot;http://blog.csdn.net/ruglcc/article/details/7814546/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://blog
-    
-    </summary>
-    
-      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
-    
-      <category term="makefile" scheme="http://yoursite.com/tags/makefile/"/>
     
   </entry>
   
