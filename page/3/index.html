@@ -215,6 +215,101 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/09/08/C++函数指针学习/">
+                            C++函数指针学习
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-09-08T17:47:20+08:00">
+	
+		    08 9月 2017
+    	
+    </time>
+    
+        <span>dans </span>
+        
+    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C-函数指针学习"><a href="#C-函数指针学习" class="headerlink" title="C++函数指针学习"></a>C++函数指针学习</h1><h2 id="使用函数指针的优点"><a href="#使用函数指针的优点" class="headerlink" title="使用函数指针的优点"></a>使用函数指针的优点</h2><p>使用函数指针有助于我们设计出更优秀，更简洁更高效的程序。在下面的情景中我们常用到函数指针:</p>
+<ul>
+<li>使用函数指针作为参数</li>
+<li>使用函数指针作为返回值</li>
+<li>使用函数指针作为回调函数</li>
+<li>使用函数指针数组</li>
+<li>类的静态方法和非静态方法的函数指针</li>
+<li>使用函数指针实现动态绑定</li>
+<li>在结构体中定义函数</li>
+</ul>
+<h2 id="使用函数指针提高函数的效率"><a href="#使用函数指针提高函数的效率" class="headerlink" title="使用函数指针提高函数的效率"></a>使用函数指针提高函数的效率</h2><p>当通过switch case多用多个相同类型的函数的时候，这个时候使用函数指针可以大大简化函数代码并可以明显的提高程序的执行效率。例:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include &lt;time.h&gt;</div><div class="line">#include &lt;string&gt;</div><div class="line">#include &lt;sys/time.h&gt;</div><div class="line"></div><div class="line">using namespace std;</div><div class="line"></div><div class="line">#define StartTime(id)  struct timeval __now1105##id;\</div><div class="line">                       gettimeofday(&amp;__now1105##id, 0);</div><div class="line">#define EndTime(id) struct timeval __now21105##id; \</div><div class="line">					      gettimeofday(&amp;__now21105##id, 0); \</div><div class="line">						printf(&quot;timer_%s spend time:%d us\n&quot;,#id,(__now21105##id.tv_sec-__now1105##id.tv_sec)* 1000000 + (__now21105##id.tv_usec-__now1105##id.tv_usec));</div><div class="line"></div><div class="line">double add(double a, double b) &#123;</div><div class="line">	return a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">double sub(double a, double b) &#123;</div><div class="line">	return a - b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">double multi(double a, double b) &#123;</div><div class="line">	return a * b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">double div(double a, double b) &#123;</div><div class="line">	return a/b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">typedef double (*op)(double, double);</div><div class="line"></div><div class="line">void func1(double a, double b, int flag) &#123;</div><div class="line">	switch(flag) &#123;</div><div class="line">		case 0:</div><div class="line">			add(a, b);</div><div class="line">			break;</div><div class="line">		case 1:</div><div class="line">			sub(a, b);</div><div class="line">			break;</div><div class="line">		case 2:</div><div class="line">			multi(a, b);</div><div class="line">			break;</div><div class="line">		case 3:</div><div class="line">			div(a, b);</div><div class="line">			break;</div><div class="line">		default:</div><div class="line">			break;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">//使用函数指针调用函数</div><div class="line">void func2(double a, double b, op cb) &#123;</div><div class="line">	cb(a, b);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">	StartTime(func1);</div><div class="line">		for (int i = 0; i &lt; 100000; i++) &#123;</div><div class="line">			func1(0.2, 0.034, 3);</div><div class="line">		&#125;</div><div class="line">	EndTime(func1);</div><div class="line"></div><div class="line">	StartTime(func2);</div><div class="line">		for (int i = 0; i &lt; 100000; i++) &#123;</div><div class="line">			func2(0.2, 0.034, multi);</div><div class="line">		&#125;</div><div class="line">	EndTime(func2);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由上面可以看出,由于上述switch,case中调用的函数类型（返回值类型，参数个数以及对应的类型）完全一致，我们将函数指针以参数的形式传到处理函数中。<br>运行上述函数的结果如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">timer_func1 spend time:2861 us</div><div class="line">timer_func2 spend time:2178 us</div></pre></td></tr></table></figure>
+<p>可以看出使用函数指针的效率远远高于switch case</p>
+<h2 id="函数指针用做回调函数"><a href="#函数指针用做回调函数" class="headerlink" title="函数指针用做回调函数"></a>函数指针用做回调函数</h2><blockquote>
+<p>来源于wiki<br>在计算机程序设计中，回调函数是指通过函数参数传递到其他代码的，某一块可执行代码的引用。这一设计允许底层代码调用在高层定义的子程序。如Linux C中的signal函数就是这样一个例子。</p>
+</blockquote>
+<p>signal底层的其中一个实现版本如下:由其实现可以看出信号处理的回调函数的主要功能是将处理信号的函数指针替换为用户高层自定义的函数地址fun，从而达到当接收到该信号时底层代码调用高层定义代码的效果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">Sigfunc *</div><div class="line">signal(int signo, Sigfunc *func)</div><div class="line">&#123;</div><div class="line">	struct sigaction	act, oact;</div><div class="line"></div><div class="line">	act.sa_handler = func;</div><div class="line">	sigemptyset(&amp;act.sa_mask);</div><div class="line">	act.sa_flags = 0;</div><div class="line">	if (signo == SIGALRM) &#123;</div><div class="line">#ifdef	SA_INTERRUPT</div><div class="line">		act.sa_flags |= SA_INTERRUPT;</div><div class="line">#endif</div><div class="line">	&#125; else &#123;</div><div class="line">		act.sa_flags |= SA_RESTART;</div><div class="line">	&#125;</div><div class="line">	if (sigaction(signo, &amp;act, &amp;oact) &lt; 0)</div><div class="line">		return(SIG_ERR);</div><div class="line">	return(oact.sa_handler);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当我们使用signal函数的时候,如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#include &lt;signal.h&gt;</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line"></div><div class="line">void signalcb(int signum) &#123;</div><div class="line">  printf(&quot;this is the signal:%d&quot;, signum);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  signal(SIGINT, signalcb);</div><div class="line">  pause();</div><div class="line">  return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="函数指针的本质及声明方法以及赋值"><a href="#函数指针的本质及声明方法以及赋值" class="headerlink" title="函数指针的本质及声明方法以及赋值"></a>函数指针的本质及声明方法以及赋值</h2><h3 id="函数指针的本质"><a href="#函数指针的本质" class="headerlink" title="函数指针的本质"></a>函数指针的本质</h3><p>函数指针类似于数据指针，其本质实质上是一类函数（返回值类型相同，参数个数以及对应的参数类型相同）的入口地址，即该<strong>可执行代码在内存中的起始地址</strong>。函数指针可以让我们通过函数地址去调用该函数。有利于实现函数的动态绑定，即在运行时才决定去调用哪个函数。</p>
+<h3 id="函数指针的声明方法"><a href="#函数指针的声明方法" class="headerlink" title="函数指针的声明方法"></a>函数指针的声明方法</h3><p>函数指针的声明方法有两种，包括:</p>
+<ul>
+<li>普通函数的函数指针和类静态成员函数的函数指针</li>
+<li>类非静态成员函数的函数指针</li>
+</ul>
+<p>普通函数的函数指针和类静态成员函数的函数指针:<br>int (<em>funptr)(int  qa, int qb);<br>类非静态成员函数的函数指针：<br>int MyClass::(</em>funptr)(int  qa, int qb);</p>
+<p><strong>注意上述函数指针声明时(*funptr)中的括号不能省略，若省略，有可能会产生歧义，其意义就变成了返回值为int*的函数定义了</strong></p>
+<blockquote>
+<p>上述两种函数指针声明不兼容的原因如下:(《深度探索C++对象模型》)<br>获取类的静态和非静态函数的函数指针的地址都是其在内存中实际的地址。那为什么非静态成员的指针需要绑定(指明类)？原因是类的非静态成员需要操作类的数据成员,所以类的非静态成员需要绑定this指针找到类的数据成员。故对nonstatic函数取地址是不完整的。</p>
+</blockquote>
+<h3 id="函数指针的赋值与使用"><a href="#函数指针的赋值与使用" class="headerlink" title="函数指针的赋值与使用"></a>函数指针的赋值与使用</h3><h4 id="函数指针赋值"><a href="#函数指针赋值" class="headerlink" title="函数指针赋值"></a>函数指针赋值</h4><p>对于普通指针和类的静态成员指针，有两种赋值方式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">funptr = fnc1</div><div class="line">funptr = &amp;fun1</div></pre></td></tr></table></figure></p>
+<p>对于类的非静态成员指针，只能用上面第二种形式赋值。为了保证形式的一致性和避免二义性，一般<strong>统一使用取地址符号进行赋值</strong>可避免错误出现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">funptr = &amp;classInstance.func();</div></pre></td></tr></table></figure></p>
+<h4 id="函数指针使用"><a href="#函数指针使用" class="headerlink" title="函数指针使用"></a>函数指针使用</h4><p>函数指针的使用类似于赋值。<br>对于普通指针和类的静态成员函数指针的调用，有两种调用方式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">funptr(1,2);</div><div class="line"></div><div class="line">(*funptr)(1,2);</div></pre></td></tr></table></figure></p>
+<p>对于类的静态成员函数，只能用上述第二种方式进行调用，为了保持一致性和避免二义性，一般统一使用<strong>使用*来解引用函数指针进行调用</strong>.</p>
+<h2 id="函数指针作为参数"><a href="#函数指针作为参数" class="headerlink" title="函数指针作为参数"></a>函数指针作为参数</h2><p>函数指针是一个类型，将函数指针作为参数传入函数中与其他参数类似。使用方式与上述<strong>函数指针用做回调函数</strong>中signal接收参数的方式相同。这里不再详解</p>
+<h3 id="函数指针作为返回值"><a href="#函数指针作为返回值" class="headerlink" title="函数指针作为返回值"></a>函数指针作为返回值</h3><p>既然函数指针是函数的入口地址,所以函数指针也可以作为函数的返回值返回。不过函数指针作为函数的返回值的写反比较复杂。<br>若一个函数func只有一个参数int, 其返回值类型是float (*) (float, float)；则其函数原型如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">float (*func(int op)) (float, float);</div></pre></td></tr></table></figure></p>
+<p>函数指针作为函数返回值的原则是,将函数名以及参数写到*后，函数指针的返回值放在最前面，函数指针的参数放在最后面。</p>
+<p>由上面的知识我们可以分析一下signal函数原型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void (*signal)(int signo,void (*func)(int)))(int);</div></pre></td></tr></table></figure></p>
+<p>其定义了一个有两个参数分别为int和void (<em>func)(int)，返回值为void (</em>func)(int)的函数。</p>
+<p>其本质上是将函数处理指针替换为用户自定义的函数指针。那为什么需要返回值为void (<em>func)(int)呢?原因是<em>*signal函数的返回值是旧的信号处理函数的指针，我们可以通过这个指针暂时改变signal函数处理信号的方式。之后可以通过返回的指针恢复该信号默认的处理方式。</em></em></p>
+<blockquote>
+<p>注意:signal的信号处理其函数中的int参数的含义是:当信号到达的时候,内核将该信号以整形的方式传给处理器函数，即为void (*func)(int sig)中的sig.</p>
+</blockquote>
+<h2 id="使用typedef定义函数指针"><a href="#使用typedef定义函数指针" class="headerlink" title="使用typedef定义函数指针"></a>使用typedef定义函数指针</h2><p>一般情况下，如果通过普通的方式定义函数指针，在使用的很不方便。这个时候我们可以通过typedef定义函数指针的新类型。通过typedef定义新类型时与普通类型定义新类型方式不同。对于普通类型，定义方式如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">typedef int64_t int64;</div></pre></td></tr></table></figure></p>
+<p>但是对于函数指针，定义方式如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//此处定义个名字为func的类型,它表示函数指针float (*func)(float, float)类型</div><div class="line">typedef float (*func)(float, float);</div><div class="line"></div><div class="line">float function(float a, floatb);</div><div class="line"></div><div class="line">//使用func定义变量</div><div class="line">func test = &amp;function;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/09/08/C++函数指针学习/#post-footer" class="postShorten-excerpt_link link">
+                                Commenter et partager
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/08/31/makefile详解/">
                             makefile详解
                         </a>
@@ -223,11 +318,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-08-31T17:22:57+08:00">
 	
-		    8月 31, 2017
+		    31 8月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -248,7 +343,7 @@
                     
                         <p>
                             <a href="/2017/08/31/makefile详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -273,11 +368,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-08-20T15:11:12+08:00">
 	
-		    8月 20, 2017
+		    20 8月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -365,7 +460,7 @@
                     
                         <p>
                             <a href="/2017/08/20/Linux正则表达式/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -390,11 +485,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
 	
-		    8月 20, 2017
+		    20 8月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -416,7 +511,7 @@
                     
                         <p>
                             <a href="/2017/08/20/Linux查找含有特定字符串的文件/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -441,11 +536,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
 	
-		    8月 20, 2017
+		    20 8月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -465,7 +560,7 @@
                     
                         <p>
                             <a href="/2017/08/20/Linux常用命令/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -490,11 +585,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-07-17T14:40:31+08:00">
 	
-		    7月 17, 2017
+		    17 7月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/C-学习/">C++学习</a>
 
@@ -542,7 +637,7 @@
                     
                         <p>
                             <a href="/2017/07/17/C中编码问题/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -567,11 +662,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-07-15T17:47:20+08:00">
 	
-		    7月 15, 2017
+		    15 7月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -599,7 +694,7 @@
                     
                         <p>
                             <a href="/2017/07/15/C++中find_if查找vector中的特定struct以及值域查询/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -624,11 +719,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-06-21T20:35:00+08:00">
 	
-		    6月 21, 2017
+		    21 6月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
 
@@ -647,7 +742,7 @@
                     
                         <p>
                             <a href="/2017/06/21/rapidjson创建型/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -672,11 +767,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-06-15T09:48:43+08:00">
 	
-		    6月 15, 2017
+		    15 6月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
 
@@ -706,7 +801,7 @@
                     
                         <p>
                             <a href="/2017/06/15/Unix网络编程之socket异步编程/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -731,11 +826,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-06-14T21:37:41+08:00">
 	
-		    6月 14, 2017
+		    14 6月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>dans </span>
         
     <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
 
@@ -762,209 +857,7 @@
                     
                         <p>
                             <a href="/2017/06/14/Unix网络编程之读写相关函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/13/Unix网络编程之基础函数(一)/">
-                            Unix网络编程之基础函数(一)
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-06-13T10:17:56+08:00">
-	
-		    6月 13, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix网络编程之基础函数-一"><a href="#Unix网络编程之基础函数-一" class="headerlink" title="Unix网络编程之基础函数(一)"></a>Unix网络编程之基础函数(一)</h1><p>TCP客户端与服务器之间交互过程在程序实现上的体现如下图所示,注意思考这个过程中TCP状态的变化(参考TCP状态转换图)：</p>
-<p><img src="/images/客户端与服务器交互图.jpg" alt=""></p>
-<p>服务器首先调用socket函数创建socket，通过bind函数将socket与主机地址及端口绑定，然后调用listen函数对主机端口进行监听，然后调用accept函数接收客户端发来的请求，若没有客户端请求，服务端将阻塞在此。客户端建立socket，然后调用connect函数与服务器三次握手建立连接，发送请求给服务器，服务器接收到请求之后对其进行处理并将处理结果返回给客户端，这个过程一直持续下去，一直到客户端与服务器断开连接，服务器接下来将关闭连接或继续等待下一个客户端的连接。</p>
-<h2 id="socket函数"><a href="#socket函数" class="headerlink" title="socket函数"></a>socket函数</h2><p>为了执行网络IO,无论是客户端还是服务器，一个进程首先要做的事情就是调用socket函数创建一个socket，并指定socket的协议族，类型以及协议。</p>
-<h4 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span><span class="params">(<span class="keyword">int</span> family, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span>;</div></pre></td></tr></table></figure>
-<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
-<li>family : 协议族，对应于sockaddr_in中的sin_family，IPv4协议时值为AF_INET.</li>
-<li>type : 套接字类型，套接字类型有多种，TCP一般使用SOCK_STREAM,UDP使用SOCK_DGRAM<ul>
-<li>SOCK_STREAM : 字节流套接字，是一种<strong>有序可靠双向的面向连接字节流</strong>的套接字</li>
-<li>SOCK_DGRAM : 数据报套接字,是一种<strong>长度固定,无连接的不可靠</strong>的套接字。</li>
-<li>SOCK_SEQPACKET : 有序分组套接字，是一种<strong>长度固定，有序，可靠的面向连接的</strong>有序分组套接字。</li>
-<li>SOCK_RAW : 原始套接字</li>
-</ul>
-</li>
-<li>protocal : 链接层传输协议，包括TCP,UDP,SCTP传输协议<ul>
-<li>IPPROTO_TCP : TCP传输协议</li>
-<li>IPPROTO_UDP : UDP传输协议</li>
-<li>IPPROTO_SCTP : SCTP传输协议</li>
-</ul>
-</li>
-</ul>
-<p>一般情况下，我们在使用socket函数的时候，可以只指定前两个参数，将第三个参数设为0，这个时候socket会将protocol设置为默认值，如当family=AF_INET,type=SOCK_STREAM时，这个时候默认的协议为IPv4 TCP协议。但是，注意有些组合是不可用的，组合如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center"></th>
-<th>AF_TNET</th>
-<th>AF_INET6</th>
-<th>AF_LOCAL</th>
-<th>AF_ROUTE</th>
-<th>AF_KEY</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">SOCK_STREAM</td>
-<td>TCP/SCTP</td>
-<td>TCP/SCTP</td>
-<td>是</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center">SOCK_DGRAM</td>
-<td>UDP</td>
-<td>UDP</td>
-<td>是</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center">SOCK_SEQPACKET</td>
-<td>SCTP</td>
-<td>SCTP</td>
-<td>是</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center">SOCK_RAW</td>
-<td>IPv4</td>
-<td>IPv6</td>
-<td></td>
-<td>是</td>
-<td>是</td>
-</tr>
-</tbody>
-</table>
-<h3 id="返回值说明"><a href="#返回值说明" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>socket函数与open函数类似，若成功，返回一个较小的非负整数,称为套接字描述符，若失败返回-1;</p>
-<h2 id="connect函数"><a href="#connect函数" class="headerlink" title="connect函数"></a>connect函数</h2><p>TCP客户端通过connect函数来与服务器建立连接,注意<strong>客户在调用connect函数之前不必调用bind函数将sockfd与本机的IP端口绑定，因为如果需要的话，内核会确定源IP地址，并选择一个可用的临时端口作为端口号</strong>。</p>
-<p>客户端调用connect函数的时候会激发三次握手连接建立。而且只在连接建立成功或失败时返回，否则会一直阻塞在connect函数处。</p>
-<p>connect函数出错的情况包括以下几种：</p>
-<ul>
-<li>若TCP在调用connect之后没有接收到syn分节，则返回ETIMEOUT错误。这种情况通常发生在<strong>目的主机不存在情况下</strong>。这时客户端会隔一段时间发送一次请求，若等待时间超过一定时间(这个过程客户端被阻塞)，返回ETIMEOUT错误。</li>
-<li>若T客户端收到RST分节(复位)，则返回ECONNREFUSED错误，这种情况发生在<strong>目的主机存在，但是主机上没有进程监听指定端口。</strong></li>
-<li>若客户端发送的分节在某个路由器上返回destination unreachable，此时返回EHOSTUNREACH，这种情况发生在<strong>目的主机和端口存在，但是中间路由出现问题</strong>。</li>
-</ul>
-<p>从TCP状态图可以看出，connect函数可以使得socket状态从closed转移到SYN_SENT状态,若成功，转换到ESTABLISHED状态。若套接字失败不可用，必须关闭。然后重新调用socket函数。</p>
-<h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> struct sockaddr* servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
-<li>sockfd : 此参数为调用sock函数的返回值，即套接字描述符</li>
-<li>servaddr : 指向服务器套接字地址结构的指针,套接字地址结构中必须含有Ip地址以及端口。</li>
-<li>addrlen : 上述套接字的长度。</li>
-</ul>
-<h3 id="返回值说明-1"><a href="#返回值说明-1" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>连接失败，返回-1，并将错误码写入errno中;<br>若连接成功，则返回0.</p>
-<h2 id="bind函数"><a href="#bind函数" class="headerlink" title="bind函数"></a>bind函数</h2><p>在建立socket之后，我们通常会将socket与一个套接字绑定，即将一个协议地址赋予给socket，bind函数的作用就是将socket与socket地址绑定。socket协议地址是32位的IPv4地址或128位的IPv6和16位的TCP或UDP端口的组合。</p>
-<p>一般情况下，<strong>客户端一般不调用bind函数进行绑定socket地址(可调用)</strong>,当其调用connect函数的时候，内核会获取主机的IP作为源IP，并选择一个可用的端口作为源端口，当然，客户端可以调用bind为socket指定源端口和IP；<strong>服务端一般要调用bind端口，为socket指定监听的端口和IP</strong>，因为一般情况下服务器是对外提供服务的，如http的80端口,https的443端口等等。</p>
-<blockquote>
-<p>注意：socket绑定的端口必须是<strong>进程所在主机上的网络接口之一</strong>，不能是其他主机的IP，否则会出现“Cannot assign requested address”,也不能绑定已经在使用的端口。</p>
-</blockquote>
-<h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="comment">//函数参数与connect函数中的参数及意义相同。</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> struct sockaddr* servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</div></pre></td></tr></table></figure>
-<p>bind函数可以只绑定IP，只绑定端口，也可以两者都绑定，也可以两者都不绑定，具体的制定规则如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">IP地址</th>
-<th>端口</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">统配地址(INAAR_ANY)</td>
-<td>0</td>
-<td>内核选择IP地址和端口</td>
-</tr>
-<tr>
-<td style="text-align:center">统配地址(INADDR_ANY)</td>
-<td>非0</td>
-<td>内核选择IP地址，进程指定地址</td>
-</tr>
-<tr>
-<td style="text-align:center">本地IP地址</td>
-<td>0</td>
-<td>进程指定IP,内核选择端口</td>
-</tr>
-<tr>
-<td style="text-align:center">本地IP地址</td>
-<td>0</td>
-<td>进程指定IP和端口</td>
-</tr>
-</tbody>
-</table>
-<p>一般情况下，INADDR_ANY的值为0,将其转化为s_addr的时候使用htonl函数(将主机字节序转化为网络字节序)，若是IPv6则不能使用htonl，因为IPv6的地址是一个128位的地址。需要使用另一种方式，具体参考《Unix网络编程卷一第三版》83页。</p>
-<p>若设置为内核选定端口，则必须调用<strong>getsockname</strong>函数获取系统选定的端口。<br>从bind函数返回的一个常见的错误是:EADDRINUSE : address already in use;</p>
-<h2 id="listen函数"><a href="#listen函数" class="headerlink" title="listen函数"></a>listen函数</h2><h3 id="函数原型-3"><a href="#函数原型-3" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">listen</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> backlog)</span></span>;</div></pre></td></tr></table></figure>
-<p>listen函数仅由TCP服务器调用,一般在调用socket和bind函数之后调用 .当进程调用socket函数创建套接字之后，这个套接字被默认假设为主动套接字，(主动套接字的意思是将会调用connect去和TCP服务器建立连接)。listen函数主要有以下两个作用：</p>
-<ul>
-<li>将一个未连接的套接字转化为主动套接字，指示内核应该接收指向该套接字的连接请求。调用listen成功之后TCP从CLOSED状态转变为LISTEN状态。</li>
-<li>指定内核应该为相应套接字排队的最大连接数。即backlog指定，下面两个队列的和不能超过backlog.若查过backlog还有连接请求，服务器将直接发送RST复位拒绝连接。一般不要吧backlog值设为0，因为不同系统实现对0的解释不同;一般讲backlog的值设为5,因为这是4.2BSD支持的最大值。</li>
-</ul>
-<blockquote>
-<p>内核为任何一个给定的监听套接字维护两个队列:</p>
-<ul>
-<li>未完成连接队列 ：当服务器收到客户端发来的请求之后，数据还没有处理完，此时会进入SYN_RECV状态，这个时候将进入未完成连接队列，也叫SYN队列</li>
-<li>已完成连接队列:服务器与客户端之间建立连接之后，进入ESTABLISHED状态，此时进入已完成连接队列，也叫accept队列。</li>
-</ul>
-</blockquote>
-<h2 id="accept函数"><a href="#accept函数" class="headerlink" title="accept函数"></a>accept函数</h2><p>accept函数的作用是从已经完成连接的队列头返回下一个已经完成的连接，如果已完成的连接为空，则进程进入睡眠状态(阻塞)。</p>
-<h3 id="函数原型-4"><a href="#函数原型-4" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span><span class="params">(<span class="keyword">int</span> servsockfd, struct sockaddr* cliaddr, <span class="keyword">socklen_t</span>* addr_len)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="参数说明-2"><a href="#参数说明-2" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
-<li>servsockfd : 监听的套接字描述符</li>
-<li>cliaddr : 客户端的sockaddr，如果对客户端的来源不感兴趣，可以将其设置为NULL;</li>
-<li>addr_len : aliaddr的字节数。即客户端sockaddr的地址长度。</li>
-</ul>
-<h3 id="返回值说明-2"><a href="#返回值说明-2" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若出错返回-1;如果accept成功，返回一个新的socket描述符。其代表与所返回的客户端之间的TCP连接，<strong>它是一个连接套接字,之后服务端接收和发送数据都将使用这个描述符进行操作</strong>.</p>
-<h3 id="Invalid-argument常见原因"><a href="#Invalid-argument常见原因" class="headerlink" title="Invalid argument常见原因"></a>Invalid argument常见原因</h3><p>在accept的时候,我们常会遇到Invalid argument的错误，出现这个错误的原因有很多，主要是在accept之前的准备工作出了问题。</p>
-<ul>
-<li>socket创建不成功，在socket函数后检查一下errno值</li>
-<li>绑定socket地址不成功，检查一下返回值，同时检查一下errno</li>
-<li>没有listen，或者listen出问题。</li>
-</ul>
-<p>以上三步有一步出问题或者漏掉一步都有可能出现Invalid　argument错误。</p>
-<h2 id="close函数"><a href="#close函数" class="headerlink" title="close函数"></a>close函数</h2><p>我们知道，关闭文件描述符我可使用close函数，同样的close函数也能用来关闭socket文件描述符。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> sockfd)</span></span>;</div></pre></td></tr></table></figure></p>
-<p>通常情况下,close一个TCP套接字只是将该socket描述符标记为不可用，这个时候其将不能作为read和write的第一个参数进行数据的发送和接收,然而TCP尝试发送已经排队等待的所有需要发送到对端的数据，发送完毕之后将执行正常的TCP连接终止流程关闭TCP连接.</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/06/13/Unix网络编程之基础函数(一)/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Commenter et partager
                             </a>
                         </p>
                     
@@ -982,19 +875,19 @@
                 <a class="btn btn--default btn--small" href="/page/2/">
             
                 <i class="fa fa-angle-left text-base icon-mr"></i>
-                    <span>NEWER POSTS</span>
+                    <span>POSTS RÉCENTS</span>
             </a>
         </li>
         
         
         <li class="pagination-next">
             <a class="btn btn--default btn--small" href="/page/4/">
-                    <span>OLDER POSTS</span>
+                    <span>POSTS ANCIENTS</span>
                 <i class="fa fa-angle-right text-base icon-ml"></i>
             </a>
         </li>
         
-        <li class="pagination-number">page 3 of 8</li>
+        <li class="pagination-number">page sur</li>
     </ul>
 </div>
 
