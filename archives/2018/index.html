@@ -216,6 +216,63 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/01/C中记录基础库从32位到64位机器移植导致的一些问题/">
+                            记录C/C++库从32位机器向64为机器移植过程中导致的问题和解决方案
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-01T17:51:00+08:00">
+	
+		    1月 01, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="记录C-C-库从32位机器向64为机器移植过程中导致的问题和解决方案"><a href="#记录C-C-库从32位机器向64为机器移植过程中导致的问题和解决方案" class="headerlink" title="记录C/C++库从32位机器向64为机器移植过程中导致的问题和解决方案"></a>记录C/C++库从32位机器向64为机器移植过程中导致的问题和解决方案</h1><p>最近程序库从32为向64为机器移植后，在使用过程中出现了一些问题，其中包括上一篇中记录的由于va_list类型不一致导致程序core dump或者出现异常行为的原因，这篇文章记录一下库移植之后出现的小问题。持续更新…</p>
+<h2 id="问题一-unsigned-long-int类型长度不兼容并对其按位操作"><a href="#问题一-unsigned-long-int类型长度不兼容并对其按位操作" class="headerlink" title="问题一: unsigned long int类型长度不兼容并对其按位操作"></a>问题一: unsigned long int类型长度不兼容并对其按位操作</h2><p>一般情况下在32位和64位机器单纯使用该类型在不出现数字大小溢出的情况下一般不会出现问题。但是有一种情况需要特别注意，即<strong>当对该unsigned long int进行位操作时，此时的操作结果在32和64位机器的操作结果会不同而导致其他问题。</strong></p>
+<p>例如<strong>使用unsigned long int类型作为key对其按位进行加密或哈希</strong>时，这时的加密或哈希结果会出现问题。</p>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><p>将unsigned long int类型换为uint32_t在64位机器上重新编译</p>
+<h2 id="问题二：-32位和64位默认对齐不同导致数据类型大小不同"><a href="#问题二：-32位和64位默认对齐不同导致数据类型大小不同" class="headerlink" title="问题二： 32位和64位默认对齐不同导致数据类型大小不同"></a>问题二： 32位和64位默认对齐不同导致数据类型大小不同</h2><p>在linux系统下，32位机器数据默认以4字节对齐，64为机器默认以8字节对齐。</p>
+<p>看如下结构构体:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Test</span>&#123;</span></div><div class="line">  <span class="keyword">int</span> a;</div><div class="line">  <span class="keyword">char</span>* data[<span class="number">0</span>];</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="keyword">sizeof</span>(Test) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  Test t;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;t:"</span> &lt;&lt; &amp;t &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"&amp;t.a"</span> &lt;&lt; &amp;t.a &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"&amp;t.data:"</span> &lt;&lt; &amp;t.data &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>32位机器运行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">8</div><div class="line">&amp;t:0x7ffd49f978b0</div><div class="line">&amp;t.a0x7ffd49f978b0</div><div class="line">&amp;t.data:0x7ffd49f978b4</div></pre></td></tr></table></figure></p>
+<p>64位机器运行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">8</div><div class="line">&amp;t:0x7ffd49f978b0</div><div class="line">&amp;t.a0x7ffd49f978b0</div><div class="line">&amp;t.data:0x7ffd49f978b8</div></pre></td></tr></table></figure></p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案:"></a>解决方案:</h4><p>在声明结构体前面加上#pragma pack(1)或#pragma pack(4)，强制改变结构体的对齐方式。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Test</span>&#123;</span></div><div class="line">  <span class="keyword">int</span> a;</div><div class="line">  <span class="keyword">char</span>* data[<span class="number">0</span>];</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="keyword">sizeof</span>(Test) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  Test t;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;t:"</span> &lt;&lt; &amp;t &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"&amp;t.a"</span> &lt;&lt; &amp;t.a &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"&amp;t.data:"</span> &lt;&lt; &amp;t.data &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/01/01/C中记录基础库从32位到64位机器移植导致的一些问题/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/01/C中va_list类型在32位和64位机器的区别与使用/">
                             C中va_list在32位和64位机器的区别与差异
                         </a>

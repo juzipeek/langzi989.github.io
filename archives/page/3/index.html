@@ -216,6 +216,67 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/09/13/Linux中umash深入理解/">
+                            Linux中umask深入理解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-09-13T14:53:01+08:00">
+	
+		    9月 13, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Linux中umask深入理解"><a href="#Linux中umask深入理解" class="headerlink" title="Linux中umask深入理解"></a>Linux中umask深入理解</h1><p>umask(user file-creatiopn mode mask)为用户文件创建掩码，是创建文件或文件夹时默认权限的基础。通常我们可以使用chmod修改linux中文件的权限.umask的作用与chmod的效果相反，具体看下面。</p>
+<blockquote>
+<p>若没有文件掩码时，文件的默认权限为0666,文件夹的默认权限为0777。</p>
+<p>原因:</p>
+<ul>
+<li>创建文件一般是用来读写，所以默认情况下所有用户都具有读写权限，但是没有可执行权限，所以文件创建的默认权限为0666</li>
+<li>而文件夹的x权限表示的是打开权限，所以这个权限必须要有，所以文件夹的默认权限为0777。</li>
+</ul>
+</blockquote>
+<h2 id="用户掩码作用"><a href="#用户掩码作用" class="headerlink" title="用户掩码作用"></a>用户掩码作用</h2><p>上述的权限是在没有umask情况下的默认权限。但是系统为了保护用户创建文件和文件夹的权限,此时系统会有一个默认的用户掩码(umask)，大多数的Linux系统的默认掩码为022。用户掩码的作用是用户在创建文件时从文件的默认权限中去除掩码中的权限。所以文件创建之后的权限实际为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">＃文件创建权限</div><div class="line">默认权限(文件0666,文件夹0777)-umask</div></pre></td></tr></table></figure></p>
+<p>所以在用户不修改umask的情况下，创建文件的权限为：0666-0022=0644。创建文件夹的权限为：0777-0022=0755</p>
+<h2 id="查看与修改默认掩码"><a href="#查看与修改默认掩码" class="headerlink" title="查看与修改默认掩码"></a>查看与修改默认掩码</h2><p>查看用户掩码:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#以数字方式查看掩码</div><div class="line">umask</div><div class="line"># 以符号形式查看掩码</div><div class="line">umask -S</div></pre></td></tr></table></figure></p>
+<p>可以使用umask命令直接修改掩码。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">umask 0000</div></pre></td></tr></table></figure></p>
+<p>上述方法修改的掩码只在当前tty中生效.若要全局生效,可以讲umask值写在/etc/profile或者.bashrc中</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/09/13/Linux中umash深入理解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/09/10/Unix高级编程之signal/">
                             Unix高级编程之signal
                         </a>
@@ -914,54 +975,6 @@
                     
                         <p>
                             <a href="/2017/07/15/C++中find_if查找vector中的特定struct以及值域查询/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/21/rapidjson创建型/">
-                            rapidjson创建型
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-06-21T20:35:00+08:00">
-	
-		    6月 21, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="rapidjson创建型"><a href="#rapidjson创建型" class="headerlink" title="rapidjson创建型"></a>rapidjson创建型</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include &quot;rapidjson/document.h&quot;</div><div class="line">#include &quot;rapidjson/stringbuffer.h&quot;</div><div class="line">#include &quot;rapidjson/writer.h&quot;</div><div class="line">#include &lt;string&gt;</div><div class="line"></div><div class="line">using namespace std;</div><div class="line">using namespace rapidjson;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">    Document d;</div><div class="line">    d.SetObject();</div><div class="line">    std::string s = &quot;123&quot;;</div><div class="line">    rapidjson::Document::AllocatorType&amp; allocator = d.GetAllocator();</div><div class="line"></div><div class="line">    //生成含有数组的document，注意在rapidjson中所有的数据都是一个Value，数组的本质也是一个Array;</div><div class="line">    rapidjson::Value arr(rapidjson::kArrayType);</div><div class="line"></div><div class="line">    arr.PushBack(&quot;1&quot;, allocator);</div><div class="line">    arr.PushBack(&quot;2&quot;, allocator);</div><div class="line">    arr.PushBack(rapidjson::StringRef(s.c_str()), allocator);</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    //生成数组中包含有多个obj的数组</div><div class="line">    rapidjson::Value o1;</div><div class="line">    o1.SetObject();</div><div class="line">    o1.AddMember(&quot;o1&quot;, 1, allocator);</div><div class="line">    arr.PushBack(o1, allocator);</div><div class="line">    rapidjson::Value o2;</div><div class="line">    o2.SetObject();</div><div class="line">    o2.AddMember(&quot;o2&quot;, 2, allocator);</div><div class="line">    arr.PushBack(o2, allocator);</div><div class="line"></div><div class="line">    d.AddMember(&quot;arr&quot;, arr, allocator);</div><div class="line">    rapidjson::StringBuffer buffer;</div><div class="line">    rapidjson::Writer&lt;StringBuffer&gt; writer(buffer);</div><div class="line">    d.Accept(writer);</div><div class="line"></div><div class="line">    std::cout &lt;&lt; buffer.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/06/21/rapidjson创建型/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
