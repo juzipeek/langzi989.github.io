@@ -216,6 +216,67 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/01/C中va_list类型在32位和64位机器的区别与使用/">
+                            C中va_list在32位和64位机器的区别与差异
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-01T15:00:00+08:00">
+	
+		    1月 01, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C中va-list在32位和64位机器的区别与差异"><a href="#C中va-list在32位和64位机器的区别与差异" class="headerlink" title="C中va_list在32位和64位机器的区别与差异"></a>C中va_list在32位和64位机器的区别与差异</h1><p>在将程序从32位机器移植到64位机器的过程中经常出现一些奇奇怪怪的错误,这里记录一下在使用可变参数的过程中导致在32位机器上正常运行的程序移植到64位机器上之后出现段错误的发现过程以及解决方案。</p>
+<p>首先看下面一段代码:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">parse</span><span class="params">(va_list ap)</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span>* arg;</div><div class="line">  arg = va_arg(ap, <span class="keyword">char</span>*);</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; arg &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="built_in">strlen</span>(arg) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> </span>&#123;</div><div class="line">  va_list ap;</div><div class="line">  va_start(ap, format);</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; i++) &#123;</div><div class="line">    parse(ap);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  va_end(ap);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  test(<span class="string">"hget %s %s"</span>, <span class="string">"abc"</span>, <span class="string">"123456"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在<strong>32位机器的运行结果</strong>如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">abc</div><div class="line">3</div><div class="line">abc</div><div class="line">3</div></pre></td></tr></table></figure></p>
+<p>在<strong>64位机器运行结果</strong>如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">abc</div><div class="line">3</div><div class="line">123456</div><div class="line">6</div></pre></td></tr></table></figure></p>
+<h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><p>出现上述结果的原因是由于va_list类型在32位和64位机器的类型不同导致的.</p>
+<h4 id="32位va-list"><a href="#32位va-list" class="headerlink" title="32位va_list"></a>32位va_list</h4><p>在32位上,va_list的定义为:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//注意，由于中间宏过多，这里省去了中间如_VA_LIST宏，直接给出实际定义。</span></div><div class="line"><span class="keyword">typedef</span> va_list <span class="keyword">char</span>**;</div></pre></td></tr></table></figure>
+<h4 id="64位va-list"><a href="#64位va-list" class="headerlink" title="64位va_list"></a>64位va_list</h4><p>在64位上va_list定义为一个结构体数组，并且数组中记录了可变参数被读的偏移量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// Figure 3.34</div><div class="line">typedef struct &#123;</div><div class="line">   unsigned int gp_offset;</div><div class="line">   unsigned int fp_offset;</div><div class="line">   void *overflow_arg_area;</div><div class="line">   void *reg_save_area;</div><div class="line">&#125; va_list[1];</div></pre></td></tr></table></figure>
+<h4 id="程序异常分析"><a href="#程序异常分析" class="headerlink" title="程序异常分析"></a>程序异常分析</h4><p>当在32位机器上将va_list(char**)作为参数传递给函数的时候，该函数将从头开始读取该变长参数，还是使用va_list完毕并<strong>不记录当前va_list被读的偏移量</strong>，所以当第二次传入该va_list还是从头开始读取。</p>
+<p>当在64为机器上将va_list(struct 数组)作为参数传递给函数的时候，该函数读取va_list完毕之后，将读取的偏移量记录在结构体中，由于其为数组传入函数，所以该<strong>被调用的函数改变了传入的va_list的偏移量</strong>。导致下次调用该函数从记录的偏移量开始读,造成不可预测或者内存越界等问题。</p>
+<h2 id="移植解决方案"><a href="#移植解决方案" class="headerlink" title="移植解决方案"></a>移植解决方案</h2><p>将va_list初始化写到for循环内部，每次调用函数前都初始化va_list即可。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">parse</span><span class="params">(va_list ap)</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span>* arg;</div><div class="line">  arg = va_arg(ap, <span class="keyword">char</span>*);</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; arg &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="built_in">strlen</span>(arg) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; i++) &#123;</div><div class="line">    va_list ap;</div><div class="line">    va_start(ap, format);</div><div class="line">    parse(ap);</div><div class="line">    va_end(ap);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  test(<span class="string">"hget %s %s"</span>, <span class="string">"abc"</span>, <span class="string">"123456"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>参考:<br><a href="https://stackoverflow.com/questions/4958384/what-is-the-format-of-the-x86-64-va-list-structure" target="_blank" rel="external">https://stackoverflow.com/questions/4958384/what-is-the-format-of-the-x86-64-va-list-structure</a><br><a href="http://blog.csdn.net/doubleface999/article/details/55798710" target="_blank" rel="external">http://blog.csdn.net/doubleface999/article/details/55798710</a></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/01/01/C中va_list类型在32位和64位机器的区别与使用/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/01/C中snprintf与vsnprintf函数/">
                             C中snprintf与vsnprintf函数,自定义可变参数格式化字符串
                         </a>
