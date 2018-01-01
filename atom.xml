@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-12-10T10:42:06.489Z</updated>
+  <updated>2018-01-01T05:00:17.575Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,52 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>C中snprintf与vsnprintf函数,自定义可变参数格式化字符串</title>
+    <link href="http://yoursite.com/2018/01/01/C%E4%B8%ADsnprintf%E4%B8%8Evsnprintf%E5%87%BD%E6%95%B0/"/>
+    <id>http://yoursite.com/2018/01/01/C中snprintf与vsnprintf函数/</id>
+    <published>2018-01-01T04:59:59.000Z</published>
+    <updated>2018-01-01T05:00:17.575Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="C中snprintf与vsnprintf函数"><a href="#C中snprintf与vsnprintf函数" class="headerlink" title="C中snprintf与vsnprintf函数"></a>C中snprintf与vsnprintf函数</h1><blockquote>
+<p>虽然snprintf函数在开发过程中比较常用,但是其中有一些细节性的问题需要注意。因为snprintf函数不是C中的标准函数，不同的编译器可能对该函数的实现不同，本文说明是基于GCC编译器。</p>
+</blockquote>
+<h2 id="snprintf函数"><a href="#snprintf函数" class="headerlink" title="snprintf函数"></a>snprintf函数</h2><h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><p>snprintf函数的作用是将格式化的数据写入字符串。其函数原型如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">snprintf</span>(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">char</span>* format, ...);</div></pre></td></tr></table></figure>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li>buffer : 存储格式化字符串的buffer</li>
+<li>n : 指定格式化字符串的大小,<strong>包括\0</strong></li>
+<li>format : 指定需要格式化字符串的format</li>
+<li>… : 可变参数</li>
+</ul>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>该函数的返回值为其期望字符串的长度，而不是实际存入buffer中的字符串的长度。且<strong>不包括\0</strong>。</p>
+<h3 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h3><p>特别注意函数原型中的第二个参数包括\0的大小，而返回值为期望大小且不包括\0。</p>
+<p>例:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> buffer[<span class="number">256</span>];</div><div class="line"><span class="comment">//返回值ret = 13,buffer中的内容为123456789</span></div><div class="line"><span class="keyword">int</span> ret = <span class="built_in">snprintf</span>(buffer, <span class="number">10</span>, <span class="string">"%s"</span>, <span class="string">"1234567890abc"</span>);</div><div class="line"></div><div class="line"><span class="built_in">memset</span>(buffer, <span class="number">0x0</span>, <span class="keyword">sizeof</span>(buffer));</div><div class="line"></div><div class="line"><span class="comment">//返回值ret = 3,buffer中的内容为123</span></div><div class="line">ret =<span class="built_in">snprintf</span>(buffer, <span class="number">10</span>, <span class="string">"%s"</span>, <span class="string">"123"</span>);</div></pre></td></tr></table></figure></p>
+<h2 id="snprintf与vsnprintf"><a href="#snprintf与vsnprintf" class="headerlink" title="snprintf与vsnprintf"></a>snprintf与vsnprintf</h2><p>snprintf和vsnprintf都是C语言printf家族函数的成员。实际上，snprintf和vsnprintf功能完全一样，只是vsnprintf将snprintf中的可变参数换成了av_list类型。如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">printf</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>; <span class="comment">//输出到标准输出</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fprintf</span><span class="params">(FILE* stream, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>; <span class="comment">//输出到文件</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>;   <span class="comment">//输出到字符串</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">snprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>;   <span class="comment">//输出到字符串</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vprintf</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>; <span class="comment">//输出到标准输出</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vfprintf</span><span class="params">(FILE* stream, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>; <span class="comment">//输出到文件</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vsprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>;   <span class="comment">//输出到字符串</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vsnprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>;   <span class="comment">//输出到字符串</span></div></pre></td></tr></table></figure>
+<h3 id="va-list获取"><a href="#va-list获取" class="headerlink" title="va_list获取"></a>va_list获取</h3><p>可变参数va_list获取方式通过下列函数获取,并且总是成对调用</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">va_start(va_list ap, last);</div><div class="line">va_end(va_list ap);</div></pre></td></tr></table></figure>
+<h3 id="简单的使用vsnprintf函数实现snprintf"><a href="#简单的使用vsnprintf函数实现snprintf" class="headerlink" title="简单的使用vsnprintf函数实现snprintf"></a>简单的使用vsnprintf函数实现snprintf</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">my_snprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> size, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> </span>&#123;</div><div class="line">  va_list ap;</div><div class="line">  va_start(ap, format);</div><div class="line">  <span class="keyword">int</span> ret = vsnprintf(buffer, size, format, ap);</div><div class="line">  va_end(ap);</div><div class="line">  <span class="keyword">return</span> ret;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;C中snprintf与vsnprintf函数&quot;&gt;&lt;a href=&quot;#C中snprintf与vsnprintf函数&quot; class=&quot;headerlink&quot; title=&quot;C中snprintf与vsnprintf函数&quot;&gt;&lt;/a&gt;C中snprintf与vsnprintf
+    
+    </summary>
+    
+      <category term="C++ problems" scheme="http://yoursite.com/categories/C-problems/"/>
+    
+    
+      <category term="snprintf" scheme="http://yoursite.com/tags/snprintf/"/>
+    
+      <category term="vsnprintf" scheme="http://yoursite.com/tags/vsnprintf/"/>
+    
+      <category term="可变参数" scheme="http://yoursite.com/tags/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>Linux调试工具之strings</title>
@@ -1311,123 +1357,6 @@
       <category term="signal" scheme="http://yoursite.com/tags/signal/"/>
     
       <category term="sigaction" scheme="http://yoursite.com/tags/sigaction/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux中ulimit命令简单使用</title>
-    <link href="http://yoursite.com/2017/09/09/Linux%E4%B8%ADulimit%E5%91%BD%E4%BB%A4%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/"/>
-    <id>http://yoursite.com/2017/09/09/Linux中ulimit命令简单使用/</id>
-    <published>2017-09-09T02:05:01.000Z</published>
-    <updated>2017-09-09T02:06:40.168Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="linux中ulimit命令简单使用"><a href="#linux中ulimit命令简单使用" class="headerlink" title="linux中ulimit命令简单使用"></a>linux中ulimit命令简单使用</h1><blockquote>
-<p>系统性能是一个受关注的话题，如何通过最简单的设置来实现有效的性能调优，如何在有限资源的条件下保证程序的运作，ulimit是我们在处理问题的时候经常使用的一种手段。ulimit是一种linux系统内置的功能。下面将列举ulimit的一些常用关键字和简单用法。</p>
-</blockquote>
-<h2 id="ulimit命令参数"><a href="#ulimit命令参数" class="headerlink" title="ulimit命令参数"></a>ulimit命令参数</h2><p>ulimit参数命令</p>
-<blockquote>
-<p>注意ulimit设置分软硬区别，加-H为硬,-S为软.默认查询是显示的是软，但使用ulimit进行设置的时候为软硬都作用。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">参数</th>
-<th style="text-align:left">功能</th>
-<th style="text-align:left">示例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">-H</td>
-<td style="text-align:left">设置硬资源限制，一旦设置不能增加。</td>
-<td style="text-align:left">ulimit – Hs 64；限制硬资源，线程栈大小为 64K。</td>
-</tr>
-<tr>
-<td style="text-align:left">-S</td>
-<td style="text-align:left">设置软资源限制，设置后可以增加，但是不能超过硬资源设置。</td>
-<td style="text-align:left">ulimit – Sn 32；限制软资源，32 个文件描述符。</td>
-</tr>
-<tr>
-<td style="text-align:left">-a</td>
-<td style="text-align:left">显示当前所有的 limit 信息。</td>
-<td style="text-align:left">ulimit – a；显示当前所有的 limit 信息。</td>
-</tr>
-<tr>
-<td style="text-align:left">-c</td>
-<td style="text-align:left">最大的 core 文件的大小， 以 blocks 为单位。</td>
-<td style="text-align:left">ulimit – c unlimited； 对生成的 core 文件的大小不进行限制。</td>
-</tr>
-<tr>
-<td style="text-align:left">-d</td>
-<td style="text-align:left">进程最大的数据段的大小，以 Kbytes 为单位。</td>
-<td style="text-align:left">ulimit -d unlimited；对进程的数据段大小不进行限制。</td>
-</tr>
-<tr>
-<td style="text-align:left">-f</td>
-<td style="text-align:left">进程可以创建文件的最大值，以 blocks 为单位。</td>
-<td style="text-align:left">ulimit – f 2048；限制进程可以创建的最大文件大小为 2048 blocks。</td>
-</tr>
-<tr>
-<td style="text-align:left">-l</td>
-<td style="text-align:left">最大可加锁内存大小，以 Kbytes 为单位。</td>
-<td style="text-align:left">ulimit – l 32；限制最大可加锁内存大小为 32 Kbytes。</td>
-</tr>
-<tr>
-<td style="text-align:left">-m</td>
-<td style="text-align:left">最大内存大小，以 Kbytes 为单位。</td>
-<td style="text-align:left">ulimit – m unlimited；对最大内存不进行限制。</td>
-</tr>
-<tr>
-<td style="text-align:left">-n</td>
-<td style="text-align:left">可以打开最大文件描述符的数量。</td>
-<td style="text-align:left">ulimit – n 128；限制最大可以使用 128 个文件描述符。</td>
-</tr>
-<tr>
-<td style="text-align:left">-p</td>
-<td style="text-align:left">管道缓冲区的大小，以 Kbytes 为单位。</td>
-<td style="text-align:left">ulimit – p 512；限制管道缓冲区的大小为 512 Kbytes。</td>
-</tr>
-<tr>
-<td style="text-align:left">-s</td>
-<td style="text-align:left">线程栈大小，以 Kbytes 为单位。</td>
-<td style="text-align:left">ulimit – s 512；限制线程栈的大小为 512 Kbytes。</td>
-</tr>
-<tr>
-<td style="text-align:left">-t</td>
-<td style="text-align:left">最大的 CPU 占用时间，以秒为单位。</td>
-<td style="text-align:left">ulimit – t unlimited；对最大的 CPU 占用时间不进行限制。</td>
-</tr>
-<tr>
-<td style="text-align:left">-u</td>
-<td style="text-align:left">用户最大可用的进程数。</td>
-<td style="text-align:left">ulimit – u 64；限制用户最多可以使用 64 个进程。</td>
-</tr>
-<tr>
-<td style="text-align:left">-v</td>
-<td style="text-align:left">进程最大可用的虚拟内存，以 Kbytes 为单位。</td>
-<td style="text-align:left">ulimit – v 200000；限制最大可用的虚拟内存为 200000 Kbytes。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="ulimit参数作用范围"><a href="#ulimit参数作用范围" class="headerlink" title="ulimit参数作用范围"></a>ulimit参数作用范围</h2><ul>
-<li>针对单个tty生效:在tty中直接运行ulimit命令的作用范围是只对当前tty生效</li>
-<li>针对单个用户生效:将命令添加到.bashrc中,将对当前用户生效</li>
-<li>针对所有用户生效:将命令添加到/etc/security/limits.conf中，可以设置针对特定用户或者所有用户的限制。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;linux中ulimit命令简单使用&quot;&gt;&lt;a href=&quot;#linux中ulimit命令简单使用&quot; class=&quot;headerlink&quot; title=&quot;linux中ulimit命令简单使用&quot;&gt;&lt;/a&gt;linux中ulimit命令简单使用&lt;/h1&gt;&lt;blockquo
-    
-    </summary>
-    
-      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
-    
-      <category term="ulimit" scheme="http://yoursite.com/tags/ulimit/"/>
     
   </entry>
   
