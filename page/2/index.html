@@ -1227,8 +1227,8 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/09/20/UnixIPC关联数据结构与对象权限/">
-                            UnixIPC 关联数据结构与对象权限
+                        <a class="link-unstyled" href="/2017/09/20/UnixIPC中key_t类型本质/">
+                            UnixIPC 机制和key_t本质类型
                         </a>
                     
                 </h1>
@@ -1250,13 +1250,42 @@
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="UnixIPC-关联数据结构与对象权限"><a href="#UnixIPC-关联数据结构与对象权限" class="headerlink" title="UnixIPC 关联数据结构与对象权限"></a>UnixIPC 关联数据结构与对象权限</h1>
+                    <h1 id="System-V-IPC-机制和key-t本质类型"><a href="#System-V-IPC-机制和key-t本质类型" class="headerlink" title="System V IPC 机制和key_t本质类型"></a>System V IPC 机制和key_t本质类型</h1><h2 id="System-V三种IPC机制"><a href="#System-V三种IPC机制" class="headerlink" title="System V三种IPC机制"></a>System V三种IPC机制</h2><p>System V IPC包括三种不同的通信机制</p>
+<ul>
+<li>消息队列:消息队列类似于管道,但是又有很大的差别。第一,消息队列是有边界的，所以消息队列的通信机制是通过消息进行传递，而管道是通过字节流进行通信。第二，每条消息包括一个完整的整形字段，消息队列可以通过类型来选择消息。</li>
+<li>信号量:用于同步两个进程。</li>
+<li>共享内存:共享内存允许两个进程共享同一个内存段。即一块内存被映射到不同进程的虚拟内存中。</li>
+</ul>
+<h2 id="key-t本质"><a href="#key-t本质" class="headerlink" title="key_t本质"></a>key_t本质</h2><p>System V系统调用都有一个相关的get系统调用，它与文件io中的open函数类似，不同的是它的参数是一个整数，给定一个整数之后，系统会做以下操作:</p>
+<ul>
+<li>使用给定key创建一个新的IPC对象，并将IPC对象标识key_t返回给调用者.</li>
+<li>若该key对应的IPC对象存在，直接将标识返回给调用者，相当于使用key换取标识,而不做创建操作.</li>
+</ul>
+<p>上述IPC对象的标识类型为key_t。key_t的本质是什么?我们可以通过grep命令追踪到</p>
+<p>在文件/usr/include/sys/ipc.h中:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#ifndef __key_t_defined</div><div class="line">typedef __key_t key_t;</div><div class="line"># define __key_t_defined</div><div class="line">#endif</div></pre></td></tr></table></figure></p>
+<p>在文件/usr/include/bits/types.h中:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">__STD_TYPE __KEY_T_TYPE __key_t;        /* Type of an IPC key.  */</div></pre></td></tr></table></figure></p>
+<p>在文件/usr/include/bits/typesizes.h中:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#define __KEY_T_TYPE            __S32_TYPE</div></pre></td></tr></table></figure>
+<p>在文件中:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">#define __S32_TYPE              int</div></pre></td></tr></table></figure>
+<p>故从上面的追踪，可以看出key_t的本质为int类型.</p>
+<h2 id="获取key-t方法"><a href="#获取key-t方法" class="headerlink" title="获取key_t方法"></a>获取key_t方法</h2><p>获取ket_t的方法三种</p>
+<ul>
+<li>随机选取一个整数值作为key值，多个进程共享一个key值。注意此时不能使用已经存在的key</li>
+<li>在创建IPC对象的get方法中用IPC_PRIVATE作为key值，这样会导致每个调用都会创建一个新的IPC对象</li>
+<li>使用ftok函数生成一个key,这个方法产生的key接近唯一。</li>
+</ul>
+<h3 id="IPC-PRIVATE"><a href="#IPC-PRIVATE" class="headerlink" title="IPC_PRIVATE"></a>IPC_PRIVATE</h3><p>IPC_PRIVATE本质上为0的宏定义.使用方法是直接使用IPC_PRIVATE作为key生成一个IPC对象。这种做法保证每次产生的都是全新的IPC对象。<br>这种做法适用于在父进程fork前创建IPC对象，从而达到子进程继承IPC对象的目的。</p>
+<h3 id="ftok生成key"><a href="#ftok生成key" class="headerlink" title="ftok生成key"></a>ftok生成key</h3><h4 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型:"></a>函数原型:</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt;</span></span></div><div class="line"><span class="keyword">key_t</span> ftok(<span class="keyword">char</span>* pathname, <span class="keyword">int</span> proj);</div></pre></td></tr></table></figure>
+<h4 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能:"></a>函数功能:</h4><p>此函数的功能是根据pathname和proj的值生成key，该算法只使用proj的最低的8个有效位，应用程序必须确保pathname引用一个可以应用stat()的既有文件。否则该函数会返回-1。</p>
+<p>在linux中，key_t一般是32位的值。它通过取<strong>proj参数的最低８个有效位，包含该文件所属的文件系统的设备的设备号的最低8个有效位以及pathname所引用文件的inode号的最低16个有效位组合而成，这样保证了唯一性</strong>。所以从上面可以看出，对于同意个文件的不同路径(inode值相同),proj值相同，此时产生的key是相同的。　</p>
+
                     
                         
                     
                     
                         <p>
-                            <a href="/2017/09/20/UnixIPC关联数据结构与对象权限/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2017/09/20/UnixIPC中key_t类型本质/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
@@ -1330,7 +1359,7 @@
             <h5 id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Tencent</p>
 
             </h5>
         
