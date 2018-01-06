@@ -1,0 +1,501 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="魏传柳">
+    <title>Unix中fcntl实现对文件加锁功能 - 魏传柳</title>
+    <meta name="author" content="魏传柳(2824759538@qq.com)">
+    
+        <meta name="keywords" content="hexo,javascript,">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="fcntl实现对文件加锁功能
+之前有一篇文章详细介绍了fcntl的用法,这一节将说明使用fcntl实现对文件加锁的功能，
+
+fcntl函数原型fcntl函数如下，具体用法可参考上面的文章。
+12#include &amp;lt;fcntl.h&amp;gt;int fcntl(int fd, int cmd, .../*int args or lock args*/);
+使用fcntl对文件加锁当fcntl中的c">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Unix中fcntl实现对文件加锁功能">
+<meta property="og:url" content="http://yoursite.com/2018/01/06/Unix中fcntl实现对文件加锁功能/index.html">
+<meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="fcntl实现对文件加锁功能
+之前有一篇文章详细介绍了fcntl的用法,这一节将说明使用fcntl实现对文件加锁的功能，
+
+fcntl函数原型fcntl函数如下，具体用法可参考上面的文章。
+12#include &amp;lt;fcntl.h&amp;gt;int fcntl(int fd, int cmd, .../*int args or lock args*/);
+使用fcntl对文件加锁当fcntl中的c">
+<meta property="og:updated_time" content="2018-01-06T12:35:00.916Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Unix中fcntl实现对文件加锁功能">
+<meta name="twitter:description" content="fcntl实现对文件加锁功能
+之前有一篇文章详细介绍了fcntl的用法,这一节将说明使用fcntl实现对文件加锁的功能，
+
+fcntl函数原型fcntl函数如下，具体用法可参考上面的文章。
+12#include &amp;lt;fcntl.h&amp;gt;int fcntl(int fd, int cmd, .../*int args or lock args*/);
+使用fcntl对文件加锁当fcntl中的c">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://yoursite.com/assets/images/avar.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-nuvue6sithwirecbhvw3dkaobiojqvtadsnhguwi7k04xklybw5djl1smadp.min.css">
+    <!--STYLES END-->
+    
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/ ">魏传柳</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="/assets/images/avar.jpg"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/avar.jpg"/>
+            </a>
+            <span class="sidebar-profile-name">魏传柳(2824759538@qq.com)</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/ "
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">home</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">categories</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">tags</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">archives</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link st-search-show-outputs"
+                         href="#search"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-search"></i>
+                    <span class="sidebar-button-desc">search</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">about</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/langzi989" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="http://blog.csdn.net/u014630623" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-csdn"></i>
+                    <span class="sidebar-button-desc">CSDN</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Unix中fcntl实现对文件加锁功能
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" datetime="2018-01-06T20:31:31+08:00">
+	
+		    1月 06, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="fcntl实现对文件加锁功能"><a href="#fcntl实现对文件加锁功能" class="headerlink" title="fcntl实现对文件加锁功能"></a>fcntl实现对文件加锁功能</h1><blockquote>
+<p>之前有一篇文章详细介绍了<a href="https://langzi989.github.io/2017/05/01/Unix%E6%96%87%E4%BB%B6IO%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%8F%8Afcntl%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3/" target="_blank" rel="external">fcntl的用法</a>,这一节将说明使用fcntl实现对文件加锁的功能，</p>
+</blockquote>
+<h2 id="fcntl函数原型"><a href="#fcntl函数原型" class="headerlink" title="fcntl函数原型"></a>fcntl函数原型</h2><p>fcntl函数如下，具体用法可参考上面的文章。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> cmd, ...<span class="comment">/*int args or lock args*/</span>)</span></span>;</div></pre></td></tr></table></figure>
+<h2 id="使用fcntl对文件加锁"><a href="#使用fcntl对文件加锁" class="headerlink" title="使用fcntl对文件加锁"></a>使用fcntl对文件加锁</h2><p>当fcntl中的cmd为F_GETLK,F_SETLK,F_SELFKW时为对文件进行锁操作，此时arg参数为flock。注意：<strong>使用fcntl对文件加锁，加锁效果类似于自旋锁，只有写写互斥和读写互斥，读读并不互斥。</strong></p>
+<p><strong>cmd取值及其操作</strong>：</p>
+<ul>
+<li>F_GETLK : 获取当前锁得状态</li>
+<li>F_SETLK : 给当前文件上锁（非阻塞）。</li>
+<li>F_SETLKW : 给当前文件上锁（阻塞，若当前文件正在被锁住，该函数一直阻塞）。</li>
+</ul>
+<p>flock结构体定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">flock</span> &#123;</span></div><div class="line">  <span class="keyword">short</span> <span class="keyword">int</span> l_type;</div><div class="line">  <span class="keyword">short</span> <span class="keyword">int</span> l_whence;</div><div class="line">  <span class="keyword">off_t</span> l_start;</div><div class="line">  <span class="keyword">off_t</span> l_len;</div><div class="line"></div><div class="line">  <span class="keyword">pid_t</span> l_pid;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>下面对flock中的参数一一解释：</p>
+<ul>
+<li>l_type:此参数表示所得类型。其可能的取值包括一下三个:<ul>
+<li>F_RDLCK : 读锁</li>
+<li>F_WRLCK : 写锁</li>
+<li>F_UNLCK : 无锁状态</li>
+</ul>
+</li>
+<li>l_start : 此参数锁区域的开始位置的偏移量</li>
+<li>l_whence:此参数决定锁开始的位置。其可选参数为:<ul>
+<li>SEEK_SET:当前位置为文件的开头</li>
+<li>SEEK_CUR:当前位置为文件指针的位置</li>
+<li>SEEK_END:当前位置为文件末尾</li>
+</ul>
+</li>
+<li>l_len : 锁定文件的长度</li>
+</ul>
+<p><strong>若要锁定整个文件，通常的方法为将l_start设为０，l_whence设为SEEK_SET,l_len设为０．</strong></p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock_set</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> type)</span> </span>&#123;</div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">flock</span> <span class="title">lock</span>;</span></div><div class="line">	lock.l_whence = SEEK_SET;</div><div class="line">	lock.l_start = <span class="number">0</span>;</div><div class="line">	lock.l_len = <span class="number">0</span>;</div><div class="line"></div><div class="line">	<span class="keyword">while</span> (<span class="number">1</span>) &#123;</div><div class="line">		lock.l_type = type;</div><div class="line">		<span class="keyword">if</span> ((fcntl(fd, F_SETLK, &amp;lock)) == <span class="number">0</span>) &#123;</div><div class="line">			<span class="keyword">if</span> (lock.l_type == F_RDLCK)</div><div class="line">				<span class="built_in">printf</span>(<span class="string">"read lock set by %d\n"</span>, getpid());</div><div class="line">			<span class="keyword">else</span> <span class="keyword">if</span>(lock.l_type == F_WRLCK)</div><div class="line">				<span class="built_in">printf</span>(<span class="string">"write lock set by %d\n"</span>, getpid());</div><div class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (lock.l_type == F_UNLCK)</div><div class="line">				<span class="built_in">printf</span>(<span class="string">"release lock by %d\n"</span>, getpid());</div><div class="line">			<span class="keyword">return</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="comment">//检查文件是否可以上锁</span></div><div class="line">		fcntl(fd, F_GETLK, &amp;lock);</div><div class="line"></div><div class="line">		<span class="comment">//判断不能上锁的原因</span></div><div class="line">		<span class="keyword">if</span> (lock.l_type != F_UNLCK) &#123;</div><div class="line">			<span class="keyword">if</span> (lock.l_type == F_RDLCK)</div><div class="line">				<span class="built_in">printf</span>(<span class="string">"read lock has been already set by %d\n"</span>, getpid());</div><div class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (lock.l_type == F_WRLCK)</div><div class="line">			<span class="built_in">printf</span>(<span class="string">"write lock has been already set by %d\n"</span>, getpid());</div><div class="line">			getchar();</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">int</span> fd;</div><div class="line">	fd = open(<span class="string">"data"</span>, O_RDWR | O_CREAT, <span class="number">0666</span>);</div><div class="line">	<span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</div><div class="line">		perror(<span class="string">"open failed"</span>);</div><div class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	lock_set(fd, F_WRLCK);</div><div class="line">	getchar();</div><div class="line">	lock_set(fd, F_UNLCK);</div><div class="line">	getchar();</div><div class="line">	close(fd);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Linux/">Linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/fcntl/">fcntl</a> <a class="tag tag--primary tag--small t-link" href="/tags/读写锁/">读写锁</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/01/C中记录基础库从32位到64位机器移植导致的一些问题/" data-tooltip="记录C/C++库从32位机器向64为机器移植过程中导致的问题和解决方案">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/01/06/Unix中fcntl实现对文件加锁功能/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/01/06/Unix中fcntl实现对文件加锁功能/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/01/06/Unix中fcntl实现对文件加锁功能/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 魏传柳(2824759538@qq.com). All Rights Reserved.
+    </span>
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+     </script>
+   </br></br>本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/01/C中记录基础库从32位到64位机器移植导致的一些问题/" data-tooltip="记录C/C++库从32位机器向64为机器移植过程中导致的问题和解决方案">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/01/06/Unix中fcntl实现对文件加锁功能/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/01/06/Unix中fcntl实现对文件加锁功能/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/01/06/Unix中fcntl实现对文件加锁功能/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/01/06/Unix中fcntl实现对文件加锁功能/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/01/06/Unix中fcntl实现对文件加锁功能/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/01/06/Unix中fcntl实现对文件加锁功能/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/avar.jpg"/>
+        
+            <h4 id="about-card-name">魏传柳(2824759538@qq.com)</h4>
+        
+            <h5 id="about-card-bio"><p>author.bio</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                ShenZhen,China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+<script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+</html>
