@@ -216,6 +216,80 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/26/C语言pack与aligned的区别/">
+                            C语言pack与aligned的区别
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-26T17:30:08+08:00">
+	
+		    1月 26, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="pack与aligned的区别"><a href="#pack与aligned的区别" class="headerlink" title="pack与aligned的区别"></a>pack与aligned的区别</h1><p>GCC支持用__attribute__为变量、类型、函数以及标签指定特殊属性。其中可以使用attribute的aligned属性控制变量或类型的内存对其规则，之前一篇文章已经提到pack可以改变结构体中各成员之间的内存对其规则。<a href="https://langzi989.github.io/2017/10/02/C语言内存对其相关/" target="_blank" rel="external">https://langzi989.github.io/2017/10/02/C语言内存对其相关/</a></p>
+<p>其中#pragma pack()和__attribute__((aligned))区别很大。</p>
+<h2 id="aligned内存对其详解"><a href="#aligned内存对其详解" class="headerlink" title="aligned内存对其详解"></a>aligned内存对其详解</h2><p>使用场景:</p>
+<ul>
+<li>变量</li>
+<li>类型</li>
+</ul>
+<p>功能说明：</p>
+<ul>
+<li>当aligned作用于变量时，其作用是告诉编译器为变量分配内存的时候，要分配在指定对其的内存上.作用于变量之上不会改变变量的大小。<ul>
+<li>例如：int a __attribute__((aligned(16)));该变量a的内存起始地址为16的倍数。</li>
+</ul>
+</li>
+<li>当aligned作用于类型时，其作用是告诉编译器该类型声明的所有变量都要分配在指定对齐的内存上。当该属性作用于结构体声明时可能会改变结构体的大小。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Test</span>&#123;</span></div><div class="line">  <span class="keyword">char</span> a[<span class="number">3</span>];</div><div class="line">&#125;__attribute__((aligned(<span class="number">8</span>)));</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="comment">//8</span></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="keyword">sizeof</span>(Test);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如上所示，当align作用于结构体定义时会改变结构体的大小。结构体最终大小为aligned指定大小的整数倍。</p>
+<h2 id="aligned与pack的区别"><a href="#aligned与pack的区别" class="headerlink" title="aligned与pack的区别"></a>aligned与pack的区别</h2><p>从上面可以看出，aligned和pack的主要区别如下:</p>
+<ul>
+<li>pack作用于结构体或类的定义，而aligned既可以作用于结构体或类的定义，也可以作用于变量的声明。</li>
+<li>pack的作用是改变结构体或类中成员变量的布局规则，而aligned只是建议编译器对指定变量或指定类型的变量分配内存时的规则。</li>
+<li>pack可以压缩变量所占内存的空间</li>
+<li>align可以指定变量在内存的对其规则，而pack不可以。</li>
+<li>若某一个结构体的默认pack为n，pack指定的对齐规则m大于n，则该pack忽略。若aligned指定的对齐规则s大于n,则此时结构体的大小一定为s的整数倍。</li>
+<li>aligned和pack指定规则时都必须为2的n次幂。</li>
+</ul>
+<p>参考链接：<a href="http://blog.shengbin.me/posts/gcc-attribute-aligned-and-packed" target="_blank" rel="external">http://blog.shengbin.me/posts/gcc-attribute-aligned-and-packed</a></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/01/26/C语言pack与aligned的区别/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/06/Unix中fcntl实现对文件加锁功能/">
                             Unix中fcntl实现对文件加锁功能
                         </a>
