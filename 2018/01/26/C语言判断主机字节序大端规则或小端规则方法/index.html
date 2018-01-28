@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Tag: 主机字节序 - 魏传柳</title>
+    <title>判断主机字节序大端规则或小端规则方法 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,12 +15,52 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta property="og:type" content="blog">
-<meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/tags/主机字节序/index.html">
+    <meta name="description" content="判断主机字节序大端规则或小端规则方法大端规则与小端规则在计算机存储中存储字节的顺序有两种分别为大端规则和小端规则。
+
+小端规则(littel endian)：低序字节存储到内存较低的位置，即起始位置。
+大端规则(big endian)：低序字节存储到内存较高的位置，即高序字节存储到起始位置。
+
+有一个32位数字为:0x01020304
+在小端规则的机器上，其存储如下：
+
+
+
+低地址
+-&amp;gt;
+-">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="判断主机字节序大端规则或小端规则方法">
+<meta property="og:url" content="http://yoursite.com/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/index.html">
 <meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="判断主机字节序大端规则或小端规则方法大端规则与小端规则在计算机存储中存储字节的顺序有两种分别为大端规则和小端规则。
+
+小端规则(littel endian)：低序字节存储到内存较低的位置，即起始位置。
+大端规则(big endian)：低序字节存储到内存较高的位置，即高序字节存储到起始位置。
+
+有一个32位数字为:0x01020304
+在小端规则的机器上，其存储如下：
+
+
+
+低地址
+-&amp;gt;
+-">
+<meta property="og:updated_time" content="2018-01-28T11:26:44.130Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="魏传柳">
+<meta name="twitter:title" content="判断主机字节序大端规则或小端规则方法">
+<meta name="twitter:description" content="判断主机字节序大端规则或小端规则方法大端规则与小端规则在计算机存储中存储字节的顺序有两种分别为大端规则和小端规则。
+
+小端规则(littel endian)：低序字节存储到内存较低的位置，即起始位置。
+大端规则(big endian)：低序字节存储到内存较高的位置，即高序字节存储到起始位置。
+
+有一个32位数字为:0x01020304
+在小端规则的机器上，其存储如下：
+
+
+
+低地址
+-&amp;gt;
+-">
     
     
         
@@ -49,7 +89,7 @@
         
     
 
-<header id="header" data-behavior="1">
+<header id="header" data-behavior="3">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <h1 class="header-title">
         <a class="header-title-link" href="/ ">魏传柳</a>
@@ -73,7 +113,7 @@
         
     
 
-<nav id="sidebar" data-behavior="1">
+<nav id="sidebar" data-behavior="3">
     
         <div class="sidebar-profile">
             <a href="/#about">
@@ -200,28 +240,21 @@
 </nav>
 
             
-            <div id="main" data-behavior="1"
+            <div id="main" data-behavior="3"
                  class="
                         hasCoverMetaIn
                         ">
                 
-    
-
-<section class="postShorten-group main-content-wrap">
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
-                            判断主机字节序大端规则或小端规则方法
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            判断主机字节序大端规则或小端规则方法
+        </h1>
+    
+    <div class="post-meta">
     <time itemprop="datePublished" datetime="2018-01-26T18:30:00+08:00">
 	
 		    1月 26, 2018
@@ -236,10 +269,11 @@
     
 </div>
 
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="判断主机字节序大端规则或小端规则方法"><a href="#判断主机字节序大端规则或小端规则方法" class="headerlink" title="判断主机字节序大端规则或小端规则方法"></a>判断主机字节序大端规则或小端规则方法</h1><h2 id="大端规则与小端规则"><a href="#大端规则与小端规则" class="headerlink" title="大端规则与小端规则"></a>大端规则与小端规则</h2><p>在计算机存储中存储字节的顺序有两种分别为大端规则和小端规则。</p>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="判断主机字节序大端规则或小端规则方法"><a href="#判断主机字节序大端规则或小端规则方法" class="headerlink" title="判断主机字节序大端规则或小端规则方法"></a>判断主机字节序大端规则或小端规则方法</h1><h2 id="大端规则与小端规则"><a href="#大端规则与小端规则" class="headerlink" title="大端规则与小端规则"></a>大端规则与小端规则</h2><p>在计算机存储中存储字节的顺序有两种分别为大端规则和小端规则。</p>
 <ul>
 <li>小端规则(littel endian)：低序字节存储到内存较低的位置，即起始位置。</li>
 <li>大端规则(big endian)：低序字节存储到内存较高的位置，即高序字节存储到起始位置。</li>
@@ -287,82 +321,78 @@
 <h3 id="方法一：使用union判断"><a href="#方法一：使用union判断" class="headerlink" title="方法一：使用union判断"></a>方法一：使用union判断</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">union</span> &#123;</div><div class="line">		<span class="keyword">short</span> a;</div><div class="line">		<span class="keyword">char</span> c[<span class="number">2</span>];</div><div class="line">	&#125; u;</div><div class="line"></div><div class="line">	u.a = <span class="number">0x0102</span>;</div><div class="line">	<span class="keyword">if</span> (u.c[<span class="number">0</span>] == <span class="number">2</span> &amp;&amp; u.c[<span class="number">1</span>] == <span class="number">1</span>) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"little"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (u.c[<span class="number">0</span>] == <span class="number">1</span> &amp;&amp; u.c[<span class="number">1</span>] == <span class="number">2</span>) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"big"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"unkown"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">  	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="方法二：直接将字节取出-判断顺序"><a href="#方法二：直接将字节取出-判断顺序" class="headerlink" title="方法二：直接将字节取出,判断顺序"></a>方法二：直接将字节取出,判断顺序</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">short</span> s = <span class="number">0x0102</span>;</div><div class="line">	<span class="keyword">char</span>* a = (<span class="keyword">char</span>*)(&amp;s);</div><div class="line">	<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; (*a) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">	<span class="keyword">char</span> b = <span class="number">0x02</span>, c = <span class="number">0x01</span>;</div><div class="line">	<span class="keyword">if</span> (((*a) | b) == b) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"little"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (((*a) | c) == b) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"big"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">      	<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"unknow"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">  	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
             
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/12/Unix网络编程之主机字节序与网络字节序/">
-                            Unix网络编程之主机字节序与网络字节序
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-06-12T19:20:46+08:00">
-	
-		    6月 12, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/C/">C</a> <a class="tag tag--primary tag--small t-link" href="/tags/主机字节序/">主机字节序</a> <a class="tag tag--primary tag--small t-link" href="/tags/大端规则/">大端规则</a> <a class="tag tag--primary tag--small t-link" href="/tags/小端规则/">小端规则</a>
 
             </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/26/C语言pack与aligned的区别/" data-tooltip="C语言pack与aligned的区别">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix网络编程之主机字节序与网络字节序"><a href="#Unix网络编程之主机字节序与网络字节序" class="headerlink" title="Unix网络编程之主机字节序与网络字节序"></a>Unix网络编程之主机字节序与网络字节序</h1><p>在各种计算机体系中，对于字节，字等的存储机制有所不同，但是在网络通信过程中，如果双方交流的信息存储结构不一致，则会导致通信失败的结果。当前计算机中通常采用的字节存储机制主要有两种:<strong>大端规则与小端规则</strong>。<strong>网络通信的过程中的存储机制统一为大端规则。</strong></p>
-<h2 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a>字节序</h2><blockquote>
-<p>参考：<a href="http://www.cppblog.com/tx7do/archive/2015/12/14/71276.html" target="_blank" rel="external">http://www.cppblog.com/tx7do/archive/2015/12/14/71276.html</a></p>
-</blockquote>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/06/12/Unix网络编程之主机字节序与网络字节序/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
+                <a class="post-action-btn btn btn--default" href="#">
             
-        </div>
-        
-    </article>
-    
-    <div class="pagination-bar">
-    <ul class="pagination">
-        
-        
-        <li class="pagination-number">page 1 of 1</li>
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
     </ul>
 </div>
 
-</section>
+
+        
+            
+        
+    </div>
+</article>
+
 
 
                 <footer id="footer" class="main-content-wrap">
@@ -375,6 +405,83 @@
 </footer>
 
             </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/26/C语言pack与aligned的区别/" data-tooltip="C语言pack与aligned的区别">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
             
         </div>
         
@@ -421,6 +528,8 @@
     <!--SCRIPTS-->
 <script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
 <!--SCRIPTS END-->
+
+    
 
 
 

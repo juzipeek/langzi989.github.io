@@ -216,6 +216,66 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/06/11/C语言宏定义相关/">
+                            C语言宏定义相关
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-06-11T16:39:20+08:00">
+	
+		    6月 11, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C语言宏定义相关"><a href="#C语言宏定义相关" class="headerlink" title="C语言宏定义相关"></a>C语言宏定义相关</h1><p>C语言宏定义在代码编写中很常见，它常会带来一些很高的性能和很方便的写法，在看Linux源码中sockaddr_in的时候遇到宏定义中##。特地在此记录.</p>
+<h2 id="宏定义中-用法"><a href="#宏定义中-用法" class="headerlink" title="宏定义中##用法"></a>宏定义中##用法</h2><h3 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h3><p>Linux中sockaddr_in的定义在文件/netinet/in.h文件中。具体如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Structure describing an Internet socket address.  */</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span></span></div><div class="line">  &#123;</div><div class="line">    __SOCKADDR_COMMON (sin_);</div><div class="line">    <span class="keyword">in_port_t</span> sin_port;                 <span class="comment">// Port number.  </span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> <span class="title">sin_addr</span>;</span>            <span class="comment">// Internet address.  </span></div><div class="line"></div><div class="line">    <span class="comment">// Pad to size of struct sockaddr.</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> sin_zero[<span class="keyword">sizeof</span> (struct sockaddr) -</div><div class="line">                           __SOCKADDR_COMMON_SIZE -</div><div class="line">                           <span class="keyword">sizeof</span> (<span class="keyword">in_port_t</span>) -</div><div class="line">                           <span class="keyword">sizeof</span> (struct in_addr)];</div><div class="line">  &#125;;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __SOCKADDR_COMMON(sa_prefix)\</span></div><div class="line">  sa_family_t sa_prefix##family</div></pre></td></tr></table></figure></p>
+<p>从上面可以看出，__SOCKADDR_COMMON的宏定义中出现了##的使用方法。那它在宏定义中的意思是什么呢？</p>
+<h3 id="详解"><a href="#详解" class="headerlink" title="##详解"></a>##详解</h3><p>##是一种分隔连接方式。它的作用是先分隔，然后进行强制连接。</p>
+<p>在普通的宏定义中，预处理器一般吧空格解释为分段标志，然后进行相应的替换工作。但是这样做的结果是被替换的段之间会出现空格。如果我们不希望这些空格出现，可以使用##来代替空格。</p>
+<p>如：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> type1(type,name) type name_##type##_type</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> type2(type,name) type name##_##type##_type</span></div></pre></td></tr></table></figure></p>
+<p>上述type1(int,c)将被替换为：int name_int_type<br>上述type2(int,c)将被替换为：int c_int_type</p>
+<p>故我们再回去看<strong>SOCKADDR_COMMON的宏定义.
+</strong>SOCKADDR<em>COMMON (sin</em>);将被解释为sa_family_t sin_family;</p>
+<h2 id="注意在函数参数中使用-可以将空字符串过滤掉，否则会出现问题。如"><a href="#注意在函数参数中使用-可以将空字符串过滤掉，否则会出现问题。如" class="headerlink" title="注意在函数参数中使用##可以将空字符串过滤掉，否则会出现问题。如:"></a>注意在函数参数中使用##可以将空字符串过滤掉，否则会出现问题。如:</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_get_args_cnt( ... ) comac_arg_n( __VA_ARGS__ )</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_arg_n( _0,_1,_2,_3,_4,_5,_6,_7,N,...) N</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_args_seqs() 7,6,5,4,3,2,1,0</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_join_1( x,y ) x##y</span></div><div class="line"></div><div class="line"><span class="comment">//计算可变参数...中参数的个数.注意由于seq的范围为7-0，该宏可识别的参数个数的范围为0-7个。超过7个参数识别有问题</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> comac_argc( ... ) comac_get_args_cnt( 0,##__VA_ARGS__,comac_args_seqs() )</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="comment">//若上述comac_get_cnt中的__VA_ARGS__去掉##,结果为1,加上为0。</span></div><div class="line">  comac_argc();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="详解-1"><a href="#详解-1" class="headerlink" title="#详解"></a>#详解</h2><p>在宏定义中,#符号的作用是将宏定义参数用””括起来,<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> example(test) printf(<span class="meta-string">"%s"</span>, #test);</span></div><div class="line">example(<span class="number">123</span> <span class="number">456</span>); <span class="comment">//printf("%s", "123 456");</span></div></pre></td></tr></table></figure></p>
+<h2 id="宏定义中占位符理解"><a href="#宏定义中占位符理解" class="headerlink" title="宏定义中占位符理解"></a>宏定义中占位符理解</h2><p>在宏定义中我们可以使用字母或者单词作为占位符,初次之外，我们也可以使用_1,_2作为占位符，不要被它蒙骗了，其作用与单词作为占位符相同。如:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> sum(a,b) (a+b)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> sum(_1,_2) (_1+_2)<span class="comment">//作用同上</span></span></div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/06/11/C语言宏定义相关/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/06/07/protoBuffer中string与byte类型区别/">
                             protobuffer中string和bytes类型
                         </a>
@@ -849,57 +909,6 @@
                     
                         <p>
                             <a href="/2017/05/27/rapidJsonStream/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/27/rapidjson指针/">
-                            rapidjson指针
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-27T09:35:00+08:00">
-	
-		    5月 27, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="rapidjson指针"><a href="#rapidjson指针" class="headerlink" title="rapidjson指针"></a>rapidjson指针</h1><blockquote>
-<p>本系列文章以例子的方式进行呈现。</p>
-</blockquote>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/document.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/pointer.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">*     Json Pointer</div><div class="line">*     一个Json Pointer有一串（0至多个）token所组成，每个token之前都有/前缀。每个token</div><div class="line">*     可以是字符串或者数字。例如，给定一个json:&#123;</div><div class="line">*                                            "foo":["bar", "baz"],</div><div class="line">*                                            "pi":3.414</div><div class="line">*                                           &#125;</div><div class="line">*                               JsonPointer解析为:</div><div class="line">*                               1. "/foo"-&gt;["bar", "baz"]</div><div class="line">*                               2."/foo/0"-&gt;"bar"</div><div class="line">*                               3."/foo/1"-&gt;"baz"</div><div class="line">*                               4."pi"-&gt;3.414</div><div class="line">*       特别注意：一个空Json Pointer""解析为整个json</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  Document d;</div><div class="line"></div><div class="line">  <span class="comment">/*          创建、修改、访问dom元素</span></div><div class="line">  *           创建dom元素的方法: (两种都可以自动生成父值，可以同时创建几级)</div><div class="line">  *               1.Pointer("/Key").Set(document, "value"); key对应值为value</div><div class="line">  *               2.Pointer("/Key").Create(document). 此时创建出来的key对应的值为null</div><div class="line">  *           获取Dom元素的pointer：</div><div class="line">  *                1.Value* vptr = Pointer("/Key").Get(document)</div><div class="line">  *                2.Value&amp; vref = Pointer("/Key").GetWithDefault(document, "defaultValue");</div><div class="line">  *                       注意返回的是引用，如值不存在，则创建此键并深拷贝默认值。</div><div class="line">  *           交换:</div><div class="line">  *                 Pointer("/Key").Swap(document, value); //注意交换的是Value，不能为其他类型</div><div class="line">  *            删除：</div><div class="line">  *                 Pointer("/Key").Erase(document);</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*            针对上述函数的辅助函数</span></div><div class="line">  *           SetValueByPointer(document, "/Key", "KeyValue");</div><div class="line">  *           CreateValueByPointer(document, "/Key");</div><div class="line">  *           GetValueByPointer(document, "/Key");</div><div class="line">  *           GetValueByPointerWithDefault(document, "/default", "defaultValue");</div><div class="line">  *           SwapValueByPointer(document, "/Key", Value); //必须为Value</div><div class="line">  *           EraseValueByPointer(document, "/Key");</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*          Pointer相关函数说明</span></div><div class="line">  *           1.Pointer::Get() 或 GetValueByPointer() 函数并不修改 DOM。</div><div class="line">  *                  若那些 token 不能匹配 DOM 里的值，这些函数便返回 nullptr。</div><div class="line">  *                  使用者可利用这个方法来检查一个值是否存在。</div><div class="line">  *           2. Create()、GetWithDefault()、Set()、Swap()都会改变Dom.</div><div class="line">  *                  若一些父值不存在，就会创建它们。若父值类型不匹配 token，</div><div class="line">  *                   也会强行改变其类型。改变类型也意味着完全移除其 DOM 子树的内容</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*</span></div><div class="line">  *         Pointer中负号解析</div><div class="line">  *         1.在Get中,负号永远都是Key的名字</div><div class="line">  *         2.在Set中，若负号在数组的后面，则表示数组最后一个元素的下一个</div><div class="line">  *                   否则表示数组名。例：</div><div class="line">  *         d.Parse("&#123;\"foo\":[123]&#125;");</div><div class="line">  *         SetValueByPointer(d, "/foo/-", 456); // &#123; "foo" : [123, 456] &#125;</div><div class="line">  *         SetValueByPointer(d, "/-", 789);    // &#123; "foo" : [123, 456], "-" : 789 &#125;</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*      字符串化</span></div><div class="line">  *     可以将一个Pointe字符串化，存储于字符串或者其他输出流。</div><div class="line">  *     如：</div><div class="line">  *     Pointer p(...);</div><div class="line">  *     StringBuffer sb;</div><div class="line">  *     p.StringFy(sb);</div><div class="line">  *     std::cout &lt;&lt; sb.GetString() &lt;&lt; std::endl;</div><div class="line">  */</div><div class="line"></div><div class="line"></div><div class="line">  Pointer(<span class="string">"/project"</span>).Set(d, <span class="string">"RapidJson"</span>);</div><div class="line">  Pointer(<span class="string">"/stars"</span>).Set(d, <span class="number">10</span>);</div><div class="line"></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"project"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"stars"</span>].GetInt() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">if</span> (Value* stars = Pointer(<span class="string">"/stars"</span>).Get(d))</div><div class="line">  &#123;</div><div class="line">    stars-&gt;SetInt(stars-&gt;GetInt() + <span class="number">1</span>);</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"stars"</span>].GetInt() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  Pointer(<span class="string">"/default"</span>).GetWithDefault(d, <span class="string">"defaultValue"</span>);</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (d.HasMember(<span class="string">"default"</span>))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"default"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="function">Value <span class="title">swapValue</span><span class="params">(<span class="string">"SwapValue"</span>)</span></span>;</div><div class="line">  Pointer(<span class="string">"/default"</span>).Swap(d, swapValue);</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"default"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  Pointer(<span class="string">"/default"</span>).Erase(d);</div><div class="line">  <span class="keyword">if</span> (!d.HasMember(<span class="string">"default"</span>))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"d Erase default successful"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/27/rapidjson指针/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

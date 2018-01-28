@@ -215,6 +215,100 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
+                            判断主机字节序大端规则或小端规则方法
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-26T18:30:00+08:00">
+	
+		    1月 26, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="判断主机字节序大端规则或小端规则方法"><a href="#判断主机字节序大端规则或小端规则方法" class="headerlink" title="判断主机字节序大端规则或小端规则方法"></a>判断主机字节序大端规则或小端规则方法</h1><h2 id="大端规则与小端规则"><a href="#大端规则与小端规则" class="headerlink" title="大端规则与小端规则"></a>大端规则与小端规则</h2><p>在计算机存储中存储字节的顺序有两种分别为大端规则和小端规则。</p>
+<ul>
+<li>小端规则(littel endian)：低序字节存储到内存较低的位置，即起始位置。</li>
+<li>大端规则(big endian)：低序字节存储到内存较高的位置，即高序字节存储到起始位置。</li>
+</ul>
+<p>有一个32位数字为:0x01020304</p>
+<p>在<strong>小端规则</strong>的机器上，其存储如下：</p>
+<table>
+<thead>
+<tr>
+<th>低地址</th>
+<th>-&gt;</th>
+<th>-&gt;</th>
+<th>高地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x04</td>
+<td>0x03</td>
+<td>0x02</td>
+<td>0x01</td>
+</tr>
+</tbody>
+</table>
+<p>在<strong>大端规则机器上</strong>，其存储如下：</p>
+<table>
+<thead>
+<tr>
+<th>低地址</th>
+<th>-&gt;</th>
+<th>-&gt;</th>
+<th>高地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x01</td>
+<td>0x02</td>
+<td>0x03</td>
+<td>0x04</td>
+</tr>
+</tbody>
+</table>
+<h2 id="判断当前机器字节序的方法"><a href="#判断当前机器字节序的方法" class="headerlink" title="判断当前机器字节序的方法"></a>判断当前机器字节序的方法</h2><p>判断当前机器为大端规则还是小端规则，其本质是<strong>对于一个变量，判断其各字节的存储顺序</strong>，</p>
+<h3 id="方法一：使用union判断"><a href="#方法一：使用union判断" class="headerlink" title="方法一：使用union判断"></a>方法一：使用union判断</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">union</span> &#123;</div><div class="line">		<span class="keyword">short</span> a;</div><div class="line">		<span class="keyword">char</span> c[<span class="number">2</span>];</div><div class="line">	&#125; u;</div><div class="line"></div><div class="line">	u.a = <span class="number">0x0102</span>;</div><div class="line">	<span class="keyword">if</span> (u.c[<span class="number">0</span>] == <span class="number">2</span> &amp;&amp; u.c[<span class="number">1</span>] == <span class="number">1</span>) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"little"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (u.c[<span class="number">0</span>] == <span class="number">1</span> &amp;&amp; u.c[<span class="number">1</span>] == <span class="number">2</span>) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"big"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"unkown"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">  	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="方法二：直接将字节取出-判断顺序"><a href="#方法二：直接将字节取出-判断顺序" class="headerlink" title="方法二：直接将字节取出,判断顺序"></a>方法二：直接将字节取出,判断顺序</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">short</span> s = <span class="number">0x0102</span>;</div><div class="line">	<span class="keyword">char</span>* a = (<span class="keyword">char</span>*)(&amp;s);</div><div class="line">	<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; (*a) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">	<span class="keyword">char</span> b = <span class="number">0x02</span>, c = <span class="number">0x01</span>;</div><div class="line">	<span class="keyword">if</span> (((*a) | b) == b) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"little"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (((*a) | c) == b) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"big"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">      	<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"unknow"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">  	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/26/C语言pack与aligned的区别/">
                             C语言pack与aligned的区别
                         </a>
@@ -830,60 +924,6 @@
                     
                         <p>
                             <a href="/2017/11/09/C++截取utf8字符以及字符编码记录/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/10/16/Unix系统hook函数以及使用dl库实现/">
-                            Unix系统调用hook函数以及使用dl库实现.md
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-10-16T20:30:08+08:00">
-	
-		    10月 16, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix系统调用hook函数以及使用dl库实现"><a href="#Unix系统调用hook函数以及使用dl库实现" class="headerlink" title="Unix系统调用hook函数以及使用dl库实现"></a>Unix系统调用hook函数以及使用dl库实现</h1><blockquote>
-<p>参考链接:<a href="http://www.it165.net/os/html/201407/8847.html" target="_blank" rel="external">http://www.it165.net/os/html/201407/8847.html</a></p>
-</blockquote>
-<p>系统调用属于一种软中断机制(内中断陷阱)，它有操作系统提供的功能入口(sys_call)以及CPU提供的硬件支持(int 3 trap)共同完成。<br>hook系统调用：为当用户代码调用系统调用的时候,我们通过某种手段入侵该系统调用，使得系统调用中除了执行原有的操作,还可以完成我们需要其完成的一些自定义特性，也可以理解为我们为这个函数做了一个钩子。这样我们就可以实现如当一个文件发生写操作的时候，通知所有关注此文件的进程或线程等等。</p>
-<h2 id="通过动态链接库挟持系统调用"><a href="#通过动态链接库挟持系统调用" class="headerlink" title="通过动态链接库挟持系统调用"></a>通过动态链接库挟持系统调用</h2><p>在linux操作系统的动态链接库的世界中，LD_PRELOAD就是这样一个环境变量，它可以影响程序的运行时的链接(Runtime linker)，它允许你定义在程序运行前优先加载的动态链接库。loader在进行动态链接的时候，会将有相同符号名的符号覆盖成LD_PRELOAD指定的so文件中的符号。换句话说，可以用我们自己的so库中的函数替换原来库里有的函数，从而达到hook的目的。</p>
-<p>上述hook系统调用的方法可以使用dlfcn.h库中的一系列函数实现。<br>example,此函数hook了fcntl系统调用:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*<span class="keyword">fcntl_pfn_t</span>)</span><span class="params">(<span class="keyword">int</span> fildes, <span class="keyword">int</span> cmd, ...)</span></span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fildes, <span class="keyword">int</span> cmd, ...)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">fcntl_pfn_t</span> g_sys_fcntl_func    = (<span class="keyword">fcntl_pfn_t</span>)dlsym(RTLD_NEXT,<span class="string">"fcntl"</span>);</div><div class="line"></div><div class="line">	va_list arg_list;</div><div class="line">	va_start( arg_list,cmd );</div><div class="line"></div><div class="line">	<span class="keyword">int</span> ret = <span class="number">-1</span>;</div><div class="line">	<span class="keyword">switch</span>( cmd )</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">case</span> F_DUPFD:</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">int</span> param = va_arg(arg_list,<span class="keyword">int</span>);</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_GETFD:</div><div class="line">		&#123;</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_SETFD:</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">int</span> param = va_arg(arg_list,<span class="keyword">int</span>);</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_GETFL:</div><div class="line">		&#123;</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_SETFL:</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">int</span> param = va_arg(arg_list,<span class="keyword">int</span>);</div><div class="line">			<span class="keyword">int</span> flag = param;</div><div class="line">			flag |= O_NONBLOCK;</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,flag );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_GETOWN:</div><div class="line">		&#123;</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_SETOWN:</div><div class="line">		&#123;</div><div class="line">			<span class="keyword">int</span> param = va_arg(arg_list,<span class="keyword">int</span>);</div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_GETLK:</div><div class="line">		&#123;</div><div class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">flock</span> *<span class="title">param</span> = <span class="title">va_arg</span>(<span class="title">arg_list</span>,<span class="title">struct</span> <span class="title">flock</span> *);</span></div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_SETLK:</div><div class="line">		&#123;</div><div class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">flock</span> *<span class="title">param</span> = <span class="title">va_arg</span>(<span class="title">arg_list</span>,<span class="title">struct</span> <span class="title">flock</span> *);</span></div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">case</span> F_SETLKW:</div><div class="line">		&#123;</div><div class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">flock</span> *<span class="title">param</span> = <span class="title">va_arg</span>(<span class="title">arg_list</span>,<span class="title">struct</span> <span class="title">flock</span> *);</span></div><div class="line">			ret = g_sys_fcntl_func( fildes,cmd,param );</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	va_end( arg_list );</div><div class="line"></div><div class="line">	<span class="keyword">return</span> ret;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">int</span> old = fcntl(STDIN_FILENO, F_GETFL);</div><div class="line">	<span class="built_in">printf</span> (<span class="string">"old:%d\n"</span>, old);</div><div class="line"></div><div class="line">	fcntl(STDIN_FILENO, F_SETFL, old);</div><div class="line"></div><div class="line">	<span class="keyword">int</span> _new = fcntl(STDIN_FILENO, F_GETFL);</div><div class="line">	<span class="built_in">printf</span> (<span class="string">"new:%d\n"</span>, _new);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/10/16/Unix系统hook函数以及使用dl库实现/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
