@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archives: 2018 - 魏传柳</title>
+    <title>Archivos: 2018 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,75 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/28/Unix信号之sigaction函数/">
+                            Unix信号之sigaction函数
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-28T15:20:00+08:00">
+	
+		    28 1月 2018
+    	
+    </time>
+    
+        <span>en </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix信号之sigaction函数"><a href="#Unix信号之sigaction函数" class="headerlink" title="Unix信号之sigaction函数"></a>Unix信号之sigaction函数</h1><p>sigaction函数是除signal函数之外的另一个可以设置信号处理的函数。sigaction用法比signal函数复杂，但是可以对信号处理进行更加精准更灵活的控制。<strong>sigaction是POSIX的信号接口,而signal函数是标准C的信号接口，所以sigaction函数的可移植性更强。</strong></p>
+<h2 id="sigaction函数说明"><a href="#sigaction函数说明" class="headerlink" title="sigaction函数说明"></a>sigaction函数说明</h2><h3 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h3><p>检查或修改与指定信号相关联的处理动作，可以同时检查和修改。</p>
+<h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span>&#123;</span></div><div class="line">  <span class="keyword">void</span> (*sa_handler)(<span class="keyword">int</span>);		<span class="comment">//信号处理函数地址</span></div><div class="line">  <span class="keyword">sigset_t</span> sa_mask;				<span class="comment">//信号掩码集，当调用信号处理函数时，程序将阻塞sa_mask中的信号</span></div><div class="line">  <span class="keyword">int</span> sa_flag;					<span class="comment">//位掩码，指定用于控制信号处理过程中的各种选项。</span></div><div class="line">  <span class="keyword">void</span> (*sa_sigaction)(<span class="keyword">int</span>,<span class="keyword">siginfo_t</span>*,<span class="keyword">void</span>*);	<span class="comment">//暂不用</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigaction</span><span class="params">(<span class="keyword">int</span> signo,<span class="keyword">const</span> struct sigaction*<span class="keyword">restrict</span> act,struct sigaction*<span class="keyword">restrict</span> oact)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
+<li><p>signo : 指定操作的信号</p>
+</li>
+<li><p>act : 新修改的sigaction</p>
+</li>
+<li><p>oldact : 保存该函数原有的sigaction。</p>
+<p>​</p>
+</li>
+</ul>
+<p>上述struct sigaction中sa_flag取值说明(常用的有以下两个)：</p>
+<ul>
+<li>SA_NODEFER:当信号处理函数正在进行时，不堵塞对于信号处理函数自身信号功能。</li>
+<li>SA_RESETHAND：当用户注册的信号处理函数被执行过一次后，该信号的处理函数被设为系统默认的处理函数</li>
+</ul>
+<h3 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h3><ul>
+<li>0 : 返回0表示设置成功</li>
+<li>-1 ： 返回-1表示设置失败</li>
+</ul>
+<h2 id="函数示例"><a href="#函数示例" class="headerlink" title="函数示例"></a>函数示例</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sighandler</span><span class="params">(<span class="keyword">int</span> sig)</span> </span>&#123;</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"this is in the sig handler\n"</span>);</div><div class="line"></div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"num:%d\n"</span>, i);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">act</span>;</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">oldact</span>;</span></div><div class="line"></div><div class="line">	act.sa_handler = sighandler;</div><div class="line">	act.sa_flags = SA_NODEFER ;<span class="comment">//| SA_RESETHAND;</span></div><div class="line"></div><div class="line">	sigaction(SIGINT , &amp;act,&amp;oldact);</div><div class="line"></div><div class="line">	<span class="built_in">printf</span> (<span class="string">"this is the main function\n"</span>);</div><div class="line"></div><div class="line">	<span class="keyword">pid_t</span> pid = getpid();</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"%d"</span>, pid);</div><div class="line">	kill(pid, SIGINT);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/01/28/Unix信号之sigaction函数/#post-footer" class="postShorten-excerpt_link link">
+                                Comentar y compartir
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
                             判断主机字节序大端规则或小端规则方法
                         </a>
@@ -224,11 +293,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-26T18:30:00+08:00">
 	
-		    1月 26, 2018
+		    26 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -293,7 +362,7 @@
                     
                         <p>
                             <a href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -318,11 +387,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-26T17:30:08+08:00">
 	
-		    1月 26, 2018
+		    26 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -367,7 +436,7 @@
                     
                         <p>
                             <a href="/2018/01/26/C语言pack与aligned的区别/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -392,11 +461,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-06T20:31:31+08:00">
 	
-		    1月 06, 2018
+		    06 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -447,7 +516,7 @@
                     
                         <p>
                             <a href="/2018/01/06/Unix中fcntl实现对文件加锁功能/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -472,11 +541,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-01T17:51:00+08:00">
 	
-		    1月 01, 2018
+		    01 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -504,7 +573,7 @@
                     
                         <p>
                             <a href="/2018/01/01/C中记录基础库从32位到64位机器移植导致的一些问题/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -529,11 +598,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-01T15:00:00+08:00">
 	
-		    1月 01, 2018
+		    01 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -565,7 +634,7 @@
                     
                         <p>
                             <a href="/2018/01/01/C中va_list类型在32位和64位机器的区别与使用/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -590,11 +659,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-01T12:59:59+08:00">
 	
-		    1月 01, 2018
+		    01 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -632,7 +701,7 @@
                     
                         <p>
                             <a href="/2018/01/01/C中snprintf与vsnprintf函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -646,7 +715,7 @@
     <ul class="pagination">
         
         
-        <li class="pagination-number">page 1 of 1</li>
+        <li class="pagination-number">página 1 de 1</li>
     </ul>
 </div>
 

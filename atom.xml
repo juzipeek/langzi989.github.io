@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-01-28T11:26:44.130Z</updated>
+  <updated>2018-01-28T11:35:48.142Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,56 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Unix信号之sigaction函数</title>
+    <link href="http://yoursite.com/2018/01/28/Unix%E4%BF%A1%E5%8F%B7%E4%B9%8Bsigaction%E5%87%BD%E6%95%B0/"/>
+    <id>http://yoursite.com/2018/01/28/Unix信号之sigaction函数/</id>
+    <published>2018-01-28T07:20:00.000Z</published>
+    <updated>2018-01-28T11:35:48.142Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unix信号之sigaction函数"><a href="#Unix信号之sigaction函数" class="headerlink" title="Unix信号之sigaction函数"></a>Unix信号之sigaction函数</h1><p>sigaction函数是除signal函数之外的另一个可以设置信号处理的函数。sigaction用法比signal函数复杂，但是可以对信号处理进行更加精准更灵活的控制。<strong>sigaction是POSIX的信号接口,而signal函数是标准C的信号接口，所以sigaction函数的可移植性更强。</strong></p>
+<h2 id="sigaction函数说明"><a href="#sigaction函数说明" class="headerlink" title="sigaction函数说明"></a>sigaction函数说明</h2><h3 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h3><p>检查或修改与指定信号相关联的处理动作，可以同时检查和修改。</p>
+<h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span>&#123;</span></div><div class="line">  <span class="keyword">void</span> (*sa_handler)(<span class="keyword">int</span>);		<span class="comment">//信号处理函数地址</span></div><div class="line">  <span class="keyword">sigset_t</span> sa_mask;				<span class="comment">//信号掩码集，当调用信号处理函数时，程序将阻塞sa_mask中的信号</span></div><div class="line">  <span class="keyword">int</span> sa_flag;					<span class="comment">//位掩码，指定用于控制信号处理过程中的各种选项。</span></div><div class="line">  <span class="keyword">void</span> (*sa_sigaction)(<span class="keyword">int</span>,<span class="keyword">siginfo_t</span>*,<span class="keyword">void</span>*);	<span class="comment">//暂不用</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigaction</span><span class="params">(<span class="keyword">int</span> signo,<span class="keyword">const</span> struct sigaction*<span class="keyword">restrict</span> act,struct sigaction*<span class="keyword">restrict</span> oact)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
+<li><p>signo : 指定操作的信号</p>
+</li>
+<li><p>act : 新修改的sigaction</p>
+</li>
+<li><p>oldact : 保存该函数原有的sigaction。</p>
+<p>​</p>
+</li>
+</ul>
+<p>上述struct sigaction中sa_flag取值说明(常用的有以下两个)：</p>
+<ul>
+<li>SA_NODEFER:当信号处理函数正在进行时，不堵塞对于信号处理函数自身信号功能。</li>
+<li>SA_RESETHAND：当用户注册的信号处理函数被执行过一次后，该信号的处理函数被设为系统默认的处理函数</li>
+</ul>
+<h3 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h3><ul>
+<li>0 : 返回0表示设置成功</li>
+<li>-1 ： 返回-1表示设置失败</li>
+</ul>
+<h2 id="函数示例"><a href="#函数示例" class="headerlink" title="函数示例"></a>函数示例</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sighandler</span><span class="params">(<span class="keyword">int</span> sig)</span> </span>&#123;</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"this is in the sig handler\n"</span>);</div><div class="line"></div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"num:%d\n"</span>, i);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">act</span>;</span></div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">oldact</span>;</span></div><div class="line"></div><div class="line">	act.sa_handler = sighandler;</div><div class="line">	act.sa_flags = SA_NODEFER ;<span class="comment">//| SA_RESETHAND;</span></div><div class="line"></div><div class="line">	sigaction(SIGINT , &amp;act,&amp;oldact);</div><div class="line"></div><div class="line">	<span class="built_in">printf</span> (<span class="string">"this is the main function\n"</span>);</div><div class="line"></div><div class="line">	<span class="keyword">pid_t</span> pid = getpid();</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"%d"</span>, pid);</div><div class="line">	kill(pid, SIGINT);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Unix信号之sigaction函数&quot;&gt;&lt;a href=&quot;#Unix信号之sigaction函数&quot; class=&quot;headerlink&quot; title=&quot;Unix信号之sigaction函数&quot;&gt;&lt;/a&gt;Unix信号之sigaction函数&lt;/h1&gt;&lt;p&gt;sigact
+    
+    </summary>
+    
+      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="signal" scheme="http://yoursite.com/tags/signal/"/>
+    
+      <category term="C" scheme="http://yoursite.com/tags/C/"/>
+    
+      <category term="信号" scheme="http://yoursite.com/tags/%E4%BF%A1%E5%8F%B7/"/>
+    
+      <category term="sigaction" scheme="http://yoursite.com/tags/sigaction/"/>
+    
+  </entry>
   
   <entry>
     <title>判断主机字节序大端规则或小端规则方法</title>
@@ -1288,74 +1338,6 @@
       <category term="同步刷盘" scheme="http://yoursite.com/tags/%E5%90%8C%E6%AD%A5%E5%88%B7%E7%9B%98/"/>
     
       <category term="异步刷盘" scheme="http://yoursite.com/tags/%E5%BC%82%E6%AD%A5%E5%88%B7%E7%9B%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>LinuxPs命令详解</title>
-    <link href="http://yoursite.com/2017/09/29/LinuxPs%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8/"/>
-    <id>http://yoursite.com/2017/09/29/LinuxPs命令使用/</id>
-    <published>2017-09-29T06:05:01.000Z</published>
-    <updated>2017-09-29T06:57:53.314Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Linux-ps命令使用详解"><a href="#Linux-ps命令使用详解" class="headerlink" title="Linux ps命令使用详解"></a>Linux ps命令使用详解</h1><p>ps命令常见使用方法有两种，另外我们可以通过一写参数对ps结果进行筛选和过滤。分别是:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ps -ef</div><div class="line">ps aux</div></pre></td></tr></table></figure></p>
-<p>那这两个命令有什么区别呢？下面将对这两个命令进行详细说明和解释。</p>
-<h2 id="ps-ef"><a href="#ps-ef" class="headerlink" title="ps -ef"></a>ps -ef</h2><p>返回信息的格式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">UID        PID  PPID  C STIME TTY          TIME CMD</div><div class="line">root         1     0  0 9月24 ?       00:00:25 /sbin/init</div><div class="line">root         2     0  0 9月24 ?       00:00:00 [kthreadd]</div><div class="line">root         3     2  0 9月24 ?       00:00:00 [ksoftirqd/0]</div><div class="line">root         5     2  0 9月24 ?       00:00:00 [kworker/0:0H]</div><div class="line">root         7     2  0 9月24 ?       00:09:13 [rcu_sched]</div><div class="line">root         8     2  0 9月24 ?       00:00:00 [rcu_bh]</div><div class="line">...</div></pre></td></tr></table></figure></p>
-<p>对以上各列信息进行解释:</p>
-<ul>
-<li>uid : 用户id</li>
-<li>pid : 当前进程的id</li>
-<li>ppid : 当前进程的父进程id</li>
-<li>C : 进程占用CPU的百分比</li>
-<li>STIME : 进程启动时间</li>
-<li>CMD : 进程启动命令</li>
-</ul>
-<p>上述返回值比较容易理解，不一一解释</p>
-<h2 id="ps-aux"><a href="#ps-aux" class="headerlink" title="ps aux"></a>ps aux</h2><p>返回信息的格式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND</div><div class="line">root         1  0.0  0.0 120060  5392 ?        Ss   9月24   0:25 /sbin/init</div><div class="line">root         2  0.0  0.0      0     0 ?        S    9月24   0:00 [kthreadd]</div><div class="line">root         3  0.0  0.0      0     0 ?        S    9月24   0:00 [ksoftirqd/0]</div><div class="line">root         5  0.0  0.0      0     0 ?        S&lt;   9月24   0:00 [kworker/0:0H]</div><div class="line">root         7  0.1  0.0      0     0 ?        S    9月24   9:14 [rcu_sched]</div><div class="line">root         8  0.0  0.0      0     0 ?        S    9月24   0:00 [rcu_bh]</div><div class="line">root         9  0.0  0.0      0     0 ?        S    9月24   0:00 [migration/0]</div></pre></td></tr></table></figure></p>
-<p>对以上信息解释：</p>
-<ul>
-<li>user : 用户名</li>
-<li>pid : 进程id</li>
-<li>%CPU : 进程运行占用CPU的百分比</li>
-<li>%MEM : 进程占用内存的百分比</li>
-<li>VSZ : 该进程使用的虚拟内存量，表示一个程序完全驻留在内存中占用的虚拟内存量</li>
-<li>RSS : 该进程占用的固定内存量</li>
-<li>TTY : 终端名</li>
-<li>START : 进程开启时间</li>
-<li>STAT : 进程的状态</li>
-<li>TIME : 该进程实际使用的CPU时间</li>
-<li>COMMAND : 进程运行指令</li>
-</ul>
-<p>上述比较重要的信息主要包括VSZ,RSS以及STAT。<br>VSZ表示一个程序完全驻留在内存中占用的内存量，其包括程序链接的动态链接库的大小,栈的大小以及代码段的大小。(手动算过，但是栈的大小很迷，貌似数组在栈中的大小与同类型变量的大小相同，待验证)。<br>RSS包括运行过程中实际被加载到内存中的动态链接库，可执行文件以及栈的大小。<br>STAT为当前进程的运行状态。其包括多种状态，具体解释如下所述:</p>
-<ul>
-<li>D : 不可中断(通常是IO进程)</li>
-<li>R : 正在运行或者在队列中的进程</li>
-<li>S : 处在休眠状态的进程</li>
-<li>T : 停止或者被追踪</li>
-<li>Z : 僵尸进程</li>
-<li>W : 进入内存交换</li>
-<li>X : 死掉的进程</li>
-<li>&lt; : 优先级较高的进程</li>
-<li>n : 优先级较低的进程</li>
-<li>s : 包含子进程</li>
-<li>+ : 位于后台进程组</li>
-</ul>
-<p><strong>可以在上述命令的基础上对查询结果进行筛选</strong>，如我们想要对内存占用量进行排序，方法如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ps aux --sort -pMEM</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Linux-ps命令使用详解&quot;&gt;&lt;a href=&quot;#Linux-ps命令使用详解&quot; class=&quot;headerlink&quot; title=&quot;Linux ps命令使用详解&quot;&gt;&lt;/a&gt;Linux ps命令使用详解&lt;/h1&gt;&lt;p&gt;ps命令常见使用方法有两种，另外我们可以通过
-    
-    </summary>
-    
-      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
-    
-      <category term="ps" scheme="http://yoursite.com/tags/ps/"/>
     
   </entry>
   
