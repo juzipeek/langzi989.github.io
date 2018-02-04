@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-02-04T14:09:13.981Z</updated>
+  <updated>2018-02-04T14:13:14.520Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,13 +16,13 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>网络编程相关错误码和信号处理</title>
-    <link href="http://yoursite.com/2018/02/04/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9B%B8%E5%85%B3%E9%94%99%E8%AF%AF%E7%A0%81%E6%80%BB%E7%BB%93/"/>
-    <id>http://yoursite.com/2018/02/04/网络编程相关错误码总结/</id>
+    <title>Unix网络编程相关错误码和信号处理</title>
+    <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9B%B8%E5%85%B3%E9%94%99%E8%AF%AF%E7%A0%81%E6%80%BB%E7%BB%93/"/>
+    <id>http://yoursite.com/2018/02/04/Unix网络编程相关错误码总结/</id>
     <published>2018-02-04T13:52:40.000Z</published>
-    <updated>2018-02-04T14:09:13.981Z</updated>
+    <updated>2018-02-04T14:13:14.520Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="网络编程相关错误码和信号处理"><a href="#网络编程相关错误码和信号处理" class="headerlink" title="网络编程相关错误码和信号处理"></a>网络编程相关错误码和信号处理</h1><p><strong>特别注意当出现一下错误码时，处理之后一定要将errno复位为0</strong></p>
+    <content type="html"><![CDATA[<h1 id="Unix网络编程相关错误码和信号处理"><a href="#Unix网络编程相关错误码和信号处理" class="headerlink" title="Unix网络编程相关错误码和信号处理"></a>Unix网络编程相关错误码和信号处理</h1><p><strong>特别注意当出现一下错误码时，处理之后一定要将errno复位为0</strong></p>
 <p>在网络编程的过程中会出现一些错误码，下面总结:</p>
 <ul>
 <li><p>EAGAIN(11) : Resource temporarily unavailable</p>
@@ -57,7 +57,7 @@
     
     <summary type="html">
     
-      &lt;h1 id=&quot;网络编程相关错误码和信号处理&quot;&gt;&lt;a href=&quot;#网络编程相关错误码和信号处理&quot; class=&quot;headerlink&quot; title=&quot;网络编程相关错误码和信号处理&quot;&gt;&lt;/a&gt;网络编程相关错误码和信号处理&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;特别注意当出现一下错误码时，
+      &lt;h1 id=&quot;Unix网络编程相关错误码和信号处理&quot;&gt;&lt;a href=&quot;#Unix网络编程相关错误码和信号处理&quot; class=&quot;headerlink&quot; title=&quot;Unix网络编程相关错误码和信号处理&quot;&gt;&lt;/a&gt;Unix网络编程相关错误码和信号处理&lt;/h1&gt;&lt;p&gt;&lt;stron
     
     </summary>
     
@@ -74,14 +74,16 @@
     
       <category term="EINPROGRESS" scheme="http://yoursite.com/tags/EINPROGRESS/"/>
     
+      <category term="SIGPIPE" scheme="http://yoursite.com/tags/SIGPIPE/"/>
+    
   </entry>
   
   <entry>
-    <title></title>
+    <title>Unix网络编程相关错误码和信号处理</title>
     <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E4%B8%8ETCP%E7%8A%B6%E6%80%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E5%85%B3%E7%B3%BB%E5%AF%B9%E5%BA%94/"/>
     <id>http://yoursite.com/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/</id>
-    <published>2018-02-04T04:05:33.123Z</published>
-    <updated>2018-02-04T04:05:33.123Z</updated>
+    <published>2018-02-04T13:52:40.000Z</published>
+    <updated>2018-02-04T14:13:02.556Z</updated>
     
     <content type="html"><![CDATA[<h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
 <h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
@@ -89,15 +91,6 @@
 <p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
 </blockquote>
 <h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
-<h2 id="Unix网络编程常见错误码"><a href="#Unix网络编程常见错误码" class="headerlink" title="Unix网络编程常见错误码"></a>Unix网络编程常见错误码</h2><p><code>EINPROGRESS</code>：</p>
-<p>非阻塞socket connect 时可能返回的错误码。socket 是非阻塞的，连接不能立即建立。可以使用 <code>select</code> 来确定连接完全建立的时间。参考<a href="http://www.gnu.org/software/libc/manual/html_node/Waiting-for-I_002fO.html#Waiting-for-I_002fO" target="_blank" rel="external">等待I/O</a>。在连接完全建立前如果在相同的 socket 上调用 connect，会以 <code>EALREADY</code> 失败。</p>
-<p><code>EALREADY</code>：</p>
-<p>非阻塞socket connect 时可能返回的错误码。socket 是非阻塞的而且有一个挂起的连接。详细参考上面</p>
-<ul>
-<li>POLLER               指定的文件描述符发生错误。</li>
-<li>POLLHUP             指定的文件描述符挂起事件。</li>
-<li>POLLNVAL            指定的文件描述符非法。</li>
-</ul>
 ]]></content>
     
     <summary type="html">
@@ -106,6 +99,14 @@
     
     </summary>
     
+      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="connect" scheme="http://yoursite.com/tags/connect/"/>
+    
+      <category term="listen" scheme="http://yoursite.com/tags/listen/"/>
     
   </entry>
   

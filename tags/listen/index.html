@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Tag: ECONNRESET - 魏传柳</title>
+    <title>Tag: listen - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -17,7 +17,7 @@
     
     <meta property="og:type" content="blog">
 <meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/tags/ECONNRESET/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/listen/index.html">
 <meta property="og:site_name" content="魏传柳">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="魏传柳">
@@ -216,7 +216,7 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/04/Unix网络编程相关错误码总结/">
+                        <a class="link-unstyled" href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/">
                             Unix网络编程相关错误码和信号处理
                         </a>
                     
@@ -239,44 +239,19 @@
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix网络编程相关错误码和信号处理"><a href="#Unix网络编程相关错误码和信号处理" class="headerlink" title="Unix网络编程相关错误码和信号处理"></a>Unix网络编程相关错误码和信号处理</h1><p><strong>特别注意当出现一下错误码时，处理之后一定要将errno复位为0</strong></p>
-<p>在网络编程的过程中会出现一些错误码，下面总结:</p>
-<ul>
-<li><p>EAGAIN(11) : Resource temporarily unavailable</p>
-<ul>
-<li>错误原因：当将套接字设置为<strong>异步</strong>时，由于函数调用之后是立即返回的，所以会出现两种情况导致这个错误：（1）：当调用read函数，此时没有数据可读，此时read函数会立即返回错误码EAGAIN表示此时无数据可读（2）：当调用write函数，此时缓冲区满，write函数将会立即返回错误码EAGAIN。</li>
-<li>解决方法：EAGAIN错误表示此时无数据可读或者缓冲区已满，所以此时只需要重试即可。</li>
-</ul>
-</li>
-<li><p>ECONNRESET(104)：Connection reset by peer</p>
-<ul>
-<li>错误原因：当对端socket已关闭，此时调用read或write函数将返回ECONNRESET错误，在之后如果继续调用read或write，就会得到该错误。常见的原因是<strong>发送端接收端实现约定好的数据长度不一致，若接收端被通知需要接收99个字节,而服务端发送了100个字节给接收端,这样一来，接收端接收99个字节就执行了close操作，如果发送端继续发送,接收端将向发送端返回一个RESET信号</strong></li>
-</ul>
-</li>
-<li><p>EALREADY (114)：Operation already in progress</p>
-<ul>
-<li>错误原因：套接字为非阻塞套接字，并且原来的链接请求还未完成</li>
-</ul>
-</li>
-<li><p>EINPROGRESS(115)：Operation in progress</p>
-<ul>
-<li>错误原因：套接字为非阻塞套接字，连接正在建立</li>
-</ul>
-</li>
-</ul>
-<h2 id="网络编程相关信号"><a href="#网络编程相关信号" class="headerlink" title="网络编程相关信号"></a>网络编程相关信号</h2><ul>
-<li>SIGPIPE(13):管道破裂。管道另一端没有进程接收数据，导致管道破裂而崩溃。对一个对端已经关闭的socket进行两次write，第二次调用将会产生该信号，此信号的<strong>默认行为是结束进程</strong>。<ul>
-<li>解决方法：将该信号的处理函数设置为SIG_IGN，即忽略此信号</li>
-</ul>
-</li>
-</ul>
+                    <h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
+<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
+<blockquote>
+<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
+</blockquote>
+<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
 
                     
                         
                     
                     
                         <p>
-                            <a href="/2018/02/04/Unix网络编程相关错误码总结/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title> - 魏传柳</title>
+    <title>Unix网络编程相关错误码和信号处理 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -18,14 +18,14 @@
     <meta name="description" content="connect函数导致状态转变client状态变化：connect函数导致当前client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态。
 server TCP状态变化：当client发送SYN分节，server接收成功并返回SYN分节之后，server套接字将从LISTEN状态转移到SYN_RCVD状态，se">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="魏传柳">
+<meta property="og:title" content="Unix网络编程相关错误码和信号处理">
 <meta property="og:url" content="http://yoursite.com/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/index.html">
 <meta property="og:site_name" content="魏传柳">
 <meta property="og:description" content="connect函数导致状态转变client状态变化：connect函数导致当前client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态。
 server TCP状态变化：当client发送SYN分节，server接收成功并返回SYN分节之后，server套接字将从LISTEN状态转移到SYN_RCVD状态，se">
-<meta property="og:updated_time" content="2018-02-04T04:05:33.123Z">
+<meta property="og:updated_time" content="2018-02-04T14:13:02.556Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="魏传柳">
+<meta name="twitter:title" content="Unix网络编程相关错误码和信号处理">
 <meta name="twitter:description" content="connect函数导致状态转变client状态变化：connect函数导致当前client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态。
 server TCP状态变化：当client发送SYN分节，server接收成功并返回SYN分节之后，server套接字将从LISTEN状态转移到SYN_RCVD状态，se">
     
@@ -218,15 +218,21 @@ server TCP状态变化：当client发送SYN分节，server接收成功并返回S
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            (no title)
+            Unix网络编程相关错误码和信号处理
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" datetime="2018-02-04T12:05:33+08:00">
+    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
 	
 		    2月 04, 2018
     	
     </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
     
 </div>
 
@@ -240,27 +246,25 @@ server TCP状态变化：当client发送SYN分节，server接收成功并返回S
 <p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
 </blockquote>
 <h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
-<h2 id="Unix网络编程常见错误码"><a href="#Unix网络编程常见错误码" class="headerlink" title="Unix网络编程常见错误码"></a>Unix网络编程常见错误码</h2><p><code>EINPROGRESS</code>：</p>
-<p>非阻塞socket connect 时可能返回的错误码。socket 是非阻塞的，连接不能立即建立。可以使用 <code>select</code> 来确定连接完全建立的时间。参考<a href="http://www.gnu.org/software/libc/manual/html_node/Waiting-for-I_002fO.html#Waiting-for-I_002fO" target="_blank" rel="external">等待I/O</a>。在连接完全建立前如果在相同的 socket 上调用 connect，会以 <code>EALREADY</code> 失败。</p>
-<p><code>EALREADY</code>：</p>
-<p>非阻塞socket connect 时可能返回的错误码。socket 是非阻塞的而且有一个挂起的连接。详细参考上面</p>
-<ul>
-<li>POLLER               指定的文件描述符发生错误。</li>
-<li>POLLHUP             指定的文件描述符挂起事件。</li>
-<li>POLLNVAL            指定的文件描述符非法。</li>
-</ul>
 
             
         </div>
     </div>
     <div id="post-footer" class="post-footer main-content-wrap">
         
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/connect/">connect</a> <a class="tag tag--primary tag--small t-link" href="/tags/listen/">listen</a> <a class="tag tag--primary tag--small t-link" href="/tags/网络编程/">网络编程</a>
+
+            </div>
+        
         <div class="post-actions-wrap">
     <nav>
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/04/网络编程相关错误码总结/"  data-tooltip="网络编程相关错误码和信号处理">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/04/Unix网络编程相关错误码总结/"  data-tooltip="Unix网络编程相关错误码和信号处理">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -334,7 +338,7 @@ server TCP状态变化：当client发送SYN分节，server接收成功并返回S
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/04/网络编程相关错误码总结/"  data-tooltip="网络编程相关错误码和信号处理">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/04/Unix网络编程相关错误码总结/"  data-tooltip="Unix网络编程相关错误码和信号处理">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
