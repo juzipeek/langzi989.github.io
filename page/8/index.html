@@ -215,6 +215,96 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/01/09/工厂类模式家族之简单工厂模式/">
+                            工厂类模式家族之简单工厂模式
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-01-09T16:57:04+08:00">
+	
+		    1月 09, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="工厂类模式家族之简单工厂模式"><a href="#工厂类模式家族之简单工厂模式" class="headerlink" title="工厂类模式家族之简单工厂模式"></a>工厂类模式家族之简单工厂模式</h1><p>在面向对象编程的领域，设计模式给我们提供了适合特定场景的软件设计思想，不过大多设计模式都可以通过一般的设计进行替代，但我们为什么还有费工夫去遵循设计模式呢？这就要说到设计模式的精髓了，我们通过对软件系统进行良好的设计，不但可以提高代码的可重用性，增强系统的可扩展性，给客户提供良好的接口，还可以减少编码过程中因代码组织太乱扩展过程中需要修改旧代码而带来的一连串的错误，降低维护成本。软件设计过程我们应该尽量追求符合软件设计的开闭原则。</p>
+<blockquote>
+<p> 开闭原则:在面向对象编程领域中，开闭原则规定“软件中的对象(类，模块，函数)应该<strong>对于扩展是开放的，但是对于修改是封闭的</strong>”。该特性在产品化的环境中是特别有价值的，在这种环境中我们认为一旦类完成，我们可以对它进行扩展改变其行为，但是不允许修改类。也就是说一个<strong>类的实现只应该因错误而修改</strong>。－－by wiki</p>
+</blockquote>
+<p>工厂模式家族包括三种重要的模式，分别是简单工厂模式，工厂模式以及抽象工厂模式。他们都属于类的创建型模式。创建型模式包括两种，分别是<strong>类的创建型模式</strong>和<strong>对象的创建型模式</strong>。类的创建型模式通常<strong>使用继承关系</strong>，将类的创建交由其具体的子类完成，这样就向外界隐藏了如何得到具体类的实现细节，以及这个类的实例是如何被创建或者组织在一起的。；对象创建型模式通常<strong>把一个类的创建委托给另一个对象完成</strong>，可以根据语境动态地决定生成哪个具体类的实例。</p>
+<p>本节我们来讲解工厂模式中的简单工厂模式。主要包括以下几个部分：</p>
+<ul>
+<li>简单工厂模式的实质</li>
+<li>简单工厂模式的适用性</li>
+<li>简单工厂模式的结构</li>
+<li>简单工厂模式的参与者</li>
+<li>简单工厂模式各成分之间的交互</li>
+<li>实际应用</li>
+<li>简单工厂模式的优缺点</li>
+<li>简单工厂模式实例代码</li>
+</ul>
+<h2 id="简单工厂模式的实质"><a href="#简单工厂模式的实质" class="headerlink" title="简单工厂模式的实质"></a>简单工厂模式的实质</h2><p>简单工厂模式又称为静态工厂模式。 <strong>它的实质是根据客户传递的信息，工厂类通过该信息制造出相应的产品的实例返回给客户。这样我们就做到了客户只是产品的消费者，而真正的创建者是工厂类。</strong> 在简单工厂模式中，待被创建的产品通常继承自同一个类。而这个类中包含了具体产品的所有的公共成员和方法。</p>
+<h2 id="简单工厂模式的适用性"><a href="#简单工厂模式的适用性" class="headerlink" title="简单工厂模式的适用性"></a>简单工厂模式的适用性</h2><p>简单工厂模式将对象的创建和对象本身的业务分离开来，降低了系统的耦合度，当维护期间需要对客户代码或者产品代码进行修改的时候，修改其中之一不会影响另一个。</p>
+<h2 id="简单工厂模式的结构"><a href="#简单工厂模式的结构" class="headerlink" title="简单工厂模式的结构"></a>简单工厂模式的结构</h2><p><img src="/images/simpleFactoryclassDiagram.png" alt=""></p>
+<h2 id="简单工厂模式的参与者"><a href="#简单工厂模式的参与者" class="headerlink" title="简单工厂模式的参与者"></a>简单工厂模式的参与者</h2><p>简单工厂模式中一般有以下几个部分:</p>
+<ul>
+<li>工厂类：简单工厂模式的核心，它的作用是根据客户提供的信息创建相应的具体产品</li>
+<li>抽象产品：所有具体产品的父类，其中主要包含所有具体产品共有的方法或对象</li>
+<li>具体产品：工厂类创建的具体实例。</li>
+</ul>
+<h2 id="简单工厂模式各成分之间的交互"><a href="#简单工厂模式各成分之间的交互" class="headerlink" title="简单工厂模式各成分之间的交互"></a>简单工厂模式各成分之间的交互</h2><p><img src="/images/simplefactorysequence.png" alt=""></p>
+<ul>
+<li>客户首先创建factory类(一般为单例模式)，</li>
+<li>factory类创建成功后，客户调用其createProduct方法，并传入相关信息，</li>
+<li>具体产品实例被创建并返回给client,开始进行使用concreteProduct</li>
+</ul>
+<h2 id="简单工厂模式的实际应用"><a href="#简单工厂模式的实际应用" class="headerlink" title="简单工厂模式的实际应用"></a>简单工厂模式的实际应用</h2><p>在实际开发中使用简单工厂模式中，我们可以进行变通的使用。</p>
+<p>在实际情况种可能会出现比较复杂的抽象产品和和具体产品之间的关系，这个时候我们依然也可以使用抽象工厂模式:</p>
+<p><img src="/images/simplefactory2.png" alt=""></p>
+<h2 id="简单工厂模式的优缺点"><a href="#简单工厂模式的优缺点" class="headerlink" title="简单工厂模式的优缺点"></a>简单工厂模式的优缺点</h2><p>简单工厂模式的优点: 通过在中间添加一个工厂类，降低产品类和客户代码之间的耦合度；客户在获取产品的时候无需记住所有产品的构造方法，只需要通过同意的工厂类接口进行创建产品，大大提高了效率准确率。</p>
+<p>简单工厂模式的缺点：所有的产品实例化的逻辑都在工厂类的一个创建方法中，当需要添加新产品的时候，不得不进行修改factory类，这样就违背了设计的开闭原则(对扩展开放，对修改封闭)；另外当产品类别过多的时候，会出现这个函数冗杂的问题，增加维护成本。最重要的是这个工厂类是所有产品的入口，当它不能工作的时候，所有的产品将陷入瘫痪状态。</p>
+<h2 id="简单工厂的实例"><a href="#简单工厂的实例" class="headerlink" title="简单工厂的实例"></a>简单工厂的实例</h2><p>下面通过形状shape,circle以及rectangle来实现一个简单的简单工厂模式(如有问题，欢迎指正)：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//factory.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> FACTORY_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> FACTORY_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"circle.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rectangle.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Factory</span> &#123;</span></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  Factory() &#123;&#125;</div><div class="line">  Factory(<span class="keyword">const</span> Factory &amp;) = <span class="keyword">delete</span>;</div><div class="line">  Factory &amp;<span class="keyword">operator</span>=(<span class="keyword">const</span> Factory &amp;) = <span class="keyword">delete</span>;</div><div class="line"></div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="keyword">static</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Factory&gt; m_factory;</div><div class="line">  <span class="keyword">static</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Factory&gt; getInstance();</div><div class="line">  <span class="keyword">static</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt; getShape(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;flag);</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//factory.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"factory.hpp"</span></span></div><div class="line"></div><div class="line"><span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Factory&gt; Factory::m_factory = <span class="literal">nullptr</span>;</div><div class="line"></div><div class="line"><span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Factory&gt; Factory::getInstance() &#123;</div><div class="line">  <span class="keyword">if</span> (m_factory == <span class="literal">nullptr</span>) &#123;</div><div class="line">    m_factory = <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;Factory&gt;(<span class="keyword">new</span> Factory());</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> m_factory;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt; Factory::getShape(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;flag) &#123;</div><div class="line">  <span class="keyword">if</span> (<span class="number">0</span> == flag.compare(<span class="string">"circle"</span>)) &#123;</div><div class="line">    <span class="keyword">return</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt;(<span class="keyword">new</span> Circle());</div><div class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">0</span> == flag.compare(<span class="string">"rectangle"</span>)) &#123;</div><div class="line">    <span class="keyword">return</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt;(<span class="keyword">new</span> Rectangle());</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//shape.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> SHAPE_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> SHAPE_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Shape</span> &#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">double</span> <span class="title">getArea</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//circle.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> CIRCLE_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> CIRCLE_HPP</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"shape.hpp"</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Circle</span> :</span> <span class="keyword">public</span> Shape &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  Circle(<span class="keyword">double</span> t_radius = <span class="number">0</span>) : m_radius(t_radius) &#123;&#125;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"this is a circle, the radius is : "</span> &lt;&lt; m_radius &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  &#125;;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">double</span> <span class="title">getArea</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> m_radius * m_radius * <span class="number">3.14</span>; &#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="keyword">double</span> m_radius;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//rectangle.hpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> RECTANGLE_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> RECTANGLE_HPP_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"shape.hpp"</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span> :</span> <span class="keyword">public</span> Shape &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  Rectangle(<span class="keyword">int</span> a = <span class="number">0</span>, <span class="keyword">int</span> b = <span class="number">0</span>) : m_height(a), m_width(b) &#123;&#125;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"this is a rectangle\n height: "</span> &lt;&lt; m_height</div><div class="line">              &lt;&lt; <span class="string">"\nwidth:"</span> &lt;&lt; m_width &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">double</span> <span class="title">getArea</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> m_height * m_width; &#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="keyword">int</span> m_height;</div><div class="line">  <span class="keyword">int</span> m_width;</div><div class="line">&#125;;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//main.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"circle.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"factory.hpp"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rectangle.hpp"</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Factory&gt; t = Factory::getInstance();</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt; c = t-&gt;getShape(<span class="string">"circle"</span>);</div><div class="line">  c-&gt;draw();</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"the area is: "</span> &lt;&lt; c-&gt;getArea() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Shape&gt; r = t-&gt;getShape(<span class="string">"rectangle"</span>);</div><div class="line">  r-&gt;draw();</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"the area is :"</span> &lt;&lt; r-&gt;getArea() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/01/09/工厂类模式家族之简单工厂模式/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/01/08/GRASP设计原则（职责分配原则）/">
                             GRASP设计原则（职责分配原则）
                         </a>
@@ -1018,69 +1108,6 @@
                     
                         <p>
                             <a href="/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/">
-                            通过/proc/stat计算linux系统即时CPU使用率
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-19T06:03:09+08:00">
-	
-		    12月 19, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="通过-proc-stat计算linux系统即时CPU使用率"><a href="#通过-proc-stat计算linux系统即时CPU使用率" class="headerlink" title="通过/proc/stat计算linux系统即时CPU使用率"></a>通过/proc/stat计算linux系统即时CPU使用率</h1><h2 id="proc-stat"><a href="#proc-stat" class="headerlink" title="/proc/stat"></a>/proc/stat</h2><p>/proc文件系统是一个伪文件系统，它存在于内存中，不占用外存空间。它以文件系统的方式为内核与进程提供通信接口。用户和应用程序可以通过/proc得到系统的信息，并可以改变内核的某些参数。由于系统的信息，如进程是动态改变的，所以用户或应用程序读取/proc目录中的文件的时，/proc文件系统是动态从系统内核读出所需信息并提交的。<br>在linux或Ubuntu系统中，/proc/stat文件记录了所有CPU活动的信息，该文件中的所有值都是从系统启动开始累计到当前的值。我们可以通过一个较小的时间段的CPU利用率值来估算某一个时刻的CPU利用率。首先我们先来查看一下/proc/stat中的内容：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ cat /proc/stat</div><div class="line">cpu  <span class="number">15543</span> <span class="number">334</span> <span class="number">4963</span> <span class="number">142337</span> <span class="number">3413</span> <span class="number">0</span> <span class="number">180</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu0 <span class="number">3877</span> <span class="number">142</span> <span class="number">1137</span> <span class="number">35988</span> <span class="number">615</span> <span class="number">0</span> <span class="number">28</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu1 <span class="number">3866</span> <span class="number">23</span> <span class="number">1068</span> <span class="number">35982</span> <span class="number">608</span> <span class="number">0</span> <span class="number">74</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu2 <span class="number">4104</span> <span class="number">159</span> <span class="number">1333</span> <span class="number">35395</span> <span class="number">735</span> <span class="number">0</span> <span class="number">59</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu3 <span class="number">3695</span> <span class="number">9</span> <span class="number">1424</span> <span class="number">34970</span> <span class="number">1454</span> <span class="number">0</span> <span class="number">18</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div></pre></td></tr></table></figure></p>
-<p>上面的信息中前八个是比较重要的。</p>
-<ul>
-<li>user(15543): 从系统启动到当前时刻，处于用户态的时间(用户空间的CPU时间)，不包括nice为负值的进程。</li>
-<li>nice(334): 从系统启动到当前时刻，nice值为负的进程所占的CPU时间。</li>
-<li>system(4963): 从系统启动到当前时刻，处于内核状态的CPU时间。</li>
-<li>idle(142337): 从系统启动到当前时刻，除了I/O等待时间以外的其他等待时间</li>
-<li>iowait(3413): ~，IO等待时间</li>
-<li>irq(0): ~, 硬中断时间</li>
-<li>softrq(180): ~,软中断时间。</li>
-<li>steal: ~,在虚拟环境中运行的时间。</li>
-</ul>
-<blockquote>
-<p>总的CPU时间为：total = user+nice+system+idle+iowait+irq+softrq</p>
-</blockquote>
-<h2 id="计算当前时刻的CPU使用率"><a href="#计算当前时刻的CPU使用率" class="headerlink" title="计算当前时刻的CPU使用率"></a>计算当前时刻的CPU使用率</h2><p>我们使用距离当前时刻较小的间隔的时间段的CPU使用率近似当前时刻的CPU使用率。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CPU Usage=1 - (△idle+△iowait) / △total_time</div><div class="line">		 =1 - (idle2+iowait2 - idle1 - iowait1) / (total_time2 - total_time1)</div></pre></td></tr></table></figure></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

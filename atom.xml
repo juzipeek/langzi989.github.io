@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-02-04T04:05:33.123Z</updated>
+  <updated>2018-02-04T14:09:13.981Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,67 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>网络编程相关错误码和信号处理</title>
+    <link href="http://yoursite.com/2018/02/04/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9B%B8%E5%85%B3%E9%94%99%E8%AF%AF%E7%A0%81%E6%80%BB%E7%BB%93/"/>
+    <id>http://yoursite.com/2018/02/04/网络编程相关错误码总结/</id>
+    <published>2018-02-04T13:52:40.000Z</published>
+    <updated>2018-02-04T14:09:13.981Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="网络编程相关错误码和信号处理"><a href="#网络编程相关错误码和信号处理" class="headerlink" title="网络编程相关错误码和信号处理"></a>网络编程相关错误码和信号处理</h1><p><strong>特别注意当出现一下错误码时，处理之后一定要将errno复位为0</strong></p>
+<p>在网络编程的过程中会出现一些错误码，下面总结:</p>
+<ul>
+<li><p>EAGAIN(11) : Resource temporarily unavailable</p>
+<ul>
+<li>错误原因：当将套接字设置为<strong>异步</strong>时，由于函数调用之后是立即返回的，所以会出现两种情况导致这个错误：（1）：当调用read函数，此时没有数据可读，此时read函数会立即返回错误码EAGAIN表示此时无数据可读（2）：当调用write函数，此时缓冲区满，write函数将会立即返回错误码EAGAIN。</li>
+<li>解决方法：EAGAIN错误表示此时无数据可读或者缓冲区已满，所以此时只需要重试即可。</li>
+</ul>
+</li>
+<li><p>ECONNRESET(104)：Connection reset by peer</p>
+<ul>
+<li>错误原因：当对端socket已关闭，此时调用read或write函数将返回ECONNRESET错误，在之后如果继续调用read或write，就会得到该错误。常见的原因是<strong>发送端接收端实现约定好的数据长度不一致，若接收端被通知需要接收99个字节,而服务端发送了100个字节给接收端,这样一来，接收端接收99个字节就执行了close操作，如果发送端继续发送,接收端将向发送端返回一个RESET信号</strong></li>
+</ul>
+</li>
+<li><p>EALREADY (114)：Operation already in progress</p>
+<ul>
+<li>错误原因：套接字为非阻塞套接字，并且原来的链接请求还未完成</li>
+</ul>
+</li>
+<li><p>EINPROGRESS(115)：Operation in progress</p>
+<ul>
+<li>错误原因：套接字为非阻塞套接字，连接正在建立</li>
+</ul>
+</li>
+</ul>
+<h2 id="网络编程相关信号"><a href="#网络编程相关信号" class="headerlink" title="网络编程相关信号"></a>网络编程相关信号</h2><ul>
+<li>SIGPIPE(13):管道破裂。管道另一端没有进程接收数据，导致管道破裂而崩溃。对一个对端已经关闭的socket进行两次write，第二次调用将会产生该信号，此信号的<strong>默认行为是结束进程</strong>。<ul>
+<li>解决方法：将该信号的处理函数设置为SIG_IGN，即忽略此信号</li>
+</ul>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;网络编程相关错误码和信号处理&quot;&gt;&lt;a href=&quot;#网络编程相关错误码和信号处理&quot; class=&quot;headerlink&quot; title=&quot;网络编程相关错误码和信号处理&quot;&gt;&lt;/a&gt;网络编程相关错误码和信号处理&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;特别注意当出现一下错误码时，
+    
+    </summary>
+    
+      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="EAGAIN" scheme="http://yoursite.com/tags/EAGAIN/"/>
+    
+      <category term="ECONNRESET" scheme="http://yoursite.com/tags/ECONNRESET/"/>
+    
+      <category term="EALREADY" scheme="http://yoursite.com/tags/EALREADY/"/>
+    
+      <category term="EINPROGRESS" scheme="http://yoursite.com/tags/EINPROGRESS/"/>
+    
+  </entry>
   
   <entry>
     <title></title>
@@ -1276,59 +1337,6 @@
     <summary type="html">
     
       &lt;h1 id=&quot;C-协程及其原理&quot;&gt;&lt;a href=&quot;#C-协程及其原理&quot; class=&quot;headerlink&quot; title=&quot;C++协程及其原理&quot;&gt;&lt;/a&gt;C++协程及其原理&lt;/h1&gt;&lt;h2 id=&quot;协程的几种实现方式及原理&quot;&gt;&lt;a href=&quot;#协程的几种实现方式及原理&quot; c
-    
-    </summary>
-    
-      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-      <category term="ucontext_t" scheme="http://yoursite.com/tags/ucontext-t/"/>
-    
-      <category term="上下文切换" scheme="http://yoursite.com/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/"/>
-    
-      <category term="协程" scheme="http://yoursite.com/tags/%E5%8D%8F%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ucontext族函数详解</title>
-    <link href="http://yoursite.com/2017/10/06/ucontext%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://yoursite.com/2017/10/06/ucontext函数详解/</id>
-    <published>2017-10-06T08:00:48.000Z</published>
-    <updated>2017-10-06T08:05:11.962Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="ucontext族函数详解"><a href="#ucontext族函数详解" class="headerlink" title="ucontext族函数详解"></a>ucontext族函数详解</h1><blockquote>
-<p>the ucontext_t type is a structure type suitable for holding the context for the user thread of execution. A thread’s context include stack,saved registersm a list of block signals</p>
-<p>上述为ncontext_t结构体的定义，ucontext机制是GNU C库提供的一组创建，保存，切换用户态执行上下文的API，从上面的描述可以看出ucontext_t结构体使得用户在程序中保存当前的上下文成为可能。我们也可以利用此实现用户级线程，即协程。</p>
-</blockquote>
-<h2 id="ucontext-t以及ucontext族函数"><a href="#ucontext-t以及ucontext族函数" class="headerlink" title="ucontext_t以及ucontext族函数"></a>ucontext_t以及ucontext族函数</h2><h3 id="ucontext-t结构体"><a href="#ucontext-t结构体" class="headerlink" title="ucontext_t结构体"></a>ucontext_t结构体</h3><p>ucontext_t结构体定义,一个ucontext_t至少包括以下四个成员,可能依据不同系统包括其他不同的成员。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ucontext.h&gt;</span></span></div><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ucontext_t</span> &#123;</span></div><div class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">ucontext_t</span>* <span class="title">uc_link</span>;</span></div><div class="line">  <span class="keyword">sigset_t</span> uc_sigmask;</div><div class="line">  <span class="keyword">stack_t</span> uc_stack;</div><div class="line">  <span class="keyword">mcontext_t</span> uc_mcontext;</div><div class="line">  ...</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>类成员解释:</p>
-<ul>
-<li>uc_link:为当前context执行结束之后要执行的下一个context，若uc_link为空，执行完当前context之后退出程序。</li>
-<li>uc_sigmask : 执行当前上下文过程中需要屏蔽的信号列表，即信号掩码</li>
-<li>uc_stack : 为当前context运行的栈信息。</li>
-<li>uc_mcontext : 保存具体的程序执行上下文，如PC值，堆栈指针以及寄存器值等信息。它的实现依赖于底层，是平台硬件相关的。此实现不透明。</li>
-</ul>
-<h3 id="ucontext族函数"><a href="#ucontext族函数" class="headerlink" title="ucontext族函数"></a>ucontext族函数</h3><p>ucontext族函数主要包括以下四个:<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#include &lt;ucontext.h&gt;</div><div class="line">void makecontext(ucontext_t* ucp, void (*func)(), int argc, ...);</div><div class="line">int swapcontext(ucontext_t* olducp, ucontext_t* newucp);</div><div class="line">int getcontext(ucontext_t* ucp);</div><div class="line">int setcontext(const ucontext_t* ucp);</div></pre></td></tr></table></figure></p>
-<ul>
-<li>makecontext:初始化一个ucontext_t,func参数指明了该context的入口函数，argc为入口参数的个数，每个参数的类型必须是int类型。另外在makecontext之前，一般需要显示的初始化栈信息以及信号掩码集同时也需要初始化uc_link，以便程序退出上下文后继续执行。</li>
-<li>swapcontext:原子操作，该函数的工作是保存当前上下文并将上下文切换到新的上下文运行。</li>
-<li>getcontext:将当前的执行上下文保存在ucp中，以便后续恢复上下文</li>
-<li>setcontext : 将当前程序切换到新的context,在执行正确的情况下该函数直接切换到新的执行状态，不会返回。</li>
-</ul>
-<blockquote>
-<p>注意:setcontext执行成功不返回，getcontext执行成功返回0，若执行失败都返回-1。若uc_link为NULL,执行完新的上下文之后程序结束。</p>
-</blockquote>
-<h2 id="简单实例"><a href="#简单实例" class="headerlink" title="简单实例"></a>简单实例</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ucontext.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">newContextFun</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"this is the new context"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span> <span class="built_in">stack</span>[<span class="number">10</span>*<span class="number">1204</span>];</div><div class="line"></div><div class="line">  <span class="comment">//get current context</span></div><div class="line">  <span class="keyword">ucontext_t</span> curContext;</div><div class="line">  getcontext(&amp;curContext);</div><div class="line"></div><div class="line">  <span class="comment">//modify the current context</span></div><div class="line">  <span class="keyword">ucontext_t</span> newContext = curContext;</div><div class="line">  newContext.uc_stack.ss_sp = <span class="built_in">stack</span>;</div><div class="line">  newContext.uc_stack.ss_size = <span class="keyword">sizeof</span>(<span class="built_in">stack</span>);</div><div class="line">  newContext.uc_stack.ss_flags = <span class="number">0</span>;</div><div class="line"></div><div class="line">  newContext.uc_link = &amp;curContext;</div><div class="line"></div><div class="line">  <span class="comment">//register the new context</span></div><div class="line">  makecontext(&amp;newContext, (<span class="keyword">void</span>(*)(<span class="keyword">void</span>))newContextFun, <span class="number">0</span>);</div><div class="line">  swapcontext(&amp;curContext, &amp;newContext);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"main\n"</span>);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;ucontext族函数详解&quot;&gt;&lt;a href=&quot;#ucontext族函数详解&quot; class=&quot;headerlink&quot; title=&quot;ucontext族函数详解&quot;&gt;&lt;/a&gt;ucontext族函数详解&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;the ucontext_
     
     </summary>
     

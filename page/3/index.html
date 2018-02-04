@@ -215,6 +215,77 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/10/06/ucontext函数详解/">
+                            ucontext族函数详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-10-06T16:00:48+08:00">
+	
+		    10月 06, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="ucontext族函数详解"><a href="#ucontext族函数详解" class="headerlink" title="ucontext族函数详解"></a>ucontext族函数详解</h1><blockquote>
+<p>the ucontext_t type is a structure type suitable for holding the context for the user thread of execution. A thread’s context include stack,saved registersm a list of block signals</p>
+<p>上述为ncontext_t结构体的定义，ucontext机制是GNU C库提供的一组创建，保存，切换用户态执行上下文的API，从上面的描述可以看出ucontext_t结构体使得用户在程序中保存当前的上下文成为可能。我们也可以利用此实现用户级线程，即协程。</p>
+</blockquote>
+<h2 id="ucontext-t以及ucontext族函数"><a href="#ucontext-t以及ucontext族函数" class="headerlink" title="ucontext_t以及ucontext族函数"></a>ucontext_t以及ucontext族函数</h2><h3 id="ucontext-t结构体"><a href="#ucontext-t结构体" class="headerlink" title="ucontext_t结构体"></a>ucontext_t结构体</h3><p>ucontext_t结构体定义,一个ucontext_t至少包括以下四个成员,可能依据不同系统包括其他不同的成员。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ucontext.h&gt;</span></span></div><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ucontext_t</span> &#123;</span></div><div class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">ucontext_t</span>* <span class="title">uc_link</span>;</span></div><div class="line">  <span class="keyword">sigset_t</span> uc_sigmask;</div><div class="line">  <span class="keyword">stack_t</span> uc_stack;</div><div class="line">  <span class="keyword">mcontext_t</span> uc_mcontext;</div><div class="line">  ...</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>类成员解释:</p>
+<ul>
+<li>uc_link:为当前context执行结束之后要执行的下一个context，若uc_link为空，执行完当前context之后退出程序。</li>
+<li>uc_sigmask : 执行当前上下文过程中需要屏蔽的信号列表，即信号掩码</li>
+<li>uc_stack : 为当前context运行的栈信息。</li>
+<li>uc_mcontext : 保存具体的程序执行上下文，如PC值，堆栈指针以及寄存器值等信息。它的实现依赖于底层，是平台硬件相关的。此实现不透明。</li>
+</ul>
+<h3 id="ucontext族函数"><a href="#ucontext族函数" class="headerlink" title="ucontext族函数"></a>ucontext族函数</h3><p>ucontext族函数主要包括以下四个:<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">#include &lt;ucontext.h&gt;</div><div class="line">void makecontext(ucontext_t* ucp, void (*func)(), int argc, ...);</div><div class="line">int swapcontext(ucontext_t* olducp, ucontext_t* newucp);</div><div class="line">int getcontext(ucontext_t* ucp);</div><div class="line">int setcontext(const ucontext_t* ucp);</div></pre></td></tr></table></figure></p>
+<ul>
+<li>makecontext:初始化一个ucontext_t,func参数指明了该context的入口函数，argc为入口参数的个数，每个参数的类型必须是int类型。另外在makecontext之前，一般需要显示的初始化栈信息以及信号掩码集同时也需要初始化uc_link，以便程序退出上下文后继续执行。</li>
+<li>swapcontext:原子操作，该函数的工作是保存当前上下文并将上下文切换到新的上下文运行。</li>
+<li>getcontext:将当前的执行上下文保存在ucp中，以便后续恢复上下文</li>
+<li>setcontext : 将当前程序切换到新的context,在执行正确的情况下该函数直接切换到新的执行状态，不会返回。</li>
+</ul>
+<blockquote>
+<p>注意:setcontext执行成功不返回，getcontext执行成功返回0，若执行失败都返回-1。若uc_link为NULL,执行完新的上下文之后程序结束。</p>
+</blockquote>
+<h2 id="简单实例"><a href="#简单实例" class="headerlink" title="简单实例"></a>简单实例</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ucontext.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">newContextFun</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"this is the new context"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span> <span class="built_in">stack</span>[<span class="number">10</span>*<span class="number">1204</span>];</div><div class="line"></div><div class="line">  <span class="comment">//get current context</span></div><div class="line">  <span class="keyword">ucontext_t</span> curContext;</div><div class="line">  getcontext(&amp;curContext);</div><div class="line"></div><div class="line">  <span class="comment">//modify the current context</span></div><div class="line">  <span class="keyword">ucontext_t</span> newContext = curContext;</div><div class="line">  newContext.uc_stack.ss_sp = <span class="built_in">stack</span>;</div><div class="line">  newContext.uc_stack.ss_size = <span class="keyword">sizeof</span>(<span class="built_in">stack</span>);</div><div class="line">  newContext.uc_stack.ss_flags = <span class="number">0</span>;</div><div class="line"></div><div class="line">  newContext.uc_link = &amp;curContext;</div><div class="line"></div><div class="line">  <span class="comment">//register the new context</span></div><div class="line">  makecontext(&amp;newContext, (<span class="keyword">void</span>(*)(<span class="keyword">void</span>))newContextFun, <span class="number">0</span>);</div><div class="line">  swapcontext(&amp;curContext, &amp;newContext);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"main\n"</span>);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/10/06/ucontext函数详解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/10/02/C语言内存对其相关/">
                             C/C++语言内存对齐
                         </a>
@@ -937,101 +1008,6 @@
                     
                         <p>
                             <a href="/2017/09/09/Linux中ulimit命令简单使用/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/09/08/C++函数指针学习/">
-                            C++函数指针学习
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-09-08T17:47:20+08:00">
-	
-		    9月 08, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C-函数指针学习"><a href="#C-函数指针学习" class="headerlink" title="C++函数指针学习"></a>C++函数指针学习</h1><h2 id="使用函数指针的优点"><a href="#使用函数指针的优点" class="headerlink" title="使用函数指针的优点"></a>使用函数指针的优点</h2><p>使用函数指针有助于我们设计出更优秀，更简洁更高效的程序。在下面的情景中我们常用到函数指针:</p>
-<ul>
-<li>使用函数指针作为参数</li>
-<li>使用函数指针作为返回值</li>
-<li>使用函数指针作为回调函数</li>
-<li>使用函数指针数组</li>
-<li>类的静态方法和非静态方法的函数指针</li>
-<li>使用函数指针实现动态绑定</li>
-<li>在结构体中定义函数</li>
-</ul>
-<h2 id="使用函数指针提高函数的效率"><a href="#使用函数指针提高函数的效率" class="headerlink" title="使用函数指针提高函数的效率"></a>使用函数指针提高函数的效率</h2><p>当通过switch case多用多个相同类型的函数的时候，这个时候使用函数指针可以大大简化函数代码并可以明显的提高程序的执行效率。例:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line">#include &lt;time.h&gt;</div><div class="line">#include &lt;string&gt;</div><div class="line">#include &lt;sys/time.h&gt;</div><div class="line"></div><div class="line">using namespace std;</div><div class="line"></div><div class="line">#define StartTime(id)  struct timeval __now1105##id;\</div><div class="line">                       gettimeofday(&amp;__now1105##id, 0);</div><div class="line">#define EndTime(id) struct timeval __now21105##id; \</div><div class="line">					      gettimeofday(&amp;__now21105##id, 0); \</div><div class="line">						printf(&quot;timer_%s spend time:%d us\n&quot;,#id,(__now21105##id.tv_sec-__now1105##id.tv_sec)* 1000000 + (__now21105##id.tv_usec-__now1105##id.tv_usec));</div><div class="line"></div><div class="line">double add(double a, double b) &#123;</div><div class="line">	return a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">double sub(double a, double b) &#123;</div><div class="line">	return a - b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">double multi(double a, double b) &#123;</div><div class="line">	return a * b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">double div(double a, double b) &#123;</div><div class="line">	return a/b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">typedef double (*op)(double, double);</div><div class="line"></div><div class="line">void func1(double a, double b, int flag) &#123;</div><div class="line">	switch(flag) &#123;</div><div class="line">		case 0:</div><div class="line">			add(a, b);</div><div class="line">			break;</div><div class="line">		case 1:</div><div class="line">			sub(a, b);</div><div class="line">			break;</div><div class="line">		case 2:</div><div class="line">			multi(a, b);</div><div class="line">			break;</div><div class="line">		case 3:</div><div class="line">			div(a, b);</div><div class="line">			break;</div><div class="line">		default:</div><div class="line">			break;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">//使用函数指针调用函数</div><div class="line">void func2(double a, double b, op cb) &#123;</div><div class="line">	cb(a, b);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">	StartTime(func1);</div><div class="line">		for (int i = 0; i &lt; 100000; i++) &#123;</div><div class="line">			func1(0.2, 0.034, 3);</div><div class="line">		&#125;</div><div class="line">	EndTime(func1);</div><div class="line"></div><div class="line">	StartTime(func2);</div><div class="line">		for (int i = 0; i &lt; 100000; i++) &#123;</div><div class="line">			func2(0.2, 0.034, multi);</div><div class="line">		&#125;</div><div class="line">	EndTime(func2);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>由上面可以看出,由于上述switch,case中调用的函数类型（返回值类型，参数个数以及对应的类型）完全一致，我们将函数指针以参数的形式传到处理函数中。<br>运行上述函数的结果如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">timer_func1 spend time:2861 us</div><div class="line">timer_func2 spend time:2178 us</div></pre></td></tr></table></figure>
-<p>可以看出使用函数指针的效率远远高于switch case</p>
-<h2 id="函数指针用做回调函数"><a href="#函数指针用做回调函数" class="headerlink" title="函数指针用做回调函数"></a>函数指针用做回调函数</h2><blockquote>
-<p>来源于wiki<br>在计算机程序设计中，回调函数是指通过函数参数传递到其他代码的，某一块可执行代码的引用。这一设计允许底层代码调用在高层定义的子程序。如Linux C中的signal函数就是这样一个例子。</p>
-</blockquote>
-<p>signal底层的其中一个实现版本如下:由其实现可以看出信号处理的回调函数的主要功能是将处理信号的函数指针替换为用户高层自定义的函数地址fun，从而达到当接收到该信号时底层代码调用高层定义代码的效果。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">Sigfunc *</div><div class="line">signal(int signo, Sigfunc *func)</div><div class="line">&#123;</div><div class="line">	struct sigaction	act, oact;</div><div class="line"></div><div class="line">	act.sa_handler = func;</div><div class="line">	sigemptyset(&amp;act.sa_mask);</div><div class="line">	act.sa_flags = 0;</div><div class="line">	if (signo == SIGALRM) &#123;</div><div class="line">#ifdef	SA_INTERRUPT</div><div class="line">		act.sa_flags |= SA_INTERRUPT;</div><div class="line">#endif</div><div class="line">	&#125; else &#123;</div><div class="line">		act.sa_flags |= SA_RESTART;</div><div class="line">	&#125;</div><div class="line">	if (sigaction(signo, &amp;act, &amp;oact) &lt; 0)</div><div class="line">		return(SIG_ERR);</div><div class="line">	return(oact.sa_handler);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>当我们使用signal函数的时候,如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#include &lt;signal.h&gt;</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line"></div><div class="line">void signalcb(int signum) &#123;</div><div class="line">  printf(&quot;this is the signal:%d&quot;, signum);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  signal(SIGINT, signalcb);</div><div class="line">  pause();</div><div class="line">  return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="函数指针的本质及声明方法以及赋值"><a href="#函数指针的本质及声明方法以及赋值" class="headerlink" title="函数指针的本质及声明方法以及赋值"></a>函数指针的本质及声明方法以及赋值</h2><h3 id="函数指针的本质"><a href="#函数指针的本质" class="headerlink" title="函数指针的本质"></a>函数指针的本质</h3><p>函数指针类似于数据指针，其本质实质上是一类函数（返回值类型相同，参数个数以及对应的参数类型相同）的入口地址，即该<strong>可执行代码在内存中的起始地址</strong>。函数指针可以让我们通过函数地址去调用该函数。有利于实现函数的动态绑定，即在运行时才决定去调用哪个函数。</p>
-<h3 id="函数指针的声明方法"><a href="#函数指针的声明方法" class="headerlink" title="函数指针的声明方法"></a>函数指针的声明方法</h3><p>函数指针的声明方法有两种，包括:</p>
-<ul>
-<li>普通函数的函数指针和类静态成员函数的函数指针</li>
-<li>类非静态成员函数的函数指针</li>
-</ul>
-<p>普通函数的函数指针和类静态成员函数的函数指针:<br>int (<em>funptr)(int  qa, int qb);<br>类非静态成员函数的函数指针：<br>int MyClass::(</em>funptr)(int  qa, int qb);</p>
-<p><strong>注意上述函数指针声明时(*funptr)中的括号不能省略，若省略，有可能会产生歧义，其意义就变成了返回值为int*的函数定义了</strong></p>
-<blockquote>
-<p>上述两种函数指针声明不兼容的原因如下:(《深度探索C++对象模型》)<br>获取类的静态和非静态函数的函数指针的地址都是其在内存中实际的地址。那为什么非静态成员的指针需要绑定(指明类)？原因是类的非静态成员需要操作类的数据成员,所以类的非静态成员需要绑定this指针找到类的数据成员。故对nonstatic函数取地址是不完整的。</p>
-</blockquote>
-<h3 id="函数指针的赋值与使用"><a href="#函数指针的赋值与使用" class="headerlink" title="函数指针的赋值与使用"></a>函数指针的赋值与使用</h3><h4 id="函数指针赋值"><a href="#函数指针赋值" class="headerlink" title="函数指针赋值"></a>函数指针赋值</h4><p>对于普通指针和类的静态成员指针，有两种赋值方式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">funptr = fnc1</div><div class="line">funptr = &amp;fun1</div></pre></td></tr></table></figure></p>
-<p>对于类的非静态成员指针，只能用上面第二种形式赋值。为了保证形式的一致性和避免二义性，一般<strong>统一使用取地址符号进行赋值</strong>可避免错误出现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">funptr = &amp;classInstance.func();</div></pre></td></tr></table></figure></p>
-<h4 id="函数指针使用"><a href="#函数指针使用" class="headerlink" title="函数指针使用"></a>函数指针使用</h4><p>函数指针的使用类似于赋值。<br>对于普通指针和类的静态成员函数指针的调用，有两种调用方式:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">funptr(1,2);</div><div class="line"></div><div class="line">(*funptr)(1,2);</div></pre></td></tr></table></figure></p>
-<p>对于类的静态成员函数，只能用上述第二种方式进行调用，为了保持一致性和避免二义性，一般统一使用<strong>使用*来解引用函数指针进行调用</strong>.</p>
-<h2 id="函数指针作为参数"><a href="#函数指针作为参数" class="headerlink" title="函数指针作为参数"></a>函数指针作为参数</h2><p>函数指针是一个类型，将函数指针作为参数传入函数中与其他参数类似。使用方式与上述<strong>函数指针用做回调函数</strong>中signal接收参数的方式相同。这里不再详解</p>
-<h3 id="函数指针作为返回值"><a href="#函数指针作为返回值" class="headerlink" title="函数指针作为返回值"></a>函数指针作为返回值</h3><p>既然函数指针是函数的入口地址,所以函数指针也可以作为函数的返回值返回。不过函数指针作为函数的返回值的写反比较复杂。<br>若一个函数func只有一个参数int, 其返回值类型是float (*) (float, float)；则其函数原型如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">float (*func(int op)) (float, float);</div></pre></td></tr></table></figure></p>
-<p>函数指针作为函数返回值的原则是,将函数名以及参数写到*后，函数指针的返回值放在最前面，函数指针的参数放在最后面。</p>
-<p>由上面的知识我们可以分析一下signal函数原型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void (*signal)(int signo,void (*func)(int)))(int);</div></pre></td></tr></table></figure></p>
-<p>其定义了一个有两个参数分别为int和void (<em>func)(int)，返回值为void (</em>func)(int)的函数。</p>
-<p>其本质上是将函数处理指针替换为用户自定义的函数指针。那为什么需要返回值为void (<em>func)(int)呢?原因是<em>*signal函数的返回值是旧的信号处理函数的指针，我们可以通过这个指针暂时改变signal函数处理信号的方式。之后可以通过返回的指针恢复该信号默认的处理方式。</em></em></p>
-<blockquote>
-<p>注意:signal的信号处理其函数中的int参数的含义是:当信号到达的时候,内核将该信号以整形的方式传给处理器函数，即为void (*func)(int sig)中的sig.</p>
-</blockquote>
-<h2 id="使用typedef定义函数指针"><a href="#使用typedef定义函数指针" class="headerlink" title="使用typedef定义函数指针"></a>使用typedef定义函数指针</h2><p>一般情况下，如果通过普通的方式定义函数指针，在使用的很不方便。这个时候我们可以通过typedef定义函数指针的新类型。通过typedef定义新类型时与普通类型定义新类型方式不同。对于普通类型，定义方式如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">typedef int64_t int64;</div></pre></td></tr></table></figure></p>
-<p>但是对于函数指针，定义方式如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">//此处定义个名字为func的类型,它表示函数指针float (*func)(float, float)类型</div><div class="line">typedef float (*func)(float, float);</div><div class="line"></div><div class="line">float function(float a, floatb);</div><div class="line"></div><div class="line">//使用func定义变量</div><div class="line">func test = &amp;function;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/09/08/C++函数指针学习/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

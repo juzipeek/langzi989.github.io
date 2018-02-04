@@ -216,6 +216,121 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
+                            TCP的连接与建立
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-30T16:43:00+08:00">
+	
+		    5月 30, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="TCP的连接与建立"><a href="#TCP的连接与建立" class="headerlink" title="TCP的连接与建立"></a>TCP的连接与建立</h1><p>最常用的传输层协议包括TCP和UDP两种，当然除此之外还有其他协议。UDP是一种既不面向连接有不可靠的传输层协议，而TCP是一种面向连接的可靠的传输层协议，为了达到这个目的，其在设计上使用了差错检测，重传，累计确认，定时器以及用于序号和确认好的字段等等。</p>
+<h2 id="TCP的特点"><a href="#TCP的特点" class="headerlink" title="TCP的特点"></a>TCP的特点</h2><p>TCP协议有以下特点：</p>
+<ul>
+<li>面向连接：TCP的连接不是一条电路的或者虚电路，其连接状完全保留在两个端系统中。</li>
+<li>可靠传输：TCP连接在传输消息的过程中保证了数据的可靠性，即保证数据在传输过程中不会丢失。</li>
+<li>点对点：一条TCP连接只能连接两个端点。</li>
+<li>全双工：如果一台主机上的进程A和另一台主机上的进程B建立了一条TCP连接，那么应用层数据就可以从A进程发送到B进程的<strong>同时</strong>，B进程也可以发送数据到A进程。</li>
+</ul>
+<h2 id="TCP报文段结构"><a href="#TCP报文段结构" class="headerlink" title="TCP报文段结构"></a>TCP报文段结构</h2><p>TCP报文段是由首部字段和一个数据字段组成的，数据字段中包含应用程序需要发送的数据。通常报文段中通过MSS(max segment size)来限制报文段数据字段的最大长度。报文段的结构如下：</p>
+<p><img src="/images/TCP报文.png" alt=""></p>
+<p>说明：</p>
+<ul>
+<li>源端口号与目的端口号指的是客户端和服务器端应用程序分别使用的端口号。用于识别主机上某一个特定的应用程序。</li>
+<li>序号(seq)为TCP报文段中数据其实字节的序号。</li>
+<li>确认号字段为(ACK)期待接收的下一个TCP报文段中数据的序号。</li>
+<li>首部长度：首部长度表示当前TCP报文的首部的长度，一般为20，即可以看到表中报文首部的长度为20个字节。但是有时选项中有一些内容，这个时候首部长度大于20。</li>
+<li>保留字：NULL</li>
+<li>标志位：当某一些标志位被设置的时候表达一些特定的含义。<ul>
+<li>UGR标识报文段中存在着紧急数据。其中紧急数据的指针字段存放在后面16位的紧急数据指针中。</li>
+<li>ACK标识确认号字段生效，一般连接建立之后的内个报文段的ACK被会被设置</li>
+<li>PSH:不常用</li>
+<li>SYN:连接建立时的客户端发送的服务端的第一个报文段和服务端响应客户端的报文段中被设置，标识当前为建立连接的过程。</li>
+<li>FIN：与SYN类似，它是在断开连接时被设置。</li>
+</ul>
+</li>
+<li>互联网检验和：用于错误检测</li>
+<li>紧急数据指针：即为上述当UGR标志被设置时标识紧急数据的指针。</li>
+<li>选项：应用程序中自定义的首部的其他内容。</li>
+<li>数据：应用程序发送的真正数据。</li>
+</ul>
+<h2 id="TCP建立连接（三次握手）"><a href="#TCP建立连接（三次握手）" class="headerlink" title="TCP建立连接（三次握手）"></a>TCP建立连接（三次握手）</h2><p>TCP连接的过程可以简单描述为以下几个过程：</p>
+<ul>
+<li>第一次握手：客户端发送请求连接报文段到服务器。此报文段中SYN被设置为1，同时随机或者指定一个起始序号x。此时客户端进入SYN_SENT（同步已发送）状态。</li>
+<li>第二次握手：服务端收到请求报文段之后，向客户端发送确认报文段。确认报文段中ACK设置为1,SYN设置为1,确认号为x+1，同时为自己生成一个序号y。此时服务端进入SYN_RECV状态（同步接受到）。</li>
+<li>第三次握手：客户端收到服务端的确认报文段之后，还要给服务端发送一个确认报文段。这个报文段中ACK被设置为1，确认号为y+1。此报文段可以携带数据。</li>
+</ul>
+<p>经过上述三个步骤之后，TCP连接建立成功。客户端进入连接建立状态(ESTABLISHED)。然后就可以相互发送数据了。</p>
+<p><img src="/images/三次连接.png" alt=""></p>
+<blockquote>
+<p>为什么要经过三次握手？</p>
+<p>三次握手的目的是为了防止失效的报文段突然传送到服务端而出现问题。</p>
+<p>上述已经失效的报文段是指：如果客户端在发送第一次连接请求的过程中，由于网络原因导致此报文段在某个网络节点滞留较长时间，这个时候TCP传输协议会视为此报文段已经丢失，于是重传。若此滞留的报文段在连接断开之后才到达服务器，这个时候就会出现问题。</p>
+<p>若不是使用三次握手，服务器收到失效的报文段之后会建立连接，故之后无法释放TCP资源。导致资源浪费以致于长期会使服务器宕机。</p>
+</blockquote>
+<h3 id="三次握手过程中服务器和客户端程序的行为"><a href="#三次握手过程中服务器和客户端程序的行为" class="headerlink" title="三次握手过程中服务器和客户端程序的行为"></a>三次握手过程中服务器和客户端程序的行为</h3><ul>
+<li>服务器必须准备好接受外来的连接，调用socket(),bind()以及listen三个函数来完成，我们称为被动打开。</li>
+<li>客户端通过调用connect发起主动打开连接，向服务器发送SYN(同步)包，connect函数阻塞。</li>
+<li>服务器通过accept接收到客户端来送的TCP包，需要进行确认同事发送自己的SYN包，此时accept函数阻塞，</li>
+<li>客户端收到服务器的SYN包，connect函数返回，并向服务器发送确认。服务器接收到确认之后accept函数返回。</li>
+</ul>
+<h2 id="TCP连接断开（四次挥手）"><a href="#TCP连接断开（四次挥手）" class="headerlink" title="TCP连接断开（四次挥手）"></a>TCP连接断开（四次挥手）</h2><p>由于TCP连接是全双工的，因此每个方向都必须单独的关闭，也就是发送方和接收方都需要FIN和ACK。<strong>客户端和服务器都可以首先主动发送连接终止的报文</strong>。当其中一方发送完数据之后即可向另一方发出连接断开的请求。当收到FIN意味着这一方向上没有数据流动，但是一方收到FIN之后仍然可以发送数据。四次挥手的具体过程如下：</p>
+<ol>
+<li>此时TCP连接两端都处于ESTABLISHED的状态，客户端停止发送数据，并发出一个FIN报文段。首部FIN设置为1,序号seq=u(u为客户端传输数据的字后一个字节的序号加1)。客户端进入FIN_WAIT-1状态。</li>
+<li>服务端回复确认报文段，确认号为ack=u+1，序号为seq=v(v为服务端传输数据的最后一个字节序号加1)，服务端进入close_wait状态。现在TCP连接处于半关闭状态，服务端如果继续发送数据，客户端依然接收。</li>
+<li>客户端收到确认报文段,进入FIN_WAIT-2状态，服务端发送完数据之后，发出FIN报文段，FIN被置位1，确认号为ack=u+1，然后进入LAST_ACK状态。</li>
+<li>客户端回复确认报文段。ACK=1，确认号为sck=w+1(w为半开半闭时收到的最后一个字节数据的编号)，序号为seq=u+1，然后进入TIME_WAIT状态。</li>
+</ol>
+<p>一段时间(大约4分钟)之后等待状态结束，连接两端进入CLOSED状态。<br><img src="/images/四次挥手.png" alt=""></p>
+<blockquote>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://book.douban.com/subject/26176870/" target="_blank" rel="external">计算机网络 自顶向下方法</a></li>
+<li><a href="https://book.douban.com/subject/4859464/" target="_blank" rel="external">Unix网络编程</a></li>
+<li><a href="http://blog.csdn.net/whuslei/article/details/6667471/" target="_blank" rel="external">http://blog.csdn.net/whuslei/article/details/6667471/</a></li>
+<li><a href="http://blog.csdn.net/wenqian1991/article/details/39667131" target="_blank" rel="external">http://blog.csdn.net/wenqian1991/article/details/39667131</a></li>
+<li><a href="https://cnbin.github.io/blog/2015/07/01/chuan-shu-ceng-:tcp-xie-yi/" target="_blank" rel="external">https://cnbin.github.io/blog/2015/07/01/chuan-shu-ceng-:tcp-xie-yi/</a></li>
+</ul>
+</blockquote>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/30/Unix网络编程之TCP的连接与建立过程/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/27/硬链接和软链接的区别/">
                             硬链接与软链接的区别
                         </a>
@@ -315,57 +430,6 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/05/27/rapidjson指针/">
-                            rapidjson指针
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-27T09:35:00+08:00">
-	
-		    5月 27, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="rapidjson指针"><a href="#rapidjson指针" class="headerlink" title="rapidjson指针"></a>rapidjson指针</h1><blockquote>
-<p>本系列文章以例子的方式进行呈现。</p>
-</blockquote>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/document.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/pointer.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">*     Json Pointer</div><div class="line">*     一个Json Pointer有一串（0至多个）token所组成，每个token之前都有/前缀。每个token</div><div class="line">*     可以是字符串或者数字。例如，给定一个json:&#123;</div><div class="line">*                                            "foo":["bar", "baz"],</div><div class="line">*                                            "pi":3.414</div><div class="line">*                                           &#125;</div><div class="line">*                               JsonPointer解析为:</div><div class="line">*                               1. "/foo"-&gt;["bar", "baz"]</div><div class="line">*                               2."/foo/0"-&gt;"bar"</div><div class="line">*                               3."/foo/1"-&gt;"baz"</div><div class="line">*                               4."pi"-&gt;3.414</div><div class="line">*       特别注意：一个空Json Pointer""解析为整个json</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  Document d;</div><div class="line"></div><div class="line">  <span class="comment">/*          创建、修改、访问dom元素</span></div><div class="line">  *           创建dom元素的方法: (两种都可以自动生成父值，可以同时创建几级)</div><div class="line">  *               1.Pointer("/Key").Set(document, "value"); key对应值为value</div><div class="line">  *               2.Pointer("/Key").Create(document). 此时创建出来的key对应的值为null</div><div class="line">  *           获取Dom元素的pointer：</div><div class="line">  *                1.Value* vptr = Pointer("/Key").Get(document)</div><div class="line">  *                2.Value&amp; vref = Pointer("/Key").GetWithDefault(document, "defaultValue");</div><div class="line">  *                       注意返回的是引用，如值不存在，则创建此键并深拷贝默认值。</div><div class="line">  *           交换:</div><div class="line">  *                 Pointer("/Key").Swap(document, value); //注意交换的是Value，不能为其他类型</div><div class="line">  *            删除：</div><div class="line">  *                 Pointer("/Key").Erase(document);</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*            针对上述函数的辅助函数</span></div><div class="line">  *           SetValueByPointer(document, "/Key", "KeyValue");</div><div class="line">  *           CreateValueByPointer(document, "/Key");</div><div class="line">  *           GetValueByPointer(document, "/Key");</div><div class="line">  *           GetValueByPointerWithDefault(document, "/default", "defaultValue");</div><div class="line">  *           SwapValueByPointer(document, "/Key", Value); //必须为Value</div><div class="line">  *           EraseValueByPointer(document, "/Key");</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*          Pointer相关函数说明</span></div><div class="line">  *           1.Pointer::Get() 或 GetValueByPointer() 函数并不修改 DOM。</div><div class="line">  *                  若那些 token 不能匹配 DOM 里的值，这些函数便返回 nullptr。</div><div class="line">  *                  使用者可利用这个方法来检查一个值是否存在。</div><div class="line">  *           2. Create()、GetWithDefault()、Set()、Swap()都会改变Dom.</div><div class="line">  *                  若一些父值不存在，就会创建它们。若父值类型不匹配 token，</div><div class="line">  *                   也会强行改变其类型。改变类型也意味着完全移除其 DOM 子树的内容</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*</span></div><div class="line">  *         Pointer中负号解析</div><div class="line">  *         1.在Get中,负号永远都是Key的名字</div><div class="line">  *         2.在Set中，若负号在数组的后面，则表示数组最后一个元素的下一个</div><div class="line">  *                   否则表示数组名。例：</div><div class="line">  *         d.Parse("&#123;\"foo\":[123]&#125;");</div><div class="line">  *         SetValueByPointer(d, "/foo/-", 456); // &#123; "foo" : [123, 456] &#125;</div><div class="line">  *         SetValueByPointer(d, "/-", 789);    // &#123; "foo" : [123, 456], "-" : 789 &#125;</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*      字符串化</span></div><div class="line">  *     可以将一个Pointe字符串化，存储于字符串或者其他输出流。</div><div class="line">  *     如：</div><div class="line">  *     Pointer p(...);</div><div class="line">  *     StringBuffer sb;</div><div class="line">  *     p.StringFy(sb);</div><div class="line">  *     std::cout &lt;&lt; sb.GetString() &lt;&lt; std::endl;</div><div class="line">  */</div><div class="line"></div><div class="line"></div><div class="line">  Pointer(<span class="string">"/project"</span>).Set(d, <span class="string">"RapidJson"</span>);</div><div class="line">  Pointer(<span class="string">"/stars"</span>).Set(d, <span class="number">10</span>);</div><div class="line"></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"project"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"stars"</span>].GetInt() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">if</span> (Value* stars = Pointer(<span class="string">"/stars"</span>).Get(d))</div><div class="line">  &#123;</div><div class="line">    stars-&gt;SetInt(stars-&gt;GetInt() + <span class="number">1</span>);</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"stars"</span>].GetInt() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  Pointer(<span class="string">"/default"</span>).GetWithDefault(d, <span class="string">"defaultValue"</span>);</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (d.HasMember(<span class="string">"default"</span>))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"default"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="function">Value <span class="title">swapValue</span><span class="params">(<span class="string">"SwapValue"</span>)</span></span>;</div><div class="line">  Pointer(<span class="string">"/default"</span>).Swap(d, swapValue);</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"default"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  Pointer(<span class="string">"/default"</span>).Erase(d);</div><div class="line">  <span class="keyword">if</span> (!d.HasMember(<span class="string">"default"</span>))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"d Erase default successful"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/27/rapidjson指针/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
                         <a class="link-unstyled" href="/2017/05/27/rapidjsonSchema/">
                             rapidjson Schema
                         </a>
@@ -400,6 +464,57 @@
                     
                         <p>
                             <a href="/2017/05/27/rapidjsonSchema/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/27/rapidjson指针/">
+                            rapidjson指针
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-27T09:35:00+08:00">
+	
+		    5月 27, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="rapidjson指针"><a href="#rapidjson指针" class="headerlink" title="rapidjson指针"></a>rapidjson指针</h1><blockquote>
+<p>本系列文章以例子的方式进行呈现。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/document.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/pointer.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">*     Json Pointer</div><div class="line">*     一个Json Pointer有一串（0至多个）token所组成，每个token之前都有/前缀。每个token</div><div class="line">*     可以是字符串或者数字。例如，给定一个json:&#123;</div><div class="line">*                                            "foo":["bar", "baz"],</div><div class="line">*                                            "pi":3.414</div><div class="line">*                                           &#125;</div><div class="line">*                               JsonPointer解析为:</div><div class="line">*                               1. "/foo"-&gt;["bar", "baz"]</div><div class="line">*                               2."/foo/0"-&gt;"bar"</div><div class="line">*                               3."/foo/1"-&gt;"baz"</div><div class="line">*                               4."pi"-&gt;3.414</div><div class="line">*       特别注意：一个空Json Pointer""解析为整个json</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  Document d;</div><div class="line"></div><div class="line">  <span class="comment">/*          创建、修改、访问dom元素</span></div><div class="line">  *           创建dom元素的方法: (两种都可以自动生成父值，可以同时创建几级)</div><div class="line">  *               1.Pointer("/Key").Set(document, "value"); key对应值为value</div><div class="line">  *               2.Pointer("/Key").Create(document). 此时创建出来的key对应的值为null</div><div class="line">  *           获取Dom元素的pointer：</div><div class="line">  *                1.Value* vptr = Pointer("/Key").Get(document)</div><div class="line">  *                2.Value&amp; vref = Pointer("/Key").GetWithDefault(document, "defaultValue");</div><div class="line">  *                       注意返回的是引用，如值不存在，则创建此键并深拷贝默认值。</div><div class="line">  *           交换:</div><div class="line">  *                 Pointer("/Key").Swap(document, value); //注意交换的是Value，不能为其他类型</div><div class="line">  *            删除：</div><div class="line">  *                 Pointer("/Key").Erase(document);</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*            针对上述函数的辅助函数</span></div><div class="line">  *           SetValueByPointer(document, "/Key", "KeyValue");</div><div class="line">  *           CreateValueByPointer(document, "/Key");</div><div class="line">  *           GetValueByPointer(document, "/Key");</div><div class="line">  *           GetValueByPointerWithDefault(document, "/default", "defaultValue");</div><div class="line">  *           SwapValueByPointer(document, "/Key", Value); //必须为Value</div><div class="line">  *           EraseValueByPointer(document, "/Key");</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*          Pointer相关函数说明</span></div><div class="line">  *           1.Pointer::Get() 或 GetValueByPointer() 函数并不修改 DOM。</div><div class="line">  *                  若那些 token 不能匹配 DOM 里的值，这些函数便返回 nullptr。</div><div class="line">  *                  使用者可利用这个方法来检查一个值是否存在。</div><div class="line">  *           2. Create()、GetWithDefault()、Set()、Swap()都会改变Dom.</div><div class="line">  *                  若一些父值不存在，就会创建它们。若父值类型不匹配 token，</div><div class="line">  *                   也会强行改变其类型。改变类型也意味着完全移除其 DOM 子树的内容</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*</span></div><div class="line">  *         Pointer中负号解析</div><div class="line">  *         1.在Get中,负号永远都是Key的名字</div><div class="line">  *         2.在Set中，若负号在数组的后面，则表示数组最后一个元素的下一个</div><div class="line">  *                   否则表示数组名。例：</div><div class="line">  *         d.Parse("&#123;\"foo\":[123]&#125;");</div><div class="line">  *         SetValueByPointer(d, "/foo/-", 456); // &#123; "foo" : [123, 456] &#125;</div><div class="line">  *         SetValueByPointer(d, "/-", 789);    // &#123; "foo" : [123, 456], "-" : 789 &#125;</div><div class="line">  */</div><div class="line"></div><div class="line">  <span class="comment">/*      字符串化</span></div><div class="line">  *     可以将一个Pointe字符串化，存储于字符串或者其他输出流。</div><div class="line">  *     如：</div><div class="line">  *     Pointer p(...);</div><div class="line">  *     StringBuffer sb;</div><div class="line">  *     p.StringFy(sb);</div><div class="line">  *     std::cout &lt;&lt; sb.GetString() &lt;&lt; std::endl;</div><div class="line">  */</div><div class="line"></div><div class="line"></div><div class="line">  Pointer(<span class="string">"/project"</span>).Set(d, <span class="string">"RapidJson"</span>);</div><div class="line">  Pointer(<span class="string">"/stars"</span>).Set(d, <span class="number">10</span>);</div><div class="line"></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"project"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"stars"</span>].GetInt() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">if</span> (Value* stars = Pointer(<span class="string">"/stars"</span>).Get(d))</div><div class="line">  &#123;</div><div class="line">    stars-&gt;SetInt(stars-&gt;GetInt() + <span class="number">1</span>);</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"stars"</span>].GetInt() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  Pointer(<span class="string">"/default"</span>).GetWithDefault(d, <span class="string">"defaultValue"</span>);</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (d.HasMember(<span class="string">"default"</span>))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"default"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">  <span class="function">Value <span class="title">swapValue</span><span class="params">(<span class="string">"SwapValue"</span>)</span></span>;</div><div class="line">  Pointer(<span class="string">"/default"</span>).Swap(d, swapValue);</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; d[<span class="string">"default"</span>].GetString() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  Pointer(<span class="string">"/default"</span>).Erase(d);</div><div class="line">  <span class="keyword">if</span> (!d.HasMember(<span class="string">"default"</span>))</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"d Erase default successful"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/27/rapidjson指针/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
@@ -909,76 +1024,6 @@
                     
                         <p>
                             <a href="/2017/05/22/CprintNULL/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/22/Unix环境变量/">
-                            Unix环境变量
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-22T23:53:53+08:00">
-	
-		    5月 22, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix环境变量"><a href="#Unix环境变量" class="headerlink" title="Unix环境变量"></a>Unix环境变量</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在Unix中，<strong>每个进程都有自己的一组环境变量</strong>，这些环境变量，要么是一组全局字符串，要么是子进程从父进程继承而来的,如果子进程不对其修改则与父进程的环境变量一模一样。<br>Unix内核并不查看这些字符串，它们的解释权完全取决于各个应用程序。例如shell是Unix中一个可执行程序，通常shell的启动文件中会对环境变量进行设置。所以当我们进入shell之后可以查看path等环境变量。在当前shell中启动的进程会继承其父进程shell的环境变量，也就可以查看path等环境变量，环境变量可以在登录的时候自动设置，也可以由用户自行设置。</p>
-<h2 id="环境变量相关变量"><a href="#环境变量相关变量" class="headerlink" title="环境变量相关变量"></a>环境变量相关变量</h2><p>每个程序都会接收到一张环境表。与参数表一样，环境表也是一个字符指针数组。其中每个指针都包含一个以NULL结尾的字符串的地址。全局变量<br>environ指向了这个数组的地址。</p>
-<p>代码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">extern char **environ;</div><div class="line">if (environ!= NULL) &#123;</div><div class="line">        for (i = 0; environ[i] != NULL; i++) &#123;</div><div class="line">            printf(&quot;env: %s\n&quot;, environ[i]);</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="环境变量相关的函数"><a href="#环境变量相关的函数" class="headerlink" title="环境变量相关的函数"></a>环境变量相关的函数</h2><p>与环境变量相关的函数包括以下几种：取环境变量的值，添加环境变量、修改环境变量、以及删除环境变量.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">//获取环境变量的值</div><div class="line">char* getenv(const char* name); //若包含此key返回对应的值，否则返回NULL</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 修改环境变量的值 前面两个分别为键值对，最后一个表示是否需要删除原有的定义重写。</div><div class="line">* params：键没有存在，则创建此键值对。若键已经存在：rewrite=0时不覆盖原来的值；rewrite!=0覆盖原来的值</div><div class="line">* return：成功返回0， 出错返回非0。</div><div class="line">*/</div><div class="line">int setenv(const char* name, const char* value, int rewrite);</div><div class="line"></div><div class="line">/*</div><div class="line">* function： 添加环境变量，若存在则删除原有的，添加新的，不存在则直接添加</div><div class="line">* params:  参数为一个键值对字符串，如&quot;name=test&quot;</div><div class="line">* return: 成功返回0,不成功返回-1</div><div class="line">*/</div><div class="line">int putenv(char *str);</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 删除name的定义，即使不存在也不出错。</div><div class="line">* params: 参数为键</div><div class="line">* return：出错返回-1,不出错返回0</div><div class="line">*/</div><div class="line">int unsetenv(const char*name);</div><div class="line"></div><div class="line">/*</div><div class="line">* function: 清除所有的环境变量</div><div class="line">* return: 成功返回0, 失败返回-1。</div><div class="line">*/</div><div class="line">int clearenv();</div></pre></td></tr></table></figure>
-<h3 id="putenv和setenv的区别"><a href="#putenv和setenv的区别" class="headerlink" title="putenv和setenv的区别"></a>putenv和setenv的区别</h3><p>putenv可以使用程序中已经定义的且形如”name=value”的字符串作为参数。此时<strong>系统不再为该环境变量分配内存</strong>，环境变量将使用程序中定义变量的内存。<br>并将该字符串的地址保存在环境变量中。所以要<strong>使用putenv一定要用全局变量作为参数</strong>，否则程序退出栈内存被释放，再次访问环境变量将会出现未定义行为，<br>导致环境变量不可用。</p>
-<p>putenv也可用字符串常量做参数，这个时候系统将为其分配内存。</p>
-<p>但是setenv去设置环境变量系统将会先malloc出一块内存给环境变量使用，所以此时不需要担心环境不可用的情况。</p>
-<h2 id="环境变量在进程空间中的存储位置"><a href="#环境变量在进程空间中的存储位置" class="headerlink" title="环境变量在进程空间中的存储位置"></a>环境变量在进程空间中的存储位置</h2><p><strong>环境变量和环境字符串通常放在进程存储空间的顶部，也就是栈内存之上</strong>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line"></div><div class="line">extern char **environ;</div><div class="line">int main() &#123;</div><div class="line">    int i;</div><div class="line">    printf(&quot;the address of the environment: %p\n&quot;, environ);</div><div class="line">    printf(&quot;the adress of first i: %p\n&quot;, &amp;i);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="环境变量中进行增删改操作的实现机制"><a href="#环境变量中进行增删改操作的实现机制" class="headerlink" title="环境变量中进行增删改操作的实现机制"></a>环境变量中进行增删改操作的实现机制</h2><p>删除环境变量比较容易，当增加或者修改环境变量的时候由于环境表和环境字符串通常占用的是进程地址空间的顶部，所以它不能再向<br>高地址（向上）扩展，同时也不能在移动在它之下的各栈帧，所以也不能向下扩展。两者的组合使得该空间的长度不能再增加。</p>
-<ul>
-<li><strong>删除环境变量</strong>：删除环境变量时只需要先找到该指针，然后将所有后续指针都向环境表的首部顺序移一个位置。</li>
-<li><strong>修改环境变量</strong>:<ul>
-<li>若新的环境变量value长度小于或者等于原有的值，则直接将其复制到旧值。</li>
-<li>否则，先调用malloc在堆上分配一块内存，然后将新字符串指向该空间，接着使环境变量表中针对name的指针指向新分区。</li>
-</ul>
-</li>
-<li><strong>增加环境变量</strong>： 增加新环境变量比较复杂。必须首先通过调用malloc为新的name=value分配内存空间，然后将字符串复制到此空间中。<ul>
-<li>如果该name是第一次增加，则必须调用malloc为<strong>新的指针表</strong>分配内存空间，然后将原来的环境表复制到新的内存，并将指向新的name=value字符串<br>的指针存放在该指针表的表尾，然后将空指针放在其后面。最后<strong>使environ指向新的环境表</strong>。这样就导致原来位于栈顶之上的环境表移到了堆内存中。<br>但是大多数的环境指针仍然指向栈顶之上的name=value字符串。</li>
-<li>如果不是第一次新增加一个name，可知之前已经将环境表迁移到堆内存中，所以只需要调用realloc，以分配比原空间多存放一个指针的空间。然后将指针指向name=value<br>字符串的指针，最后是一个NULL指针。</li>
-</ul>
-</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/22/Unix环境变量/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

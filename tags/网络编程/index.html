@@ -216,6 +216,84 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/02/04/网络编程相关错误码总结/">
+                            网络编程相关错误码和信号处理
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
+	
+		    2月 04, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="网络编程相关错误码和信号处理"><a href="#网络编程相关错误码和信号处理" class="headerlink" title="网络编程相关错误码和信号处理"></a>网络编程相关错误码和信号处理</h1><p><strong>特别注意当出现一下错误码时，处理之后一定要将errno复位为0</strong></p>
+<p>在网络编程的过程中会出现一些错误码，下面总结:</p>
+<ul>
+<li><p>EAGAIN(11) : Resource temporarily unavailable</p>
+<ul>
+<li>错误原因：当将套接字设置为<strong>异步</strong>时，由于函数调用之后是立即返回的，所以会出现两种情况导致这个错误：（1）：当调用read函数，此时没有数据可读，此时read函数会立即返回错误码EAGAIN表示此时无数据可读（2）：当调用write函数，此时缓冲区满，write函数将会立即返回错误码EAGAIN。</li>
+<li>解决方法：EAGAIN错误表示此时无数据可读或者缓冲区已满，所以此时只需要重试即可。</li>
+</ul>
+</li>
+<li><p>ECONNRESET(104)：Connection reset by peer</p>
+<ul>
+<li>错误原因：当对端socket已关闭，此时调用read或write函数将返回ECONNRESET错误，在之后如果继续调用read或write，就会得到该错误。常见的原因是<strong>发送端接收端实现约定好的数据长度不一致，若接收端被通知需要接收99个字节,而服务端发送了100个字节给接收端,这样一来，接收端接收99个字节就执行了close操作，如果发送端继续发送,接收端将向发送端返回一个RESET信号</strong></li>
+</ul>
+</li>
+<li><p>EALREADY (114)：Operation already in progress</p>
+<ul>
+<li>错误原因：套接字为非阻塞套接字，并且原来的链接请求还未完成</li>
+</ul>
+</li>
+<li><p>EINPROGRESS(115)：Operation in progress</p>
+<ul>
+<li>错误原因：套接字为非阻塞套接字，连接正在建立</li>
+</ul>
+</li>
+</ul>
+<h2 id="网络编程相关信号"><a href="#网络编程相关信号" class="headerlink" title="网络编程相关信号"></a>网络编程相关信号</h2><ul>
+<li>SIGPIPE(13):管道破裂。管道另一端没有进程接收数据，导致管道破裂而崩溃。对一个对端已经关闭的socket进行两次write，第二次调用将会产生该信号，此信号的<strong>默认行为是结束进程</strong>。<ul>
+<li>解决方法：将该信号的处理函数设置为SIG_IGN，即忽略此信号</li>
+</ul>
+</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/02/04/网络编程相关错误码总结/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/10/08/Unix中SelectPollEpoll详解/">
                             Unix中select,poll,epoll详解
                         </a>

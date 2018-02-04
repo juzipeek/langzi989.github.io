@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>rapidjson Schema - 魏传柳</title>
+    <title>网络编程相关错误码和信号处理 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,25 +15,31 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="rapidjson Schema
-本系列文章以例子的方式进行呈现。
+    <meta name="description" content="网络编程相关错误码和信号处理特别注意当出现一下错误码时，处理之后一定要将errno复位为0
+在网络编程的过程中会出现一些错误码，下面总结:
 
-1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465/** JsonSchema本质上是一个json，其作用是用于校验Json，使用sche">
+EAGAIN(11) : Resource temporarily unavailable
+
+错误原因：当将套接字设置为异步时，由于函数调用之后是立即返回的，所以会出现两种情况导致这个错误：（1）：当调用read函数，此时没有数据可读，此时read函数会立即">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="rapidjson Schema">
-<meta property="og:url" content="http://yoursite.com/2017/05/27/rapidjsonSchema/index.html">
+<meta property="og:title" content="网络编程相关错误码和信号处理">
+<meta property="og:url" content="http://yoursite.com/2018/02/04/网络编程相关错误码总结/index.html">
 <meta property="og:site_name" content="魏传柳">
-<meta property="og:description" content="rapidjson Schema
-本系列文章以例子的方式进行呈现。
+<meta property="og:description" content="网络编程相关错误码和信号处理特别注意当出现一下错误码时，处理之后一定要将errno复位为0
+在网络编程的过程中会出现一些错误码，下面总结:
 
-1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465/** JsonSchema本质上是一个json，其作用是用于校验Json，使用sche">
-<meta property="og:updated_time" content="2017-05-27T01:41:30.650Z">
+EAGAIN(11) : Resource temporarily unavailable
+
+错误原因：当将套接字设置为异步时，由于函数调用之后是立即返回的，所以会出现两种情况导致这个错误：（1）：当调用read函数，此时没有数据可读，此时read函数会立即">
+<meta property="og:updated_time" content="2018-02-04T14:09:13.981Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="rapidjson Schema">
-<meta name="twitter:description" content="rapidjson Schema
-本系列文章以例子的方式进行呈现。
+<meta name="twitter:title" content="网络编程相关错误码和信号处理">
+<meta name="twitter:description" content="网络编程相关错误码和信号处理特别注意当出现一下错误码时，处理之后一定要将errno复位为0
+在网络编程的过程中会出现一些错误码，下面总结:
 
-1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465/** JsonSchema本质上是一个json，其作用是用于校验Json，使用sche">
+EAGAIN(11) : Resource temporarily unavailable
+
+错误原因：当将套接字设置为异步时，由于函数调用之后是立即返回的，所以会出现两种情况导致这个错误：（1）：当调用read函数，此时没有数据可读，此时read函数会立即">
     
     
         
@@ -224,19 +230,19 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            rapidjson Schema
+            网络编程相关错误码和信号处理
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" datetime="2017-05-27T09:35:00+08:00">
+    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
 	
-		    5月 27, 2017
+		    2月 04, 2018
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
 
 
     
@@ -246,10 +252,37 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="rapidjson-Schema"><a href="#rapidjson-Schema" class="headerlink" title="rapidjson Schema"></a>rapidjson Schema</h1><blockquote>
-<p>本系列文章以例子的方式进行呈现。</p>
-</blockquote>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line">* JsonSchema本质上是一个json，其作用是用于校验Json，使用schema对json进行校验，</div><div class="line">* 可以让代码安全的去当问DOM，而不需要去检查类型或者键值的存在等等。这也能确保输</div><div class="line">* 出的json符合特定的schema。</div><div class="line">*/</div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/schema.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"rapidjson/stringbuffer.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> rapidjson;</div><div class="line"></div><div class="line"><span class="comment">/*使用JsonSchema校校验json格式的流程:</span></div><div class="line">*       1. 将schema(模板)解析成一个Document</div><div class="line">*       2. 然后将Document编译成一个SchemaDocument</div><div class="line">*       3. 通过上述SchemaDocument创建一个SchemaValidator。</div><div class="line">*       4. 然后通过document.Accept(validator)去校验一个json，获取校验结果。</div><div class="line">*注意：</div><div class="line">*       1. 一个SchemaDocument能被多个SchemaValidator引用，他不会被SchemaValidator修改。</div><div class="line">*       2. 可以重复使用SchemaValidator校验多个文件。在校验其他文件之前，必须先调用validator.Reset()。</div><div class="line">*JsonSchema的格式：</div><div class="line">*       1. JsonSchema实质上是一个json数据。</div><div class="line">*       2. JsonSchema与其他json数据不同的是它在每一个对象和元素中定义了他们的类型type，属性(如object的properties，以及integer的minimum等等)，</div><div class="line">*           同时，我们可以通过JsonSchema对json的值的类型以及取值范围等进行限定。schema中必须的值需要显示的声明在required中。</div><div class="line">*/</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ValidateJson</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> testSchema = <span class="string">"&#123;\"type\":\"object\", \"properties\":&#123;\"code\":&#123;\"type\":\"string\"&#125;, \"int\":&#123;\"type\":\"integer\", \"minimum\":0&#125;&#125;, \"required\":[\"int\",\"code\"]&#125;"</span>;</div><div class="line">  Document sd;</div><div class="line">  <span class="keyword">if</span> (sd.Parse(testSchema.c_str()).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"jsonSchema is not valid : %s"</span>, testSchema.c_str());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//创建SchemaDocument</span></div><div class="line">  <span class="function">SchemaDocument <span class="title">schema</span><span class="params">(sd)</span></span>;</div><div class="line"></div><div class="line">  Document d;</div><div class="line">  <span class="keyword">if</span> (d.Parse(<span class="string">"&#123;\"code\":123, \"int\":1&#125;"</span>).HasParseError()) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Document is not a valid json"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">SchemaValidator <span class="title">validator</span><span class="params">(schema)</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (!d.Accept(validator)) &#123;</div><div class="line">    StringBuffer sb;</div><div class="line">    validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid schema: %s\n"</span>, sb.GetString());</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid keyword: %s\n"</span>, validator.GetInvalidSchemaKeyword());</div><div class="line">    sb.Clear();</div><div class="line">    validator.GetInvalidDocumentPointer().StringifyUriFragment(sb);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Invalid document:%s\n "</span>, sb.GetString());</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"符合schemas模式\n"</span>);</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  ValidateJson();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+            <h1 id="网络编程相关错误码和信号处理"><a href="#网络编程相关错误码和信号处理" class="headerlink" title="网络编程相关错误码和信号处理"></a>网络编程相关错误码和信号处理</h1><p><strong>特别注意当出现一下错误码时，处理之后一定要将errno复位为0</strong></p>
+<p>在网络编程的过程中会出现一些错误码，下面总结:</p>
+<ul>
+<li><p>EAGAIN(11) : Resource temporarily unavailable</p>
+<ul>
+<li>错误原因：当将套接字设置为<strong>异步</strong>时，由于函数调用之后是立即返回的，所以会出现两种情况导致这个错误：（1）：当调用read函数，此时没有数据可读，此时read函数会立即返回错误码EAGAIN表示此时无数据可读（2）：当调用write函数，此时缓冲区满，write函数将会立即返回错误码EAGAIN。</li>
+<li>解决方法：EAGAIN错误表示此时无数据可读或者缓冲区已满，所以此时只需要重试即可。</li>
+</ul>
+</li>
+<li><p>ECONNRESET(104)：Connection reset by peer</p>
+<ul>
+<li>错误原因：当对端socket已关闭，此时调用read或write函数将返回ECONNRESET错误，在之后如果继续调用read或write，就会得到该错误。常见的原因是<strong>发送端接收端实现约定好的数据长度不一致，若接收端被通知需要接收99个字节,而服务端发送了100个字节给接收端,这样一来，接收端接收99个字节就执行了close操作，如果发送端继续发送,接收端将向发送端返回一个RESET信号</strong></li>
+</ul>
+</li>
+<li><p>EALREADY (114)：Operation already in progress</p>
+<ul>
+<li>错误原因：套接字为非阻塞套接字，并且原来的链接请求还未完成</li>
+</ul>
+</li>
+<li><p>EINPROGRESS(115)：Operation in progress</p>
+<ul>
+<li>错误原因：套接字为非阻塞套接字，连接正在建立</li>
+</ul>
+</li>
+</ul>
+<h2 id="网络编程相关信号"><a href="#网络编程相关信号" class="headerlink" title="网络编程相关信号"></a>网络编程相关信号</h2><ul>
+<li>SIGPIPE(13):管道破裂。管道另一端没有进程接收数据，导致管道破裂而崩溃。对一个对端已经关闭的socket进行两次write，第二次调用将会产生该信号，此信号的<strong>默认行为是结束进程</strong>。<ul>
+<li>解决方法：将该信号的处理函数设置为SIG_IGN，即忽略此信号</li>
+</ul>
+</li>
+</ul>
 
             
         </div>
@@ -259,7 +292,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/json/">json</a> <a class="tag tag--primary tag--small t-link" href="/tags/rapidjson/">rapidjson</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/EAGAIN/">EAGAIN</a> <a class="tag tag--primary tag--small t-link" href="/tags/EALREADY/">EALREADY</a> <a class="tag tag--primary tag--small t-link" href="/tags/ECONNRESET/">ECONNRESET</a> <a class="tag tag--primary tag--small t-link" href="/tags/EINPROGRESS/">EINPROGRESS</a> <a class="tag tag--primary tag--small t-link" href="/tags/网络编程/">网络编程</a>
 
             </div>
         
@@ -268,7 +301,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/rapidJsonStream/"  data-tooltip="rapidjson Stream">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -276,7 +309,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/rapidjson指针/" data-tooltip="rapidjson指针">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/" data-tooltip="(no title)">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -291,17 +324,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/27/rapidjsonSchema/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/02/04/网络编程相关错误码总结/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/27/rapidjsonSchema/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/02/04/网络编程相关错误码总结/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/27/rapidjsonSchema/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/02/04/网络编程相关错误码总结/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -342,7 +375,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/rapidJsonStream/"  data-tooltip="rapidjson Stream">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -350,7 +383,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/05/27/rapidjson指针/" data-tooltip="rapidjson指针">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/" data-tooltip="(no title)">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right"></i>
@@ -365,17 +398,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/27/rapidjsonSchema/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/02/04/网络编程相关错误码总结/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/27/rapidjsonSchema/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/02/04/网络编程相关错误码总结/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/27/rapidjsonSchema/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/02/04/网络编程相关错误码总结/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -395,17 +428,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2017/05/27/rapidjsonSchema/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/02/04/网络编程相关错误码总结/">
                 <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2017/05/27/rapidjsonSchema/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/02/04/网络编程相关错误码总结/">
                 <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2017/05/27/rapidjsonSchema/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/02/04/网络编程相关错误码总结/">
                 <i class="fa fa-twitter"></i><span>Share on Twitter</span>
             </a>
         </li>

@@ -216,6 +216,84 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/02/04/网络编程相关错误码总结/">
+                            网络编程相关错误码和信号处理
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
+	
+		    2月 04, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="网络编程相关错误码和信号处理"><a href="#网络编程相关错误码和信号处理" class="headerlink" title="网络编程相关错误码和信号处理"></a>网络编程相关错误码和信号处理</h1><p><strong>特别注意当出现一下错误码时，处理之后一定要将errno复位为0</strong></p>
+<p>在网络编程的过程中会出现一些错误码，下面总结:</p>
+<ul>
+<li><p>EAGAIN(11) : Resource temporarily unavailable</p>
+<ul>
+<li>错误原因：当将套接字设置为<strong>异步</strong>时，由于函数调用之后是立即返回的，所以会出现两种情况导致这个错误：（1）：当调用read函数，此时没有数据可读，此时read函数会立即返回错误码EAGAIN表示此时无数据可读（2）：当调用write函数，此时缓冲区满，write函数将会立即返回错误码EAGAIN。</li>
+<li>解决方法：EAGAIN错误表示此时无数据可读或者缓冲区已满，所以此时只需要重试即可。</li>
+</ul>
+</li>
+<li><p>ECONNRESET(104)：Connection reset by peer</p>
+<ul>
+<li>错误原因：当对端socket已关闭，此时调用read或write函数将返回ECONNRESET错误，在之后如果继续调用read或write，就会得到该错误。常见的原因是<strong>发送端接收端实现约定好的数据长度不一致，若接收端被通知需要接收99个字节,而服务端发送了100个字节给接收端,这样一来，接收端接收99个字节就执行了close操作，如果发送端继续发送,接收端将向发送端返回一个RESET信号</strong></li>
+</ul>
+</li>
+<li><p>EALREADY (114)：Operation already in progress</p>
+<ul>
+<li>错误原因：套接字为非阻塞套接字，并且原来的链接请求还未完成</li>
+</ul>
+</li>
+<li><p>EINPROGRESS(115)：Operation in progress</p>
+<ul>
+<li>错误原因：套接字为非阻塞套接字，连接正在建立</li>
+</ul>
+</li>
+</ul>
+<h2 id="网络编程相关信号"><a href="#网络编程相关信号" class="headerlink" title="网络编程相关信号"></a>网络编程相关信号</h2><ul>
+<li>SIGPIPE(13):管道破裂。管道另一端没有进程接收数据，导致管道破裂而崩溃。对一个对端已经关闭的socket进行两次write，第二次调用将会产生该信号，此信号的<strong>默认行为是结束进程</strong>。<ul>
+<li>解决方法：将该信号的处理函数设置为SIG_IGN，即忽略此信号</li>
+</ul>
+</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/02/04/网络编程相关错误码总结/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/">
                             (no title)
                         </a>
@@ -845,77 +923,6 @@
                     
                         <p>
                             <a href="/2018/01/01/C中snprintf与vsnprintf函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/12/10/Linux调试工具之strings/">
-                            Linux调试工具之strings
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-12-10T18:40:00+08:00">
-	
-		    12月 10, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux调试工具/">Linux调试工具</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux调试工具之strings"><a href="#Linux调试工具之strings" class="headerlink" title="Linux调试工具之strings"></a>Linux调试工具之strings</h1><h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>strings命令的作用是查找指定<strong>文本文件或者二进制文件</strong>中的可打印字符串。默认打印字符串长度大于等于4的字符串。</p>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
-<li>-a : 搜索整个文件，而不仅仅是数据段，以寻找可显示的字符串。如果省略这个标志，那么 strings 命令只在对象文件的初始化数据空间内寻找。</li>
-<li>-n number(-number):指定寻找打印字符串的最小长度，默认最小长度为4,可以通过此参数设置最小长度为1或2等。最长不能超过4096</li>
-<li>-o : 显示可打印字符串以及可打印字符串在文件中的位置，位置以８进制形式显示。</li>
-<li>-t format:显示可打印字符串以及可打印字符串在文件中的位置，format可指定显示位置的格式是(o)8,(d)10,(x)16进制。</li>
-</ul>
-<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span> l_data =<span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> a = <span class="number">0</span>;</div><div class="line"> a;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ol>
-<li><p>直接使用stirngs,默认只显示长度大于等于4的可打印字符串</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ strings main.cpp</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">int main() &#123;</div><div class="line">  char l_data =0;</div><div class="line">  int a = 0;</div><div class="line">  return 0;</div></pre></td></tr></table></figure>
-</li>
-<li><p>-n参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$strings -1 main.cpp</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">int main() &#123;</div><div class="line">  char l_data =0;</div><div class="line">  int a = 0;</div><div class="line"> a;</div><div class="line">  return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>-o 参数</p>
-</li>
-</ol>
-<p>前面为其在文件中的8进制位置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$strings -o main.cpp</div><div class="line">0 #include &lt;stdio.h&gt;</div><div class="line">24 int main() &#123;</div><div class="line">41   char l_data =0;</div><div class="line">63   int a = 0;</div><div class="line">104   return 0;</div></pre></td></tr></table></figure></p>
-<ol>
-<li>-t format参数<br>-t o参数与-o参数作用一样</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$strings -t d main.cpp</div><div class="line">0 #include &lt;stdio.h&gt;</div><div class="line">20 int main() &#123;</div><div class="line">33   char l_data =0;</div><div class="line">51   int a = 0;</div><div class="line">68   return 0;</div></pre></td></tr></table></figure>
-<h2 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h2><p>当我们将多个文件编译到一个库文件或者可执行文件的时候，我们可以通过strings命令查看新增文件的一些可打印字符串是否在库中，来判断该文件是否已经编译到库中。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/12/10/Linux调试工具之strings/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
