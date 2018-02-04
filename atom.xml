@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-01-28T11:35:48.142Z</updated>
+  <updated>2018-02-04T04:05:33.123Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,104 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E4%B8%8ETCP%E7%8A%B6%E6%80%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E5%85%B3%E7%B3%BB%E5%AF%B9%E5%BA%94/"/>
+    <id>http://yoursite.com/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/</id>
+    <published>2018-02-04T04:05:33.123Z</published>
+    <updated>2018-02-04T04:05:33.123Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
+<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
+<blockquote>
+<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
+</blockquote>
+<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
+<h2 id="Unix网络编程常见错误码"><a href="#Unix网络编程常见错误码" class="headerlink" title="Unix网络编程常见错误码"></a>Unix网络编程常见错误码</h2><p><code>EINPROGRESS</code>：</p>
+<p>非阻塞socket connect 时可能返回的错误码。socket 是非阻塞的，连接不能立即建立。可以使用 <code>select</code> 来确定连接完全建立的时间。参考<a href="http://www.gnu.org/software/libc/manual/html_node/Waiting-for-I_002fO.html#Waiting-for-I_002fO" target="_blank" rel="external">等待I/O</a>。在连接完全建立前如果在相同的 socket 上调用 connect，会以 <code>EALREADY</code> 失败。</p>
+<p><code>EALREADY</code>：</p>
+<p>非阻塞socket connect 时可能返回的错误码。socket 是非阻塞的而且有一个挂起的连接。详细参考上面</p>
+<ul>
+<li>POLLER               指定的文件描述符发生错误。</li>
+<li>POLLHUP             指定的文件描述符挂起事件。</li>
+<li>POLLNVAL            指定的文件描述符非法。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;connect函数导致状态转变&quot;&gt;&lt;a href=&quot;#connect函数导致状态转变&quot; class=&quot;headerlink&quot; title=&quot;connect函数导致状态转变&quot;&gt;&lt;/a&gt;connect函数导致状态转变&lt;/h2&gt;&lt;h3 id=&quot;client状态变化：&quot;&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>netstat命令使用详解</title>
+    <link href="http://yoursite.com/2018/02/01/Linux%20netstat%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://yoursite.com/2018/02/01/Linux netstat命令详解/</id>
+    <published>2018-02-01T12:05:01.000Z</published>
+    <updated>2018-02-04T09:23:09.241Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="netstat命令使用详解"><a href="#netstat命令使用详解" class="headerlink" title="netstat命令使用详解"></a>netstat命令使用详解</h1><p>netstat命令用于显示各种网络信息，如当前机器的网络连接状态，路由表，接口状态等等。</p>
+<h2 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h2><p>执行netstat命令，其结果主要包括两个部分。</p>
+<ul>
+<li>Active Internet connections (servers and established),称为有源TCP链接，包括TCP和UDP等的详细状态</li>
+<li>Active UNIX domain sockets (servers and established)。称为有源Unix域套接口。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$netstat</span> -a</div><div class="line">Active Internet connections (servers and established)</div><div class="line">Proto Recv-Q Send-Q Local Address Foreign Address State</div><div class="line">tcp <span class="number">0</span> <span class="number">2</span> xx.xx.xx.xx:telnet ss.ss.ss.ss:port ESTABLISHED</div><div class="line">...</div><div class="line"></div><div class="line">Active UNIX domain sockets (servers and established)</div><div class="line">Proto RefCnt Flags       Type       State         I-Node Path</div><div class="line">unix  <span class="number">2</span>      [ ACC ]     STREAM     LISTENING     <span class="number">6474</span>   /var/run/test.socket</div><div class="line">...</div></pre></td></tr></table></figure>
+<h4 id="有源TCP链接字段详解："><a href="#有源TCP链接字段详解：" class="headerlink" title="有源TCP链接字段详解："></a>有源TCP链接字段详解：</h4><ul>
+<li>Proto : 当前链接的协议。如TCP，UDP</li>
+<li>Recv-Q : 网络接收队列</li>
+<li>Send-Q : 网络发送队列</li>
+<li>Local Address : 本机的ip:端口（注意此处127.0.0.1默认显示主机名，0.0.0.0默认显示*，端口可能显示别名。若强制显示数字,加-n参数）</li>
+<li>Foreign Address:对端IP：端口。与local address规则相同</li>
+<li>State : 当前套接字的网络状态。</li>
+</ul>
+<h4 id="有源Unix域套接口字段详解"><a href="#有源Unix域套接口字段详解" class="headerlink" title="有源Unix域套接口字段详解"></a>有源Unix域套接口字段详解</h4><ul>
+<li>proto : 当前链接的协议，一般为Unix</li>
+<li>RefCnt : 连接段本端口上的进程号</li>
+<li>Type:套接字的类型，stream或 DGRAM</li>
+<li>state : 当前套接字的状态</li>
+<li>I-Node : 当前socket对应的inode号</li>
+<li>Path : 连接到套接口的其它进程使用的路径名。</li>
+</ul>
+<h2 id="netstat常用参数"><a href="#netstat常用参数" class="headerlink" title="netstat常用参数"></a>netstat常用参数</h2><ul>
+<li>-a : 显示所有选项</li>
+<li>-t : 显示所有与TCP相关的选项</li>
+<li>-u : 显示所有与UDP相关的选项</li>
+<li>-x : 显示所有与Unix域相关的套接字选项</li>
+<li>-n : <strong>拒绝显示别名</strong>，能显示数字的全部转换为数字显示</li>
+<li>-p : 显示<strong>建立相关连接的程序名。</strong></li>
+<li>-l : 显示所有状态为Listen的连接</li>
+<li>-e : 显示扩展信息,<strong>如当前链接所对应的用户</strong></li>
+<li>-c : 间隔一段时间执行一次netstat命令。</li>
+<li>-s : 显示统计信息。对每种类型进行汇总</li>
+</ul>
+<h2 id="netstat常用组合"><a href="#netstat常用组合" class="headerlink" title="netstat常用组合"></a>netstat常用组合</h2><ul>
+<li>netstat -anp : 显示所有的网络连接，并拒绝显示别名，同时打印该连接对应的程序名</li>
+<li>netstat -lt : 显示所有正在监听状态的tcp连接</li>
+<li>netstat -lu : 显示所有正在监听状态的udp连接</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;netstat命令使用详解&quot;&gt;&lt;a href=&quot;#netstat命令使用详解&quot; class=&quot;headerlink&quot; title=&quot;netstat命令使用详解&quot;&gt;&lt;/a&gt;netstat命令使用详解&lt;/h1&gt;&lt;p&gt;netstat命令用于显示各种网络信息，如当前机器的
+    
+    </summary>
+    
+      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="linux" scheme="http://yoursite.com/tags/linux/"/>
+    
+      <category term="netstat" scheme="http://yoursite.com/tags/netstat/"/>
+    
+  </entry>
   
   <entry>
     <title>Unix信号之sigaction函数</title>
@@ -1244,100 +1342,6 @@
       <category term="上下文切换" scheme="http://yoursite.com/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/"/>
     
       <category term="协程" scheme="http://yoursite.com/tags/%E5%8D%8F%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>C/C++语言内存对齐</title>
-    <link href="http://yoursite.com/2017/10/02/C%E8%AF%AD%E8%A8%80%E5%86%85%E5%AD%98%E5%AF%B9%E5%85%B6%E7%9B%B8%E5%85%B3/"/>
-    <id>http://yoursite.com/2017/10/02/C语言内存对其相关/</id>
-    <published>2017-10-02T06:30:08.000Z</published>
-    <updated>2017-10-02T06:31:43.755Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="C-C-语言内存对齐"><a href="#C-C-语言内存对齐" class="headerlink" title="C/C++语言内存对齐"></a>C/C++语言内存对齐</h1><p><strong>内存对齐</strong>:在计算机中，内存空间按照字节划分，理论上可以从任何起始地址访问任何类型的变量。但实际上在访问特定类型的变量的时候需要从特定的地址开始，这就需要各种类型的数据按照一定的规则在空间上排列，而不是顺序的一个接一个的存放，这就是内存对齐，也叫字节对齐。</p>
-<p><strong>内存对齐的作用</strong>:</p>
-<ul>
-<li>可移植性:因为不同平台对数据的在内存中的访问规则不同,不是所有的硬件都可以访问任意地址上的数据，某些硬件平台只能在特定的地址开始访问数据。所以需要内存对齐。</li>
-<li>性能原因:一般使用内存对齐可以提高CPU访问内存的效率。如32位的intel处理器通过总线访问内存数据，每个总线周期从偶地址开始访问32位的内存数据，内存数据以字节为单位存放。如果32为的数据没有存放在４字节整除的内存地址处，那么处理器需要<strong>两个总线周期</strong>对数据进行访问，显然效率下降很多；另外合理的利用字节对齐可以有效的节省存储空间。</li>
-</ul>
-<p><strong>默认内存对齐影响因素</strong>:与平台架构(位数)和编译器的默认设置有关。</p>
-<blockquote>
-<p>总线周期:CPU通过总线和存储器或者IO设备进行一次数据传输需要的时间，通常为四个或者多个时钟周期组成。</p>
-</blockquote>
-<h2 id="内存对齐规则"><a href="#内存对齐规则" class="headerlink" title="内存对齐规则"></a>内存对齐规则</h2><ol>
-<li>整体类型的对齐规则:若设置了内存对齐为m个字节,类中的最大成员的对齐字节为n，则该数据类型的对齐字节为p=min(m,n)。(一般32位机器的默认pack为4位；64位机器的默认pack为8位,程序中可以显式设置pack的大小)</li>
-<li>类型中成员的对齐规则:类中的第一个成员放在offset为0的位置；对于其他成员，若设置了内存对齐为m个字节,假设该数据成员的对齐字节数(即当前成员所占的字节数)为k,则该数据成员的起始位置是min(m,k)的整数倍。</li>
-<li>整体对齐规则:最后整个类型的大小为p=min(m,n)的整数倍。</li>
-<li>当设置对齐字节数大于类中最大成员的对齐字节数的时候，这个设置实际不产生任何效果；当设置对齐字节数为1时,类的大小就是简单的把所有成员大小相加。</li>
-</ol>
-<p>实例:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stddef.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="comment">//前提条件:32位机器，当前编译器默认pack为4</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">T</span> &#123;</span></div><div class="line">  <span class="keyword">int</span> a;</div><div class="line">  <span class="keyword">short</span> b;</div><div class="line">  <span class="keyword">int</span> c;</div><div class="line">  <span class="keyword">double</span> d;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">cout</span> &lt;&lt; offsetof(T, a) &lt;&lt; <span class="built_in">endl</span></div><div class="line">       &lt;&lt; offsetof(T, b) &lt;&lt; <span class="built_in">endl</span></div><div class="line">       &lt;&lt; offsetof(T, c) &lt;&lt; <span class="built_in">endl</span></div><div class="line">       &lt;&lt; offsetof(T, d) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>根据上面的分析:</p>
-<ul>
-<li>a为第一个成员,offset为0。</li>
-<li>b为short，对齐字节数为2,所以其对齐字节为min(2,4)=2，故offset为4</li>
-<li>c为int,对齐字节数为4,所以其对齐字节数为min(4,4)=4，故offset为8</li>
-<li>d为double，对齐字节数为8,故对齐字节数为min(4,8)=8，故offset为12</li>
-<li>总的大小为20,是,min(8,4)的倍数．</li>
-</ul>
-<h2 id="使用pragma-pack修改系统默认pack"><a href="#使用pragma-pack修改系统默认pack" class="headerlink" title="使用pragma pack修改系统默认pack"></a>使用pragma pack修改系统默认pack</h2><p>修改系统的默认pack可以使用系统函数pragma的pack参数，但是修改之后的<strong>pack一定是2的n次幂</strong>。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(16)     <span class="comment">//修改pack修改为16</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()       <span class="comment">//恢复系统的默认pack</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(show)   <span class="comment">//返回系统当前的pack，由警告信息显示，注意gcc不支持。只有VS支持</span></span></div></pre></td></tr></table></figure></p>
-<p>此外pack还有push,pop其他参数可选，但是不同的编译器对这些参数的实现有不同的含义，如果需要了解可以参考对应的资料。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;C-C-语言内存对齐&quot;&gt;&lt;a href=&quot;#C-C-语言内存对齐&quot; class=&quot;headerlink&quot; title=&quot;C/C++语言内存对齐&quot;&gt;&lt;/a&gt;C/C++语言内存对齐&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;内存对齐&lt;/strong&gt;:在计算机中，内存空间按照字节
-    
-    </summary>
-    
-      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="C" scheme="http://yoursite.com/tags/C/"/>
-    
-      <category term="内存对齐" scheme="http://yoursite.com/tags/%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90/"/>
-    
-      <category term="pack" scheme="http://yoursite.com/tags/pack/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>异步刷盘与同步刷盘的区别</title>
-    <link href="http://yoursite.com/2017/09/29/Message%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1%E5%90%8C%E6%AD%A5%E5%88%B7%E7%9B%98%E4%B8%8E%E5%BC%82%E6%AD%A5%E5%88%B7%E7%9B%98/"/>
-    <id>http://yoursite.com/2017/09/29/Message存储服务同步刷盘与异步刷盘/</id>
-    <published>2017-09-29T09:05:01.000Z</published>
-    <updated>2017-09-29T09:10:34.613Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="异步刷盘与同步刷盘的区别"><a href="#异步刷盘与同步刷盘的区别" class="headerlink" title="异步刷盘与同步刷盘的区别"></a>异步刷盘与同步刷盘的区别</h1><p>存储系统往往追求尽量高的吞吐,无论是传统的MySQl还是分布式存储系统Hbase，在写入的时候会尽量提升系统的吞吐。一般来说，提升系统性能的方式是先将数据写入内存中，然后再刷盘到磁盘中进行持久化。</p>
-<p>刷盘对应于MySQL中的fsync和hbase中的flush，在mysql中标识将写入的redo log以及bin　Log持久化到磁盘中，这样就保证mysql可以持续的对外提供数据服务;在hbase中表示将MainStore中的数据持久化到磁盘中。一般来说刷盘的方式有<strong>同步刷盘和异步刷盘</strong>两种。</p>
-<p>同步刷盘和异步刷盘的区别如下:</p>
-<ul>
-<li>同步刷盘:当数据写如到内存中之后立刻刷盘(同步)，在保证刷盘成功的前提下响应client。</li>
-<li>异步刷盘:数据写入内存后，直接响应client。异步将内存中的数据持久化到磁盘上。</li>
-</ul>
-<p>同步刷盘和异步输盘的优劣:</p>
-<ul>
-<li>同步刷盘保证了数据的可靠性,保证数据不会丢失。</li>
-<li>同步刷盘效率较低,因为client获取响应需要等待刷盘时间，为了提升效率，通常采用批量输盘的方式，每次刷盘将会flush内存中的所有数据。(若底层的存储为mmap，则每次刷盘将刷新所有的dirty页)</li>
-<li>异步刷盘不能保证数据的可靠性.</li>
-<li>异步刷盘可以提高系统的吞吐量.</li>
-<li>常见的异步刷盘方式有两种,分别是定时刷盘和触发式刷盘。定时刷盘可设置为如每1s刷新一次内存.触发刷盘为当内存中数据到达一定的值，会触发异步刷盘程序进行刷盘。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;异步刷盘与同步刷盘的区别&quot;&gt;&lt;a href=&quot;#异步刷盘与同步刷盘的区别&quot; class=&quot;headerlink&quot; title=&quot;异步刷盘与同步刷盘的区别&quot;&gt;&lt;/a&gt;异步刷盘与同步刷盘的区别&lt;/h1&gt;&lt;p&gt;存储系统往往追求尽量高的吞吐,无论是传统的MySQl还是分布
-    
-    </summary>
-    
-      <category term="消息队列" scheme="http://yoursite.com/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
-    
-    
-      <category term="消息队列" scheme="http://yoursite.com/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
-    
-      <category term="同步刷盘" scheme="http://yoursite.com/tags/%E5%90%8C%E6%AD%A5%E5%88%B7%E7%9B%98/"/>
-    
-      <category term="异步刷盘" scheme="http://yoursite.com/tags/%E5%BC%82%E6%AD%A5%E5%88%B7%E7%9B%98/"/>
     
   </entry>
   

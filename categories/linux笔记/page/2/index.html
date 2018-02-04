@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Categoría: linux笔记 - 魏传柳</title>
+    <title>Category: linux笔记 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,73 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2016/12/27/time命令详解/">
+                            time命令详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-27T21:18:33+08:00">
+	
+		    12月 27, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Linux-time命令详解"><a href="#Linux-time命令详解" class="headerlink" title="Linux time命令详解"></a>Linux time命令详解</h1><p>参考:<a href="http://blog.he96.com/2011/01/linux-timewhat-do-real-user-and-sys.html" target="_blank" rel="external">http://blog.he96.com/2011/01/linux-timewhat-do-real-user-and-sys.html</a></p>
+<h2 id="real-user-sys"><a href="#real-user-sys" class="headerlink" title="real,user,sys"></a>real,user,sys</h2><p>我们常用linux中的time命令计算某个程序的运行耗时，用户态CPU耗时，系统态COU耗时。<br>例如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">time foo</div><div class="line">real	0m0.020s</div><div class="line">user	0m0.020s</div><div class="line">sys	0m0.000s</div></pre></td></tr></table></figure></p>
+<p>现在我们探讨一下上述三个时间分别代表的含义:</p>
+<ul>
+<li>real: 表示a.out程序的实际的运行耗时，也就是在a.out运行开始时刻你看了一下手表，a.out运行结束时刻看了一眼手表，两次时间的差值就是real的值。例如使用time sleep 2的时候real值为2</li>
+<li>user: a.out运行在用户态CPU的时间</li>
+<li>sys: a.out运行在核心态CPU的时间</li>
+</ul>
+<h2 id="用户态和核心态"><a href="#用户态和核心态" class="headerlink" title="用户态和核心态"></a>用户态和核心态</h2><p>然后我们讲一下用户态和核心态：</p>
+<ul>
+<li>核心态(kernal mode): 在内核态，代码拥有完全的，不受任何限制的访问底层硬件的能力。可以执行任意的CPU指令，访问任意的内存地址。内核态通常情况下，都是为哪些最底层的，由操作系统提供的，可信可靠耳朵代码来运行的。内核态崩溃将是灾难性的，它会影响到整个系统。</li>
+<li>用户态(User mode):在用户态，代码不具备直接访问底层硬件或者内存的能力，而必须借助操作系统提供的可靠的,底层的API来访问硬件或者内存。由于这种隔离带来的保护作用，用户态代码崩溃，操作系统可以正常恢复。我们大多数代码是运行在用户态。</li>
+</ul>
+<blockquote>
+<p>区分内核态和用户态的<strong>作用</strong>:隔离保护，使得系统更稳定。<br>使用这三个时间我们可以计算当前程序CPU的使用率：<br>CPU Usage = (user + sys) / real_time</p>
+</blockquote>
+<h2 id="常见误区"><a href="#常见误区" class="headerlink" title="常见误区"></a>常见误区</h2><ul>
+<li>realtime = user + sys</li>
+<li>realtime &gt; user + sys<br>由于有一些程序需要等待I/O等导致realtime与user+sys不相等<br>当在多核CPU的情况下第二种情况不成立</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/27/time命令详解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/">
                             通过/proc/meminfo实时获取系统内存使用情况
                         </a>
@@ -224,11 +291,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-19T23:43:49+08:00">
 	
-		    19 12月 2016
+		    12月 19, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -278,7 +345,7 @@
                     
                         <p>
                             <a href="/2016/12/19/通过-proc-meminfo实时获取系统内存使用情况/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -303,11 +370,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-19T06:03:09+08:00">
 	
-		    19 12月 2016
+		    12月 19, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -341,7 +408,7 @@
                     
                         <p>
                             <a href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -366,11 +433,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-19T04:25:04+08:00">
 	
-		    19 12月 2016
+		    12月 19, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -404,7 +471,7 @@
                     
                         <p>
                             <a href="/2016/12/19/linux进程nice值及其与优先级的关系/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -422,12 +489,12 @@
                 <a class="btn btn--default btn--small" href="/ ">
             
                 <i class="fa fa-angle-left text-base icon-mr"></i>
-                    <span>ARTÍCULOS RECIENTES</span>
+                    <span>NEWER POSTS</span>
             </a>
         </li>
         
         
-        <li class="pagination-number">página 2 de 2</li>
+        <li class="pagination-number">page 2 of 2</li>
     </ul>
 </div>
 

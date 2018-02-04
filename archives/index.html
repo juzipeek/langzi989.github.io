@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archivos - 魏传柳</title>
+    <title>Archives - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,150 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/">
+                            (no title)
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-04T12:05:33+08:00">
+	
+		    2月 04, 2018
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
+<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
+<blockquote>
+<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
+</blockquote>
+<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
+<h2 id="Unix网络编程常见错误码"><a href="#Unix网络编程常见错误码" class="headerlink" title="Unix网络编程常见错误码"></a>Unix网络编程常见错误码</h2><p><code>EINPROGRESS</code>：</p>
+<p>非阻塞socket connect 时可能返回的错误码。socket 是非阻塞的，连接不能立即建立。可以使用 <code>select</code> 来确定连接完全建立的时间。参考<a href="http://www.gnu.org/software/libc/manual/html_node/Waiting-for-I_002fO.html#Waiting-for-I_002fO" target="_blank" rel="external">等待I/O</a>。在连接完全建立前如果在相同的 socket 上调用 connect，会以 <code>EALREADY</code> 失败。</p>
+<p><code>EALREADY</code>：</p>
+<p>非阻塞socket connect 时可能返回的错误码。socket 是非阻塞的而且有一个挂起的连接。详细参考上面</p>
+<ul>
+<li>POLLER               指定的文件描述符发生错误。</li>
+<li>POLLHUP             指定的文件描述符挂起事件。</li>
+<li>POLLNVAL            指定的文件描述符非法。</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/02/01/Linux netstat命令详解/">
+                            netstat命令使用详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-01T20:05:01+08:00">
+	
+		    2月 01, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="netstat命令使用详解"><a href="#netstat命令使用详解" class="headerlink" title="netstat命令使用详解"></a>netstat命令使用详解</h1><p>netstat命令用于显示各种网络信息，如当前机器的网络连接状态，路由表，接口状态等等。</p>
+<h2 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h2><p>执行netstat命令，其结果主要包括两个部分。</p>
+<ul>
+<li>Active Internet connections (servers and established),称为有源TCP链接，包括TCP和UDP等的详细状态</li>
+<li>Active UNIX domain sockets (servers and established)。称为有源Unix域套接口。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$netstat</span> -a</div><div class="line">Active Internet connections (servers and established)</div><div class="line">Proto Recv-Q Send-Q Local Address Foreign Address State</div><div class="line">tcp <span class="number">0</span> <span class="number">2</span> xx.xx.xx.xx:telnet ss.ss.ss.ss:port ESTABLISHED</div><div class="line">...</div><div class="line"></div><div class="line">Active UNIX domain sockets (servers and established)</div><div class="line">Proto RefCnt Flags       Type       State         I-Node Path</div><div class="line">unix  <span class="number">2</span>      [ ACC ]     STREAM     LISTENING     <span class="number">6474</span>   /var/run/test.socket</div><div class="line">...</div></pre></td></tr></table></figure>
+<h4 id="有源TCP链接字段详解："><a href="#有源TCP链接字段详解：" class="headerlink" title="有源TCP链接字段详解："></a>有源TCP链接字段详解：</h4><ul>
+<li>Proto : 当前链接的协议。如TCP，UDP</li>
+<li>Recv-Q : 网络接收队列</li>
+<li>Send-Q : 网络发送队列</li>
+<li>Local Address : 本机的ip:端口（注意此处127.0.0.1默认显示主机名，0.0.0.0默认显示*，端口可能显示别名。若强制显示数字,加-n参数）</li>
+<li>Foreign Address:对端IP：端口。与local address规则相同</li>
+<li>State : 当前套接字的网络状态。</li>
+</ul>
+<h4 id="有源Unix域套接口字段详解"><a href="#有源Unix域套接口字段详解" class="headerlink" title="有源Unix域套接口字段详解"></a>有源Unix域套接口字段详解</h4><ul>
+<li>proto : 当前链接的协议，一般为Unix</li>
+<li>RefCnt : 连接段本端口上的进程号</li>
+<li>Type:套接字的类型，stream或 DGRAM</li>
+<li>state : 当前套接字的状态</li>
+<li>I-Node : 当前socket对应的inode号</li>
+<li>Path : 连接到套接口的其它进程使用的路径名。</li>
+</ul>
+<h2 id="netstat常用参数"><a href="#netstat常用参数" class="headerlink" title="netstat常用参数"></a>netstat常用参数</h2><ul>
+<li>-a : 显示所有选项</li>
+<li>-t : 显示所有与TCP相关的选项</li>
+<li>-u : 显示所有与UDP相关的选项</li>
+<li>-x : 显示所有与Unix域相关的套接字选项</li>
+<li>-n : <strong>拒绝显示别名</strong>，能显示数字的全部转换为数字显示</li>
+<li>-p : 显示<strong>建立相关连接的程序名。</strong></li>
+<li>-l : 显示所有状态为Listen的连接</li>
+<li>-e : 显示扩展信息,<strong>如当前链接所对应的用户</strong></li>
+<li>-c : 间隔一段时间执行一次netstat命令。</li>
+<li>-s : 显示统计信息。对每种类型进行汇总</li>
+</ul>
+<h2 id="netstat常用组合"><a href="#netstat常用组合" class="headerlink" title="netstat常用组合"></a>netstat常用组合</h2><ul>
+<li>netstat -anp : 显示所有的网络连接，并拒绝显示别名，同时打印该连接对应的程序名</li>
+<li>netstat -lt : 显示所有正在监听状态的tcp连接</li>
+<li>netstat -lu : 显示所有正在监听状态的udp连接</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/02/01/Linux netstat命令详解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/28/Unix信号之sigaction函数/">
                             Unix信号之sigaction函数
                         </a>
@@ -224,11 +368,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-28T15:20:00+08:00">
 	
-		    28 1月 2018
+		    1月 28, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -268,7 +412,7 @@
                     
                         <p>
                             <a href="/2018/01/28/Unix信号之sigaction函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -293,11 +437,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-26T18:30:00+08:00">
 	
-		    26 1月 2018
+		    1月 26, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -362,7 +506,7 @@
                     
                         <p>
                             <a href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -387,11 +531,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-26T17:30:08+08:00">
 	
-		    26 1月 2018
+		    1月 26, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -436,7 +580,7 @@
                     
                         <p>
                             <a href="/2018/01/26/C语言pack与aligned的区别/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -461,11 +605,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-06T20:31:31+08:00">
 	
-		    06 1月 2018
+		    1月 06, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -516,7 +660,7 @@
                     
                         <p>
                             <a href="/2018/01/06/Unix中fcntl实现对文件加锁功能/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -541,11 +685,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-01T17:51:00+08:00">
 	
-		    01 1月 2018
+		    1月 01, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -573,7 +717,7 @@
                     
                         <p>
                             <a href="/2018/01/01/C中记录基础库从32位到64位机器移植导致的一些问题/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -598,11 +742,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-01T15:00:00+08:00">
 	
-		    01 1月 2018
+		    1月 01, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -634,7 +778,7 @@
                     
                         <p>
                             <a href="/2018/01/01/C中va_list类型在32位和64位机器的区别与使用/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -659,11 +803,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-01T12:59:59+08:00">
 	
-		    01 1月 2018
+		    1月 01, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -701,7 +845,7 @@
                     
                         <p>
                             <a href="/2018/01/01/C中snprintf与vsnprintf函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -726,11 +870,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-12-10T18:40:00+08:00">
 	
-		    10 12月 2017
+		    12月 10, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Linux调试工具/">Linux调试工具</a>
 
@@ -772,131 +916,7 @@
                     
                         <p>
                             <a href="/2017/12/10/Linux调试工具之strings/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/12/03/Linux调试工具之readelf/">
-                            Linux调试工具之readelf
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-12-03T10:08:00+08:00">
-	
-		    03 12月 2017
-    	
-    </time>
-    
-        <span>en </span>
-        
-    <a class="category-link" href="/categories/Linux调试工具/">Linux调试工具</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux调试工具之readelf"><a href="#Linux调试工具之readelf" class="headerlink" title="Linux调试工具之readelf"></a>Linux调试工具之readelf</h1><p>readelf命令可以用来查看elf格式文件的信息，与objdump相比,该工具显示的信息较为详细</p>
-<h2 id="elf文件"><a href="#elf文件" class="headerlink" title="elf文件"></a>elf文件</h2><p>ELF(excutable and linking format)是一种对象文件格式，用于定义<strong>不同类型的对象文件中存放了那些东西，以及以什么格式存放</strong>。ELF文件可分为三种：</p>
-<ul>
-<li>可重定位对象文件(relocatable file)</li>
-<li>可执行对象文件(excutable file)</li>
-<li>可被共享的对象文件(shared object file)</li>
-</ul>
-<h3 id="可重定位对象文件"><a href="#可重定位对象文件" class="headerlink" title="可重定位对象文件"></a>可重定位对象文件</h3><p>可重定位对象文件中包含适合于与其他目标文件链接来创建可执行文件或者共享目标文件的代码和数据。一般包括如汇编器汇编生成的.o文件</p>
-<h3 id="可执行文件"><a href="#可执行文件" class="headerlink" title="可执行文件"></a>可执行文件</h3><p>可执行文件是一个可执行文件，此文件规定了exec()如何创建一个程序的进程映像</p>
-<h3 id="可被共享的对象文件"><a href="#可被共享的对象文件" class="headerlink" title="可被共享的对象文件"></a>可被共享的对象文件</h3><p>可被共享的对象文件中包含可在两种上下文中链接的代码和数据。首先链接编辑器可将它与其他可重定位文件和目标文件和可共享目标文件一起处理，生成另外一个目标文件，其次，动态链接器可以将它与某个可执行文件以及其他可共享目标一起组合，创建进程映像。</p>
-<h2 id="readelf调试工具"><a href="#readelf调试工具" class="headerlink" title="readelf调试工具"></a>readelf调试工具</h2><p>readelf参数较多，可直接通过readelf -h获取readelf的所有参数及用法，此处只对其中的几个常用参数以及数据详解。</p>
-<h3 id="readelf-h"><a href="#readelf-h" class="headerlink" title="readelf -h"></a>readelf -h</h3><p>readelf -h参数的作用是读取指定elf文件的头信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">$ readelf -h</div><div class="line">ELF Header:</div><div class="line">  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00</div><div class="line">  Class:                             ELF64</div><div class="line">  Data:                              2&apos;s complement, little endian</div><div class="line">  Version:                           1 (current)</div><div class="line">  OS/ABI:                            UNIX - System V</div><div class="line">  ABI Version:                       0</div><div class="line">  Type:                              EXEC (Executable file)</div><div class="line">  Machine:                           Advanced Micro Devices X86-64</div><div class="line">  Version:                           0x1</div><div class="line">  Entry point address:               0x400800</div><div class="line">  Start of program headers:          64 (bytes into file)</div><div class="line">  Start of section headers:          7344 (bytes into file)</div><div class="line">  Flags:                             0x0</div><div class="line">  Size of this header:               64 (bytes)</div><div class="line">  Size of program headers:           56 (bytes)</div><div class="line">  Number of program headers:         9</div><div class="line">  Size of section headers:           64 (bytes)</div><div class="line">  Number of section headers:         31</div><div class="line">  Section header string table index: 28</div></pre></td></tr></table></figure></p>
-<p><strong>重要参数解释:</strong></p>
-<ul>
-<li>Class : 该elf文件的类型，这里是64位的elf格式</li>
-<li>Data : 该参数指明了文件中数据的组织方式是大端规则还是小端规则，此处为二进制存储的小端规则</li>
-<li>OS/ABI :　生成该文件的操作系统类型,ABI(Application Binary Interface)</li>
-<li>Type : 当前文件的类型,EXEC(可执行文件), REL(可重定位文件)，DYN(可被共享文件)</li>
-<li>Machine : 处理器类型</li>
-<li>Entry point address : 程序的虚拟地址入口点，可执行文件之外的类型该值为0x0</li>
-<li>Start of program headers : 程序头的开始处，从程序入口地址偏移地址开始。程序头table中记录elf文件中段的信息</li>
-<li>Start of section headers : 段头的开始处，从程序入口地址偏移地址开始</li>
-</ul>
-<h3 id="readelf-s"><a href="#readelf-s" class="headerlink" title="readelf -s"></a>readelf -s</h3><p>readelf的作用是用来查看当前elf文件的符号表，符号表中的信息只包括<strong>全局变量和函数名</strong>。<br><strong>动态符号表(.synsym)用来保存与动态链接相关的导入导出符号，不包括模块内的符号;而sy,tab表则保存所有的符号,包括.dynsym中的符号。</strong><br>动态符号表所包含的符号的符号名保存在动态符号字符串表.dynstr中。</p>
-<p>如下所示程序：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="comment">//main.c</span></div><div class="line"><span class="keyword">int</span> g_data;</div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> gs_data;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"hello world"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> <span class="keyword">int</span> a = <span class="number">0</span>;</div><div class="line">  <span class="keyword">char</span> l_data =<span class="number">0</span>;</div><div class="line">  hello();</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>将上述文件编译汇编成目标文件main.o文件，使用readelf -s main.o，结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">Symbol table &apos;.symtab&apos; contains 15 entries:</div><div class="line">   Num:    Value          Size Type    Bind   Vis      Ndx Name</div><div class="line">     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND</div><div class="line">     1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS main.cpp</div><div class="line">     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1</div><div class="line">     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    3</div><div class="line">     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    4</div><div class="line">     5: 0000000000000004     4 OBJECT  LOCAL  DEFAULT    4 _ZL7gs_data</div><div class="line">     6: 0000000000000000     0 SECTION LOCAL  DEFAULT    5</div><div class="line">     7: 0000000000000008     4 OBJECT  LOCAL  DEFAULT    4 _ZZ4mainE7ls_data</div><div class="line">     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    7</div><div class="line">     9: 0000000000000000     0 SECTION LOCAL  DEFAULT    8</div><div class="line">    10: 0000000000000000     0 SECTION LOCAL  DEFAULT    6</div><div class="line">    11: 0000000000000000     4 OBJECT  GLOBAL DEFAULT    4 g_data</div><div class="line">    12: 0000000000000000    22 FUNC    GLOBAL DEFAULT    1 _Z5hellov</div><div class="line">    13: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND printf</div><div class="line">    14: 0000000000000016    24 FUNC    GLOBAL DEFAULT    1 main</div></pre></td></tr></table></figure></p>
-<p>可以看出<strong>全局变量,静态全局变量，静态局部变量，全局函数名</strong>都会出现在符号表中,而局部变量不会被保存在符号表中。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/12/03/Linux调试工具之readelf/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/12/01/VS配置/">
-                            VS code配置
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-12-01T14:08:00+08:00">
-	
-		    01 12月 2017
-    	
-    </time>
-    
-        <span>en </span>
-        
-    <a class="category-link" href="/categories/配置管理/">配置管理</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>#VS Code配置管理</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">&quot;[cpp]&quot;: &#123;</div><div class="line">&quot;editor.quickSuggestions&quot;: false</div><div class="line">&#125;,</div><div class="line">&quot;[c]&quot;: &#123;</div><div class="line">&quot;editor.quickSuggestions&quot;: false</div><div class="line">&#125;,</div><div class="line">&quot;window.zoomLevel&quot;: 0,</div><div class="line">&quot;workbench.colorTheme&quot;: &quot;Monokai&quot;,</div><div class="line">&quot;editor.fontSize&quot;: 22,</div><div class="line">// insert space when type tab</div><div class="line">&quot;editor.insertSpaces&quot;: true,</div><div class="line">&quot;http.proxy&quot;: &quot;http://dev-proxy.oa.com:8080&quot;,</div><div class="line">&quot;files.autoGuessEncoding&quot;: false,</div><div class="line">&quot;files.trimTrailingWhitespace&quot;: true,</div><div class="line">&quot;files.eol&quot;: &quot;\n&quot;,</div><div class="line">&quot;editor.wordWrap&quot;: &quot;on&quot;,</div><div class="line">&quot;editor.minimap.enabled&quot;: false,</div><div class="line">&quot;workbench.editor.enablePreview&quot;: false,</div><div class="line">&quot;codegnuglobal.executable&quot;: &quot;C:\\Program Files\\glo656wb\\bin\\global.exe&quot;,</div><div class="line">&quot;C_Cpp.clang_format_path&quot;: &quot;C:\\Program Files\\LLVM\\bin\\clang-format.exe&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/12/01/VS配置/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -912,12 +932,12 @@
         
         <li class="pagination-next">
             <a class="btn btn--default btn--small" href="/archives/page/2/">
-                    <span>ARTÍCULOS ANTERIORES</span>
+                    <span>OLDER POSTS</span>
                 <i class="fa fa-angle-right text-base icon-ml"></i>
             </a>
         </li>
         
-        <li class="pagination-number">página 1 de 9</li>
+        <li class="pagination-number">page 1 of 9</li>
     </ul>
 </div>
 

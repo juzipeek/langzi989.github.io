@@ -215,6 +215,145 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2016/12/19/linux进程nice值及其与优先级的关系/">
+                            linux进程nice值及其与优先级的关系
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-19T04:25:04+08:00">
+	
+		    12月 19, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="linux进程nice值及其与优先级的关系"><a href="#linux进程nice值及其与优先级的关系" class="headerlink" title="linux进程nice值及其与优先级的关系"></a>linux进程nice值及其与优先级的关系</h1><p>在linux多任务环境的系统中，系统是根据进程的优先级(priority)给进程进行分配资源。优先级越高的进程越有优先执行的权利。配置进程优先权碎玉linux很有用，可以大大改善系统的性能。还可以把指定的进程运行在指定的cpu上。</p>
+<h2 id="nice与priority"><a href="#nice与priority" class="headerlink" title="nice与priority"></a>nice与priority</h2><p>在linux中使用ps 的-l参数可以对进程的优先权信息进行查看：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ ps -l</div><div class="line"><span class="comment">#打印信息:</span></div><div class="line">F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD</div><div class="line"><span class="number">0</span> S  <span class="number">1000</span>  <span class="number">5242</span>  <span class="number">5232</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> -  <span class="number">7461</span> wait   pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> bash</div><div class="line"><span class="number">4</span> T  <span class="number">1000</span>  <span class="number">5881</span>  <span class="number">5242</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> - <span class="number">12247</span> signal pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">01</span> top</div><div class="line"><span class="number">4</span> R  <span class="number">1000</span>  <span class="number">6386</span>  <span class="number">5242</span>  <span class="number">0</span>  <span class="number">80</span>   <span class="number">0</span> -  <span class="number">8996</span> -      pts/<span class="number">1</span>    <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> ps</div></pre></td></tr></table></figure></p>
+<p>从上面可以看出,上表中打印出一些有用的信息：</p>
+<ul>
+<li>UID: 进程的user id</li>
+<li>PID: 进程ID</li>
+<li>PPID: 当前进程的父进程的ID</li>
+<li>PRI: 优先级(pri越小优先级越高)</li>
+<li>NI: nice值，当前进程的nice值<br>前三个值比较容易理解，pri和NI的含义，<strong>pri比较好理解，即进程的优先级，pri越小，优先级越高</strong>，那nice值呢？<strong>nice表示进程可被执行的优先级的修正数值。如前面说的，pri越小越优先被执行，那么加入nice之后pri(new)=pri(old)+nice。这样,当nice为负值的时候，该程序的pri变小，优先级越高。</strong><blockquote>
+<p>注意:进程的nice值不是进程的优先级，但是会影响进程优先级的变化。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="nice相关linux命令nice与renice"><a href="#nice相关linux命令nice与renice" class="headerlink" title="nice相关linux命令nice与renice"></a>nice相关linux命令nice与renice</h2><p>1.nice的作用是启动时设置nice的值<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ice -n -<span class="number">5</span> ./MatrixJudge &amp;</div></pre></td></tr></table></figure></p>
+<p>-n参数用于指定nice值<br>2.renice的作用是修改已经存在的进程的nice值<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">renice -<span class="number">5</span> -p <span class="number">10000</span></div></pre></td></tr></table></figure></p>
+<p>上述的意思是将PID为10000的nice值置为-5,-p参数用于指定PID。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/19/linux进程nice值及其与优先级的关系/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/12/16/tornado表单与模板/">
+                            tornado表单与模板
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-16T23:48:06+08:00">
+	
+		    12月 16, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/python学习/">python学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="tornado表单和模板"><a href="#tornado表单和模板" class="headerlink" title="tornado表单和模板"></a>tornado表单和模板</h1><p>在第一章中，我们学习了使用tornado创建一个web应用的基础知识。包括处理函数，HTTP方法以及tornado的框架的总体结构。在这一章中，我们学习tornado的更加强大的功能—-表单和模板。<br>和大多数的web框架一样，tornado的一个重要的目标就是帮助你更快地编写程序，尽可能整洁地复用更多的代码。尽管tornado灵活，可以使用几乎所有python支持的模板语言，tornado自身也提供了一个轻量级，快速并且灵活的模板语言，在tornado.template模块中。</p>
+<h2 id="简单示例-Poem-Maker-Pro"><a href="#简单示例-Poem-Maker-Pro" class="headerlink" title="简单示例 Poem Maker Pro"></a>简单示例 Poem Maker Pro</h2><p>poemmaker.py<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> os.path</div><div class="line"></div><div class="line"><span class="keyword">import</span> tornado.httpserver</div><div class="line"><span class="keyword">import</span> tornado.options</div><div class="line"><span class="keyword">import</span> tornado.web</div><div class="line"><span class="keyword">import</span> tornado.ioloop</div><div class="line"></div><div class="line"><span class="keyword">from</span> tornado.options <span class="keyword">import</span> define, options</div><div class="line"></div><div class="line">define(<span class="string">"port"</span>, default=<span class="number">8000</span>, help=<span class="string">"run on the given port"</span>, type=int)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IndexHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        self.render(<span class="string">"index.html"</span>)</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">PoemPageHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self)</span>:</span></div><div class="line">        noun1 = self.get_argument(<span class="string">"noun1"</span>)</div><div class="line">        noun2 = self.get_argument(<span class="string">"noun2"</span>)</div><div class="line">        verb = self.get_argument(<span class="string">"verb"</span>)</div><div class="line">        noun3 = self.get_argument(<span class="string">"noun3"</span>)</div><div class="line">        self.render(<span class="string">"poem.html"</span>, roads=noun1, wood=noun2, made = verb, difference=noun3)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    tornado.options.parse_command_line()</div><div class="line">    app = tornado.web.Application(handlers=[(<span class="string">r"/"</span>, IndexHandler),</div><div class="line">                                            (<span class="string">r"/poem"</span>, PoemPageHandler)],</div><div class="line">                                            template_path = os.path.join(os.path.dirname(__file__), <span class="string">"templates"</span>),</div><div class="line">                                            static_path = os.path.join(os.path.dirname(__file__), <span class="string">"static"</span>)，</div><div class="line">                                            debug=<span class="keyword">True</span>)</div><div class="line">    http_server = tornado.httpserver.HTTPServer(app)</div><div class="line">    http_server.listen(options.port)</div><div class="line">    tornado.ioloop.IOLoop.instance().start()</div></pre></td></tr></table></figure></p>
+<p>除了上述poemmaker.py，还需要在文件夹templates下添加以下两个文件。<br>/templates/index.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">  &lt;head&gt;&lt;title&gt;Poem Maker Pro&lt;/title&gt;&lt;/head&gt;</div><div class="line">  &lt;body&gt;</div><div class="line">    &lt;h1&gt;Enter terms below.&lt;/h1&gt;</div><div class="line"></div><div class="line">    &lt;form method=&quot;post&quot; action=&quot;/poem&quot;&gt;</div><div class="line">      &lt;p&gt;Plural noun &lt;br/&gt; &lt;input type=&quot;text&quot; name=&quot;noun1&quot; /&gt;&lt;/p&gt;</div><div class="line">      &lt;p&gt;Singular noun&lt;br/&gt; &lt;input type=&quot;text&quot; name=&quot;noun2&quot; /&gt;&lt;/p&gt;</div><div class="line">      &lt;p&gt;Verb (haha)&lt;br /&gt; &lt;input type=&quot;text&quot; name=&quot;verb&quot; /&gt;&lt;/p&gt;</div><div class="line">      &lt;p&gt;Noun&lt;br/&gt; &lt;input type=&quot;text&quot; name=&quot;noun3&quot; /&gt; &lt;/p&gt;</div><div class="line">      &lt;input type=&quot;submit&quot;/&gt;</div><div class="line">    &lt;/form&gt;</div><div class="line">  &lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>/templates/poem.html<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">  &lt;head&gt;&lt;title&gt;this is the poem&lt;/title&gt;&lt;/head&gt;</div><div class="line"></div><div class="line">  &lt;body&gt;</div><div class="line">    &lt;h1&gt;Your poem&lt;/h1&gt;</div><div class="line"></div><div class="line">    &lt;p&gt;Two &#123;&#123;roads&#125;&#125; diverged in a &#123;&#123;wood&#125;&#125;, and I—&lt;br/&gt;</div><div class="line">    I took the one less tracelled by, &lt;br/&gt;</div><div class="line">    and that has &#123;&#123;made&#125;&#125; all the &#123;&#123;difference&#125;&#125;.&lt;/p&gt;</div><div class="line">  &lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>运行python文件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python poemmaker.py</div></pre></td></tr></table></figure></p>
+<p>此时访问8000端口会出现首页上包括多个表单等待用户输入。这个表单包括多个文本域(命名为noun1, noun2等)，其中内容将在用户点击“submit”按钮时以post请求的方式发送到/poem。<br>当点击submit按钮之后，tornado应用跳转到poem.html，插入你在表单中填写的值。结果是显示的一首诗。</p>
+<p>下面我们逐条讲述当前示例中的每一个涉及到的知识点：</p>
+<h3 id="2-1-1渲染模板"><a href="#2-1-1渲染模板" class="headerlink" title="2.1.1渲染模板"></a>2.1.1渲染模板</h3><p>从结构上讲，poemmaker和第一章的例子很相似。我们定义了几个RequestHandler子类并把它们传递给tornado.web.Application对象。那么有什么不一样的地方呢？首先我们向Application对象的<strong>init</strong>方法传递了一个template参数。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">template_path = os.path.join(os.path.dirname(__file__), <span class="string">"templates"</span>)</div></pre></td></tr></table></figure></p>
+<p><strong>template_path参数告诉tornado在哪里寻找模板文件</strong>。我们将在第三章中讲解其确切的用法和性质。而它的基本要点是：<strong>模板是一个允许你嵌入python代码片段的html文件</strong>。上面的代码告诉python在你的tornado应用文件相同目录下的templates文件夹下寻找模板文件。<br>一旦我们告诉tornado在哪里寻找模板，我们就可以<strong>使用RequestHandlser类的render方法来告诉tornado读入模板文件，插入其中的模板代码，并将结果返回给浏览器。</strong>比如，在IndexHandler中，我们可以发现语句：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.render(<span class="string">"index.html"</span>)</div></pre></td></tr></table></figure></p>
+<p>这段代码告诉tornado载templates文件夹下找到一个名字为index.html的文件，读取其中的内容，并发送给浏览器。</p>
+<h3 id="2-12-填充"><a href="#2-12-填充" class="headerlink" title="2.12 填充"></a>2.12 填充</h3><p>实际上index.html完全不能称之为模板，因为它所包含的完全是已经编写好的html标记。这可以是模板一个不错的使用方式。但是在通常情况下我们更希望<strong>html输出可以结合我们的程序传入给模板的值</strong>。模板poem.html使用PoemPageMaker渲染，它是一个模板。<br>我们可以看到，在poem.html中，它可以看到模板中有一些被双大括号括起来的字符串，就像这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;p&gt;Two &#123;&#123;roads&#125;&#125; diverged in a &#123;&#123;wood&#125;&#125;, and I—&lt;br/&gt;</div><div class="line">I took the one less tracelled by, &lt;br/&gt;</div><div class="line">and that has &#123;&#123;made&#125;&#125; all the &#123;&#123;difference&#125;&#125;.&lt;/p&gt;</div></pre></td></tr></table></figure></p>
+<p>在双大括号中的单词是占位符，当我们渲染模板时希望以实际值代替。我们可以使用render函数中传递关键字参数的方法    指定什么值将被填充到html文件中的对应位置，其中关键字对应模板文件中占位符的名字。下面是在poemPageMaker中相应的代码部分：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">noun1 = self.get_argument(<span class="string">"noun1"</span>)</div><div class="line">noun2 = self.get_argument(<span class="string">"noun2"</span>)</div><div class="line">verb = self.get_argument(<span class="string">"verb"</span>)</div><div class="line">noun3 = self.get_argument(<span class="string">"noun3"</span>)</div><div class="line">self.render(<span class="string">"poem.html"</span>, roads=noun1, wood=noun2, made = verb, difference=noun3)</div></pre></td></tr></table></figure></p>
+<p>在这里，我们告诉模板使用变量noun1作为模板中roads的值，以此类推。</p>
+<h3 id="2-13-设置静态路径"><a href="#2-13-设置静态路径" class="headerlink" title="2.13 设置静态路径"></a>2.13 设置静态路径</h3><p>你可以通过向Application类的构造函数传递一个名为static_path的参数来告诉tornado从文件系统一个特定的位置提供静态文件。<br>在上述代码中如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">static_path = os.path.join(os.path.dirname(__file__), <span class="string">"static"</span>))</div></pre></td></tr></table></figure></p>
+<p>在这里，我们设置了一个当前应用目录下名为static的子目录作为static_path的参数。应用将读取static中的文件作为静态文件</p>
+<h3 id="2-1-4使用static-url生成url"><a href="#2-1-4使用static-url生成url" class="headerlink" title="2.1.4使用static_url生成url"></a>2.1.4使用static_url生成url</h3><p>tornado模板提供了一个叫做static_url的函数生成static目录下文件的url.让我们来看看在index.html中static_url的调用代码的示例代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;link rel=&quot;stylesheet&quot; href=&quot;&#123;&#123;static_url(&quot;style.css&quot;)&#125;&#125;&quot;&gt;</div></pre></td></tr></table></figure></p>
+<p>这个对static_url的调用生成了url的值，并渲染出类似下面的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;link rel=&quot;stylesheet&quot; href=&quot;/static/style.css?v=ab12&gt;</div></pre></td></tr></table></figure></p>
+<p>那么为什么使用static_url而不是在你的模板中硬编码呢？原因有以下两点：<br>第一，static_url函数创建了一个<strong>基于文件内容的hash值</strong>，并将其添加到url末尾(查询字符串的参数是v).这个hash值确保浏览器总是加载一个文件的最新版本而不是以前的缓存版本。无论是在开发阶段还是部署到生产环境，都非常有用，因为用户不必为了可到你的静态内容去清除浏览器的缓存了。<br>第二，你可以改变你的url结构，而不用改变模板中的代码。例如，你可以配置tornado响应来自路径/s/filename的请求时提供静态内容，而不是默认的/static路径。如果你使用static_url而不是硬编码，这个时候你不需要改变代码中的值。</p>
+<h3 id="debug参数"><a href="#debug参数" class="headerlink" title="debug参数"></a>debug参数</h3><p>在这个例子中，你可能注意到了debug=True的使用。它调用了一个便利的测试模块:tornado.autoreload模块，此时，一旦主要的python文件被修改，tornado会尝试重启服务器，而且载模板改变的时候会自动刷新。对于快速改变和实时更新这非常棒，但不要在生产上使用它，因为他将防止tornado缓存模板。</p>
+<h2 id="2-2模板语法"><a href="#2-2模板语法" class="headerlink" title="2.2模板语法"></a>2.2模板语法</h2><p>既然我们已经看到了一个模板在实际应用中的例子，哪买让我们深入了解它们是如何工作的。tornado模板是被python表达式和控制语句标记的简单文本文件。tornado的语法非常直接。在2.1节中，我们展示了如何在一个web应用中使用render方法传送html给浏览器。你可以在tornado应用之外使用python解释器导入模块尝试模板系统，此时结果会被直接输出出来。<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from tornado.template import Template</div><div class="line">&gt;&gt;&gt; content = Template(<span class="string">"&lt;html&gt;&lt;body&gt;&lt;h1&gt;&#123;&#123;header&#125;&#125;&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;"</span>)</div><div class="line">&gt;&gt;&gt; print content.generate(header=<span class="string">"Welcome!"</span>)</div><div class="line">&lt;html&gt;&lt;body&gt;&lt;h1&gt;Welcome!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="2-21填充表达式"><a href="#2-21填充表达式" class="headerlink" title="2.21填充表达式"></a>2.21填充表达式</h3><p>上面的演示我们也可以看出，向html中填充python变量的值，我们可以使用双大括号；其实我们可以在双大括号中插入python表达式，它会自动计算出其实际值：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; from tornado.template import Template</div><div class="line">&gt;&gt;&gt; print Template(<span class="string">"&#123;&#123; 1+1 &#125;&#125;"</span>).generate()</div><div class="line"><span class="number">2</span></div><div class="line">&gt;&gt;&gt; print Template(<span class="string">"&#123;&#123; 'scrambled eggs'[-4:] &#125;&#125;"</span>).generate()</div><div class="line">eggs</div><div class="line">&gt;&gt;&gt; print Template(<span class="string">"&#123;&#123; ', '.join([str(x*x) for x in range(10)]) &#125;&#125;"</span>).generate()</div><div class="line"><span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">25</span>, <span class="number">36</span>, <span class="number">49</span>, <span class="number">64</span>, <span class="number">81</span></div></pre></td></tr></table></figure></p>
+<h3 id="2-22-控制流语句"><a href="#2-22-控制流语句" class="headerlink" title="2.22 控制流语句"></a>2.22 控制流语句</h3><p>同样也可以在tornado模板中使用python条件和循环语句。控制与句以{ %和% }包围，并以类似下面形式使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123;% if page is None %&#125;</div><div class="line">或</div><div class="line">&#123;% if len(entrise) == 3 %&#125;</div></pre></td></tr></table></figure></p>
+<p>控制语句的大部分就像对应的python语句一样工作，支持if,for,wihle,try。在这些情况下，语句块以{ %开始，以 % }结束</p>
+<p>模板:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">  &lt;head&gt;&lt;title&gt;&#123;&#123;title&#125;&#125;&lt;/title&gt;&lt;/head&gt;</div><div class="line"></div><div class="line">  &lt;body&gt;</div><div class="line">    &lt;h1&gt;&#123;&#123;header&#125;&#125;&lt;/h1&gt;</div><div class="line">    &lt;ul&gt;</div><div class="line">      &#123;%for book in books%&#125;</div><div class="line">        &lt;li&gt;&#123;&#123;book&#125;&#125;&lt;/li&gt;</div><div class="line">      &#123;% end %&#125;</div><div class="line">    &lt;/ul&gt;</div><div class="line">  &lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>处理函数:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BookHandler</span><span class="params">(tornado.web.RequestHandler)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self)</span>:</span></div><div class="line">        self.render(<span class="string">"books.html"</span>, title=<span class="string">"Home Page"</span>, header=<span class="string">"Books that are great"</span>,\</div><div class="line">                    books=[<span class="string">"python"</span>, <span class="string">"c++"</span>, <span class="string">"pascal"</span>])</div></pre></td></tr></table></figure></p>
+<p>这个时候将渲染出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">  &lt;head&gt;&lt;title&gt;&#123;&#123;title&#125;&#125;&lt;/title&gt;&lt;/head&gt;</div><div class="line"></div><div class="line">  &lt;body&gt;</div><div class="line">    &lt;h1&gt;&#123;&#123;header&#125;&#125;&lt;/h1&gt;</div><div class="line">    &lt;ul&gt;</div><div class="line">        &lt;li&gt;python&lt;/li&gt;</div><div class="line">        &lt;li&gt;C++&lt;/li&gt;</div><div class="line">        &lt;li&gt;pascal&lt;/li&gt;</div><div class="line">      &#123;% end %&#125;</div><div class="line">    &lt;/ul&gt;</div><div class="line">  &lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p>不像其他的python模板渲染系统，tornado模板语言的一个最好的东西是在<strong>if和for语句块中可以使用的表达式没有限制</strong>.因此，你可以在你的模板中执行所有的python代码。<br>同样，你也可以在你的控制语句块中间使用{ % set foo = “bar” % }来设置变量的值。你还有很多可以在控制语句块中做的事情，但是，在大多数情况下，你最好使用UI模块来做更复杂的划分。我们稍后会更详细的看到这一点。</p>
+<h3 id="2-2-3在模板中使用函数"><a href="#2-2-3在模板中使用函数" class="headerlink" title="2.2.3在模板中使用函数"></a>2.2.3在模板中使用函数</h3><p>tornado在所有模板中默认提供了一些遍历的函数。他们包括：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#替换字符串s中的&amp;,&lt;,&gt;为他们对应的html字符</span></div><div class="line">escape(s)</div><div class="line"><span class="comment"># 使用urllib.quote_plus替换字符串s中的字符为URL编码形式</span></div><div class="line">url_escape(s)</div><div class="line"><span class="comment">#将val编码成json格式，底层使用json.dumps()</span></div><div class="line">json_encode(val)</div><div class="line"><span class="comment">#过滤字符串s,把连续的多个空白字符替换成一个空格</span></div><div class="line">squeeze(s)</div></pre></td></tr></table></figure></p>
+<p>在模板中使用一个你自己编写的函数也很简单：<strong>只需要将函数名作为模板的参数传递即可，就像其他的变量。</strong><br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&gt;&gt;&gt; from tornado.template import Template</div><div class="line">&gt;&gt;&gt; def disemvowel(s):</div><div class="line">...     <span class="keyword">return</span> <span class="string">''</span>.join([x <span class="keyword">for</span> x <span class="keyword">in</span> s <span class="keyword">if</span> x not <span class="keyword">in</span> <span class="string">'aeiou'</span>])</div><div class="line">...</div><div class="line">&gt;&gt;&gt; disemvowel(<span class="string">"george"</span>)</div><div class="line"><span class="string">'grg'</span></div><div class="line">&gt;&gt;&gt; print Template(<span class="string">"my name is &#123;&#123;d('mortimer')&#125;&#125;"</span>).generate(d=disemvowel)</div><div class="line">my name is mrtmr</div></pre></td></tr></table></figure></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/16/tornado表单与模板/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/12/05/tornado入门-简单的web服务/">
                             tornado入门(简单的web服务)
                         </a>
@@ -223,11 +362,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-05T22:18:06+08:00">
 	
-		    05 12月 2016
+		    12月 05, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -276,7 +415,7 @@
                     
                         <p>
                             <a href="/2016/12/05/tornado入门-简单的web服务/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -301,11 +440,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-04T20:22:48+08:00">
 	
-		    04 12月 2016
+		    12月 04, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -336,7 +475,7 @@
                     
                         <p>
                             <a href="/2016/12/04/迭代器和简单的生成器/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -361,11 +500,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-03T22:08:04+08:00">
 	
-		    03 12月 2016
+		    12月 03, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -408,7 +547,7 @@
                     
                         <p>
                             <a href="/2016/12/03/python-yield使用浅析/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -433,11 +572,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-02T21:43:51+08:00">
 	
-		    02 12月 2016
+		    12月 02, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -490,7 +629,7 @@
                     
                         <p>
                             <a href="/2016/12/02/python装饰其入门/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -508,12 +647,12 @@
                 <a class="btn btn--default btn--small" href="/page/8/">
             
                 <i class="fa fa-angle-left text-base icon-mr"></i>
-                    <span>ARTÍCULOS RECIENTES</span>
+                    <span>NEWER POSTS</span>
             </a>
         </li>
         
         
-        <li class="pagination-number">página 9 de 9</li>
+        <li class="pagination-number">page 9 of 9</li>
     </ul>
 </div>
 

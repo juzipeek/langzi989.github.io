@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Categoría: linux笔记 - 魏传柳</title>
+    <title>Category: linux笔记 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,94 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/02/01/Linux netstat命令详解/">
+                            netstat命令使用详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-01T20:05:01+08:00">
+	
+		    2月 01, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="netstat命令使用详解"><a href="#netstat命令使用详解" class="headerlink" title="netstat命令使用详解"></a>netstat命令使用详解</h1><p>netstat命令用于显示各种网络信息，如当前机器的网络连接状态，路由表，接口状态等等。</p>
+<h2 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h2><p>执行netstat命令，其结果主要包括两个部分。</p>
+<ul>
+<li>Active Internet connections (servers and established),称为有源TCP链接，包括TCP和UDP等的详细状态</li>
+<li>Active UNIX domain sockets (servers and established)。称为有源Unix域套接口。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$netstat</span> -a</div><div class="line">Active Internet connections (servers and established)</div><div class="line">Proto Recv-Q Send-Q Local Address Foreign Address State</div><div class="line">tcp <span class="number">0</span> <span class="number">2</span> xx.xx.xx.xx:telnet ss.ss.ss.ss:port ESTABLISHED</div><div class="line">...</div><div class="line"></div><div class="line">Active UNIX domain sockets (servers and established)</div><div class="line">Proto RefCnt Flags       Type       State         I-Node Path</div><div class="line">unix  <span class="number">2</span>      [ ACC ]     STREAM     LISTENING     <span class="number">6474</span>   /var/run/test.socket</div><div class="line">...</div></pre></td></tr></table></figure>
+<h4 id="有源TCP链接字段详解："><a href="#有源TCP链接字段详解：" class="headerlink" title="有源TCP链接字段详解："></a>有源TCP链接字段详解：</h4><ul>
+<li>Proto : 当前链接的协议。如TCP，UDP</li>
+<li>Recv-Q : 网络接收队列</li>
+<li>Send-Q : 网络发送队列</li>
+<li>Local Address : 本机的ip:端口（注意此处127.0.0.1默认显示主机名，0.0.0.0默认显示*，端口可能显示别名。若强制显示数字,加-n参数）</li>
+<li>Foreign Address:对端IP：端口。与local address规则相同</li>
+<li>State : 当前套接字的网络状态。</li>
+</ul>
+<h4 id="有源Unix域套接口字段详解"><a href="#有源Unix域套接口字段详解" class="headerlink" title="有源Unix域套接口字段详解"></a>有源Unix域套接口字段详解</h4><ul>
+<li>proto : 当前链接的协议，一般为Unix</li>
+<li>RefCnt : 连接段本端口上的进程号</li>
+<li>Type:套接字的类型，stream或 DGRAM</li>
+<li>state : 当前套接字的状态</li>
+<li>I-Node : 当前socket对应的inode号</li>
+<li>Path : 连接到套接口的其它进程使用的路径名。</li>
+</ul>
+<h2 id="netstat常用参数"><a href="#netstat常用参数" class="headerlink" title="netstat常用参数"></a>netstat常用参数</h2><ul>
+<li>-a : 显示所有选项</li>
+<li>-t : 显示所有与TCP相关的选项</li>
+<li>-u : 显示所有与UDP相关的选项</li>
+<li>-x : 显示所有与Unix域相关的套接字选项</li>
+<li>-n : <strong>拒绝显示别名</strong>，能显示数字的全部转换为数字显示</li>
+<li>-p : 显示<strong>建立相关连接的程序名。</strong></li>
+<li>-l : 显示所有状态为Listen的连接</li>
+<li>-e : 显示扩展信息,<strong>如当前链接所对应的用户</strong></li>
+<li>-c : 间隔一段时间执行一次netstat命令。</li>
+<li>-s : 显示统计信息。对每种类型进行汇总</li>
+</ul>
+<h2 id="netstat常用组合"><a href="#netstat常用组合" class="headerlink" title="netstat常用组合"></a>netstat常用组合</h2><ul>
+<li>netstat -anp : 显示所有的网络连接，并拒绝显示别名，同时打印该连接对应的程序名</li>
+<li>netstat -lt : 显示所有正在监听状态的tcp连接</li>
+<li>netstat -lu : 显示所有正在监听状态的udp连接</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/02/01/Linux netstat命令详解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/09/29/LinuxPs命令使用/">
                             LinuxPs命令详解
                         </a>
@@ -224,11 +312,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-09-29T14:05:01+08:00">
 	
-		    29 9月 2017
+		    9月 29, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -290,7 +378,7 @@
                     
                         <p>
                             <a href="/2017/09/29/LinuxPs命令使用/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -315,11 +403,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-09-20T20:48:59+08:00">
 	
-		    20 9月 2017
+		    9月 20, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -399,7 +487,7 @@
                     
                         <p>
                             <a href="/2017/09/20/makefile自动变量与隐晦规则推导/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -424,11 +512,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-09-13T14:53:01+08:00">
 	
-		    13 9月 2017
+		    9月 13, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -460,7 +548,7 @@
                     
                         <p>
                             <a href="/2017/09/13/Linux中umash深入理解/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -485,11 +573,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-09-09T10:05:01+08:00">
 	
-		    09 9月 2017
+		    9月 09, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -600,7 +688,7 @@
                     
                         <p>
                             <a href="/2017/09/09/Linux中ulimit命令简单使用/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -625,11 +713,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-08-31T17:22:57+08:00">
 	
-		    31 8月 2017
+		    8月 31, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -650,7 +738,7 @@
                     
                         <p>
                             <a href="/2017/08/31/makefile详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -675,11 +763,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-08-20T15:11:12+08:00">
 	
-		    20 8月 2017
+		    8月 20, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -767,58 +855,7 @@
                     
                         <p>
                             <a href="/2017/08/20/Linux正则表达式/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/08/20/Linux查找含有特定字符串的文件/">
-                            查找含有特定字符串的文件
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
-	
-		    20 8月 2017
-    	
-    </time>
-    
-        <span>en </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux查找含有特定字符串的文件"><a href="#Linux查找含有特定字符串的文件" class="headerlink" title="Linux查找含有特定字符串的文件"></a>Linux查找含有特定字符串的文件</h1><p>Linux查找含有特定字符串的文件命令为grep。以下为详细的使用方法</p>
-<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><h3 id="Linux命令"><a href="#Linux命令" class="headerlink" title="Linux命令:"></a>Linux命令:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">grep [OPTIONS] PATTERN [FILE...]</div><div class="line"></div><div class="line">#实例:递归查找当前文件夹下所有含有test的文件，并显示行号</div><div class="line">grep -rn &quot;test&quot; *</div></pre></td></tr></table></figure>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">-r      递归查找</div><div class="line">-n      显示行号</div><div class="line">-i      忽略大小写</div><div class="line">-w      只匹配整个单词，而不是字符串的字部分(如pattern为&quot;test&quot;, 不匹配&quot;test1&quot;或&quot;atest&quot;)</div><div class="line">-C num  显示匹配到的行上下n行  </div><div class="line">-l      只列出匹配成功的文件名</div><div class="line">-L      列出不匹配的文件名</div><div class="line">\&lt;      标注单词的开头</div><div class="line">\&gt;      标注单词的结尾</div><div class="line">^       指匹配字符串在行首</div><div class="line">$       指匹配字符串在行尾</div></pre></td></tr></table></figure>
-<h3 id="常用实例"><a href="#常用实例" class="headerlink" title="常用实例"></a>常用实例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#显示匹配pattern1或pattern2的行</div><div class="line">grep pattern1 | pattern2 file</div><div class="line"># 显示即匹配pattern1又匹配pattern2的行</div><div class="line">grep pattern1 file | grep pattern2</div><div class="line">#只匹配test或testA，不匹配Atest</div><div class="line">grep &quot;\&lt;man&quot; *</div><div class="line">#只匹配test或Atest，不匹配testA</div><div class="line">grep &quot;man\&gt;&quot; *</div><div class="line">#只匹配test　不匹配testA和Atest</div><div class="line">grep &quot;\&lt;test\&gt;&quot; *</div><div class="line"></div><div class="line">#匹配行首为test的行:</div><div class="line">grep -rn &quot;^test&quot; *</div><div class="line">#匹配行尾为test的行</div><div class="line">grep -rn &quot;test$&quot; *</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/08/20/Linux查找含有特定字符串的文件/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -843,11 +880,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
 	
-		    20 8月 2017
+		    8月 20, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -867,7 +904,58 @@
                     
                         <p>
                             <a href="/2017/08/20/Linux常用命令/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/08/20/Linux查找含有特定字符串的文件/">
+                            查找含有特定字符串的文件
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
+	
+		    8月 20, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Linux查找含有特定字符串的文件"><a href="#Linux查找含有特定字符串的文件" class="headerlink" title="Linux查找含有特定字符串的文件"></a>Linux查找含有特定字符串的文件</h1><p>Linux查找含有特定字符串的文件命令为grep。以下为详细的使用方法</p>
+<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><h3 id="Linux命令"><a href="#Linux命令" class="headerlink" title="Linux命令:"></a>Linux命令:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">grep [OPTIONS] PATTERN [FILE...]</div><div class="line"></div><div class="line">#实例:递归查找当前文件夹下所有含有test的文件，并显示行号</div><div class="line">grep -rn &quot;test&quot; *</div></pre></td></tr></table></figure>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">-r      递归查找</div><div class="line">-n      显示行号</div><div class="line">-i      忽略大小写</div><div class="line">-w      只匹配整个单词，而不是字符串的字部分(如pattern为&quot;test&quot;, 不匹配&quot;test1&quot;或&quot;atest&quot;)</div><div class="line">-C num  显示匹配到的行上下n行  </div><div class="line">-l      只列出匹配成功的文件名</div><div class="line">-L      列出不匹配的文件名</div><div class="line">\&lt;      标注单词的开头</div><div class="line">\&gt;      标注单词的结尾</div><div class="line">^       指匹配字符串在行首</div><div class="line">$       指匹配字符串在行尾</div></pre></td></tr></table></figure>
+<h3 id="常用实例"><a href="#常用实例" class="headerlink" title="常用实例"></a>常用实例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#显示匹配pattern1或pattern2的行</div><div class="line">grep pattern1 | pattern2 file</div><div class="line"># 显示即匹配pattern1又匹配pattern2的行</div><div class="line">grep pattern1 file | grep pattern2</div><div class="line">#只匹配test或testA，不匹配Atest</div><div class="line">grep &quot;\&lt;man&quot; *</div><div class="line">#只匹配test或Atest，不匹配testA</div><div class="line">grep &quot;man\&gt;&quot; *</div><div class="line">#只匹配test　不匹配testA和Atest</div><div class="line">grep &quot;\&lt;test\&gt;&quot; *</div><div class="line"></div><div class="line">#匹配行首为test的行:</div><div class="line">grep -rn &quot;^test&quot; *</div><div class="line">#匹配行尾为test的行</div><div class="line">grep -rn &quot;test$&quot; *</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/08/20/Linux查找含有特定字符串的文件/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
                             </a>
                         </p>
                     
@@ -892,11 +980,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-25T19:48:59+08:00">
 	
-		    25 5月 2017
+		    5月 25, 2017
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -936,74 +1024,7 @@
                     
                         <p>
                             <a href="/2017/05/25/makefile常用相关函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/27/time命令详解/">
-                            time命令详解
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-27T21:18:33+08:00">
-	
-		    27 12月 2016
-    	
-    </time>
-    
-        <span>en </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux-time命令详解"><a href="#Linux-time命令详解" class="headerlink" title="Linux time命令详解"></a>Linux time命令详解</h1><p>参考:<a href="http://blog.he96.com/2011/01/linux-timewhat-do-real-user-and-sys.html" target="_blank" rel="external">http://blog.he96.com/2011/01/linux-timewhat-do-real-user-and-sys.html</a></p>
-<h2 id="real-user-sys"><a href="#real-user-sys" class="headerlink" title="real,user,sys"></a>real,user,sys</h2><p>我们常用linux中的time命令计算某个程序的运行耗时，用户态CPU耗时，系统态COU耗时。<br>例如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">time foo</div><div class="line">real	0m0.020s</div><div class="line">user	0m0.020s</div><div class="line">sys	0m0.000s</div></pre></td></tr></table></figure></p>
-<p>现在我们探讨一下上述三个时间分别代表的含义:</p>
-<ul>
-<li>real: 表示a.out程序的实际的运行耗时，也就是在a.out运行开始时刻你看了一下手表，a.out运行结束时刻看了一眼手表，两次时间的差值就是real的值。例如使用time sleep 2的时候real值为2</li>
-<li>user: a.out运行在用户态CPU的时间</li>
-<li>sys: a.out运行在核心态CPU的时间</li>
-</ul>
-<h2 id="用户态和核心态"><a href="#用户态和核心态" class="headerlink" title="用户态和核心态"></a>用户态和核心态</h2><p>然后我们讲一下用户态和核心态：</p>
-<ul>
-<li>核心态(kernal mode): 在内核态，代码拥有完全的，不受任何限制的访问底层硬件的能力。可以执行任意的CPU指令，访问任意的内存地址。内核态通常情况下，都是为哪些最底层的，由操作系统提供的，可信可靠耳朵代码来运行的。内核态崩溃将是灾难性的，它会影响到整个系统。</li>
-<li>用户态(User mode):在用户态，代码不具备直接访问底层硬件或者内存的能力，而必须借助操作系统提供的可靠的,底层的API来访问硬件或者内存。由于这种隔离带来的保护作用，用户态代码崩溃，操作系统可以正常恢复。我们大多数代码是运行在用户态。</li>
-</ul>
-<blockquote>
-<p>区分内核态和用户态的<strong>作用</strong>:隔离保护，使得系统更稳定。<br>使用这三个时间我们可以计算当前程序CPU的使用率：<br>CPU Usage = (user + sys) / real_time</p>
-</blockquote>
-<h2 id="常见误区"><a href="#常见误区" class="headerlink" title="常见误区"></a>常见误区</h2><ul>
-<li>realtime = user + sys</li>
-<li>realtime &gt; user + sys<br>由于有一些程序需要等待I/O等导致realtime与user+sys不相等<br>当在多核CPU的情况下第二种情况不成立</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/27/time命令详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -1019,12 +1040,12 @@
         
         <li class="pagination-next">
             <a class="btn btn--default btn--small" href="/categories/linux笔记/page/2/">
-                    <span>ARTÍCULOS ANTERIORES</span>
+                    <span>OLDER POSTS</span>
                 <i class="fa fa-angle-right text-base icon-ml"></i>
             </a>
         </li>
         
-        <li class="pagination-number">página 1 de 2</li>
+        <li class="pagination-number">page 1 of 2</li>
     </ul>
 </div>
 
