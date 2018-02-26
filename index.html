@@ -215,21 +215,21 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/">
-                            Unix网络函数与TCP状态转变之间的关系
+                        <a class="link-unstyled" href="/2018/02/26/Unix脚本语言之TCL/">
+                            TCL脚本语言学习
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
+    <time itemprop="datePublished" datetime="2018-02-26T23:52:40+08:00">
 	
-		    2月 04, 2018
+		    26 2月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+    <a class="category-link" href="/categories/Unix脚本语言/">Unix脚本语言</a>
 
 
     
@@ -238,20 +238,90 @@
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
-<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
-<blockquote>
-<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
-</blockquote>
-<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
+                    <h1 id="TCL脚本语言学习"><a href="#TCL脚本语言学习" class="headerlink" title="TCL脚本语言学习"></a>TCL脚本语言学习</h1><p>TCL是一种脚本语言，它几乎可以在<strong>全部平台</strong>上运行,可移植行很强。<br>TCL语言设计的目的是提供程序与其他程序之间进行交互的功能，也是作为一个可嵌入的翻译互相作用的能力。<br>开发简单，上手快。</p>
+<h2 id="TCL输入输出"><a href="#TCL输入输出" class="headerlink" title="TCL输入输出"></a>TCL输入输出</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/tclsh</div><div class="line">#默认输出到标准输出流</div><div class="line">puts hello</div><div class="line">puts stdout hello</div><div class="line">#输出到标准错误流</div><div class="line">puts stderr error</div><div class="line"></div><div class="line">#输入必须指定输入流</div><div class="line">gets stdin varible</div><div class="line">puts $varible</div></pre></td></tr></table></figure>
+<h2 id="TCL文件读写操作"><a href="#TCL文件读写操作" class="headerlink" title="TCL文件读写操作"></a>TCL文件读写操作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">#打开data文件,打开模式有r,w,a,r+,w+,a+</div><div class="line">set fp [open data w]</div><div class="line">puts $fp &quot;hello world&quot;</div><div class="line">close $fp</div><div class="line"></div><div class="line">set fp [open data r]</div><div class="line">gets $fp test</div><div class="line">puts  $test</div><div class="line">close $fp</div></pre></td></tr></table></figure>
+<h2 id="TCL数据类型"><a href="#TCL数据类型" class="headerlink" title="TCL数据类型"></a>TCL数据类型</h2><p><strong>TCL变量不需要声明，可以直接使用</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"># TCL对象，对于整数，浮点数，bool,字符串，都是一个对象</div><div class="line">#可直接给其赋值</div><div class="line">set varible 1</div><div class="line">set s &quot;hello world&quot;</div><div class="line"></div><div class="line"># 列表，列表初始化时可以使用双引号或者大括号进行初始化</div><div class="line">set list &#123;hello world hah hah&#125;</div><div class="line">set list &quot;hello world hah hah&quot;</div><div class="line"></div><div class="line">#访问列表元素，使用lindex</div><div class="line">puts [lindex $list 0] #hello</div><div class="line"></div><div class="line">#关联数组，类似map,key可以是数字，也可以是字符串</div><div class="line">set map(a) 10</div><div class="line">puts $map(a)</div></pre></td></tr></table></figure></p>
+<h2 id="TCL条件控制语句"><a href="#TCL条件控制语句" class="headerlink" title="TCL条件控制语句"></a>TCL条件控制语句</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"># if语句</div><div class="line">if &#123;expression1&#125; &#123;</div><div class="line">  dosomting</div><div class="line">&#125; elseif &#123;expression2&#125; &#123;</div><div class="line">  dosometing</div><div class="line">&#125; else &#123;</div><div class="line">  dosomething</div><div class="line">&#125;</div><div class="line"></div><div class="line">#for 语句</div><div class="line">for &#123;set a 10&#125; &#123;$a &lt; 20&#125; &#123;incr a&#125; &#123;</div><div class="line">   dosometing</div><div class="line">&#125;</div><div class="line"></div><div class="line">#switch语句</div><div class="line">switch switchingString &#123;</div><div class="line">   matchString1 &#123;</div><div class="line">      body1</div><div class="line">   &#125;</div><div class="line">   matchString2 &#123;</div><div class="line">      body2</div><div class="line">   &#125;</div><div class="line">   matchStringn &#123;</div><div class="line">      bodyn</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="运算符的优先级"><a href="#运算符的优先级" class="headerlink" title="运算符的优先级"></a>运算符的优先级</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">分类</th>
+<th style="text-align:center">操作符</th>
+<th style="text-align:center">关联</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Unary</td>
+<td style="text-align:center">+ -</td>
+<td style="text-align:center">Right to left</td>
+</tr>
+<tr>
+<td style="text-align:center">Multiplicative</td>
+<td style="text-align:center">* / %</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Additive</td>
+<td style="text-align:center">+ -</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Shift</td>
+<td style="text-align:center">&lt;&lt; &gt;&gt;</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Relational</td>
+<td style="text-align:center">&lt; &lt;= &gt; &gt;=</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Equality</td>
+<td style="text-align:center">== !=</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Bitwise AND</td>
+<td style="text-align:center">&amp;</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Bitwise XOR</td>
+<td style="text-align:center">^</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Bitwise OR</td>
+<td style="text-align:center">｜</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Logical AND</td>
+<td style="text-align:center">&amp;&amp;</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Logical OR</td>
+<td style="text-align:center">｜｜</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Ternary</td>
+<td style="text-align:center">?:</td>
+<td style="text-align:center">Right to left</td>
+</tr>
+</tbody>
+</table>
 
                     
                         
                     
                     
                         <p>
-                            <a href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                            <a href="/2018/02/26/Unix脚本语言之TCL/#post-footer" class="postShorten-excerpt_link link">
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -276,11 +346,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
 	
-		    2月 04, 2018
+		    04 2月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
 
@@ -329,7 +399,60 @@
                     
                         <p>
                             <a href="/2018/02/04/Unix网络编程相关错误码总结/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/">
+                            Unix网络函数与TCP状态转变之间的关系
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
+	
+		    04 2月 2018
+    	
+    </time>
+    
+        <span>en </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
+<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
+<blockquote>
+<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
+</blockquote>
+<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/#post-footer" class="postShorten-excerpt_link link">
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -354,11 +477,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-02-01T20:05:01+08:00">
 	
-		    2月 01, 2018
+		    01 2月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -417,7 +540,7 @@
                     
                         <p>
                             <a href="/2018/02/01/Linux netstat命令详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -442,11 +565,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-28T15:20:00+08:00">
 	
-		    1月 28, 2018
+		    28 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -486,7 +609,7 @@
                     
                         <p>
                             <a href="/2018/01/28/Unix信号之sigaction函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -511,11 +634,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-26T18:30:00+08:00">
 	
-		    1月 26, 2018
+		    26 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -580,7 +703,7 @@
                     
                         <p>
                             <a href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -605,11 +728,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-26T17:30:08+08:00">
 	
-		    1月 26, 2018
+		    26 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -654,7 +777,7 @@
                     
                         <p>
                             <a href="/2018/01/26/C语言pack与aligned的区别/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -679,11 +802,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-06T20:31:31+08:00">
 	
-		    1月 06, 2018
+		    06 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -734,7 +857,7 @@
                     
                         <p>
                             <a href="/2018/01/06/Unix中fcntl实现对文件加锁功能/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -759,11 +882,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-01T17:51:00+08:00">
 	
-		    1月 01, 2018
+		    01 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -791,7 +914,7 @@
                     
                         <p>
                             <a href="/2018/01/01/C中记录基础库从32位到64位机器移植导致的一些问题/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -816,11 +939,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-01T15:00:00+08:00">
 	
-		    1月 01, 2018
+		    01 1月 2018
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -852,74 +975,7 @@
                     
                         <p>
                             <a href="/2018/01/01/C中va_list类型在32位和64位机器的区别与使用/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/01/01/C中snprintf与vsnprintf函数/">
-                            C中snprintf与vsnprintf函数,自定义可变参数格式化字符串
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-01-01T12:59:59+08:00">
-	
-		    1月 01, 2018
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C中snprintf与vsnprintf函数"><a href="#C中snprintf与vsnprintf函数" class="headerlink" title="C中snprintf与vsnprintf函数"></a>C中snprintf与vsnprintf函数</h1><blockquote>
-<p>虽然snprintf函数在开发过程中比较常用,但是其中有一些细节性的问题需要注意。因为snprintf函数不是C中的标准函数，不同的编译器可能对该函数的实现不同，本文说明是基于GCC编译器。</p>
-</blockquote>
-<h2 id="snprintf函数"><a href="#snprintf函数" class="headerlink" title="snprintf函数"></a>snprintf函数</h2><h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><p>snprintf函数的作用是将格式化的数据写入字符串。其函数原型如下:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">snprintf</span>(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">char</span>* format, ...);</div></pre></td></tr></table></figure>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
-<li>buffer : 存储格式化字符串的buffer</li>
-<li>n : 指定格式化字符串的大小,<strong>包括\0</strong></li>
-<li>format : 指定需要格式化字符串的format</li>
-<li>… : 可变参数</li>
-</ul>
-<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>该函数的返回值为其期望字符串的长度，而不是实际存入buffer中的字符串的长度。且<strong>不包括\0</strong>。</p>
-<h3 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h3><p>特别注意函数原型中的第二个参数包括\0的大小，而返回值为期望大小且不包括\0。</p>
-<p>例:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> buffer[<span class="number">256</span>];</div><div class="line"><span class="comment">//返回值ret = 13,buffer中的内容为123456789</span></div><div class="line"><span class="keyword">int</span> ret = <span class="built_in">snprintf</span>(buffer, <span class="number">10</span>, <span class="string">"%s"</span>, <span class="string">"1234567890abc"</span>);</div><div class="line"></div><div class="line"><span class="built_in">memset</span>(buffer, <span class="number">0x0</span>, <span class="keyword">sizeof</span>(buffer));</div><div class="line"></div><div class="line"><span class="comment">//返回值ret = 3,buffer中的内容为123</span></div><div class="line">ret =<span class="built_in">snprintf</span>(buffer, <span class="number">10</span>, <span class="string">"%s"</span>, <span class="string">"123"</span>);</div></pre></td></tr></table></figure></p>
-<h2 id="snprintf与vsnprintf"><a href="#snprintf与vsnprintf" class="headerlink" title="snprintf与vsnprintf"></a>snprintf与vsnprintf</h2><p>snprintf和vsnprintf都是C语言printf家族函数的成员。实际上，snprintf和vsnprintf功能完全一样，只是vsnprintf将snprintf中的可变参数换成了av_list类型。如下:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">printf</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>; <span class="comment">//输出到标准输出</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fprintf</span><span class="params">(FILE* stream, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>; <span class="comment">//输出到文件</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>;   <span class="comment">//输出到字符串</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">snprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>;   <span class="comment">//输出到字符串</span></div></pre></td></tr></table></figure>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vprintf</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>; <span class="comment">//输出到标准输出</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vfprintf</span><span class="params">(FILE* stream, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>; <span class="comment">//输出到文件</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vsprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>;   <span class="comment">//输出到字符串</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vsnprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>;   <span class="comment">//输出到字符串</span></div></pre></td></tr></table></figure>
-<h3 id="va-list获取"><a href="#va-list获取" class="headerlink" title="va_list获取"></a>va_list获取</h3><p>可变参数va_list获取方式通过下列函数获取,并且总是成对调用</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">va_start(va_list ap, last);</div><div class="line">va_end(va_list ap);</div></pre></td></tr></table></figure>
-<h3 id="简单的使用vsnprintf函数实现snprintf"><a href="#简单的使用vsnprintf函数实现snprintf" class="headerlink" title="简单的使用vsnprintf函数实现snprintf"></a>简单的使用vsnprintf函数实现snprintf</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">my_snprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> size, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> </span>&#123;</div><div class="line">  va_list ap;</div><div class="line">  va_start(ap, format);</div><div class="line">  <span class="keyword">int</span> ret = vsnprintf(buffer, size, format, ap);</div><div class="line">  va_end(ap);</div><div class="line">  <span class="keyword">return</span> ret;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/01/01/C中snprintf与vsnprintf函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -935,12 +991,12 @@
         
         <li class="pagination-next">
             <a class="btn btn--default btn--small" href="/page/2/">
-                    <span>OLDER POSTS</span>
+                    <span>ARTÍCULOS ANTERIORES</span>
                 <i class="fa fa-angle-right text-base icon-ml"></i>
             </a>
         </li>
         
-        <li class="pagination-number">page 1 of 9</li>
+        <li class="pagination-number">página 1 de 9</li>
     </ul>
 </div>
 

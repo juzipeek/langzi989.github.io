@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archives - 魏传柳</title>
+    <title>Archivos - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,73 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/01/C中snprintf与vsnprintf函数/">
+                            C中snprintf与vsnprintf函数,自定义可变参数格式化字符串
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-01T12:59:59+08:00">
+	
+		    01 1月 2018
+    	
+    </time>
+    
+        <span>en </span>
+        
+    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="C中snprintf与vsnprintf函数"><a href="#C中snprintf与vsnprintf函数" class="headerlink" title="C中snprintf与vsnprintf函数"></a>C中snprintf与vsnprintf函数</h1><blockquote>
+<p>虽然snprintf函数在开发过程中比较常用,但是其中有一些细节性的问题需要注意。因为snprintf函数不是C中的标准函数，不同的编译器可能对该函数的实现不同，本文说明是基于GCC编译器。</p>
+</blockquote>
+<h2 id="snprintf函数"><a href="#snprintf函数" class="headerlink" title="snprintf函数"></a>snprintf函数</h2><h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><p>snprintf函数的作用是将格式化的数据写入字符串。其函数原型如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">snprintf</span>(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">char</span>* format, ...);</div></pre></td></tr></table></figure>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li>buffer : 存储格式化字符串的buffer</li>
+<li>n : 指定格式化字符串的大小,<strong>包括\0</strong></li>
+<li>format : 指定需要格式化字符串的format</li>
+<li>… : 可变参数</li>
+</ul>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>该函数的返回值为其期望字符串的长度，而不是实际存入buffer中的字符串的长度。且<strong>不包括\0</strong>。</p>
+<h3 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h3><p>特别注意函数原型中的第二个参数包括\0的大小，而返回值为期望大小且不包括\0。</p>
+<p>例:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> buffer[<span class="number">256</span>];</div><div class="line"><span class="comment">//返回值ret = 13,buffer中的内容为123456789</span></div><div class="line"><span class="keyword">int</span> ret = <span class="built_in">snprintf</span>(buffer, <span class="number">10</span>, <span class="string">"%s"</span>, <span class="string">"1234567890abc"</span>);</div><div class="line"></div><div class="line"><span class="built_in">memset</span>(buffer, <span class="number">0x0</span>, <span class="keyword">sizeof</span>(buffer));</div><div class="line"></div><div class="line"><span class="comment">//返回值ret = 3,buffer中的内容为123</span></div><div class="line">ret =<span class="built_in">snprintf</span>(buffer, <span class="number">10</span>, <span class="string">"%s"</span>, <span class="string">"123"</span>);</div></pre></td></tr></table></figure></p>
+<h2 id="snprintf与vsnprintf"><a href="#snprintf与vsnprintf" class="headerlink" title="snprintf与vsnprintf"></a>snprintf与vsnprintf</h2><p>snprintf和vsnprintf都是C语言printf家族函数的成员。实际上，snprintf和vsnprintf功能完全一样，只是vsnprintf将snprintf中的可变参数换成了av_list类型。如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">printf</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>; <span class="comment">//输出到标准输出</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fprintf</span><span class="params">(FILE* stream, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>; <span class="comment">//输出到文件</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>;   <span class="comment">//输出到字符串</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">snprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>;   <span class="comment">//输出到字符串</span></div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vprintf</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>; <span class="comment">//输出到标准输出</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vfprintf</span><span class="params">(FILE* stream, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>; <span class="comment">//输出到文件</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vsprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>;   <span class="comment">//输出到字符串</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vsnprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>;   <span class="comment">//输出到字符串</span></div></pre></td></tr></table></figure>
+<h3 id="va-list获取"><a href="#va-list获取" class="headerlink" title="va_list获取"></a>va_list获取</h3><p>可变参数va_list获取方式通过下列函数获取,并且总是成对调用</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">va_start(va_list ap, last);</div><div class="line">va_end(va_list ap);</div></pre></td></tr></table></figure>
+<h3 id="简单的使用vsnprintf函数实现snprintf"><a href="#简单的使用vsnprintf函数实现snprintf" class="headerlink" title="简单的使用vsnprintf函数实现snprintf"></a>简单的使用vsnprintf函数实现snprintf</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">my_snprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> size, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> </span>&#123;</div><div class="line">  va_list ap;</div><div class="line">  va_start(ap, format);</div><div class="line">  <span class="keyword">int</span> ret = vsnprintf(buffer, size, format, ap);</div><div class="line">  va_end(ap);</div><div class="line">  <span class="keyword">return</span> ret;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/01/01/C中snprintf与vsnprintf函数/#post-footer" class="postShorten-excerpt_link link">
+                                Comentar y compartir
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/12/10/Linux调试工具之strings/">
                             Linux调试工具之strings
                         </a>
@@ -224,11 +291,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-12-10T18:40:00+08:00">
 	
-		    12月 10, 2017
+		    10 12月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux调试工具/">Linux调试工具</a>
 
@@ -270,7 +337,7 @@
                     
                         <p>
                             <a href="/2017/12/10/Linux调试工具之strings/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -295,11 +362,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-12-03T10:08:00+08:00">
 	
-		    12月 03, 2017
+		    03 12月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux调试工具/">Linux调试工具</a>
 
@@ -345,7 +412,7 @@
                     
                         <p>
                             <a href="/2017/12/03/Linux调试工具之readelf/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -370,11 +437,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-12-01T14:08:00+08:00">
 	
-		    12月 01, 2017
+		    01 12月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/配置管理/">配置管理</a>
 
@@ -394,7 +461,7 @@
                     
                         <p>
                             <a href="/2017/12/01/VS配置/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -419,11 +486,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-11-09T10:20:08+08:00">
 	
-		    11月 09, 2017
+		    09 11月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/C-学习/">C++学习</a>
 
@@ -492,7 +559,7 @@
                     
                         <p>
                             <a href="/2017/11/09/C++截取utf8字符以及字符编码记录/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -517,11 +584,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-10-16T20:30:08+08:00">
 	
-		    10月 16, 2017
+		    16 10月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -546,7 +613,7 @@
                     
                         <p>
                             <a href="/2017/10/16/Unix系统hook函数以及使用dl库实现/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -571,11 +638,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-10-16T16:30:08+08:00">
 	
-		    10月 16, 2017
+		    16 10月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -611,7 +678,7 @@
                     
                         <p>
                             <a href="/2017/10/16/Unix中dl库学习/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -629,14 +696,14 @@
                 <h1 class="postShorten-title" itemprop="headline">
                     
                         <a class="link-unstyled" href="/2017/10/11/AT&T汇编学习/">
-                            (no title)
+                            (sin título)
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-10-11T10:38:55+08:00">
 	
-		    10月 11, 2017
+		    11 10月 2017
     	
     </time>
     
@@ -693,7 +760,7 @@
                     
                         <p>
                             <a href="/2017/10/11/AT&T汇编学习/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -718,11 +785,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-10-08T17:01:00+08:00">
 	
-		    10月 08, 2017
+		    08 10月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
 
@@ -908,7 +975,7 @@
                     
                         <p>
                             <a href="/2017/10/08/Unix中SelectPollEpoll详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -933,11 +1000,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-10-06T19:00:48+08:00">
 	
-		    10月 06, 2017
+		    06 10月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/汇编/">汇编</a>
 
@@ -1151,72 +1218,7 @@
                     
                         <p>
                             <a href="/2017/10/06/汇编基础之寄存器与简单指令分析/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/10/06/C++协程实现/">
-                            C++协程实现及原理
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-10-06T17:00:48+08:00">
-	
-		    10月 06, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C-协程及其原理"><a href="#C-协程及其原理" class="headerlink" title="C++协程及其原理"></a>C++协程及其原理</h1><h2 id="协程的几种实现方式及原理"><a href="#协程的几种实现方式及原理" class="headerlink" title="协程的几种实现方式及原理"></a>协程的几种实现方式及原理</h2><p>协程又可以称为用户线程,微线程，可以将其理解为单个进程或线程中的多个<strong>用户态线程</strong>，这些微线程在用户态进程控制和调度.协程的实现方式有很多种，包括</p>
-<ol>
-<li>使用glibc中的ucontext库实现</li>
-<li>利用汇编代码切换上下文</li>
-<li>利用C语言语法中的switch-case的奇淫技巧实现(protothreads)</li>
-<li>利用C语言的setjmp和longjmp实现</li>
-</ol>
-<p>实际上，无论是上述那种方式实现协程,其原理是相同的，都是通过保存和恢复寄存器的状态，来进行各协程上下文的保存和切换。</p>
-<h2 id="协程较于函数和线程的优点"><a href="#协程较于函数和线程的优点" class="headerlink" title="协程较于函数和线程的优点"></a>协程较于函数和线程的优点</h2><ul>
-<li>相比于函数:协程避免了传统的函数调用栈，几乎可以无限地递归</li>
-<li>相比与线程:协程没有内核态的上下文切换，近乎可以无限并发。协程在用户态进程显式的调度，可以把异步操作转换为同步操作，也意味着不需要加锁,避免了加锁过程中不必要的开销。</li>
-</ul>
-<p>进程,线程以及协程的设计都是为了并发任务可以更好的利用CPU资源，他们之间最大的区别在于CPU资源的使用上:</p>
-<ul>
-<li>进程和线程的任务调度是由内核控制的，是抢占式的；</li>
-<li>协程的任务调度是在用户态完成,需要代码里显式地将CPU交给其他协程,是协作式的</li>
-</ul>
-<p>由于我们可以在用户态调度协程任务，所以我们可以把<strong>一组相互依赖的任务设计为协程。这样,当一个协程任务完成之后,可以手动的进行任务切换，把当前任务挂起(yield),切换到另一个协程区工作</strong>.由于我们可以控制程序主动让出资源，很多情况下将不需要对资源进行加锁。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/10/06/C++协程实现/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -1234,19 +1236,19 @@
                 <a class="btn btn--default btn--small" href="/ ">
             
                 <i class="fa fa-angle-left text-base icon-mr"></i>
-                    <span>NEWER POSTS</span>
+                    <span>ARTÍCULOS RECIENTES</span>
             </a>
         </li>
         
         
         <li class="pagination-next">
             <a class="btn btn--default btn--small" href="/archives/page/3/">
-                    <span>OLDER POSTS</span>
+                    <span>ARTÍCULOS ANTERIORES</span>
                 <i class="fa fa-angle-right text-base icon-ml"></i>
             </a>
         </li>
         
-        <li class="pagination-number">page 2 of 9</li>
+        <li class="pagination-number">página 2 de 9</li>
     </ul>
 </div>
 

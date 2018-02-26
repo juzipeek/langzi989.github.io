@@ -215,6 +215,60 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/22/CprintNULL/">
+                            CprintNULL
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-22T23:55:20+08:00">
+	
+		    22 5月 2017
+    	
+    </time>
+    
+        <span>en </span>
+        
+    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="printf-s情况下字符串为NULL的输出结果"><a href="#printf-s情况下字符串为NULL的输出结果" class="headerlink" title="printf %s情况下字符串为NULL的输出结果"></a>printf %s情况下字符串为NULL的输出结果</h1><h2 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">printf</span>(<span class="string">"this%s\n"</span>, s);</div><div class="line"><span class="built_in">printf</span>(<span class="string">"%s\n"</span>, s);</div></pre></td></tr></table></figure>
+<p>当s为NULL的时候，执行上面三个语句两个语句执行结果分别为:<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this(null)</div><div class="line">segment fault</div></pre></td></tr></table></figure></p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>在ANSI C中没有对printf时字符串为NULL的情况进行明确的定义，所以当出现这种情况时往往是未定义行为。<br>所以上面第一种情况会出现segment fault的情况是一种未定义行为，可能在其他编译器上不会出现段错误。</p>
+<p>上面出现段错误的行为我们可以通过反汇编进行查看。</p>
+<p>反汇编的结果如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">804842</span>d:	c7 <span class="number">04</span> <span class="number">24</span> <span class="number">20</span> <span class="number">85</span> <span class="number">04</span> <span class="number">08</span> 	movl   $<span class="number">0x8048520</span>,(%esp)</div><div class="line"><span class="number">8048434</span>:	e8 <span class="number">0b</span> ff ff ff       	call   <span class="number">8048344</span> &lt;<span class="built_in">printf</span>@plt&gt;</div><div class="line"><span class="number">8048439</span>:	c7 <span class="number">04</span> <span class="number">24</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> 	movl   $<span class="number">0x0</span>,(%esp)</div><div class="line"><span class="number">8048440</span>:	e8 df fe ff ff       	call   <span class="number">8048324</span> &lt;<span class="built_in">puts</span>@plt&gt;</div><div class="line"><span class="number">8048445</span>:	<span class="number">83</span> c4 <span class="number">14</span>             	add    $<span class="number">0x14</span>,%esp</div></pre></td></tr></table></figure>
+<p>从上面可以看出第一个执行被汇编成真正的printf指令，而第二个简单的printf NULL的指令被汇编成puts。<br>所以才出现了上面的结果。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/22/CprintNULL/#post-footer" class="postShorten-excerpt_link link">
+                                Comentar y compartir
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/22/Unix环境变量/">
                             Unix环境变量
                         </a>
@@ -223,11 +277,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-22T23:53:53+08:00">
 	
-		    5月 22, 2017
+		    22 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -268,7 +322,7 @@
                     
                         <p>
                             <a href="/2017/05/22/Unix环境变量/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -293,11 +347,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-22T23:31:31+08:00">
 	
-		    5月 22, 2017
+		    22 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -512,7 +566,7 @@
                     
                         <p>
                             <a href="/2017/05/22/Unix文件IO相关函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -537,11 +591,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-22T23:24:40+08:00">
 	
-		    5月 22, 2017
+		    22 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -589,7 +643,7 @@
                     
                         <p>
                             <a href="/2017/05/22/Unix错误处理/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -614,11 +668,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-22T23:18:36+08:00">
 	
-		    5月 22, 2017
+		    22 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -650,7 +704,7 @@
                     
                         <p>
                             <a href="/2017/05/22/Unix基础知识/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -675,11 +729,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-21T23:31:31+08:00">
 	
-		    5月 21, 2017
+		    21 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -706,7 +760,7 @@
                     
                         <p>
                             <a href="/2017/05/21/函数dup/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -731,11 +785,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-04T20:36:55+08:00">
 	
-		    5月 04, 2017
+		    04 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -871,7 +925,7 @@
                     
                         <p>
                             <a href="/2017/05/04/cgi原理/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -896,11 +950,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-04T15:40:48+08:00">
 	
-		    5月 04, 2017
+		    04 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -1039,7 +1093,7 @@
                     
                         <p>
                             <a href="/2017/05/04/Wait函数详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -1064,11 +1118,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-05-01T23:31:31+08:00">
 	
-		    5月 01, 2017
+		    01 5月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -1229,7 +1283,7 @@
                     
                         <p>
                             <a href="/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -1254,11 +1308,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2017-04-07T10:50:31+08:00">
 	
-		    4月 07, 2017
+		    07 4月 2017
     	
     </time>
     
-        <span>in </span>
+        <span>en </span>
         
     <a class="category-link" href="/categories/C-学习/">C++学习</a>
 
@@ -1288,69 +1342,7 @@
                     
                         <p>
                             <a href="/2017/04/07/free如何知道要free多大的空间/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/03/21/why-assigment-operator-can-not-be-frined-function/">
-                            why assigment operator can not be frined function
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-03-21T14:30:41+08:00">
-	
-		    3月 21, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="why-assigment-operator-can-not-be-frined"><a href="#why-assigment-operator-can-not-be-frined" class="headerlink" title="why assigment operator can not be frined"></a>why assigment operator can not be frined</h1><blockquote>
-<p>this is a problem in my work and I have find th solution on stackoverflow,so recorder here</p>
-</blockquote>
-<h2 id="problem-description"><a href="#problem-description" class="headerlink" title="problem description"></a>problem description</h2><p>When I refactor my object, I have a problem which need to change the return value<br>of and function std::string to a struct data, but I don’t want to change my code<br>where the function be used, so I want to overload the assignment operator which<br>will assign a struct to string.The code is as follows:</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">data_struct</span>&#123;</span></div><div class="line">  <span class="keyword">friend</span> <span class="built_in">std</span>::<span class="built_in">string</span> <span class="keyword">operator</span> = (<span class="built_in">std</span>::<span class="built_in">string</span>&amp; s, data_struct&amp; d);</div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="keyword">bool</span> success&#123;<span class="literal">false</span>&#125;;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> message&#123;<span class="string">""</span>&#125;;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  data_struct(<span class="keyword">bool</span> t_success, <span class="built_in">std</span>::<span class="built_in">string</span> t_message):</div><div class="line">            success(t_success), message(t_message) &#123;&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">std</span>::<span class="built_in">string</span> <span class="keyword">operator</span> = (<span class="built_in">std</span>::<span class="built_in">string</span>&amp; s, data_struct&amp; d) &#123;</div><div class="line">  s = d.s;</div><div class="line">  <span class="keyword">return</span> s;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">data_struct <span class="title">d</span><span class="params">(<span class="literal">false</span>,<span class="string">"haha"</span>)</span></span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> s = d;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>when I compile this file , this is an error follows:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">main.cpp:3:64: error: ‘std::__cxx11::string operator=(std::__cxx11::string&amp;, data_struct&amp;)’ must be a nonstatic member <span class="keyword">function</span></div><div class="line">   friend std::string operator = (std::string&amp; s, data_struct&amp; d);</div><div class="line">                                                                ^</div><div class="line">main.cpp:12:13: error: expected initializer before ‘operator’</div><div class="line"> std::string operator = (std::string&amp; s, data_struct&amp; d) &#123;</div><div class="line">             ^</div><div class="line">main.cpp: In <span class="keyword">function</span> ‘int main()’:</div><div class="line">main.cpp:19:19: error: conversion from ‘data_struct’ to non-scalar <span class="built_in">type</span> ‘std::__cxx11::string &#123;aka std::__cxx11::basic_string&lt;char&gt;&#125;’ requested</div><div class="line">   std::string s = d;</div></pre></td></tr></table></figure>
-<h2 id="why-does-this-happen"><a href="#why-does-this-happen" class="headerlink" title="why does this happen?"></a>why does this happen?</h2><p>Firstly, it should be noted that this has nothing to do with the operator being implemented as a friend specifically. It is really about implementing the copy-assignment as a member function or as a non-member (standalone) function. Whether that standalone function is going to be a friend or not is completely irrelevant: it might be, it might not be, depending on what it wants to access inside the class.</p>
-<p>Now, the answer to this question is given in D&amp;E book (The Design and Evolution of C++). The reason for this is that the compiler always declares/defines a member copy-assignment operator for the class (if you don’t declare your own member copy-assignment operator).</p>
-<p>If the language also allowed declaring copy-assignment operator as a standalone (non-member) function, you could end up with the following</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Class definition</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeClass</span> &#123;</span></div><div class="line">  <span class="comment">// No copy-assignment operator declared here</span></div><div class="line">  <span class="comment">// so the compiler declares its own implicitly</span></div><div class="line">  ...</div><div class="line">&#125;;</div><div class="line"></div><div class="line">SomeClass a, b;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">  a = b;</div><div class="line">  <span class="comment">// The code here will use the compiler-declared copy-assignment for `SomeClass`</span></div><div class="line">  <span class="comment">// because it doesn't know anything about any other copy-assignment operators</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Your standalone assignment operator</span></div><div class="line">SomeClass&amp; <span class="keyword">operator</span> =(SomeClass&amp; lhs, <span class="keyword">const</span> SomeClass&amp; rhs);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">bar</span><span class="params">()</span> </span>&#123;</div><div class="line">  a = b;</div><div class="line">  <span class="comment">// The code here will use your standalone copy-assigment for `SomeClass`</span></div><div class="line">  <span class="comment">// and not the compiler-declared one</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>As seen in the above example, the semantics of the copy-assignment would change in the middle of the translation unit - before the declaration of your standalone operator the compiler’s version is used. After the declaration your version is used. The behavior of the program will change depending on where you put the declaration of your standalone copy-assignment operator.</p>
-<p>This was considered unacceptably dangerous (and it is), so C++ doesn’t allow copy-assignment operator to be declared as a standalone function.</p>
-<p>It is true that in your particular example, which happens to use a friend function specifically, the operator is declared very early, inside the class definition (since that’s how friends are declared). So, in your case the compiler will, of course, know about the existence of your operator right away. However, from the point of view of C++ language the general issue is not related to friend functions in any way. From the point of view of C++ language it is about member functions vs. non-member functions, and non-member overloading of copy-assignment is just prohibited entirely for the reasons described above.</p>
-<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>due to the solution above is not proper.So I overWrite the orignal function, and<br>invoke different version in their needed place.</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/03/21/why-assigment-operator-can-not-be-frined-function/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
+                                Comentar y compartir
                             </a>
                         </p>
                     
@@ -1368,19 +1360,19 @@
                 <a class="btn btn--default btn--small" href="/page/6/">
             
                 <i class="fa fa-angle-left text-base icon-mr"></i>
-                    <span>NEWER POSTS</span>
+                    <span>ARTÍCULOS RECIENTES</span>
             </a>
         </li>
         
         
         <li class="pagination-next">
             <a class="btn btn--default btn--small" href="/page/8/">
-                    <span>OLDER POSTS</span>
+                    <span>ARTÍCULOS ANTERIORES</span>
                 <i class="fa fa-angle-right text-base icon-ml"></i>
             </a>
         </li>
         
-        <li class="pagination-number">page 7 of 9</li>
+        <li class="pagination-number">página 7 de 9</li>
     </ul>
 </div>
 

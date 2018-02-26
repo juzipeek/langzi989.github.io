@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-02-04T14:15:40.018Z</updated>
+  <updated>2018-02-26T15:51:10.073Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,34 +16,106 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Unix网络函数与TCP状态转变之间的关系</title>
-    <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E4%B8%8ETCP%E7%8A%B6%E6%80%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E5%85%B3%E7%B3%BB%E5%AF%B9%E5%BA%94/"/>
-    <id>http://yoursite.com/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/</id>
-    <published>2018-02-04T13:52:40.000Z</published>
-    <updated>2018-02-04T14:15:40.018Z</updated>
+    <title>TCL脚本语言学习</title>
+    <link href="http://yoursite.com/2018/02/26/Unix%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80%E4%B9%8BTCL/"/>
+    <id>http://yoursite.com/2018/02/26/Unix脚本语言之TCL/</id>
+    <published>2018-02-26T15:52:40.000Z</published>
+    <updated>2018-02-26T15:51:10.073Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
-<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
-<blockquote>
-<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
-</blockquote>
-<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
+    <content type="html"><![CDATA[<h1 id="TCL脚本语言学习"><a href="#TCL脚本语言学习" class="headerlink" title="TCL脚本语言学习"></a>TCL脚本语言学习</h1><p>TCL是一种脚本语言，它几乎可以在<strong>全部平台</strong>上运行,可移植行很强。<br>TCL语言设计的目的是提供程序与其他程序之间进行交互的功能，也是作为一个可嵌入的翻译互相作用的能力。<br>开发简单，上手快。</p>
+<h2 id="TCL输入输出"><a href="#TCL输入输出" class="headerlink" title="TCL输入输出"></a>TCL输入输出</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/tclsh</div><div class="line">#默认输出到标准输出流</div><div class="line">puts hello</div><div class="line">puts stdout hello</div><div class="line">#输出到标准错误流</div><div class="line">puts stderr error</div><div class="line"></div><div class="line">#输入必须指定输入流</div><div class="line">gets stdin varible</div><div class="line">puts $varible</div></pre></td></tr></table></figure>
+<h2 id="TCL文件读写操作"><a href="#TCL文件读写操作" class="headerlink" title="TCL文件读写操作"></a>TCL文件读写操作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">#打开data文件,打开模式有r,w,a,r+,w+,a+</div><div class="line">set fp [open data w]</div><div class="line">puts $fp &quot;hello world&quot;</div><div class="line">close $fp</div><div class="line"></div><div class="line">set fp [open data r]</div><div class="line">gets $fp test</div><div class="line">puts  $test</div><div class="line">close $fp</div></pre></td></tr></table></figure>
+<h2 id="TCL数据类型"><a href="#TCL数据类型" class="headerlink" title="TCL数据类型"></a>TCL数据类型</h2><p><strong>TCL变量不需要声明，可以直接使用</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"># TCL对象，对于整数，浮点数，bool,字符串，都是一个对象</div><div class="line">#可直接给其赋值</div><div class="line">set varible 1</div><div class="line">set s &quot;hello world&quot;</div><div class="line"></div><div class="line"># 列表，列表初始化时可以使用双引号或者大括号进行初始化</div><div class="line">set list &#123;hello world hah hah&#125;</div><div class="line">set list &quot;hello world hah hah&quot;</div><div class="line"></div><div class="line">#访问列表元素，使用lindex</div><div class="line">puts [lindex $list 0] #hello</div><div class="line"></div><div class="line">#关联数组，类似map,key可以是数字，也可以是字符串</div><div class="line">set map(a) 10</div><div class="line">puts $map(a)</div></pre></td></tr></table></figure></p>
+<h2 id="TCL条件控制语句"><a href="#TCL条件控制语句" class="headerlink" title="TCL条件控制语句"></a>TCL条件控制语句</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"># if语句</div><div class="line">if &#123;expression1&#125; &#123;</div><div class="line">  dosomting</div><div class="line">&#125; elseif &#123;expression2&#125; &#123;</div><div class="line">  dosometing</div><div class="line">&#125; else &#123;</div><div class="line">  dosomething</div><div class="line">&#125;</div><div class="line"></div><div class="line">#for 语句</div><div class="line">for &#123;set a 10&#125; &#123;$a &lt; 20&#125; &#123;incr a&#125; &#123;</div><div class="line">   dosometing</div><div class="line">&#125;</div><div class="line"></div><div class="line">#switch语句</div><div class="line">switch switchingString &#123;</div><div class="line">   matchString1 &#123;</div><div class="line">      body1</div><div class="line">   &#125;</div><div class="line">   matchString2 &#123;</div><div class="line">      body2</div><div class="line">   &#125;</div><div class="line">   matchStringn &#123;</div><div class="line">      bodyn</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="运算符的优先级"><a href="#运算符的优先级" class="headerlink" title="运算符的优先级"></a>运算符的优先级</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">分类</th>
+<th style="text-align:center">操作符</th>
+<th style="text-align:center">关联</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Unary</td>
+<td style="text-align:center">+ -</td>
+<td style="text-align:center">Right to left</td>
+</tr>
+<tr>
+<td style="text-align:center">Multiplicative</td>
+<td style="text-align:center">* / %</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Additive</td>
+<td style="text-align:center">+ -</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Shift</td>
+<td style="text-align:center">&lt;&lt; &gt;&gt;</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Relational</td>
+<td style="text-align:center">&lt; &lt;= &gt; &gt;=</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Equality</td>
+<td style="text-align:center">== !=</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Bitwise AND</td>
+<td style="text-align:center">&amp;</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Bitwise XOR</td>
+<td style="text-align:center">^</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Bitwise OR</td>
+<td style="text-align:center">｜</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Logical AND</td>
+<td style="text-align:center">&amp;&amp;</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Logical OR</td>
+<td style="text-align:center">｜｜</td>
+<td style="text-align:center">Left to right</td>
+</tr>
+<tr>
+<td style="text-align:center">Ternary</td>
+<td style="text-align:center">?:</td>
+<td style="text-align:center">Right to left</td>
+</tr>
+</tbody>
+</table>
 ]]></content>
     
     <summary type="html">
     
-      &lt;h1 id=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;a href=&quot;#Unix网络函数与TCP状态转变之间的关系&quot; class=&quot;headerlink&quot; title=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;/a&gt;Unix网络函数与TCP状态转变之间的关系&lt;/
+      &lt;h1 id=&quot;TCL脚本语言学习&quot;&gt;&lt;a href=&quot;#TCL脚本语言学习&quot; class=&quot;headerlink&quot; title=&quot;TCL脚本语言学习&quot;&gt;&lt;/a&gt;TCL脚本语言学习&lt;/h1&gt;&lt;p&gt;TCL是一种脚本语言，它几乎可以在&lt;strong&gt;全部平台&lt;/strong&gt;上运行,
     
     </summary>
     
-      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+      <category term="Unix脚本语言" scheme="http://yoursite.com/categories/Unix%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80/"/>
     
     
-      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+      <category term="tcl" scheme="http://yoursite.com/tags/tcl/"/>
     
-      <category term="connect" scheme="http://yoursite.com/tags/connect/"/>
+      <category term="脚本" scheme="http://yoursite.com/tags/%E8%84%9A%E6%9C%AC/"/>
     
-      <category term="listen" scheme="http://yoursite.com/tags/listen/"/>
+      <category term="语言" scheme="http://yoursite.com/tags/%E8%AF%AD%E8%A8%80/"/>
+    
+      <category term="expect" scheme="http://yoursite.com/tags/expect/"/>
     
   </entry>
   
@@ -107,6 +179,38 @@
       <category term="EINPROGRESS" scheme="http://yoursite.com/tags/EINPROGRESS/"/>
     
       <category term="SIGPIPE" scheme="http://yoursite.com/tags/SIGPIPE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Unix网络函数与TCP状态转变之间的关系</title>
+    <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E4%B8%8ETCP%E7%8A%B6%E6%80%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E5%85%B3%E7%B3%BB%E5%AF%B9%E5%BA%94/"/>
+    <id>http://yoursite.com/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/</id>
+    <published>2018-02-04T13:52:40.000Z</published>
+    <updated>2018-02-04T14:15:40.018Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
+<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
+<blockquote>
+<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
+</blockquote>
+<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;a href=&quot;#Unix网络函数与TCP状态转变之间的关系&quot; class=&quot;headerlink&quot; title=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;/a&gt;Unix网络函数与TCP状态转变之间的关系&lt;/
+    
+    </summary>
+    
+      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="connect" scheme="http://yoursite.com/tags/connect/"/>
+    
+      <category term="listen" scheme="http://yoursite.com/tags/listen/"/>
     
   </entry>
   
@@ -1305,52 +1409,6 @@
       <category term="寄存器" scheme="http://yoursite.com/tags/%E5%AF%84%E5%AD%98%E5%99%A8/"/>
     
       <category term="汇编" scheme="http://yoursite.com/tags/%E6%B1%87%E7%BC%96/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>C++协程实现及原理</title>
-    <link href="http://yoursite.com/2017/10/06/C++%E5%8D%8F%E7%A8%8B%E5%AE%9E%E7%8E%B0/"/>
-    <id>http://yoursite.com/2017/10/06/C++协程实现/</id>
-    <published>2017-10-06T09:00:48.000Z</published>
-    <updated>2017-10-06T09:20:40.546Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="C-协程及其原理"><a href="#C-协程及其原理" class="headerlink" title="C++协程及其原理"></a>C++协程及其原理</h1><h2 id="协程的几种实现方式及原理"><a href="#协程的几种实现方式及原理" class="headerlink" title="协程的几种实现方式及原理"></a>协程的几种实现方式及原理</h2><p>协程又可以称为用户线程,微线程，可以将其理解为单个进程或线程中的多个<strong>用户态线程</strong>，这些微线程在用户态进程控制和调度.协程的实现方式有很多种，包括</p>
-<ol>
-<li>使用glibc中的ucontext库实现</li>
-<li>利用汇编代码切换上下文</li>
-<li>利用C语言语法中的switch-case的奇淫技巧实现(protothreads)</li>
-<li>利用C语言的setjmp和longjmp实现</li>
-</ol>
-<p>实际上，无论是上述那种方式实现协程,其原理是相同的，都是通过保存和恢复寄存器的状态，来进行各协程上下文的保存和切换。</p>
-<h2 id="协程较于函数和线程的优点"><a href="#协程较于函数和线程的优点" class="headerlink" title="协程较于函数和线程的优点"></a>协程较于函数和线程的优点</h2><ul>
-<li>相比于函数:协程避免了传统的函数调用栈，几乎可以无限地递归</li>
-<li>相比与线程:协程没有内核态的上下文切换，近乎可以无限并发。协程在用户态进程显式的调度，可以把异步操作转换为同步操作，也意味着不需要加锁,避免了加锁过程中不必要的开销。</li>
-</ul>
-<p>进程,线程以及协程的设计都是为了并发任务可以更好的利用CPU资源，他们之间最大的区别在于CPU资源的使用上:</p>
-<ul>
-<li>进程和线程的任务调度是由内核控制的，是抢占式的；</li>
-<li>协程的任务调度是在用户态完成,需要代码里显式地将CPU交给其他协程,是协作式的</li>
-</ul>
-<p>由于我们可以在用户态调度协程任务，所以我们可以把<strong>一组相互依赖的任务设计为协程。这样,当一个协程任务完成之后,可以手动的进行任务切换，把当前任务挂起(yield),切换到另一个协程区工作</strong>.由于我们可以控制程序主动让出资源，很多情况下将不需要对资源进行加锁。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;C-协程及其原理&quot;&gt;&lt;a href=&quot;#C-协程及其原理&quot; class=&quot;headerlink&quot; title=&quot;C++协程及其原理&quot;&gt;&lt;/a&gt;C++协程及其原理&lt;/h1&gt;&lt;h2 id=&quot;协程的几种实现方式及原理&quot;&gt;&lt;a href=&quot;#协程的几种实现方式及原理&quot; c
-    
-    </summary>
-    
-      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-      <category term="ucontext_t" scheme="http://yoursite.com/tags/ucontext-t/"/>
-    
-      <category term="上下文切换" scheme="http://yoursite.com/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/"/>
-    
-      <category term="协程" scheme="http://yoursite.com/tags/%E5%8D%8F%E7%A8%8B/"/>
     
   </entry>
   
