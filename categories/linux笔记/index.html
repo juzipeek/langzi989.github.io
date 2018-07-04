@@ -216,6 +216,58 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/07/04/Linux文件描述符限制/">
+                            文件描述符限制
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-07-04T23:50:20+08:00">
+	
+		    7月 04, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="文件描述符限制"><a href="#文件描述符限制" class="headerlink" title="文件描述符限制"></a>文件描述符限制</h1><p>文件描述符是系统的一个重要资源，理论上有多少内存就可以创建多少文件描述符，但是在实际实现过程中，一般打开的文件数是系统内存的10%（以KB计算）。</p>
+<p><strong>查看当前系统最大的文件描述符数量</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#系统最大文件描述符数量</div><div class="line">$sysctl -a | grep fs.file-max</div><div class="line">1026095(与系统相关)</div><div class="line">#当前session最大的文件描述符数量</div><div class="line">$ulimit -n</div><div class="line">1024</div></pre></td></tr></table></figure>
+<p><strong>修改当前系统最大文件描述符数量</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#永久修改系统的最大描述符数量</span></div><div class="line"><span class="comment">#在/etc/sysctl.conf中添加：</span></div><div class="line">fs.file-max=<span class="number">102400</span></div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/07/04/Linux文件描述符限制/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/02/01/Linux netstat命令详解/">
                             netstat命令使用详解
                         </a>
@@ -872,57 +924,6 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/08/20/Linux查找含有特定字符串的文件/">
-                            查找含有特定字符串的文件
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
-	
-		    8月 20, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux查找含有特定字符串的文件"><a href="#Linux查找含有特定字符串的文件" class="headerlink" title="Linux查找含有特定字符串的文件"></a>Linux查找含有特定字符串的文件</h1><p>Linux查找含有特定字符串的文件命令为grep。以下为详细的使用方法</p>
-<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><h3 id="Linux命令"><a href="#Linux命令" class="headerlink" title="Linux命令:"></a>Linux命令:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">grep [OPTIONS] PATTERN [FILE...]</div><div class="line"></div><div class="line">#实例:递归查找当前文件夹下所有含有test的文件，并显示行号</div><div class="line">grep -rn &quot;test&quot; *</div></pre></td></tr></table></figure>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">-r      递归查找</div><div class="line">-n      显示行号</div><div class="line">-i      忽略大小写</div><div class="line">-w      只匹配整个单词，而不是字符串的字部分(如pattern为&quot;test&quot;, 不匹配&quot;test1&quot;或&quot;atest&quot;)</div><div class="line">-C num  显示匹配到的行上下n行  </div><div class="line">-l      只列出匹配成功的文件名</div><div class="line">-L      列出不匹配的文件名</div><div class="line">\&lt;      标注单词的开头</div><div class="line">\&gt;      标注单词的结尾</div><div class="line">^       指匹配字符串在行首</div><div class="line">$       指匹配字符串在行尾</div></pre></td></tr></table></figure>
-<h3 id="常用实例"><a href="#常用实例" class="headerlink" title="常用实例"></a>常用实例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#显示匹配pattern1或pattern2的行</div><div class="line">grep pattern1 | pattern2 file</div><div class="line"># 显示即匹配pattern1又匹配pattern2的行</div><div class="line">grep pattern1 file | grep pattern2</div><div class="line">#只匹配test或testA，不匹配Atest</div><div class="line">grep &quot;\&lt;man&quot; *</div><div class="line">#只匹配test或Atest，不匹配testA</div><div class="line">grep &quot;man\&gt;&quot; *</div><div class="line">#只匹配test　不匹配testA和Atest</div><div class="line">grep &quot;\&lt;test\&gt;&quot; *</div><div class="line"></div><div class="line">#匹配行首为test的行:</div><div class="line">grep -rn &quot;^test&quot; *</div><div class="line">#匹配行尾为test的行</div><div class="line">grep -rn &quot;test$&quot; *</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/08/20/Linux查找含有特定字符串的文件/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
                         <a class="link-unstyled" href="/2017/08/20/Linux常用命令/">
                             Linux常用命令混淆点记录
                         </a>
@@ -972,15 +973,15 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/05/25/makefile常用相关函数/">
-                            makefile常用相关函数
+                        <a class="link-unstyled" href="/2017/08/20/Linux查找含有特定字符串的文件/">
+                            查找含有特定字符串的文件
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-25T19:48:59+08:00">
+    <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
 	
-		    5月 25, 2017
+		    8月 20, 2017
     	
     </time>
     
@@ -995,35 +996,17 @@
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="makefile常用相关函数"><a href="#makefile常用相关函数" class="headerlink" title="makefile常用相关函数"></a>makefile常用相关函数</h1><p>makefile中函数的用法与变量类似，变量的用法是在变量前面加上$，函数的用法一样，也是使用$开头，$之后加一个括号，括号中的第一个参数是函数名，后面紧跟此函数需要的参数，用逗号分隔。下面介绍几个常用的函数。</p>
-<h2 id="wildcard函数"><a href="#wildcard函数" class="headerlink" title="wildcard函数"></a>wildcard函数</h2><ul>
-<li>参数: 一个正则表达式</li>
-</ul>
-<p>wildcard的中文意思是通配符，它的功能类似于正则表达式，用于展开一列所有符合其参数描述的文件名，文件之间用空格分割。</p>
-<p>实例:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SOURCE=$(wildcard *.cpp)</div></pre></td></tr></table></figure>
-<p>此时SOURCE的值为所有的以.cpp为后缀的文件集合，以空格隔开。</p>
-<h2 id="patsubst函数"><a href="#patsubst函数" class="headerlink" title="patsubst函数"></a>patsubst函数</h2><p>其功能是一个匹配替换的函数(pattern substitute)。</p>
-<ul>
-<li>参数：第一个是需要匹配的样式，第二个是表示用什么替换它，第三个被处理的以空格隔开的字符串。</li>
-</ul>
-<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">TARGET = $(patsubst *.cpp, *.o, $(SOURCE))</div></pre></td></tr></table></figure></p>
-<p>TARGET表示与SOURCE中同名的目标文件.</p>
-<h2 id="lt"><a href="#lt" class="headerlink" title="$@,$&lt;, $^"></a>$@,$&lt;, $^</h2><p>上述几个变量的含义：</p>
-<ul>
-<li>$@ 表示目标的文件名</li>
-<li>$&lt; 表示依赖中的第一个文件名</li>
-<li>$^ 表示依赖中所有的文件名</li>
-</ul>
-<p>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">all: library.cpp main.cpp</div></pre></td></tr></table></figure></p>
-<p>其中$@标识all, $&lt;表示library.cpp ，$^表示library.cpp main.cpp</p>
+                    <h1 id="Linux查找含有特定字符串的文件"><a href="#Linux查找含有特定字符串的文件" class="headerlink" title="Linux查找含有特定字符串的文件"></a>Linux查找含有特定字符串的文件</h1><p>Linux查找含有特定字符串的文件命令为grep。以下为详细的使用方法</p>
+<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><h3 id="Linux命令"><a href="#Linux命令" class="headerlink" title="Linux命令:"></a>Linux命令:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">grep [OPTIONS] PATTERN [FILE...]</div><div class="line"></div><div class="line">#实例:递归查找当前文件夹下所有含有test的文件，并显示行号</div><div class="line">grep -rn &quot;test&quot; *</div></pre></td></tr></table></figure>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">-r      递归查找</div><div class="line">-n      显示行号</div><div class="line">-i      忽略大小写</div><div class="line">-w      只匹配整个单词，而不是字符串的字部分(如pattern为&quot;test&quot;, 不匹配&quot;test1&quot;或&quot;atest&quot;)</div><div class="line">-C num  显示匹配到的行上下n行  </div><div class="line">-l      只列出匹配成功的文件名</div><div class="line">-L      列出不匹配的文件名</div><div class="line">\&lt;      标注单词的开头</div><div class="line">\&gt;      标注单词的结尾</div><div class="line">^       指匹配字符串在行首</div><div class="line">$       指匹配字符串在行尾</div></pre></td></tr></table></figure>
+<h3 id="常用实例"><a href="#常用实例" class="headerlink" title="常用实例"></a>常用实例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#显示匹配pattern1或pattern2的行</div><div class="line">grep pattern1 | pattern2 file</div><div class="line"># 显示即匹配pattern1又匹配pattern2的行</div><div class="line">grep pattern1 file | grep pattern2</div><div class="line">#只匹配test或testA，不匹配Atest</div><div class="line">grep &quot;\&lt;man&quot; *</div><div class="line">#只匹配test或Atest，不匹配testA</div><div class="line">grep &quot;man\&gt;&quot; *</div><div class="line">#只匹配test　不匹配testA和Atest</div><div class="line">grep &quot;\&lt;test\&gt;&quot; *</div><div class="line"></div><div class="line">#匹配行首为test的行:</div><div class="line">grep -rn &quot;^test&quot; *</div><div class="line">#匹配行尾为test的行</div><div class="line">grep -rn &quot;test$&quot; *</div></pre></td></tr></table></figure>
 
                     
                         
                     
                     
                         <p>
-                            <a href="/2017/05/25/makefile常用相关函数/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2017/08/20/Linux查找含有特定字符串的文件/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

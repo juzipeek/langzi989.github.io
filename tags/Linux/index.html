@@ -216,6 +216,62 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/07/05/pthread使用barrier栅栏方式同步/">
+                            pthread使用barrier栅栏方式同步
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-07-05T00:10:31+08:00">
+	
+		    7月 05, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="pthread使用barrier栅栏方式同步"><a href="#pthread使用barrier栅栏方式同步" class="headerlink" title="pthread使用barrier栅栏方式同步"></a>pthread使用barrier栅栏方式同步</h1><p>Linux中提供了多种同步机制，其中使用barrier(栅栏)是多线程之间进行同步的方法之一。</p>
+<blockquote>
+<p> <strong>基本原理</strong>：</p>
+<p> 假设多个线程约定一个栅栏，只有当所有的线程都达到这个栅栏时，栅栏才会放行，否则到达此处的线程将被阻塞。</p>
+<p> <strong>使用场景</strong>：</p>
+<p> 程序启动的时候，需要建立一个独立的线程去做一些特殊的工作。比如这个线程需要初始化一些全局配置等等。而主线程启动后，必须等待这个子线程拿到配置信息后，才能继续工作。所以这里就存在一个问题要解决，主线程如何等待这个子线程完成工作后，才继续往下执行呢？</p>
+</blockquote>
+<h3 id="栅栏相关API"><a href="#栅栏相关API" class="headerlink" title="栅栏相关API"></a>栅栏相关API</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//初始化栅栏，栅栏需要等待到count个线程，才会全部一起放行。</span></div><div class="line"><span class="function"><span class="keyword">int</span>   <span class="title">pthread_barrier_init</span><span class="params">(<span class="keyword">pthread_barrier_t</span> *<span class="keyword">restrict</span>,</span></span></div><div class="line">                        <span class="keyword">const</span> <span class="keyword">pthread_barrierattr_t</span> *<span class="keyword">restrict</span>, <span class="keyword">unsigned</span> count);</div><div class="line"></div><div class="line"><span class="comment">//报道函数，当一个线程到达栅栏的时候，就报道。</span></div><div class="line"><span class="comment">//所有的线程都报道后，栅栏自然会放行。</span></div><div class="line"><span class="function"><span class="keyword">int</span>   <span class="title">pthread_barrier_wait</span><span class="params">(<span class="keyword">pthread_barrier_t</span> *barrier)</span></span>;</div><div class="line"></div><div class="line">栅栏完成历史使命后，当然是功成身退。</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_barrier_destroy</span><span class="params">(<span class="keyword">pthread_barrier_t</span> *barrier)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">pthread_barrier_t</span> barrier;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">initor</span><span class="params">(<span class="keyword">void</span>* args)</span> </span>&#123;</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"---------------thread init work(%d)--------------\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	<span class="comment">//模拟初始化工作。</span></div><div class="line">	sleep(<span class="number">10</span>);</div><div class="line">	<span class="comment">//到达栅栏</span></div><div class="line">	pthread_barrier_wait(&amp;barrier);</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"--------------thread start work(%d)--------------\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	sleep(<span class="number">10</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"--------------thread stop work(%d)--------------\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span> </span>&#123;</div><div class="line">  	<span class="comment">//初始化栅栏，该栅栏等待两个线程到达时放行</span></div><div class="line">	pthread_barrier_init(&amp;barrier, <span class="literal">NULL</span>, <span class="number">2</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"**************main thread barrier init done****************\n"</span>);</div><div class="line">	<span class="keyword">pthread_t</span> pid;</div><div class="line">	pthread_create(&amp;pid, <span class="literal">NULL</span>, &amp;initor, <span class="literal">NULL</span>);</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"**************main waiting(%d)********************\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	<span class="comment">//主线程到达，被阻塞，当初始化线程到达栅栏时才放行。</span></div><div class="line">  	pthread_barrier_wait(&amp;barrier);</div><div class="line">	pthread_barrier_destroy(&amp;barrier);</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"***************main start to work(%d)****************\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	sleep(<span class="number">30</span>);</div><div class="line">	pthread_join(pid, <span class="literal">NULL</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"***************thread complete(%d)***************\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/07/05/pthread使用barrier栅栏方式同步/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/06/Unix中fcntl实现对文件加锁功能/">
                             Unix中fcntl实现对文件加锁功能
                         </a>
@@ -979,57 +1035,6 @@
                     
                         <p>
                             <a href="/2017/09/10/Unix高级编程之signal/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/12/Unix网络编程之主机字节序与网络字节序/">
-                            Unix网络编程之主机字节序与网络字节序
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-06-12T19:20:46+08:00">
-	
-		    6月 12, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix网络编程之主机字节序与网络字节序"><a href="#Unix网络编程之主机字节序与网络字节序" class="headerlink" title="Unix网络编程之主机字节序与网络字节序"></a>Unix网络编程之主机字节序与网络字节序</h1><p>在各种计算机体系中，对于字节，字等的存储机制有所不同，但是在网络通信过程中，如果双方交流的信息存储结构不一致，则会导致通信失败的结果。当前计算机中通常采用的字节存储机制主要有两种:<strong>大端规则与小端规则</strong>。<strong>网络通信的过程中的存储机制统一为大端规则。</strong></p>
-<h2 id="字节序"><a href="#字节序" class="headerlink" title="字节序"></a>字节序</h2><blockquote>
-<p>参考：<a href="http://www.cppblog.com/tx7do/archive/2015/12/14/71276.html" target="_blank" rel="external">http://www.cppblog.com/tx7do/archive/2015/12/14/71276.html</a></p>
-</blockquote>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/06/12/Unix网络编程之主机字节序与网络字节序/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

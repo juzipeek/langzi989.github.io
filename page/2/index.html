@@ -215,6 +215,217 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/26/C语言pack与aligned的区别/">
+                            C语言pack与aligned的区别
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-26T17:30:08+08:00">
+	
+		    1月 26, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="pack与aligned的区别"><a href="#pack与aligned的区别" class="headerlink" title="pack与aligned的区别"></a>pack与aligned的区别</h1><p>GCC支持用__attribute__为变量、类型、函数以及标签指定特殊属性。其中可以使用attribute的aligned属性控制变量或类型的内存对其规则，之前一篇文章已经提到pack可以改变结构体中各成员之间的内存对其规则。<a href="https://langzi989.github.io/2017/10/02/C语言内存对其相关/" target="_blank" rel="external">https://langzi989.github.io/2017/10/02/C语言内存对其相关/</a></p>
+<p>其中#pragma pack()和__attribute__((aligned))区别很大。</p>
+<h2 id="aligned内存对其详解"><a href="#aligned内存对其详解" class="headerlink" title="aligned内存对其详解"></a>aligned内存对其详解</h2><p>使用场景:</p>
+<ul>
+<li>变量</li>
+<li>类型</li>
+</ul>
+<p>功能说明：</p>
+<ul>
+<li>当aligned作用于变量时，其作用是告诉编译器为变量分配内存的时候，要分配在指定对其的内存上.作用于变量之上不会改变变量的大小。<ul>
+<li>例如：int a __attribute__((aligned(16)));该变量a的内存起始地址为16的倍数。</li>
+</ul>
+</li>
+<li>当aligned作用于类型时，其作用是告诉编译器该类型声明的所有变量都要分配在指定对齐的内存上。当该属性作用于结构体声明时可能会改变结构体的大小。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Test</span>&#123;</span></div><div class="line">  <span class="keyword">char</span> a[<span class="number">3</span>];</div><div class="line">&#125;__attribute__((aligned(<span class="number">8</span>)));</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="comment">//8</span></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="keyword">sizeof</span>(Test);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如上所示，当align作用于结构体定义时会改变结构体的大小。结构体最终大小为aligned指定大小的整数倍。</p>
+<h2 id="aligned与pack的区别"><a href="#aligned与pack的区别" class="headerlink" title="aligned与pack的区别"></a>aligned与pack的区别</h2><p>从上面可以看出，aligned和pack的主要区别如下:</p>
+<ul>
+<li>pack作用于结构体或类的定义，而aligned既可以作用于结构体或类的定义，也可以作用于变量的声明。</li>
+<li>pack的作用是改变结构体或类中成员变量的布局规则，而aligned只是建议编译器对指定变量或指定类型的变量分配内存时的规则。</li>
+<li>pack可以压缩变量所占内存的空间</li>
+<li>align可以指定变量在内存的对其规则，而pack不可以。</li>
+<li>若某一个结构体的默认pack为n，pack指定的对齐规则m大于n，则该pack忽略。若aligned指定的对齐规则s大于n,则此时结构体的大小一定为s的整数倍。</li>
+<li>aligned和pack指定规则时都必须为2的n次幂。</li>
+</ul>
+<p>参考链接：<a href="http://blog.shengbin.me/posts/gcc-attribute-aligned-and-packed" target="_blank" rel="external">http://blog.shengbin.me/posts/gcc-attribute-aligned-and-packed</a></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/01/26/C语言pack与aligned的区别/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/01/06/Unix中fcntl实现对文件加锁功能/">
+                            Unix中fcntl实现对文件加锁功能
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-06T20:31:31+08:00">
+	
+		    1月 06, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="fcntl实现对文件加锁功能"><a href="#fcntl实现对文件加锁功能" class="headerlink" title="fcntl实现对文件加锁功能"></a>fcntl实现对文件加锁功能</h1><blockquote>
+<p>之前有一篇文章详细介绍了<a href="https://langzi989.github.io/2017/05/01/Unix%E6%96%87%E4%BB%B6IO%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%8F%8Afcntl%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3/" target="_blank" rel="external">fcntl的用法</a>,这一节将说明使用fcntl实现对文件加锁的功能，</p>
+</blockquote>
+<h2 id="fcntl函数原型"><a href="#fcntl函数原型" class="headerlink" title="fcntl函数原型"></a>fcntl函数原型</h2><p>fcntl函数如下，具体用法可参考上面的文章。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> cmd, ...<span class="comment">/*int args or lock args*/</span>)</span></span>;</div></pre></td></tr></table></figure>
+<h2 id="使用fcntl对文件加锁"><a href="#使用fcntl对文件加锁" class="headerlink" title="使用fcntl对文件加锁"></a>使用fcntl对文件加锁</h2><p>当fcntl中的cmd为F_GETLK,F_SETLK,F_SELFKW时为对文件进行锁操作，此时arg参数为flock。注意：<strong>使用fcntl对文件加锁，加锁效果类似于自旋锁，只有写写互斥和读写互斥，读读并不互斥。</strong></p>
+<p><strong>cmd取值及其操作</strong>：</p>
+<ul>
+<li>F_GETLK : 获取当前锁得状态</li>
+<li>F_SETLK : 给当前文件上锁（非阻塞）。</li>
+<li>F_SETLKW : 给当前文件上锁（阻塞，若当前文件正在被锁住，该函数一直阻塞）。</li>
+</ul>
+<p>flock结构体定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">flock</span> &#123;</span></div><div class="line">  <span class="keyword">short</span> <span class="keyword">int</span> l_type;</div><div class="line">  <span class="keyword">short</span> <span class="keyword">int</span> l_whence;</div><div class="line">  <span class="keyword">off_t</span> l_start;</div><div class="line">  <span class="keyword">off_t</span> l_len;</div><div class="line"></div><div class="line">  <span class="keyword">pid_t</span> l_pid;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>下面对flock中的参数一一解释：</p>
+<ul>
+<li>l_type:此参数表示所得类型。其可能的取值包括一下三个:<ul>
+<li>F_RDLCK : 读锁</li>
+<li>F_WRLCK : 写锁</li>
+<li>F_UNLCK : 无锁状态</li>
+</ul>
+</li>
+<li>l_start : 此参数锁区域的开始位置的偏移量</li>
+<li>l_whence:此参数决定锁开始的位置。其可选参数为:<ul>
+<li>SEEK_SET:当前位置为文件的开头</li>
+<li>SEEK_CUR:当前位置为文件指针的位置</li>
+<li>SEEK_END:当前位置为文件末尾</li>
+</ul>
+</li>
+<li>l_len : 锁定文件的长度</li>
+</ul>
+<p><strong>若要锁定整个文件，通常的方法为将l_start设为０，l_whence设为SEEK_SET,l_len设为０．</strong></p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock_set</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> type)</span> </span>&#123;</div><div class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">flock</span> <span class="title">lock</span>;</span></div><div class="line">	lock.l_whence = SEEK_SET;</div><div class="line">	lock.l_start = <span class="number">0</span>;</div><div class="line">	lock.l_len = <span class="number">0</span>;</div><div class="line"></div><div class="line">	<span class="keyword">while</span> (<span class="number">1</span>) &#123;</div><div class="line">		lock.l_type = type;</div><div class="line">		<span class="keyword">if</span> ((fcntl(fd, F_SETLK, &amp;lock)) == <span class="number">0</span>) &#123;</div><div class="line">			<span class="keyword">if</span> (lock.l_type == F_RDLCK)</div><div class="line">				<span class="built_in">printf</span>(<span class="string">"read lock set by %d\n"</span>, getpid());</div><div class="line">			<span class="keyword">else</span> <span class="keyword">if</span>(lock.l_type == F_WRLCK)</div><div class="line">				<span class="built_in">printf</span>(<span class="string">"write lock set by %d\n"</span>, getpid());</div><div class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (lock.l_type == F_UNLCK)</div><div class="line">				<span class="built_in">printf</span>(<span class="string">"release lock by %d\n"</span>, getpid());</div><div class="line">			<span class="keyword">return</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="comment">//检查文件是否可以上锁</span></div><div class="line">		fcntl(fd, F_GETLK, &amp;lock);</div><div class="line"></div><div class="line">		<span class="comment">//判断不能上锁的原因</span></div><div class="line">		<span class="keyword">if</span> (lock.l_type != F_UNLCK) &#123;</div><div class="line">			<span class="keyword">if</span> (lock.l_type == F_RDLCK)</div><div class="line">				<span class="built_in">printf</span>(<span class="string">"read lock has been already set by %d\n"</span>, getpid());</div><div class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (lock.l_type == F_WRLCK)</div><div class="line">			<span class="built_in">printf</span>(<span class="string">"write lock has been already set by %d\n"</span>, getpid());</div><div class="line">			getchar();</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">int</span> fd;</div><div class="line">	fd = open(<span class="string">"data"</span>, O_RDWR | O_CREAT, <span class="number">0666</span>);</div><div class="line">	<span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</div><div class="line">		perror(<span class="string">"open failed"</span>);</div><div class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	lock_set(fd, F_WRLCK);</div><div class="line">	getchar();</div><div class="line">	lock_set(fd, F_UNLCK);</div><div class="line">	getchar();</div><div class="line">	close(fd);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/01/06/Unix中fcntl实现对文件加锁功能/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/01/01/C中记录基础库从32位到64位机器移植导致的一些问题/">
+                            记录C/C++库从32位机器向64为机器移植过程中导致的问题和解决方案
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-01T17:51:00+08:00">
+	
+		    1月 01, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="记录C-C-库从32位机器向64为机器移植过程中导致的问题和解决方案"><a href="#记录C-C-库从32位机器向64为机器移植过程中导致的问题和解决方案" class="headerlink" title="记录C/C++库从32位机器向64为机器移植过程中导致的问题和解决方案"></a>记录C/C++库从32位机器向64为机器移植过程中导致的问题和解决方案</h1><p>最近程序库从32为向64为机器移植后，在使用过程中出现了一些问题，其中包括上一篇中记录的由于va_list类型不一致导致程序core dump或者出现异常行为的原因，这篇文章记录一下库移植之后出现的小问题。持续更新…</p>
+<h2 id="问题一-unsigned-long-int类型长度不兼容并对其按位操作"><a href="#问题一-unsigned-long-int类型长度不兼容并对其按位操作" class="headerlink" title="问题一: unsigned long int类型长度不兼容并对其按位操作"></a>问题一: unsigned long int类型长度不兼容并对其按位操作</h2><p>一般情况下在32位和64位机器单纯使用该类型在不出现数字大小溢出的情况下一般不会出现问题。但是有一种情况需要特别注意，即<strong>当对该unsigned long int进行位操作时，此时的操作结果在32和64位机器的操作结果会不同而导致其他问题。</strong></p>
+<p>例如<strong>使用unsigned long int类型作为key对其按位进行加密或哈希</strong>时，这时的加密或哈希结果会出现问题。</p>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><p>将unsigned long int类型换为uint32_t在64位机器上重新编译</p>
+<h2 id="问题二：-32位和64位默认对齐不同导致数据类型大小不同"><a href="#问题二：-32位和64位默认对齐不同导致数据类型大小不同" class="headerlink" title="问题二： 32位和64位默认对齐不同导致数据类型大小不同"></a>问题二： 32位和64位默认对齐不同导致数据类型大小不同</h2><p>在linux系统下，32位机器数据默认以4字节对齐，64为机器默认以8字节对齐。</p>
+<p>看如下结构构体:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Test</span>&#123;</span></div><div class="line">  <span class="keyword">int</span> a;</div><div class="line">  <span class="keyword">char</span>* data[<span class="number">0</span>];</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="keyword">sizeof</span>(Test) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  Test t;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;t:"</span> &lt;&lt; &amp;t &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"&amp;t.a"</span> &lt;&lt; &amp;t.a &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"&amp;t.data:"</span> &lt;&lt; &amp;t.data &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>32位机器运行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">8</div><div class="line">&amp;t:0x7ffd49f978b0</div><div class="line">&amp;t.a0x7ffd49f978b0</div><div class="line">&amp;t.data:0x7ffd49f978b4</div></pre></td></tr></table></figure></p>
+<p>64位机器运行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">8</div><div class="line">&amp;t:0x7ffd49f978b0</div><div class="line">&amp;t.a0x7ffd49f978b0</div><div class="line">&amp;t.data:0x7ffd49f978b8</div></pre></td></tr></table></figure></p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案:"></a>解决方案:</h4><p>在声明结构体前面加上#pragma pack(1)或#pragma pack(4)，强制改变结构体的对齐方式。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(4)</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Test</span>&#123;</span></div><div class="line">  <span class="keyword">int</span> a;</div><div class="line">  <span class="keyword">char</span>* data[<span class="number">0</span>];</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="keyword">sizeof</span>(Test) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  Test t;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;t:"</span> &lt;&lt; &amp;t &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"&amp;t.a"</span> &lt;&lt; &amp;t.a &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></div><div class="line">            &lt;&lt; <span class="string">"&amp;t.data:"</span> &lt;&lt; &amp;t.data &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/01/01/C中记录基础库从32位到64位机器移植导致的一些问题/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/01/C中va_list类型在32位和64位机器的区别与使用/">
                             C中va_list在32位和64位机器的区别与差异
                         </a>
@@ -683,368 +894,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/10/16/Unix中dl库学习/">
-                            Linux中dlfcn库相关学习.md
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-10-16T16:30:08+08:00">
-	
-		    10月 16, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux中dlfcn库相关学习"><a href="#Linux中dlfcn库相关学习" class="headerlink" title="Linux中dlfcn库相关学习"></a>Linux中dlfcn库相关学习</h1><p>在linux中静态链接库和动态链接库是进程之间代码共享的两种方式。Linux在<dlfnc.h>库中提供了加载和处理动态连接库的系统调用,使用非常方便。具体用法如下:</dlfnc.h></p>
-<h2 id="dlfcn库中函数说明"><a href="#dlfcn库中函数说明" class="headerlink" title="dlfcn库中函数说明"></a>dlfcn库中函数说明</h2><p>dlfcn库中主要包括四个函数:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>*, <span class="keyword">int</span> flag)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span>* <span class="title">dlerror</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlsym</span><span class="params">(<span class="keyword">void</span>* handler, <span class="keyword">char</span>* symbol)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dlclose</span><span class="params">(<span class="keyword">void</span>* handler)</span></span>;</div></pre></td></tr></table></figure></p>
-<ul>
-<li>dlopen : 打开一个动态连接库，并返回一个类型为void*的handler,flag为打开模式，可选的模式有两种<ul>
-<li>RTLD_LAZY 暂缓决定，等有需要时再解出符号</li>
-<li>RTLD_NOW 立即决定，返回前解除所有未决定的符号。</li>
-</ul>
-</li>
-<li>dlerror : 返回dl操作的错误，若没有出现错误，则返回NUlL，否则打印错误信息</li>
-<li>dlsym : 查找动态链接库中的符号symbol,并返回该符号所在的地址</li>
-<li>dlclose : 关闭动态链接库句柄</li>
-</ul>
-<h2 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h2><p>动态链接库cal.cpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//cal.cpp</span></div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a - b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mul</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a * b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">div</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a / b;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>生成动态链接库libcal.so<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ -shared -fPIC cal.cpp libcal.so</div></pre></td></tr></table></figure></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//main.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> LIB_LIBRARY_PATH_1 <span class="meta-string">"./libcal.so"</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*CAC_FUNC)</span><span class="params">(<span class="keyword">int</span> ,<span class="keyword">int</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">void</span>* handler = <span class="literal">NULL</span>;</div><div class="line">	<span class="keyword">char</span>* error = <span class="literal">NULL</span>;</div><div class="line">	CAC_FUNC cac_func = <span class="literal">NULL</span>;</div><div class="line"></div><div class="line">	handler = dlopen(LIB_LIBRARY_PATH_1, RTLD_LAZY);</div><div class="line">	<span class="keyword">if</span> (!handler) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s\n"</span>, dlerror());</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	dlerror();</div><div class="line"></div><div class="line">  <span class="comment">//此处取对应函数地址,</span></div><div class="line">	*(<span class="keyword">void</span> **) (&amp;cac_func) = dlsym(handler, <span class="string">"add"</span>);</div><div class="line">	<span class="keyword">if</span> ((error = dlerror()) != <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s"</span>, error);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"add:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"sub"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"sub:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"mul"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"mul:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"div"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"div:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	dlclose(handler);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>编译函数main:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ main.cpp -rdynamic -ldl</div></pre></td></tr></table></figure></p>
-<p>执行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">add:3</div><div class="line">sub:-1</div><div class="line">mul:2</div><div class="line">div:0</div></pre></td></tr></table></figure></p>
-<h2 id="注意问题"><a href="#注意问题" class="headerlink" title="注意问题"></a>注意问题</h2><p><strong>特别注意，若使用c++编译动态链接库，一定要在需要使用的符号处添加extern “C”,否则会出现符号找不到的问题。即undefined symbol</strong></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/10/16/Unix中dl库学习/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/10/11/AT&T汇编学习/">
-                            (no title)
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-10-11T10:38:55+08:00">
-	
-		    10月 11, 2017
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="AT-amp-T汇编学习"><a href="#AT-amp-T汇编学习" class="headerlink" title="AT&amp;T汇编学习"></a>AT&amp;T汇编学习</h1><p>汇编格式主要包括Intel和AT&amp;T汇编格式两种，两种汇编语言的格式在使用上有较大的差别，我们上一章讲解的汇编格式是以intel的风格为例的,但是在Unix和Linux系统中，大部分的汇编语言采用的是AT&amp;T格式。</p>
-<blockquote>
-<p>注:本节中的实例均以i386处理器中汇编指令为例</p>
-</blockquote>
-<h2 id="AT-amp-T汇编与intel汇编格式对比"><a href="#AT-amp-T汇编与intel汇编格式对比" class="headerlink" title="AT&amp;T汇编与intel汇编格式对比"></a>AT&amp;T汇编与intel汇编格式对比</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">AT&amp;T</th>
-<th style="text-align:center">intel</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">pushl %eax</td>
-<td style="text-align:center">push eax</td>
-<td style="text-align:left">在AT&amp;T格式中，需要在寄存器前面加上%</td>
-</tr>
-<tr>
-<td style="text-align:center">pushl $1</td>
-<td style="text-align:center">push 1</td>
-<td style="text-align:left">在AT&amp;T中使用$作为前缀表示立即数操作</td>
-</tr>
-<tr>
-<td style="text-align:center">addl $1 %eax</td>
-<td style="text-align:center">add eax 1</td>
-<td style="text-align:left">AT&amp;T格式的目的操作数和源操作数的顺序与intel格式相反</td>
-</tr>
-<tr>
-<td style="text-align:center">movl val,%al</td>
-<td style="text-align:center">mov al, byte ptr val</td>
-<td style="text-align:left">AT&amp;T格式操作数的长度由操作符的最后一个字母标识,分别是(movw[word],movl(long)movb[byte])</td>
-</tr>
-<tr>
-<td style="text-align:center">section:disp(base, index, scale)</td>
-<td style="text-align:center">section:[base + index*scale + disp]</td>
-<td style="text-align:left">内存寻址方式不同</td>
-</tr>
-</tbody>
-</table>
-<h2 id="简单汇编代码分析"><a href="#简单汇编代码分析" class="headerlink" title="简单汇编代码分析"></a>简单汇编代码分析</h2><p>下面一段代码的作用是在屏幕上打印helloworld。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">.data                             # 数据段，该段的数据为初始化数据</div><div class="line">        msg: .string &quot;helloworld&quot; #定义string类型变量msg，并赋初始值helloworld</div><div class="line">        len = . - msg             #使用段的起始地址和msg地址相减的方式计算msg的长度</div><div class="line">.text                             #代码段初始位置</div><div class="line">.global _start                    #使得连接程序看得到该symbol，这样就可以在其他文件中引用</div><div class="line"></div><div class="line">_start:                 </div><div class="line">        movl    $len,%edx         #edx中存储要打印的数据的长度</div><div class="line">        movl    $msg,%ecx         #ecx中存储打印为数据内容</div><div class="line">        movl    $1,%ebx           #ebx中为文件描述符,其中1为标准输出流的文件描述符</div><div class="line">        movl    $4,%eax           #eax中为系统调用号,4表示sys_write</div><div class="line">        int     $0x80             #调用内核功能执行,此段代码执行后屏幕上打印出helloworld</div><div class="line"></div><div class="line">        movl    $0,%ebx           #0标识退出代码</div><div class="line">        movl    $1,%eax           #1为系统调用号(sys_exit)</div><div class="line">        int     $0x80             #调用内核功能运行代码</div></pre></td></tr></table></figure></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/10/11/AT&T汇编学习/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/10/08/Unix中SelectPollEpoll详解/">
-                            Unix中select,poll,epoll详解
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-10-08T17:01:00+08:00">
-	
-		    10月 08, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix中select-poll-epoll详解"><a href="#Unix中select-poll-epoll详解" class="headerlink" title="Unix中select,poll,epoll详解"></a>Unix中select,poll,epoll详解</h1><p>网络应用需要处理的问题无非两类,网络I/O和数据计算问题。<br>在处理计算密集型任务的时候,期间会有一些网络IO操作(如写数据库的操作，非本机)，此时若使用同步IO,则会造成大量的IO等待，造成CPU使用率较低。所以此时考虑其他IO模型如异步模型。</p>
-<p>Unix下网络I/O模型包括五类:</p>
-<ul>
-<li>阻塞式IO</li>
-<li>非阻塞式IO</li>
-<li>多路复用IO</li>
-<li>信号驱动IO(边缘触发)</li>
-<li>异步IO</li>
-</ul>
-<p>其中多路复用I/O机制是通过select,poll以及epoll进行监视。这里暂时只介绍多路复用IO,若想了解其他IO模型,参考《Unix网络编程》第六章</p>
-<h2 id="多路复用I-O模型"><a href="#多路复用I-O模型" class="headerlink" title="多路复用I/O模型"></a>多路复用I/O模型</h2><p>网络I/O的本质是socket的读取,socket在linux系统中被抽象为流,所以I/O操作可以理解为对流的操作。这个操作包括两个阶段:</p>
-<ul>
-<li>等待流数据准备就绪(wait for data be ready)</li>
-<li>从内核相进程复制数据</li>
-</ul>
-<p>由于非阻塞调用的过程中，轮训占据了大部分的过程，所以轮训会占据大量的CPU时间。如果轮训不是进程的用户态，而是有人帮忙就好了。多路复用正好处理这样的问题。</p>
-<p>多路复用的过程：多路复用有两个特别的系统调用select和poll。select调用是内核级别的，select轮训相对于非阻塞的轮训区别在于：前者可以等待多个socket，当其中一个socket数据准备好了，就能返回进行可读，然后进程再进行recvform系统调用，将数据由内核拷贝到进程中，拷贝的过程是阻塞的。</p>
-<p>多路复用有两种阻塞，select或poll调用之后，会阻塞进程，与第一种阻塞不同在于，此时的select不是等到socket数据全部到达再处理, 而是有了一部分数据就会调用用户进程来处理。如何知道有一部分数据到达了呢？监视的事情交给了内核，内核负责数据到达的处理。也可以理解为”非阻塞”吧。</p>
-<p><img src="/images/multiplex.png" alt=""></p>
-<blockquote>
-<p>类比钓鱼过程:在钓鱼的时候,我们雇了一个帮手，他可以同时抛下多个鱼竿，任何一个鱼竿的鱼一上钩，他就会拉杆。他只负责帮我们钓鱼，并不处理，所以我们在一旁等着，等他收杆之后，我们再进行处理。</p>
-<p>多路复用既然可以处理多个IO,也就带来了新的问题：多个IO的顺序不能保证</p>
-<p>多路复用的特点多路复用通过一种机制一个进程能同时等待多个IO文件描述符，内核监视这些文件描述符（socket描述符），其中任意一个进入读就绪状态时，select,poll.epoll函数就可以返回。对于监视的方式，有可以分为select,poll,和epoll三种方式。</p>
-</blockquote>
-<h2 id="select函数详解"><a href="#select函数详解" class="headerlink" title="select函数详解"></a>select函数详解</h2><p>###　函数原型</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;select.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> maxfdp1, fd_set* readset, fd_set* writeset, fd_set* except_set, <span class="keyword">const</span> struct timeval* timeout)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h3><p>该函数允许进程指示内核等待多个事件中的其中一个发生，并只在有一个或多个事件发生或者经历了一段时间之后才唤醒它。</p>
-<p>其中等待的事件类型包括三种:指定集合中的描述符处于可读状态,执行集合中的描述符处于可写状态,指定集合中的描述符有异常未处理。</p>
-<p>描述符就绪的条件如下:</p>
-<h4 id="可读就绪"><a href="#可读就绪" class="headerlink" title="可读就绪"></a>可读就绪</h4><p>当描述符满足下列四个条件中的其中一个,表示该描述符已经准备好读</p>
-<ul>
-<li>该套接字接收缓冲区的字节数大于等于套接字接收缓冲区的低水位标记的大小。一般对于TCP和UDP该值默认为1,我们也可以通过SO_RCVLOWAT套接字选项设置该套接字的低水位标记。</li>
-<li>该连接读半部关闭(接受了FIN的TCP连接)，此时函数返回0。</li>
-<li>该套接字是一个监听套接字且完成的连接数不为0。对于这种套接字,accept通常不会阻塞。</li>
-<li>其上有一个套接字错误待处理.对这种套接字的读操作将不阻塞病返回-1。</li>
-</ul>
-<h4 id="可写就绪"><a href="#可写就绪" class="headerlink" title="可写就绪"></a>可写就绪</h4><p>当描述符满足下列四个条件中的其中一个,表示该描述符已经准备好写</p>
-<ul>
-<li>该套接字的发送缓冲区的可用空间字节大于等于套接字发送缓冲区的低水位标记大小。TCP和UDP的默认大小一般为2048。可以使用SO_SNDLOWAT套接字选项来设置该套接字的低水位标记</li>
-<li>该链接的写半部关闭</li>
-<li>使用非阻塞式connect的套接字建立连接，或者connect以失败告终</li>
-<li>其上有一个套接字错误未处理</li>
-</ul>
-<h3 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
-<li>maxfdp1 : fd_set中最大的描述符+1(特别注意不要忘了+1)，如readset中有{1,2,4}，writeset中有{5,7,9}，except_set中有{2,3,6,10}，则此时的maxfdp1为11</li>
-<li>readset : 需要监听的满足可读条件的描述符集合</li>
-<li>writeset : 需要监听的满足可写条件的描述符集合</li>
-<li>except_set : 需要监听的满足异常的描述符集合</li>
-<li>timeout : 等待的时间，若超过此时间,函数返回</li>
-</ul>
-<h4 id="timeout的三种情况"><a href="#timeout的三种情况" class="headerlink" title="timeout的三种情况"></a>timeout的三种情况</h4><ul>
-<li>timeout=NULL,等待时间无限长,即不限等待时间</li>
-<li>timeout-&gt;sec=0,timeout-&gt;usec=0。此时不等待，函数立即返回</li>
-<li>timeout-&gt;sec!=0 || timeout-&gt;usec != 0。此时为等待时间</li>
-</ul>
-<h3 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h3><ul>
-<li>当监视的相应的文件描述符集合中存在满足条件的描述符时，比如说读文件描述符集中有数据到来时,内核IO根据状态修改文件描述符集，并返回一个大于0的数</li>
-<li>当没有满足条件的描述符且设置的timeval超时时,select函数返回0</li>
-<li>出错返回负数</li>
-</ul>
-<p>若存在满足条件的描述符时，内核会将满足条件的描述符置位，并将其他描述符清0.这时，我们可以通过FD_ISSET来判断当前描述符是否满足条件.<br>如:<br>假设set为8位表示，起始为0000 0000。此时将{1,2,5}设置到读文件描述符集合中,即:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">FD_SET(<span class="number">1</span>, &amp;readset);</div><div class="line">FD_SET(<span class="number">2</span>, &amp;readset);</div><div class="line">FD_SET(<span class="number">3</span>, &amp;readset);</div></pre></td></tr></table></figure></p>
-<p>置位以后set的位为:0000 0111</p>
-<p>当调用select函数，并文件描述符2准备就绪时,此时select函数返回大于0的值，set的值变为:0000 0010。此时使用FD_ISSET可以检测到文件描述符2已经就绪。</p>
-<h3 id="fd-set相关操作"><a href="#fd-set相关操作" class="headerlink" title="fd_set相关操作"></a>fd_set相关操作</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_ZERO</span><span class="params">(fd_set* <span class="built_in">set</span>)</span></span>;          <span class="comment">//将fd_set清空，一般声明fd_set第一步现先将其清空</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_SET</span><span class="params">(<span class="keyword">int</span> fd, fd_set* <span class="built_in">set</span>)</span></span>;   <span class="comment">//将某个fd置位</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_CLR</span><span class="params">(<span class="keyword">int</span> fd, fd_set* <span class="built_in">set</span>)</span></span>;   <span class="comment">//清空某个fd</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">FD_ISSET</span><span class="params">(<span class="keyword">int</span> fd, fd_set* <span class="built_in">set</span>)</span></span>;  <span class="comment">//判断fd是否在set中</span></div></pre></td></tr></table></figure>
-<h3 id="select函数底层实现原理"><a href="#select函数底层实现原理" class="headerlink" title="select函数底层实现原理"></a>select函数底层实现原理</h3><p>select底层实现的大致原理是,通过轮训文件描述符集中的文件描述符，检查描述符是否达到条件，若达到符合的相关条件则返回，否则轮训，但是当轮训的机制虽然是死循环，但是不是一直轮训，当内核轮训一遍文件描述符之后，会调用schedule_timeout函数挂起，等待fd设备或定时器来唤醒自己，然后再继续循环体看看哪些fd可用，以此提高效率。</p>
-<p>若要了解详细的select实现原理参考如下博客:<br><a href="http://janfan.cn/chinese/2015/01/05/select-poll-impl-inside-the-kernel.html" target="_blank" rel="external">http://janfan.cn/chinese/2015/01/05/select-poll-impl-inside-the-kernel.html</a><br><a href="http://zhangyafeikimi.iteye.com/blog/248815" target="_blank" rel="external">http://zhangyafeikimi.iteye.com/blog/248815</a></p>
-<h3 id="select函数的特点"><a href="#select函数的特点" class="headerlink" title="select函数的特点"></a>select函数的特点</h3><p>select和poll为水平触发,epoll即支持水平触发也支持边缘触发。</p>
-<p>缺点:</p>
-<ul>
-<li>最大并发数限制:从上面可以看出，被监听的描述符集合的大小受fe_set大小的限制，所以select监听的描述符的个数是有限制的,一般默认个数为1024或4096个等。</li>
-<li>效率问题:从select的底层实现可以看出，select每次调用都会线性扫描全部的fd集合,这样效率会出现线性下降,当把FD_SETSIZE增大可能会出现超时.</li>
-<li>内核用户空间拷贝问题:从select实现源码中不难看出,描述符集合以及timeout参数都是通过内存拷贝的方式从用户空间拷贝到了内核空间，也是会影响函数的性能。</li>
-</ul>
-<h2 id="poll函数详解"><a href="#poll函数详解" class="headerlink" title="poll函数详解"></a>poll函数详解</h2><h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;poll.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span>&#123;</span></div><div class="line">  <span class="keyword">int</span> fd;     <span class="comment">//file descriptor</span></div><div class="line">  <span class="keyword">short</span> events; <span class="comment">//被监听的事件状态(即select中监听当前描述符是否可写或者可读或者异常等等)</span></div><div class="line">  shor revents; <span class="comment">//函数返回时该文件描述符的状态</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">poll</span><span class="params">(struct pollfd* fds, <span class="keyword">unsigned</span> <span class="keyword">long</span> nfds, <span class="keyword">int</span> timeout)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="函数功能-1"><a href="#函数功能-1" class="headerlink" title="函数功能"></a>函数功能</h3><p>poll的函数功能与select功能基本类似。但是poll函数可监听的文件描述符的个数基本没有限制，poll管理多个文件描述符的方式与select一致,都是轮训，并且都是讲文件描述符数组从用户空间复制到内核空间。</p>
-<h3 id="函数参数-1"><a href="#函数参数-1" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
-<li>fds : 被监听的描述符的数组</li>
-<li>nfds : 数组中描述符的个数,这个大小足以监听linux所有的文件描述的符</li>
-<li>timeout : 等待的时间</li>
-</ul>
-<p>events的合法事件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">POLLIN      ---       有数据可读(普通或优先级带数据)等价于POLLRDNORM||POLLRDBAND</div><div class="line">POLLRDNORM  ---       有普通数据可读</div><div class="line">POLLRDBAND  ---       有优先级带数据可读</div><div class="line">POLLPRI     ---       有高优先级数据可读</div><div class="line"></div><div class="line">POLLOUT     ---       有数据可写(普通数据)等价于POLLWRNORM</div><div class="line">POLLWRNORM  ---       有普通数据可写</div><div class="line">POLLWRBBAND ---       有优先级带数据可写</div></pre></td></tr></table></figure></p>
-<p>初此之外,revents返回的事件还有:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">POLLER      ---       发生错误</div><div class="line">POLLHUP     ---       发生挂起</div><div class="line">POLLNVAL    ---       指定的描述符非法，没有打开</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p>POLLIN | POLLPRI等价于select的读事件</p>
-<p>POLLOUT | POLLWRBBAND 等价于select的写事件</p>
-</blockquote>
-<h3 id="函数返回值-1"><a href="#函数返回值-1" class="headerlink" title="函数返回值"></a>函数返回值</h3><ul>
-<li>若监听的描述符满足条件,返回revents域不为0的文件描述符的个数</li>
-<li>若没有描述符满足条件且已过超时时间,poll返回0</li>
-<li>出错返回-1，并设置errno为以下值:</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">EBADF      ---        一个或多个结构体中的描述符无效</div><div class="line">EFAULTfds  ---        指针指向的地址超出进程的地址空间</div><div class="line">EINTR      ---        请求的时间之前产生一个信号，调用可以重新发起</div><div class="line">EINVALnfds ---        参数超出PLIMIT_NOFILE的值</div><div class="line">ENOMEM     ---        可用内存不足，无法完成请求</div></pre></td></tr></table></figure>
-<h3 id="poll函数优缺点"><a href="#poll函数优缺点" class="headerlink" title="poll函数优缺点"></a>poll函数优缺点</h3><p><strong>优点</strong>：</p>
-<ul>
-<li>poll函数不需要计算最大的文件描述符加1.</li>
-<li>poll函数监听的文件描述符的个数不受限制</li>
-<li>poll相对于select函数应付大数目的描述符的效率较高。</li>
-</ul>
-<p><strong>缺点</strong>:</p>
-<ul>
-<li>poll函数没有解决select轮训所有文件描述符的问题</li>
-<li>poll函数和select相同都是将文件描述符信息从用户空间拷贝到内核空间。</li>
-</ul>
-<h2 id="epoll函数详解"><a href="#epoll函数详解" class="headerlink" title="epoll函数详解"></a>epoll函数详解</h2><h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><p>epoll相关数据结构:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//epoll_data保存触发事件相关的数据。(数据类型与具体使用方式有关)</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">union</span> epoll_data&#123;</div><div class="line">  <span class="keyword">void</span>* ptr;</div><div class="line">  <span class="keyword">int</span> fd;</div><div class="line"></div><div class="line">  <span class="keyword">_uint32_t</span> u32;</div><div class="line">  <span class="keyword">_uint64_t</span> u64;</div><div class="line">&#125; <span class="keyword">epoll_data_t</span>;</div><div class="line"></div><div class="line"><span class="comment">//保存感兴趣的事件和被触发的事件</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">epoll_event</span>&#123;</span></div><div class="line">  <span class="keyword">_uint32_t</span> events;</div><div class="line">  <span class="keyword">epoll_data_t</span> data;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>其中events是一个美剧类型的集合,我们可以使用”|”来增加感兴趣的事件。枚举类型的值包括下面:</p>
-<ul>
-<li>EPOLLIN : 表示关联的fd可以进行读操作</li>
-<li>EPOLLOUT :表示关联的fd可以进行写操作</li>
-<li>EPOLLRDHUP(2.6.17之后):表示套接字关闭了连接，或关闭了正写的一半的连接</li>
-<li>EPOLLPRI : 表示关联的fd有紧急优先事件可以进行读操作。</li>
-<li>EPOLLERR : 表示关联的fd发生了错误，epoll_wait会一直等待这个事件,所以一般没有必要设置这个属性</li>
-<li>EPOLLHUP : 表示关联的fd被挂起，epoll_wait会一直等待这个事件,所以一般没有必要设置这个属性</li>
-<li>EPOLLET : 设置关联的fd为ET的工作方式,即边缘触发</li>
-<li>EPOLLONESHOT : 设置关联的fd为one-shot工作方式,表示只监听一次事件,如果要再次监听，需要把socket放入到epoll队列中。</li>
-</ul>
-<p>epoll相关的函数有三个。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_create</span><span class="params">(<span class="keyword">int</span> size)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_ctl</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">int</span> op, <span class="keyword">int</span> fd, struct epoll_event* event)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_wait</span><span class="params">(<span class="keyword">int</span> epfd, struct epoll_event* events, <span class="keyword">int</span> maxevents, <span class="keyword">int</span> timeout)</span></span>;</div></pre></td></tr></table></figure>
-<ul>
-<li>epoll_create : 创建一个epoll句柄，注意创建epoll句柄会占用一个文件描述符，在使用完之后需要关闭。否则可能会导致文件描述符耗尽。<ul>
-<li>size : size为最大的监听文件描述符数，监听的文件描述符的个数不能超过size可以手动指定，但是这个数值可以达到系统可以开的最大的文件描述符数。</li>
-</ul>
-</li>
-<li>epoll_ctl : epoll的事件注册函数，它不同于select的是，它不是在监听事件的时候告诉内核要监听什么类型的时间，而是先注册要监听的事件类型。<ul>
-<li>epfd : epoll文件描述符，即epoll_ create的返回值，表示该epoll描述符注册事件</li>
-<li>op : 注册事件的类型包括以下三类。<ul>
-<li>EPOLL_CTL_ADD : 注册行的fd到epfd中</li>
-<li>EPOLL_CTL_MOD : 修改已经注册的fd的事件类型</li>
-<li>EPOLL_CTL_DEL : 删除已经注册的fd</li>
-</ul>
-</li>
-<li>fd : 注册的文件描述符</li>
-<li>event : 注册的时间的类型，告诉内核需要监听什么事件，类型包括上面几种。</li>
-</ul>
-</li>
-<li>epoll_wait :　收集epoll监控的时间中已经就绪的事件，若调用成功，返回就绪的文件描述符的个数，返回0表示超时。<ul>
-<li>epfd : epoll的文件描述符</li>
-<li>events : 已经就绪的事件集合.内核不分配内存，需要程序自己分配内存传给内核，内核只负责将书复制到这里</li>
-<li>maxevents : events数组的大小。</li>
-<li>timeout : 超时时间。</li>
-</ul>
-</li>
-</ul>
-<h3 id="水平触发-LT-与边缘触发-ET"><a href="#水平触发-LT-与边缘触发-ET" class="headerlink" title="水平触发(LT)与边缘触发(ET)"></a>水平触发(LT)与边缘触发(ET)</h3><p>epoll的默认工作模式是水平触发(LT)。NGINX使用的epoll的ET工作模式</p>
-<p><strong>水平触发（level_triggered）</strong>:当被监控的文件描述符上有可读可写事件的时,epoll_wait()会通知处理程序去读写。<strong>如果程序没有一次性把缓冲区的数据读完或者写完,那么下次调用epoll_wait的时候，他还会通知你该文件描述符仍可读写,如果你一直不去读写,它会一直通知你。</strong>如果系统中有大量你不需要读写的文件描述符,而他们每次都返回,这样会大大降低处理程序检索自己关心的就绪文件描述符的效率。</p>
-<p><strong>边缘触发(edge-triggered)</strong>:当被监控的文件描述符上有读写事件发生时，epoll_wait会通知处理程序去读写，<strong>如果数据没有一次性读写完,那么下次你再调用epoll_wait的时候,它不会通知你，只有等到下一次发生读写事件的时候,它才会通知你</strong>。这种模式比水平触发的效率高，系统不会充斥大量你不关心的文件描述符。</p>
-<p><strong>注意</strong>:epoll工作在ET模式的时候,必须使用非阻塞的套接字,以避免由于一个文件句柄的阻塞读/阻塞写把多个文件描述符的任务饿死。最好以下面两种方式调用epoll接口</p>
-<ul>
-<li>基于非阻塞文件句柄</li>
-<li>只有当read/write返回值为EAGAIN时才需要挂起。但这不是说每次都需要循环读，直到读到产生EAGAIN才结束,只要读取到的长度小于预期的长度就说明缓冲区的数据我们已经读完了。</li>
-</ul>
-<h3 id="epoll族函数底层实现"><a href="#epoll族函数底层实现" class="headerlink" title="epoll族函数底层实现"></a>epoll族函数底层实现</h3><p>epoll的使用方法上面已经有详细的描述，借口也简单易用。首先我们通过epoll_create创建一个epoll文件描述符，然后在epoll文件描述符上注册需要监听的事件，最后使用epoll_wait等待准备就绪的文件描述符。然而在每一步的过程中，内核都做了哪些操作？底层的实现方式是怎么样的？</p>
-<p>内核使用了slab机制，为epoll提供了高效快速的数据结构。在内核中,epoll向内核注册了一个文件系统，用于存储被监控的文件描述符的信息。epoll在被内核初始化的时候（操作系统启动），同时会开辟出epoll自己的告诉cache区，用于安置我们需要监控的fd信息,这些fd信息会以<strong>红黑树</strong>的结构保存在内核cache中，以支持快速的查找,插入删除操作。这个内核高速cache区，就是建立连续的物理内存页，然后在之上建立slab层，简单的说，就是物理上分配好你想要的size的内存对象，每次使用时都是使用空闲的已分配好的对象。</p>
-<p>epoll fd在内核中对应的数据够如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">struct eventpoll &#123;</div><div class="line">    spin_lock_t       lock;        //对本数据结构的访问</div><div class="line">    struct mutex      mtx;         //防止使用时被删除</div><div class="line">    wait_queue_head_t     wq;      //sys_epoll_wait() 使用的等待队列</div><div class="line">    wait_queue_head_t   poll_wait;       //file-&gt;poll()使用的等待队列</div><div class="line">    struct list_head    rdllist;        //事件满足条件的链表</div><div class="line">    struct rb_root      rbr;            //用于管理所有fd的红黑树（树根）</div><div class="line">    struct epitem      *ovflist;       //将事件到达的fd进行链接起来发送至用户空间</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>当向系统中添加一个fd时，就创建一个epitem结构体，这是内核管理epoll的基本数据结构：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">struct epitem &#123;</div><div class="line">    struct rb_node  rbn;        //用于主结构管理的红黑树</div><div class="line">    struct list_head  rdllink;  //事件就绪队列</div><div class="line">    struct epitem  *next;       //用于主结构体中的链表</div><div class="line">    struct epoll_filefd  ffd;   //这个结构体对应的被监听的文件描述符信息</div><div class="line">    int  nwait;                 //poll操作中事件的个数</div><div class="line">    struct list_head  pwqlist;  //双向链表，保存着被监视文件的等待队列，功能类似于select/poll中的poll_table</div><div class="line">    struct eventpoll  *ep;      //该项属于哪个主结构体（多个epitm从属于一个eventpoll）</div><div class="line">    struct list_head  fllink;   //双向链表，用来链接被监视的文件描述符对应的struct file。因为file里有f_ep_link,用来保存所有监视这个文件的epoll节点</div><div class="line">    struct epoll_event  event;  //注册的感兴趣的事件,也就是用户空间的epoll_event</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ol>
-<li>当调用epoll_create的时候，会首先在epoll内存中为分配一个eventpoll的内存大小，以保存当前的epoll描述符(epfd)结构，然后在这块内存上打开一个epoll文件。</li>
-<li>当调用epoll_ctl的时候，如果增加fd（socket），则检查在红黑树中是否存在，存在立即返回，不存在则添加到红黑树上，然后向内核注册回调函数，用于当中断事件来临时向准备就绪list链表中插入数据。当我们调用epoll_ctl往里塞入百万个fd时，epoll_wait仍然可以飞快的返回，并有效的将发生事件的fd给我们用户。这是由于我们在调用epoll_create时，内核除了帮我们在epoll文件系统里建了个file结点，在内核cache里建了个红黑树用于存储以后epoll_ctl传来的fd外，还会再建立一个list链表，用于存储准备就绪的事件。</li>
-<li>调用epoll_wait的时候立即返回准备就绪链表中的数据即可。</li>
-</ol>
-<p>如此，一颗红黑树，一张准备就绪fd链表，少量的内核cache，就帮我们解决了大并发下的fd（socket）处理问题。</p>
-<p>如果需要了解更详细的epoll底层实现，参考一下链接:<br><a href="http://www.cnblogs.com/apprentice89/p/3234677.html" target="_blank" rel="external">http://www.cnblogs.com/apprentice89/p/3234677.html</a></p>
-<h3 id="epoll特点"><a href="#epoll特点" class="headerlink" title="epoll特点"></a>epoll特点</h3><ul>
-<li>没有文件描述符个数限制</li>
-<li>使用注册监听时间的方式，无需每次wait时都将时间从用户空间拷贝到内核空间，节省了内存拷贝的时间。</li>
-<li>使用回调机制,无需轮训所有的文件描述符检查状态。</li>
-<li>返回值只有准备就绪的文件描述符，检查准备就绪的文件描述符也不需要轮训。</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/10/08/Unix中SelectPollEpoll详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1065,7 +914,7 @@
             </a>
         </li>
         
-        <li class="pagination-number">page 2 of 9</li>
+        <li class="pagination-number">page 2 of 10</li>
     </ul>
 </div>
 

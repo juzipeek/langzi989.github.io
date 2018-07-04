@@ -215,6 +215,318 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/27/rapidjson查询操作基本用法/">
+                            rapidjson查询操作基本用法
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-27T09:32:00+08:00">
+	
+		    5月 27, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/rapidjson学习/">rapidjson学习</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="rapidjson查询操作基本用法"><a href="#rapidjson查询操作基本用法" class="headerlink" title="rapidjson查询操作基本用法"></a>rapidjson查询操作基本用法</h1><blockquote>
+<p>本系列文章以例子的方式进行呈现。</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div></pre></td><td class="code"><pre><div class="line">#include "rapidjson/document.h"</div><div class="line">#include &lt;iostream&gt;</div><div class="line"></div><div class="line">int main()</div><div class="line">&#123;</div><div class="line">  const char* test = "&#123;\"num\":123, \"hello\":null, \"type\": \"object\",\"properties\": &#123;\"oid\": &#123;\"type\": \"string\"&#125;, \"username\": &#123;\"type\": \"string\"&#125;,\"creid\": &#123;\"type\": \"string\"&#125;&#125;,\"required\": [\"oid\", \"username\",\"creid\"]&#125;";</div><div class="line">  rapidjson::Document document;</div><div class="line">  //Parse(const char*). 从c-string解析为Document json格式</div><div class="line">  document.Parse(test);</div><div class="line"></div><div class="line">  //GetString().从Document json中取出string</div><div class="line">  std::cout &lt;&lt; "type = " &lt;&lt; document["type"].GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*  函数原型          函数功能</div><div class="line">  *   IsNull()       判断当前键对应的值是不是null</div><div class="line">  *   IsNumber()     判断当前键对应的值是不是number</div><div class="line">  *   IsInt()        判断当前键对应的值是不是int</div><div class="line">  *   IsDouble()     判断当前键对应的值是不是double</div><div class="line">  *   IsString()     判断当前键对应的值是不是string</div><div class="line">  *   IsBool()       判断当前键对应的值是不是bool</div><div class="line">  *   IsArray()      判断当前键对应的值是不是array</div><div class="line">  *   ...</div><div class="line">  */</div><div class="line">  std::cout &lt;&lt; "hello is " &lt;&lt; (document["hello"].IsNull() ? "null" : "not null") &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "num is " &lt;&lt; (document["num"].IsNumber() ? "number" : "not number") &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "required is " &lt;&lt; (document["required"].IsArray()? "array" : "not array") &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*      访问Array的两种方法</div><div class="line">  *    1. 通过下标访问    //使用引用来连续访问，方便之余还更高效。</div><div class="line">  *    2. 通过迭代器访问</div><div class="line">  *        注意问题</div><div class="line">  *    1.索引使用SizeType类型，而不是size_t类型，缺省情况下，SizeType是unsigned的typedef</div><div class="line">  *    2.对于String类型使用GetInt是非法的，这个时候会导致程序崩溃</div><div class="line">  */</div><div class="line">  const rapidjson::Value &amp;a = document["required"];</div><div class="line">  assert(a.IsArray());</div><div class="line">  for (rapidjson::SizeType i = 0; i &lt; a.Size(); i++)</div><div class="line">    std::cout &lt;&lt; a[i].GetString() &lt;&lt; std::endl;</div><div class="line">  for (rapidjson::Value::ConstValueIterator it = a.Begin(); it != a.End(); it++) &#123;</div><div class="line">    std::cout &lt;&lt; it-&gt;GetString() &lt;&lt; std::endl;</div><div class="line">    std::cout &lt;&lt; it-&gt;GetStringLength() &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*        访问object的方法</div><div class="line">  *    1.使用迭代器进行访问</div><div class="line">  *    2.使用键对应的下标进行当问 如:document["required"]</div><div class="line">  *          注意问题</div><div class="line">  *    1.在使用下标访问之前，最好先调用HasMember()检查一下当前键是否存在，若存在再往下继续。否则会出现段错误。</div><div class="line">  */</div><div class="line">  static const char* kTypeNames[] = &#123;"Null", "False", "True", "Object", "Array", "String", "Number"&#125;;</div><div class="line">  for (rapidjson::Value::ConstMemberIterator it = document.MemberBegin();</div><div class="line">        it != document.MemberEnd(); it++) &#123;</div><div class="line">        std::cout &lt;&lt; it-&gt;name.GetString() &lt;&lt; " is type : " &lt;&lt; kTypeNames[it-&gt;value.GetType()] &lt;&lt; std::endl;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*        查询Number</div><div class="line">  *      说明:Json只提供一种数值类型---Number。Number可以是实数也可以是整数</div><div class="line">  *           Dom提供了5中数值类型。包括unsigned,int,uint_64,int_64,double</div><div class="line">  *         类型检查          数值提取</div><div class="line">  *        IsUint()          GetUint()</div><div class="line">  *        IsInt()           GetInt()</div><div class="line">  *        IsUint64()        GetUint64()</div><div class="line">  *        IsInt64()         GetInt64()</div><div class="line">  *        IsDouble()        GetDouble()</div><div class="line">  *</div><div class="line">  *       查询String</div><div class="line">  *     说明：除了getString(), Value类也有一个GetStringLength();原因是rapidjson的String需要支持Unicode字符，如\u0000.问题是C/C++字符串是</div><div class="line">  *         空字符结尾的字符串，，这种字符串会把'\0'作为结束符号。为了符合RFC4627，若要处理这些带有unicode的字符串，</div><div class="line">  *         需要使用GetStringLength获取正确的字符串长度</div><div class="line">  *       函数                                功能</div><div class="line">  *     const char* getString()             获取C字符串</div><div class="line">  *     SizeType GetStringLength()const     获取字符串的长度,</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Document d1;</div><div class="line">  d1.Parse("&#123;\"s\":\"a\\u0000b\", \"num\":123&#125;");</div><div class="line">  std::cout &lt;&lt; d1["s"].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; d1["s"].GetStringLength() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; strlen(d1["s"].GetString()) &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *       比较两个Value的值</div><div class="line">  *     1.使用==和!=比较两Value的值，当且仅当两个Value的类型和内容相等才算相等。</div><div class="line">  *     2.可以将Value与原始值进行比较</div><div class="line">  *     3.若被比较的两个Value的类型不同，直接返回false。</div><div class="line">  *     4.可以比较不同Object的值</div><div class="line">  */</div><div class="line"></div><div class="line">  std::cout &lt;&lt; (document["num"] == document["hello"]) &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; (document["num"] == d1["num"]) &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *           创建/修改值</div><div class="line">  *       1.改变Value的类型:当使用默认构造函数创建一个Value或者Document的时候，它的类型默认为</div><div class="line">  *         NULL,要改变其类型，使用SetXXX()。如</div><div class="line">  *                             rapidjsons::Document d;</div><div class="line">  *                             d.SetObject()； //将d的类型修改为Object</div><div class="line">  *                             rapidjson::Value v;</div><div class="line">  *                             v.SetInt(1); //或者v = 1;</div><div class="line">  *       2.构造函数的重载</div><div class="line">  *                              rapidjson::Value b(false);</div><div class="line">  *                              rapidjson::Value n(10);</div><div class="line">  *</div><div class="line">  *       3.特别注意Value的转移语义。 Value重载operator=()时使用了转移语义。</div><div class="line">  *                              rapidjson::Value a(123);</div><div class="line">  *                              rapidjson::Value b(456);</div><div class="line">  *                              a = b; //此时b变为null,a为456</div><div class="line">  *       4.使用move()函数实现函数参数中的转移语义</div><div class="line">  *                              rapidjson::Value a(0);</div><div class="line">  *                               test(a.move());</div><div class="line">  *</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testa(10);</div><div class="line">  rapidjson::Value testb(10);</div><div class="line">  testa = testb;</div><div class="line">  std::cout &lt;&lt; testa.GetInt() &lt;&lt; std::endl;</div><div class="line">  if (testb.IsNull())</div><div class="line">  &#123;</div><div class="line">    std::cout &lt;&lt; "testb is moved to a, and now testb is null" &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line">  else</div><div class="line">  &#123;</div><div class="line">    std::cout &lt;&lt; testb.GetInt() &lt;&lt; std::endl;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  /*</div><div class="line">  *                创建String</div><div class="line">  *         rapidjson提供两种string的存储策略:</div><div class="line">  *                       1.copy-string(深拷贝)：分配缓冲区，然后把来源数据复制至它</div><div class="line">  *                       2.const-string(浅拷贝)：简单的存储字符串指针</div><div class="line">  *          说明：</div><div class="line">  *               1.copy-string总是安全的,因为它拥有数据的克隆</div><div class="line">  *               2.当数据源发生改变，const-string中的数据也会受到影响</div><div class="line">  *         上面两种字符串的创建方式:</div><div class="line">  *               1.copy-string创建方式需要给API传递一个Allocator参数,这个做法避免了给每一个</div><div class="line">  *                             Value都保存一个Allocator。另外还需要一个length参数，保存长度信息，故</div><div class="line">  *                             此函数可以处理带有空字符的字符串。</div><div class="line">  *               2.const-string创建方式不需要长度信息和Allocator参数，它默认字符串以\0结束.</div><div class="line">  *                              一般用于常量字符串或者具有安全生存周期的字符串上</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value autor;</div><div class="line">  char buffer[50];</div><div class="line">  int len = sprintf(buffer, "%s %s", "Milo", "Yip");</div><div class="line">  autor.SetString(buffer,len, document.GetAllocator());</div><div class="line">  memset(buffer, 0x0, sizeof(buffer));</div><div class="line">  std::cout &lt;&lt; autor.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  rapidjson::Value testString;</div><div class="line">  testString = "testString";</div><div class="line">  std::cout &lt;&lt; testString.GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /**                   修改Array</div><div class="line">  *           函数                                                              功能</div><div class="line">  *        clear()                                                      清空Array中的内容</div><div class="line">  *        Reserve(SizeType, Allocator&amp;)                                申请指定大小空间，单不插入数据</div><div class="line">  *        Value&amp; PushBack(Value&amp;, Allocator&amp;)                          添加元素</div><div class="line">  *        template &lt;typename T&gt; GenericValue&amp; PushBack(T, Allocator&amp;)  添加元素</div><div class="line">  *        Value&amp; PopBack()                                             删除最后一个元素</div><div class="line">  *        ValueIterator Erase(ConstValueIterator pos)                  删除指定位置元素</div><div class="line">  *        ValueIterator Erase(ConstValueIterator first, ConstValueIterator last) 删除指定范围元素</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testArray(rapidjson::kArrayType);</div><div class="line">  rapidjson::Document::AllocatorType&amp; testAllocator = document.GetAllocator();</div><div class="line"></div><div class="line">  for (int i = 0; i &lt; 5; i++)</div><div class="line">  &#123;</div><div class="line">    testArray.PushBack(i, testAllocator);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  testArray.PushBack("lua", testAllocator).PushBack("Mio", testAllocator);</div><div class="line"></div><div class="line">  for (rapidjson::SizeType i = 0;i &lt; 5; i++)</div><div class="line">    std::cout &lt;&lt;  testArray[i].GetInt() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; testArray[5].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; testArray[6].GetString() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  /*                      修改Object</div><div class="line">  *     说明：每个Object都是键值对的集合。每个键必须为String。</div><div class="line">  *     添加成员的函数：</div><div class="line">  *                   1.Value&amp; AddMember(Value&amp;, Value&amp;, Allocator&amp; allocator)</div><div class="line">  *                   2.Value&amp; AddMember(StringRefType, Value&amp;, Allocator&amp;)</div><div class="line">  *                   3.template &lt;typename T&gt; Value&amp; AddMember(StringRefType, T value, Allocator&amp;)</div><div class="line">  *</div><div class="line">  *     补充说明：1.使用StingRefType作为name参数的重载版本与字符串的SetString()类似。这些重载是为了避免复制name字符串</div><div class="line">  *               因为jsonObject中经常会使常数键名。</div><div class="line">  *              2.如果你需要从非常数字符串或者生命周期不足的字符串创建键名，需要使用copy-string API。</div><div class="line">  *                 为了避免中间变量，可以使用临时值</div><div class="line">  *</div><div class="line">  *     移除成员函数：</div><div class="line">  *             1.bool RemoveMember(const Ch* name)：使用键名来移除成员（线性时间复杂度）。</div><div class="line">  *             2.bool RemoveMember(const Value&amp; name)：除了 name 是一个 Value，和上一行相同。</div><div class="line">  *             3.MemberIterator RemoveMember(MemberIterator)：使用迭代器移除成员（_ 常数 _ 时间复杂度）。</div><div class="line">  *             4.MemberIterator EraseMember(MemberIterator)：和上行相似但维持成员次序（线性时间复杂度）。</div><div class="line">  *             5.MemberIterator EraseMember(MemberIterator first, MemberIterator last)：移除一个范围内的成员，维持次序（线性时间复杂度）。</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value contact(rapidjson::kObjectType);</div><div class="line">  contact.AddMember("name", "milo", document.GetAllocator());</div><div class="line">  contact.AddMember("married", false, document.GetAllocator());</div><div class="line"></div><div class="line">  std::cout &lt;&lt; "contact[name] is:"&lt;&lt;contact["name"].GetString() &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; "contact[married] is:" &lt;&lt; contact["married"].GetBool() &lt;&lt; std::endl;</div><div class="line"></div><div class="line">  contact.AddMember(rapidjson::Value("copy", document.GetAllocator()).Move(), // copy string</div><div class="line">                  rapidjson::Value().Move(),                                // null value</div><div class="line">                  document.GetAllocator());</div><div class="line"></div><div class="line">  /*                        深复制Value</div><div class="line">  *           方法：</div><div class="line">  *                   1.含有Allocator的构造函数</div><div class="line">  *                   2.含有Allocator的CopyFrom</div><div class="line">  *                           交换Value</div><div class="line">  *            方法：  Swap() 无论两颗Dom树多复杂，交换时间为常数</div><div class="line">  */</div><div class="line"></div><div class="line">  rapidjson::Value testCopy1(123);</div><div class="line">  rapidjson::Value testCopy2(testCopy1, document.GetAllocator());</div><div class="line">  rapidjson::Value testCopy3;</div><div class="line">  testCopy3.CopyFrom(testCopy1, document.GetAllocator());</div><div class="line"></div><div class="line">  testCopy1.Swap(testCopy3);</div><div class="line">&#125;</div><div class="line">`</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/27/rapidjson查询操作基本用法/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/26/protobuffer学习总结/">
+                            protobuffer学习总结
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-26T19:48:59+08:00">
+	
+		    5月 26, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/序列化与反序列化/">序列化与反序列化</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="protobuffer学习总结"><a href="#protobuffer学习总结" class="headerlink" title="protobuffer学习总结"></a>protobuffer学习总结</h1><p>protobuffer是google开发的一种数据描述语言，它能够将结构化的数据序列化，并切可以将序列化的数据进行反序列化恢复原有的数据结构。一般用于数据存储以及通信协议方面。</p>
+<p>如果是第一次使用protobuffer,我们可以将其与json或者xml进行类比，其实它与json或xml类似都可以作为数据的存储方式，不同的是json和xml是文本格式，而protobuffer是二进制格式。二进制格式不利于使用者直观的阅读，但是与json以及xml相比它有更多的优点。</p>
+<h2 id="protoBuffer相比于xml的优点"><a href="#protoBuffer相比于xml的优点" class="headerlink" title="protoBuffer相比于xml的优点"></a>protoBuffer相比于xml的优点</h2><ul>
+<li>更加简介</li>
+<li>体积小：消息大小只需要xml的1/10~1/3</li>
+<li>解析速度快：解析速度比xml快20~100倍</li>
+<li>使用proto Buffer的编译器，可以生成方便在编程中使用的数据访问代码.</li>
+<li>具有更好的兼容性，很好的支持向上或向下兼容的特性</li>
+<li>提供多种序列化的出口和入口,如文件流，string流,array流等等</li>
+</ul>
+<h2 id="protobuffer语法"><a href="#protobuffer语法" class="headerlink" title="protobuffer语法"></a>protobuffer语法</h2><p>消息类型实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Package example;</div><div class="line"></div><div class="line">message Person&#123;</div><div class="line">  required string name = 1;</div><div class="line">  required int32 id = 2;</div><div class="line">  optional string email = 3;</div><div class="line"></div><div class="line">  enum PhoneType&#123;</div><div class="line">    mobile = 1;</div><div class="line">    home = 2;</div><div class="line">    work = 3;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  message PhoneNumber&#123;</div><div class="line">    required string number = 1;</div><div class="line">    optional PhoneType type = 2;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  repeated PhoneNumber phone = 4;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="指定字段规则"><a href="#指定字段规则" class="headerlink" title="指定字段规则"></a>指定字段规则</h3><p>protobuffer中字段规则包括一下三种：</p>
+<ul>
+<li>required：实例中必须包含的字段</li>
+<li>optional：实例中可以选择性包含的字段，若实例没有指定，则为默认值，若没有设置该字段的默认值，其值是该类型的默认值。如string默认值为””，bool默认值为false,整数默认值为0。</li>
+<li>repeated: 可以有多个值的字段，这类变量类似于vector，可以存储此类型的多个值。</li>
+</ul>
+<blockquote>
+<p>由于一些历史原因，基本数值类型的repeated的字段并没有被尽可能地高效编码。在新的代码中，用户应该使用特殊选项[packed=true]来保证更高效的编码。<br>一般情况下慎重使用required字段，当此字段一定是必要的时候才使用。</p>
+</blockquote>
+<p>repeated使用实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">message Person &#123;  </div><div class="line">  required int32 age = 1;  </div><div class="line">  required string name = 2;  </div><div class="line">&#125;  </div><div class="line"></div><div class="line">message Family &#123;  </div><div class="line">  repeated Person person = 1;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span>  </span></div><div class="line">&#123;  </div><div class="line"></div><div class="line">    GOOGLE_PROTOBUF_VERIFY_VERSION;  </div><div class="line"></div><div class="line">    Family family;  </div><div class="line">    Person* person;  </div><div class="line"></div><div class="line">    <span class="comment">// 添加一个家庭成员，John  </span></div><div class="line">    person = family.add_person();  </div><div class="line">    person-&gt;set_age(<span class="number">25</span>);  </div><div class="line">    person-&gt;set_name(<span class="string">"John"</span>);  </div><div class="line"></div><div class="line">    <span class="comment">// 添加一个家庭成员，Lucy  </span></div><div class="line">    person = family.add_person();  </div><div class="line">    person-&gt;set_age(<span class="number">23</span>);  </div><div class="line">    person-&gt;set_name(<span class="string">"Lucy"</span>);  </div><div class="line"></div><div class="line">    <span class="comment">// 添加一个家庭成员，Tony  </span></div><div class="line">    person = family.add_person();  </div><div class="line">    person-&gt;set_age(<span class="number">2</span>);  </div><div class="line">    person-&gt;set_name(<span class="string">"Tony"</span>);  </div><div class="line"></div><div class="line">    <span class="comment">// 显示所有家庭成员  </span></div><div class="line">    <span class="keyword">int</span> size = family.person_size();  </div><div class="line"></div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"这个家庭有 "</span> &lt;&lt; size &lt;&lt; <span class="string">" 个成员，如下："</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line"></div><div class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++)  </div><div class="line">    &#123;  </div><div class="line">        Person psn = family.person(i);  </div><div class="line">        <span class="built_in">cout</span> &lt;&lt; i+<span class="number">1</span> &lt;&lt; <span class="string">". "</span> &lt;&lt; psn.name() &lt;&lt; <span class="string">", 年龄 "</span> &lt;&lt; psn.age() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    &#125;  </div><div class="line"></div><div class="line">    getchar();  </div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>protobuffer中的数据类型与C++数据类型之间的关联如下图：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">protobuffer类型</th>
+<th style="text-align:center">C++类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">double</td>
+<td style="text-align:center">double</td>
+</tr>
+<tr>
+<td style="text-align:center">float</td>
+<td style="text-align:center">float</td>
+</tr>
+<tr>
+<td style="text-align:center">int32</td>
+<td style="text-align:center">int32</td>
+</tr>
+<tr>
+<td style="text-align:center">int64</td>
+<td style="text-align:center">int64</td>
+</tr>
+<tr>
+<td style="text-align:center">uint32</td>
+<td style="text-align:center">uint32</td>
+</tr>
+<tr>
+<td style="text-align:center">uint64</td>
+<td style="text-align:center">uint64</td>
+</tr>
+<tr>
+<td style="text-align:center">sint32</td>
+<td style="text-align:center">int32</td>
+</tr>
+<tr>
+<td style="text-align:center">sint64</td>
+<td style="text-align:center">int64</td>
+</tr>
+<tr>
+<td style="text-align:center">fixed32</td>
+<td style="text-align:center">uint32</td>
+</tr>
+<tr>
+<td style="text-align:center">fixed64</td>
+<td style="text-align:center">uint64</td>
+</tr>
+<tr>
+<td style="text-align:center">sfixed32</td>
+<td style="text-align:center">uint32</td>
+</tr>
+<tr>
+<td style="text-align:center">sfixed64</td>
+<td style="text-align:center">uint64</td>
+</tr>
+<tr>
+<td style="text-align:center">bool</td>
+<td style="text-align:center">bool</td>
+</tr>
+<tr>
+<td style="text-align:center">string</td>
+<td style="text-align:center">string</td>
+</tr>
+<tr>
+<td style="text-align:center">bytes</td>
+<td style="text-align:center">string</td>
+</tr>
+</tbody>
+</table>
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><p>当需要定义一个消息类型的时候，我们可能想为某一个字段指定预定义列表中的值。这个时候就需要用到枚举</p>
+<p>如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">message SearchRequest &#123;</div><div class="line">  required string query = 1;</div><div class="line">  optional int32 page_number = 2;</div><div class="line">  optional int32 result_per_page = 3 [default = 10];</div><div class="line">  enum Corpus &#123;</div><div class="line">    UNIVERSAL = 0;</div><div class="line">    WEB = 1;</div><div class="line">    IMAGES = 2;</div><div class="line">    LOCAL = 3;</div><div class="line">    NEWS = 4;</div><div class="line">    PRODUCTS = 5;</div><div class="line">    VIDEO = 6;</div><div class="line">  &#125;</div><div class="line">  optional Corpus corpus = 4 [default = UNIVERSAL];</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="变量标识号"><a href="#变量标识号" class="headerlink" title="变量标识号"></a>变量标识号</h3><p>在proto数据结构中，每一个变量都有唯一的数字标识。这些标识符的作用是在二进制格式中识别各个字段的，一旦开始使用就不可再改变。</p>
+<blockquote>
+<p>此处需要注意的是1-15之内的标号在存储的时候只占一个字节，而大于15到162047之间的需要占两个字符，所以<strong>我们尽量为频繁使用的字段分配1-15内的标识号</strong><br>。另外19000-19999之内的标识号已经被预留，不可用。最大标识号为2^29-1。</p>
+</blockquote>
+<h3 id="嵌套"><a href="#嵌套" class="headerlink" title="嵌套"></a>嵌套</h3><p>protobuffer中的消息可以嵌套消息，也就是在一个message中定义另一个message。如上面实例可以看出。</p>
+<h3 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h3><p>我们可以通过扩展对proto文件进行扩展，而不需要直接区编辑原文件。</p>
+<p>例如有原文件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">message Foo&#123;</div><div class="line">  //...</div><div class="line">  extensions 100 to 199;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述extensions 100 to 199表示此范围内的标识号被保留为扩展用。我们在扩展文件中就可以使用这些标识号了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">extend Foo&#123;</div><div class="line">  optional int32 bar = 126;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述为扩展。当用户的Foo消息被编码的时候，数据的传输格式与用户在Foo里定义新字段的效果是完全一样的。然而，要在程序代码中访问扩展字段的方法与访问普通的字段稍有不同——生成的数据访问代码为扩展准备了特殊的访问函数来访问它。例如，下面是如何在C++中设置bar的值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Foo foo;</div><div class="line">foo.SetExtentions(bar, 15);</div></pre></td></tr></table></figure>
+<h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><p>与c++注释风格相同。双斜杠</p>
+<h3 id="向上且向下兼容更新消息"><a href="#向上且向下兼容更新消息" class="headerlink" title="向上且向下兼容更新消息"></a>向上且向下兼容更新消息</h3><p>当在需求不断增加的过程中，数据结构也会不断变化，这个时候就需要我们去更新消息。怎么才能做到更新消息不会影响之前的数据和代码。这个时候我们更新消息需要遵循以下几个原则：</p>
+<ul>
+<li>不要更改任何已有的字段的数值标识</li>
+<li>所添加的字段必须是optional或者repeated。</li>
+</ul>
+<h3 id="包名称解析"><a href="#包名称解析" class="headerlink" title="包名称解析"></a>包名称解析</h3><p>为了防止消息明明冲突，我们往往会在文件的开始出生命包，包的作用相当于命名空间。在编译成C++代码时也是namespace。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">package foo.bar;</div><div class="line">message open&#123;</div><div class="line">  ///...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在C++对open进行访问的时候的访问方式为:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">foo::bar::open test;</div></pre></td></tr></table></figure>
+<h2 id="C-程序使用protobuffer"><a href="#C-程序使用protobuffer" class="headerlink" title="C++程序使用protobuffer"></a>C++程序使用protobuffer</h2><p>按照上面的规则我们可以设计出合理的protobuffer类型。然后下一步就是将proto文件生成C++头文件和实现文件,将.proto文件编译成C接口的方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">protoc -I=SOURCE_DIR --cpp_out=DIST_DIR test.proto</div></pre></td></tr></table></figure></p>
+<p>使用proto生成的头文件进行编译时需要链接protobuffer库。具体为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ main.cpp test.pb.cc -lprotobuf</div></pre></td></tr></table></figure></p>
+<h2 id="protobuffer编译为C-代码的常用接口"><a href="#protobuffer编译为C-代码的常用接口" class="headerlink" title="protobuffer编译为C++代码的常用接口"></a>protobuffer编译为C++代码的常用接口</h2><p>对于C++来说，编译器会为每个.proto文件生成一个.h文件和.cc文件。.proto文件中的每一个消息对应一个类。<br>protobuffer中常用的函数：</p>
+<ul>
+<li>has_name()          :判断是否有当前成员</li>
+<li>clear_name()        :清空该成员变量值</li>
+<li>name()              :获取成员的变量值</li>
+<li>set_name(string)    :设置变量值</li>
+<li>set_name(const char*):设置变量值</li>
+<li>set_name(int)       :设置变量值</li>
+<li>clear()             :清空所有元素为空状态</li>
+<li>void CopyFrom(person):从给定的对象复制。</li>
+<li>mutable_name()      :获取变量name的指针</li>
+<li>add_name()          :为repeated变量增加值</li>
+<li>ByteSize()          :获取变量所占的字节数<br>若有元素data属性为repeated，其行为类似于vector,则此时则可用下列函数：</li>
+<li>add_data()          : 添加data元素，返回值为Date*类型。</li>
+<li>data_size()         : 获取repeated元素size，即元素的个数。</li>
+<li>data(i)             : 获取data中地i个元素。</li>
+<li>ByteSize()          : 获取序列化之后的protobuff对象的长度。</li>
+<li>CopyFrom(const ProtoType&amp;): 从一个protobuf对象拷贝到另一个</li>
+</ul>
+<h2 id="常用的序列化方法"><a href="#常用的序列化方法" class="headerlink" title="常用的序列化方法"></a>常用的序列化方法</h2><h3 id="C数组的序列化与反序列化的API"><a href="#C数组的序列化与反序列化的API" class="headerlink" title="C数组的序列化与反序列化的API"></a>C数组的序列化与反序列化的API</h3><p>如果想将其序列为char<em>并通过socket进行传输，这是使用SerializeToArray来达到目的。<br><em>*除了下述的SerializeToArray方法之外，还有方法SerializePartialToArray，两者用法相同，其中唯一的区别在于SerializePartialToArray允许忽略required字段，而前者不允许</em></em></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span>* parray = (<span class="keyword">char</span>*)<span class="built_in">malloc</span>(<span class="number">256</span>);</div><div class="line"><span class="comment">//API</span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromArray</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span>* data, <span class="keyword">int</span> size)</span></span>;</div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToArray</span><span class="params">(<span class="keyword">void</span>* data. <span class="keyword">int</span> size)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    wp.set_name(<span class="string">"sealyao"</span>);     </div><div class="line">    wp.set_id(<span class="number">123456</span>);          </div><div class="line">    wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">    wp.SerializeToArray(parray,<span class="number">256</span>);  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    rap.ParseFromArray(parray,<span class="number">256</span>);  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Get People from Array:"</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rap.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rap.id() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rap.email() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="C-String的序列化与反序列化API"><a href="#C-String的序列化与反序列化API" class="headerlink" title="C++ String的序列化与反序列化API"></a>C++ String的序列化与反序列化API</h3><p><strong>除了下述的SerializeToString方法之外，还有方法SerializePartialToString，两者用法相同，其中唯一的区别在于SerializePartialToString允许忽略required字段，而前者不允许</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//C++string序列化和序列化API  </span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToString</span><span class="params">(<span class="built_in">string</span>* output)</span> <span class="keyword">const</span></span>;  </div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromString</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; data)</span></span>;  </div><div class="line"><span class="comment">//使用：  </span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    wp.set_name(<span class="string">"sealyao"</span>);     </div><div class="line">    wp.set_id(<span class="number">123456</span>);          </div><div class="line">    wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">    wp.SerializeToString(&amp;pstring);  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>               </span></div><div class="line">&#123;  </div><div class="line">    rsp.ParseFromString(pstring);    </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Get People from String:"</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rsp.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rsp.id() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rsp.email() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="文件描述符序列化与反序列化API"><a href="#文件描述符序列化与反序列化API" class="headerlink" title="文件描述符序列化与反序列化API"></a>文件描述符序列化与反序列化API</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//文件描述符的序列化和序列化API  </span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToFileDescriptor</span><span class="params">(<span class="keyword">int</span> file_descriptor)</span> <span class="keyword">const</span></span>;  </div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromFileDescriptor</span><span class="params">(<span class="keyword">int</span> file_descriptor)</span></span>;  </div><div class="line"></div><div class="line"><span class="comment">//使用:  </span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">   fd = open(path,O_CREAT|O_TRUNC|O_RDWR,<span class="number">0644</span>);  </div><div class="line">   <span class="keyword">if</span>(fd &lt;= <span class="number">0</span>)&#123;  </div><div class="line">       perror(<span class="string">"open"</span>);  </div><div class="line">       <span class="built_in">exit</span>(<span class="number">0</span>);   </div><div class="line">   &#125;     </div><div class="line">   wp.set_name(<span class="string">"sealyaog"</span>);  </div><div class="line">   wp.set_id(<span class="number">123456</span>);  </div><div class="line">   wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">   wp.SerializeToFileDescriptor(fd);     </div><div class="line">   close(fd);  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">   fd = open(path,O_RDONLY);  </div><div class="line">   <span class="keyword">if</span>(fd &lt;= <span class="number">0</span>)&#123;  </div><div class="line">       perror(<span class="string">"open"</span>);  </div><div class="line">       <span class="built_in">exit</span>(<span class="number">0</span>);  </div><div class="line">   &#125;  </div><div class="line">   rp.ParseFromFileDescriptor(fd);  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Get People from FD:"</span> &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rp.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rp.id() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rp.email() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">   close(fd);  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="C-stream-序列化和反序列化API"><a href="#C-stream-序列化和反序列化API" class="headerlink" title="C++ stream 序列化和反序列化API"></a>C++ stream 序列化和反序列化API</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//C++ stream 序列化/反序列化API  </span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SerializeToOstream</span><span class="params">(ostream* output)</span> <span class="keyword">const</span></span>;  </div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ParseFromIstream</span><span class="params">(istream* input)</span></span>;  </div><div class="line"></div><div class="line"><span class="comment">//使用：  </span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">    <span class="function">fstream <span class="title">fs</span><span class="params">(path,ios::out|ios::trunc|ios::binary)</span></span>;  </div><div class="line">    wp.set_name(<span class="string">"sealyaog"</span>);  </div><div class="line">    wp.set_id(<span class="number">123456</span>);  </div><div class="line">    wp.set_email(<span class="string">"sealyaog@gmail.com"</span>);  </div><div class="line">    wp.SerializeToOstream(&amp;fs);      </div><div class="line">    fs.close();  </div><div class="line">    fs.clear();  </div><div class="line">&#125;  </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_people</span><span class="params">()</span>  </span></div><div class="line">&#123;  </div><div class="line">    <span class="function">fstream <span class="title">fs</span><span class="params">(path,ios::in|ios::binary)</span></span>;  </div><div class="line">    rp.ParseFromIstream(&amp;fs);  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Name : "</span> &lt;&lt;rp.name() &lt;&lt; <span class="built_in">endl</span>;  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t Id : "</span> &lt;&lt; rp.id() &lt;&lt; <span class="built_in">endl</span>;   </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"\t email : "</span> &lt;&lt; rp.email() &lt;&lt; <span class="built_in">endl</span>;     </div><div class="line">    fs.close();  </div><div class="line">    fs.clear();  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>参考链接：</p>
+<p><a href="http://blog.csdn.net/mycwq/article/details/19622571" target="_blank" rel="external">http://blog.csdn.net/mycwq/article/details/19622571</a><br><a href="http://colobu.com/2015/01/07/Protobuf-language-guide/" target="_blank" rel="external">http://colobu.com/2015/01/07/Protobuf-language-guide/</a><br><a href="https://worktile.com/tech/share/prototol-buffers" target="_blank" rel="external">https://worktile.com/tech/share/prototol-buffers</a><br><a href="http://tech.meituan.com/serialization_vs_deserialization.html" target="_blank" rel="external">http://tech.meituan.com/serialization_vs_deserialization.html</a><br><a href="http://blog.csdn.net/weiwangchao_/article/details/16797763" target="_blank" rel="external">http://blog.csdn.net/weiwangchao_/article/details/16797763</a></p>
+</blockquote>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/26/protobuffer学习总结/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/25/makefile常用相关函数/">
+                            makefile常用相关函数
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-25T19:48:59+08:00">
+	
+		    5月 25, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="makefile常用相关函数"><a href="#makefile常用相关函数" class="headerlink" title="makefile常用相关函数"></a>makefile常用相关函数</h1><p>makefile中函数的用法与变量类似，变量的用法是在变量前面加上$，函数的用法一样，也是使用$开头，$之后加一个括号，括号中的第一个参数是函数名，后面紧跟此函数需要的参数，用逗号分隔。下面介绍几个常用的函数。</p>
+<h2 id="wildcard函数"><a href="#wildcard函数" class="headerlink" title="wildcard函数"></a>wildcard函数</h2><ul>
+<li>参数: 一个正则表达式</li>
+</ul>
+<p>wildcard的中文意思是通配符，它的功能类似于正则表达式，用于展开一列所有符合其参数描述的文件名，文件之间用空格分割。</p>
+<p>实例:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SOURCE=$(wildcard *.cpp)</div></pre></td></tr></table></figure>
+<p>此时SOURCE的值为所有的以.cpp为后缀的文件集合，以空格隔开。</p>
+<h2 id="patsubst函数"><a href="#patsubst函数" class="headerlink" title="patsubst函数"></a>patsubst函数</h2><p>其功能是一个匹配替换的函数(pattern substitute)。</p>
+<ul>
+<li>参数：第一个是需要匹配的样式，第二个是表示用什么替换它，第三个被处理的以空格隔开的字符串。</li>
+</ul>
+<p>实例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">TARGET = $(patsubst *.cpp, *.o, $(SOURCE))</div></pre></td></tr></table></figure></p>
+<p>TARGET表示与SOURCE中同名的目标文件.</p>
+<h2 id="lt"><a href="#lt" class="headerlink" title="$@,$&lt;, $^"></a>$@,$&lt;, $^</h2><p>上述几个变量的含义：</p>
+<ul>
+<li>$@ 表示目标的文件名</li>
+<li>$&lt; 表示依赖中的第一个文件名</li>
+<li>$^ 表示依赖中所有的文件名</li>
+</ul>
+<p>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">all: library.cpp main.cpp</div></pre></td></tr></table></figure></p>
+<p>其中$@标识all, $&lt;表示library.cpp ，$^表示library.cpp main.cpp</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/25/makefile常用相关函数/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/24/Unix标准IO缓冲类型/">
                             Unix标准IO文件流及缓冲类型
                         </a>
@@ -913,529 +1225,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/04/cgi原理/">
-                            cgi原理
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-04T20:36:55+08:00">
-	
-		    5月 04, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="CGI原理"><a href="#CGI原理" class="headerlink" title="CGI原理"></a>CGI原理</h1><p>CGI（Common Gateway Interface）通用网关接口，CGI描述了服务器和请求处理程序之间传输数据局的一种标准。在理解的过程中我们需要区分CGI和CGI程序，CGI是一种数据传输的标准，而CGI程序是实际处理业务的一个程序。webserver每请求一次，CGI程序就会fork出一个子进程进行处理。CGI程序的参数通过环境变量和标准输入获得，它的相应通过标准输出传递给webServer。</p>
-<h2 id="CGI的工作原理是："><a href="#CGI的工作原理是：" class="headerlink" title="CGI的工作原理是："></a>CGI的工作原理是：</h2><ul>
-<li>客户端通过http将请求发送到web服务器</li>
-<li>web服务器接收并收集用户请求，然后交给CGI程序进行处理</li>
-<li>CGI程序把处理后的结果发送给服务器</li>
-<li>服务器将结果传送给浏览器</li>
-</ul>
-<p>其中上述第二步web服务器通过环境变量或标准输入将请求发送给CGI程序，第三步CGI通过标准输出将结果发送给webServer</p>
-<h2 id="CGI接口标准：标准输入-环境变量以及标准输出"><a href="#CGI接口标准：标准输入-环境变量以及标准输出" class="headerlink" title="CGI接口标准：标准输入,环境变量以及标准输出"></a>CGI接口标准：标准输入,环境变量以及标准输出</h2><table>
-<thead>
-<tr>
-<th style="text-align:left">借口标准</th>
-<th>介绍</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">标准输入</td>
-<td>CGI程序像其他可执行程序一样,可通过标准输入(stdin)从Web服务器得到输入信息,如Form中的数据,这就是所谓的向CGI程序传递数据的POST方法。这意味着在操作系统命令行状态可执行CGI程序,对CGI程序进行调试。POST方法是常用的方法。</td>
-</tr>
-<tr>
-<td style="text-align:left">环境变量</td>
-<td>操作系统提供了许多环境变量,它们定义了程序的执行环境,应用程序可以存取它们。Web服务器和CGI接口又另外设置了自己的一些环境变量,用来向CGI程序传递一些重要的参数。CGI的GET方法还通过环境变量QUERY-STRING向CGI程序传递Form中的数据。</td>
-</tr>
-<tr>
-<td style="text-align:left">标准输出</td>
-<td>CGI程序通过标准输出(stdout)将输出信息传送给Web服务器。传送给Web服务器的信息可以用各种格式,通常是以纯文本或者HTML文本的形式,这样我们就可以在命令行状态调试CGI程序,并且得到它们的输出。</td>
-</tr>
-</tbody>
-</table>
-<p>###常用的环境变量<br>Linux中的环境变量是一系列的键值对集合，它们的值可以通过shell设置，也可以被其他进程或程序设置和访问，它们是web服务器传递给CGI程序的一种最简单的方式，之所以叫做环境变量是因为它们是全局变量，任何程序都可以存取它们。</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">key</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">SERVER_NAME</td>
-<td>CGI脚本运行时的主机名和IP地址</td>
-</tr>
-<tr>
-<td style="text-align:center">SERVER_SOFTWARE</td>
-<td>你的服务器的类型如： CERN/3.0 或 NCSA/1.3.</td>
-</tr>
-<tr>
-<td style="text-align:center">GATEWAY_INTERFACE</td>
-<td>运行的CGI版本. 对于UNIX服务器, 这是CGI/1.1</td>
-</tr>
-<tr>
-<td style="text-align:center">SERVER_PROTOCOL</td>
-<td>服务器运行的HTTP协议. 这里当是HTTP/1.0.</td>
-</tr>
-<tr>
-<td style="text-align:center">SERVER_PORT</td>
-<td>服务器运行的TCP口，通常Web服务器是80.</td>
-</tr>
-<tr>
-<td style="text-align:center">REQUEST_METHOD</td>
-<td>POST 或 GET, 取决于你的表单是怎样递交的</td>
-</tr>
-<tr>
-<td style="text-align:center">HTTP_ACCEPT</td>
-<td>浏览器能直接接收的Content-types, 可以有HTTP Accept header定义.</td>
-</tr>
-<tr>
-<td style="text-align:center">HTTP_USER_AGENT</td>
-<td>递交表单的浏览器的名称、版本 和其他平台性的附加信息。</td>
-</tr>
-<tr>
-<td style="text-align:center">HTTP_REFERER</td>
-<td>递交表单的文本的 URL，不是所有的浏览器都发出这个信息，不要依赖它</td>
-</tr>
-<tr>
-<td style="text-align:center">PATH_INFO</td>
-<td>附加的路径信息, 由浏览器通过GET方法发出.</td>
-</tr>
-<tr>
-<td style="text-align:center">PATH_TRANSLATED</td>
-<td>在PATH_INFO中系统规定的路径信息.</td>
-</tr>
-<tr>
-<td style="text-align:center">SCRIPT_NAME</td>
-<td>指向这个CGI脚本的路径, 是在URL中显示的(如, /cgi-bin/thescript).</td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>QUERY_STRING</strong></td>
-<td><strong>脚本参数或者表单输入项(如果是用GET递交). QUERY_STRING包含URL中问号后面的参数</strong></td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_HOST</td>
-<td>递交脚本的主机名，这个值不能被设置.</td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_ADDR</td>
-<td>递交脚本的主机IP地址.</td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_USER</td>
-<td>递交脚本的用户名. 如果服务器的authentication被激活，这个值可以设置。</td>
-</tr>
-<tr>
-<td style="text-align:center">REMOTE_IDENT</td>
-<td>如果Web服务器是在ident (一种确认用户连接你的协议)运行, 递交表单的系统也在运行ident, 这个变量就含有ident返回值.</td>
-</tr>
-<tr>
-<td style="text-align:center">CONTENT_TYPE</td>
-<td>如果表单是用POST递交, 这个值将是 application/x-www-form-urlencoded. 在上载文件的表单中, content-type 是个 multipart/form-data.</td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>CONTENT_LENGTH</strong></td>
-<td><strong>对于用POST递交的表单,标准输入口的字节数.</strong></td>
-</tr>
-</tbody>
-</table>
-<h2 id="CGI的工作原理图"><a href="#CGI的工作原理图" class="headerlink" title="CGI的工作原理图"></a>CGI的工作原理图</h2><p><img src="/images/CGI" alt=""></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/04/cgi原理/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/04/Wait函数详解/">
-                            Wait函数详解
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-04T15:40:48+08:00">
-	
-		    5月 04, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Wait函数详解"><a href="#Wait函数详解" class="headerlink" title="Wait函数详解"></a>Wait函数详解</h1><h2 id="kill"><a href="#kill" class="headerlink" title="kill"></a>kill</h2><h3 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h3><p>sys/types.h<br>signal.h</p>
-<h2 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h2><p>注意此函数的功能是向指定进程发送信号。而不是杀死某个进程.名字为kill的原因是早期的Unix系统对信号的默认处理方式大部分是终止进程。</p>
-<h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><p>int kill(pid_t pid, int sig);</p>
-<p>返回值：执行成功返回0，执行失败返回-1。</p>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><p>pid为进程ID,sig标识要发送的信号。</p>
-<p>kill()函数的作用是用来向指定的进程或进程组发送信号。其中pid有一下<br>几种类型:</p>
-<ul>
-<li>pid &gt; 0： 发送信号给<strong>进程</strong>标识为pid的进程</li>
-<li>pid = 0： 发送信号给当前进程<strong>相同进程组</strong>的所有进程</li>
-<li>pid = -1：发送信号给<strong>系统内除了1号进程以外</strong>的所有进程</li>
-<li>pid &lt; -1：发送信号给<strong>进程组</strong>标识为-pid的进程。</li>
-</ul>
-<p><strong>当sig=0时没有信号发出，但是系统会执行错误检查，通常会利用sig值为0来检查某个进程是否在执行。</strong></p>
-<ul>
-<li>若进程不存在,errno为ESRCH</li>
-<li>若errno为EPERM(无权向目标进程发送信号，但是存在)或调用成功，表示进程存在。</li>
-</ul>
-<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><p>相关知识：WIFSIGNALED和WIFEXITED两个宏是用来判断当前程序的子进程的退出方式，是接收到信号异常退出<br>还是正常调用exit()或return退出。</p>
-<ul>
-<li>WIFEXITED: 调用exit()或return退出</li>
-<li>WIFSIGNALED:接收到信号异常退出 此时可以使用WTERMSIG(status)获取其接受信号的内容。</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></div><div class="line">main()</div><div class="line">&#123;</div><div class="line">    <span class="keyword">pid_t</span> pid;</div><div class="line">    <span class="keyword">int</span> status;</div><div class="line">    <span class="keyword">if</span>(!(pid= fork()))</div><div class="line">    &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"Hi I am child process!\n"</span>);</div><div class="line">        sleep(<span class="number">10</span>);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">        <span class="built_in">printf</span>(<span class="string">"send signal to child process (%d) \n"</span>, pid);</div><div class="line">        sleep(<span class="number">1</span>);</div><div class="line">        kill(pid, SIGABRT);</div><div class="line">        wait(&amp;status);</div><div class="line">        <span class="keyword">if</span>(WIFSIGNALED(status))</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"chile process receive signal %d\n"</span>, WTERMSIG(status));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="raise和killpg函数"><a href="#raise和killpg函数" class="headerlink" title="raise和killpg函数"></a>raise和killpg函数</h2><p>除了kill函数可以向进程发送信号外,还可以通过raise和killpg函数发送信号。</p>
-<h2 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h2><p>int raise(int sig);<br>int killpg(pid_t pgrpid, int sig);</p>
-<h2 id="函数功能-1"><a href="#函数功能-1" class="headerlink" title="函数功能"></a>函数功能</h2><p>raise函数的功能是向进程自身发送信号.在单线程程序中，调用raise函数相当于调用kill(getpid(), sig).<br>对于支持线程的系统，一般将raise实现为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pthread_kill(pthread_self(), sig);</div></pre></td></tr></table></figure></p>
-<p>此时信号只发送给当前进程的当前线程。而不影响其他线程。</p>
-<p>killpg函数的作用是向同组的所有进程发送信号。相当于:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">kill(-pgrpid, sig);</div></pre></td></tr></table></figure></p>
-<h2 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h2><p>raise函数的错误返回值只有一个,即EINVAL，表示信号无效。其他时候返回都为成功。<br>而killpg的返回值与kill类似。</p>
-<h2 id="wait-与waitpid"><a href="#wait-与waitpid" class="headerlink" title="wait()与waitpid()"></a>wait()与waitpid()</h2><h3 id="头文件-1"><a href="#头文件-1" class="headerlink" title="头文件"></a>头文件</h3><p>sys/wait.h</p>
-<h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">pid_t</span> wait(<span class="keyword">int</span>* status);</div><div class="line"><span class="keyword">pid_t</span> waitpid(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span>* status, <span class="keyword">int</span> options);</div></pre></td></tr></table></figure>
-<h3 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h3><p>父进程创建子进程之后，父进程使用wait和waitpid具有监视子进程的运行状态的能力。这两个函数用于<strong>等待子进程的状态发生变化回调并且获取状态发生变化的信息</strong>，所能获取的状态变化包括：<strong>子进程运行结束,子进程被信号量暂停，子进程被信号量回复运行</strong>。</p>
-<p>父进程执行wait函数之后，父进程会被阻塞在此处，如果子进程状态发生变化，则wait函数会立即返回结果；否则wait函数会一直阻塞直到子进程状态发生变化。</p>
-<p>通常意义上，，如果子进程状态发生了变化，但是还是未被其父进程或者其他系统回调执行wait函数，此时的子进程被称为可等待的。</p>
-<p>子进程运行结束后父进程执行wait函数可以推动系统释放与子进程相关的资源；否则子进程将会被维持在<strong>僵尸进程</strong>（子进程已结束，而父进程还在运行）的状态下一直存在。</p>
-<h3 id="返回值说明"><a href="#返回值说明" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>上述函数的返回值有-1,0,&gt;0三种情况。分别对应于以下三种情况返回。</p>
-<ul>
-<li>-1:调用出错,此时出错信息在errno中</li>
-<li>0:若waitpid的options设置了WNOHANG，且调用中没有子进程退出，立即返回0</li>
-<li>>0:若大于0,返回退出进程的pid。</li>
-</ul>
-<h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
-<li>pid：要监听的进程的ID(&lt;-1, =-1, =0, &gt; 0)</li>
-<li>status: 用于存储出发状态变化时的信号值和exit(code)中的code值。</li>
-<li>options 提供一些额外的选项控制waitpid,目前linux中只支持WNOHANG和WUNTRACED两个选项，这是两个常数宏，可以使用|连接使用.</li>
-</ul>
-<p><strong>pid详细说明</strong>:</p>
-<ul>
-<li>pid &lt; -1 : 监听范围为进程组为-pid的所有子进程</li>
-<li>pid = -1 : 监听范围为调用wait/waitpid的所有子进程</li>
-<li>pid = 0: 监听范围为子进程的进程组ID（与父进程相等）</li>
-<li>pid &gt; 0: 监听特定pid的进程</li>
-</ul>
-<p><strong>status详细说明</strong></p>
-<p>status用于保存出发wait的信号值或者退出时exit(code)中的code值</p>
-<p><strong>options详细说明</strong></p>
-<ul>
-<li>WNOHANG : 使用此参数调用waitpid,即使子进程没有退出，他也会立即返回，而不是像wait一直等下去</li>
-<li>WUNTRACED : 用于调试，极少用</li>
-</ul>
-<p>一般情况下使用值为0即可。</p>
-<h3 id="wait与waitpid关系"><a href="#wait与waitpid关系" class="headerlink" title="wait与waitpid关系"></a>wait与waitpid关系</h3><p>wait实质上是waitpid中pid=-1,options=0时封装，即</p>
-<p>wait(&amp;status)与waitpid(-1, &amp;status, 0)完全相同</p>
-<h3 id="相关宏"><a href="#相关宏" class="headerlink" title="相关宏"></a>相关宏</h3><p>wait.h中定义了一些宏用于解析status的值：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">宏</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">WIFEXITED(status)</td>
-<td>子进程正常退出返回true否则false</td>
-</tr>
-<tr>
-<td style="text-align:center">WEXITSTATUS(status)</td>
-<td>当正常退出时，返回exit(code)中的code</td>
-</tr>
-<tr>
-<td style="text-align:center">WIFSIGNALED</td>
-<td>子进程接受信号退出时返回true，否则false</td>
-</tr>
-<tr>
-<td style="text-align:center">WTERMSIG</td>
-<td>被信号量杀死时，返回信号量的值</td>
-</tr>
-<tr>
-<td style="text-align:center">WIFSTOPED(status)</td>
-<td>当子进程被信号量暂停时返回true</td>
-</tr>
-<tr>
-<td style="text-align:center">WSTOPSIG(status)</td>
-<td>被信号量暂停时信号量的值</td>
-</tr>
-</tbody>
-</table>
-<p><strong>options值</strong>:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">常量</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">WNOHANG</td>
-<td>调用wait时制定pid仍未返回，wait立即返回0，用于判断子进程有没有结束</td>
-</tr>
-<tr>
-<td style="text-align:center">WUNTRACED</td>
-<td>当子进程被暂停时，则wait立即返回子进程的pid</td>
-</tr>
-<tr>
-<td style="text-align:center">WCONTINUED</td>
-<td>当被暂停的子进程又被信号量恢复后，则wait立即返回子进程的pid。Linux 2.6.10及以后生效。在Mac 0S X 10.9.5上未生效。</td>
-</tr>
-</tbody>
-</table>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/04/Wait函数详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/">
-                            Unix文件IO的数据结构及fcntl函数详解
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-01T23:31:31+08:00">
-	
-		    5月 01, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux用于I-O的数据结构及fcntl函数详解"><a href="#Linux用于I-O的数据结构及fcntl函数详解" class="headerlink" title="Linux用于I/O的数据结构及fcntl函数详解"></a>Linux用于I/O的数据结构及fcntl函数详解</h1><h2 id="Linux内核用于IO的数据结构"><a href="#Linux内核用于IO的数据结构" class="headerlink" title="Linux内核用于IO的数据结构"></a>Linux内核用于IO的数据结构</h2><p>内核使用<strong>三种数据结构</strong>表示打开的文件，它们之间的关系决定了在文件共享方面一个进程对另一个进程可能产生的影响.</p>
-<ul>
-<li>进程表项 每个进程在记录表中都有一个记录项，记录项中包含一张打开的文件描述符表，可将其视为一个矢量，每个描述符占用一项。与每个文件描述符相关联的是：<ul>
-<li>文件描述符标志(close_on_exec,close_on_exec是一个进程所有文件描述符的标记位图，每个比特位代表一个打开的文件描述符，用于确定在系统调用execve()时需要关闭的文件句柄)。</li>
-<li>指向一个文件表项的指针</li>
-</ul>
-</li>
-<li>文件表项 内核为所有打开文件维护一张文件表（<strong>不同进程打开相同文件将有两条记录</strong>），每个文件表项中包括：<ul>
-<li>文件状态标志(read,write,append,async,nonblock等)</li>
-<li>当前文件偏移量</li>
-<li>指向该文件v(i)节点表项的指针</li>
-</ul>
-</li>
-<li>节点表项。每个打开的文件都有一个v-node结构，v-node中包含了文件类型和对此文件进行各种操作函数的指针。对于大多数文件，V-node中还包含了文件inode节点信息，这些信息是打开文件时从磁盘上读入内存的，所以文件所有信息都是随时可用的。<ul>
-<li>v节点的信息</li>
-<li>当前文件的长度</li>
-<li>i节点的信息</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>close_on_exec是一个进程所有文件描述符（文件句柄）的位图标志，<strong>每个bit代表一个打开的文件描述符，用于<br>确定在系统调用execve()时是否需要关闭文件句柄。</strong>当一个进程fork出一个子进程时，通常会在子进程中调用execve()函数<br>加载执行另一个新程序。此时子进程将完全被新程序替换掉，并在子进程中执行新程序。若一个文件描述符在close_on_exec中对应的<br>bit被设置，那么在执行execve()时该文件描述符将被关闭，否则该文件描述符将始终处于打开状态。<br>当打开一个文件的时候，默认情况下文件句柄在子进程中也处于打开状态。<br>注意文件描述符和文件描述符标志的区别，文件描述符是文件进程打开文件时的文件句柄，文件描述符标志为close_on_exec。</p>
-</blockquote>
-<p>下图显示了一个进程打开两个不同文件时三张表对应的关系：</p>
-<p><img src="/images/singleProcessmultifile.png" alt=""></p>
-<p>如果两个独立的进程同时打开同一个文件，三张表之间的对应关系如下：</p>
-<p><img src="/images/multiProcesssinglefile.png" alt=""><br>从上面可以看出，不同进程打开相同的文件时每个进程将获得各自的文件表项，这是因为不同的进程都有各自的文件偏移量。<br>当我们对文件进行操作的时候，上面三种表项之间的变化关系如下：</p>
-<ul>
-<li>当对文件进行写操作时（write），在文件表项中的文件偏移量将增加写入的字节数。如果此时文件偏移量超过了文件长度，更新文件长度为当前的文件偏移量</li>
-<li>当用O_APPEND标志打开一个文件，则相应的标志也被设置到文件表项的文件标志状态中。每次对这种具有追加标志的文件进行写操作时，<strong>首先将当前文件偏移量设置为文件文件长度</strong>，这就使得每次增加的内容都会写到文件末尾。</li>
-<li>若使用lseek定位到文件末尾，则文件表项中偏移量被设置为文件长度</li>
-<li>lseek函数只修改文件表项中的偏移量，不进行任何IO操作。</li>
-</ul>
-<p><strong>注意问题：</strong></p>
-<ul>
-<li>可能有多个文件描述符指向同一个文件表项，如在fork的时候就有可能发生</li>
-<li>注意文件描述符和文件状态标志在作用范围方面的区别。前者只用于一个进程的描述符，而后者则应用于指向该给定文件表项的任何进程中的所有描述符。</li>
-</ul>
-<h2 id="函数fcntl功能及用法"><a href="#函数fcntl功能及用法" class="headerlink" title="函数fcntl功能及用法"></a>函数fcntl功能及用法</h2><p><strong>函数原型</strong>:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fcntl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> cmd, ...<span class="comment">/*int args or lock args*/</span>)</span></span>;</div></pre></td></tr></table></figure>
-<p><strong>函数功能</strong>:<br>fcntl的作用是改变已经打开的文件属性。</p>
-<p><strong>参数说明</strong>:</p>
-<ul>
-<li>fd 为file descriptor,即文件打开之后的文件描述符</li>
-<li>cmd为命令，即需要对fd操作的命令,一般为几个宏定义中的其中一个</li>
-<li>args 参数，此参数为执行cmd命令所需要的参数</li>
-</ul>
-<p><strong>cmd参数命令及功能</strong>:</p>
-<p>fcntl的功能可以分为5种:</p>
-<ul>
-<li>复制一个已有的文件描述符<ul>
-<li>cmd = F_DUPFD，此功能<em>*返回一个文件描述符，新的描述符的值为大于或等于args的可用的（尚未打开）文件描述符的最小值，新描述符与fd共用一个文件表项</em>。但是新的文件描述符有它自己的一套文件描述符标志.</li>
-<li>cmd = F_DUPFD_CLOEXEC.与上述功能一致，唯一不同的是使用此命令会设置CLOSE_ON_EXEC，<br>即当执行execve的时候，文件描述符将被关闭。</li>
-</ul>
-</li>
-<li>获取或设置文件描述符标志<ul>
-<li>cmd = F_GETFD <strong>返回与fd关联的close_on_exec标志</strong>，第三个参数被忽略。</li>
-<li>cnd = F_SETFD <strong>将文件描述符标志close_on_exec设置为第三个参数</strong>。</li>
-</ul>
-</li>
-<li>获取或设置文件状态标志<ul>
-<li>cmd = F_GETFL <strong>获取fd对应的文件的状态标志（存储于文件表项）</strong></li>
-<li>cmd = F_SETFL <strong>设置fd对应文件的状态标志</strong></li>
-</ul>
-</li>
-<li>获取或设置异步IO所有权<ul>
-<li>cmd = F_GETOWN 获取当前接受SIGIO和SIGURG信号的进程IO或者进程组ID。</li>
-<li>cmd = F_SETOWN 设置接受SIGIO和SIGURG信号的进程ID或进程组ID。返回值为正则为进程，返回值为负数即为进程组。</li>
-</ul>
-</li>
-<li>获取或记录锁（cmd=F_GETLK、F_SETLK、F_SETLKW），此处不详解</li>
-</ul>
-<p><strong>文件状态标志说明</strong>：</p>
-<p>文件状态标志存储与文件表项中，它用于说明进程对当前文件的可操作权限。文件的<br>操作权限说明如下图表所示，权限设置可使用|或者&amp;进行设置.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">文件状态标志</th>
-<th style="text-align:left">功能说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">O_RDONLY</td>
-<td style="text-align:left">只读权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_WRONLY</td>
-<td style="text-align:left">只写权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_RDWR</td>
-<td style="text-align:left">读写权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_EXEC</td>
-<td style="text-align:left">可执行权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_SEARCH</td>
-<td style="text-align:left">只搜索打开权限</td>
-</tr>
-<tr>
-<td style="text-align:center">O_APPEND</td>
-<td style="text-align:left">追加写</td>
-</tr>
-<tr>
-<td style="text-align:center">O_NONBLOCK</td>
-<td style="text-align:left">非阻塞模式</td>
-</tr>
-<tr>
-<td style="text-align:center">O_SYNC</td>
-<td style="text-align:left">等待写完成（数据和属性）</td>
-</tr>
-<tr>
-<td style="text-align:center">O_DSYNC</td>
-<td style="text-align:left">等待写完成（仅数据）</td>
-</tr>
-<tr>
-<td style="text-align:center">O_RSYNC</td>
-<td style="text-align:left">同步读写</td>
-</tr>
-<tr>
-<td style="text-align:center">O_FSYNC</td>
-<td style="text-align:left">等待写完成</td>
-</tr>
-<tr>
-<td style="text-align:center">O_ASYNC</td>
-<td style="text-align:left">异步IO</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>注意O_RDONLY、O_WRONLY、O_RDWR、O_EXEC、O_SEARCH这个五个标志并不各占<br>一位，一个文件的访问方式只能取这五个里面的一个。因此检查当前文件的是这<br>五个标志中的哪一个需要使用屏蔽字O_ACCMODE取得当问方式位，在于这五个标志<br>进行对比。</p>
-</blockquote>
-<p><strong>代码示例说明</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">int</span> test;</div><div class="line">  <span class="comment">//返回结果：test = 10，返回大于等于第三个参数可用的fd(10)。</span></div><div class="line">  test = fcntl(STDIN_FILENO, F_DUPFD, <span class="number">10</span>);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"result of fcntl(STDIN_FILENO, F_DUPFD, 10) is:%d\n"</span>, test);</div><div class="line"></div><div class="line">  <span class="comment">//返回结果：test=11,与上一个函数功能相同</span></div><div class="line">  <span class="comment">//不同之处在于其设置了close_on_exec,当执行exec时关闭响应的文件描述符</span></div><div class="line">  <span class="comment">//注意有一些版本的系统上没有定义这个宏</span></div><div class="line">  <span class="comment">//test = fcntl(STDIN_FILENO, F_DUPFD_CLOEXEC, 10);</span></div><div class="line"></div><div class="line">  <span class="comment">//返回结果 test = 0. 标准输入的文件描述符标志(即关闭标志)为0，</span></div><div class="line">  <span class="comment">//意思是执行exec时关联的文件描述符不关闭</span></div><div class="line">  test = fcntl(STDIN_FILENO, F_GETFD);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"the result of fcntl(STDIN_FILENO, F_GETFD) is:%d\n"</span>, test);</div><div class="line"></div><div class="line">  <span class="comment">//将文件描述符标志设置为0</span></div><div class="line">  fcntl(STDIN_FILENO, F_SETFD, <span class="number">0</span>);</div><div class="line"></div><div class="line">  <span class="comment">//返回结果 test = 32270</span></div><div class="line">  test = fcntl(STDIN_FILENO, F_GETFL);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"the result of fcntl(STDIN_FILENO, F_GETFL) is:%d\n"</span>, test);</div><div class="line"></div><div class="line">  <span class="comment">//给STDIN_FILENO对应的IO添加非阻塞权限</span></div><div class="line">  test |= O_NONBLOCK;</div><div class="line">  fcntl(STDIN_FILENO, F_SETFL, test);</div><div class="line"></div><div class="line">  test = fcntl(STDIN_FILENO, F_GETFL);</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"the result of fcntl(STDIN_FILENO, F_GETFL) is:%d\n"</span>, test);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="STDIN-FILENO，STDOUT-FILENO以及STDERR-FILENO"><a href="#STDIN-FILENO，STDOUT-FILENO以及STDERR-FILENO" class="headerlink" title="STDIN_FILENO，STDOUT_FILENO以及STDERR_FILENO"></a>STDIN_FILENO，STDOUT_FILENO以及STDERR_FILENO</h2><p>STDIN_FILENO等是系统API接口库中<unistd.h>的宏定义，它是一个int类型的值，是打开文件的句柄，<br>对应的主要函数有open,read,write和close等。<br>STDIN_FILENO的含义是标准输入（键盘）的文件描述符，STDOUT_FILENO是标准输出流的文件描述符，STDERR_FILENO<br>是标准错误流的文件描述符。</unistd.h></p>
-<h3 id="STDIN-FILENO与stdin的区别"><a href="#STDIN-FILENO与stdin的区别" class="headerlink" title="STDIN_FILENO与stdin的区别"></a>STDIN_FILENO与stdin的区别</h3><ul>
-<li>数据类型不同 stdin的数据类型为FILE*，STDIN_NO的数据类型为int</li>
-<li>可用的函数不同 stdin主要用的函数有fread,fwrite,fclose，STDIN_FILENO可用的函数为write，read和close</li>
-<li>stdin属于标准IO，高级的输入输出函数，在stdio.h中定义;STDIN_FILENO是文件描述符，一般定义为0,1,2,属于没有buffer的IO,直接调用系统调用，定义在unistd.h中</li>
-<li>层次不同，stdin属于标注库处理的输入流，其声明为FILE*型，对应的函数前面都有f开头；而STDIN_FILENO属于系统API接口，对用的函数是一些系统级的调用</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/01/Unix文件IO的数据结构及fcntl函数详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1456,7 +1245,7 @@
             </a>
         </li>
         
-        <li class="pagination-number">page 7 of 9</li>
+        <li class="pagination-number">page 7 of 10</li>
     </ul>
 </div>
 

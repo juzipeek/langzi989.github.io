@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-04-17T08:20:49.369Z</updated>
+  <updated>2018-07-04T16:13:34.286Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,111 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>pthread使用barrier栅栏方式同步</title>
+    <link href="http://yoursite.com/2018/07/05/pthread%E4%BD%BF%E7%94%A8barrier%E6%A0%85%E6%A0%8F%E6%96%B9%E5%BC%8F%E5%90%8C%E6%AD%A5/"/>
+    <id>http://yoursite.com/2018/07/05/pthread使用barrier栅栏方式同步/</id>
+    <published>2018-07-04T16:10:31.000Z</published>
+    <updated>2018-07-04T16:13:34.286Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="pthread使用barrier栅栏方式同步"><a href="#pthread使用barrier栅栏方式同步" class="headerlink" title="pthread使用barrier栅栏方式同步"></a>pthread使用barrier栅栏方式同步</h1><p>Linux中提供了多种同步机制，其中使用barrier(栅栏)是多线程之间进行同步的方法之一。</p>
+<blockquote>
+<p> <strong>基本原理</strong>：</p>
+<p> 假设多个线程约定一个栅栏，只有当所有的线程都达到这个栅栏时，栅栏才会放行，否则到达此处的线程将被阻塞。</p>
+<p> <strong>使用场景</strong>：</p>
+<p> 程序启动的时候，需要建立一个独立的线程去做一些特殊的工作。比如这个线程需要初始化一些全局配置等等。而主线程启动后，必须等待这个子线程拿到配置信息后，才能继续工作。所以这里就存在一个问题要解决，主线程如何等待这个子线程完成工作后，才继续往下执行呢？</p>
+</blockquote>
+<h3 id="栅栏相关API"><a href="#栅栏相关API" class="headerlink" title="栅栏相关API"></a>栅栏相关API</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//初始化栅栏，栅栏需要等待到count个线程，才会全部一起放行。</span></div><div class="line"><span class="function"><span class="keyword">int</span>   <span class="title">pthread_barrier_init</span><span class="params">(<span class="keyword">pthread_barrier_t</span> *<span class="keyword">restrict</span>,</span></span></div><div class="line">                        <span class="keyword">const</span> <span class="keyword">pthread_barrierattr_t</span> *<span class="keyword">restrict</span>, <span class="keyword">unsigned</span> count);</div><div class="line"></div><div class="line"><span class="comment">//报道函数，当一个线程到达栅栏的时候，就报道。</span></div><div class="line"><span class="comment">//所有的线程都报道后，栅栏自然会放行。</span></div><div class="line"><span class="function"><span class="keyword">int</span>   <span class="title">pthread_barrier_wait</span><span class="params">(<span class="keyword">pthread_barrier_t</span> *barrier)</span></span>;</div><div class="line"></div><div class="line">栅栏完成历史使命后，当然是功成身退。</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_barrier_destroy</span><span class="params">(<span class="keyword">pthread_barrier_t</span> *barrier)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">pthread_barrier_t</span> barrier;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">initor</span><span class="params">(<span class="keyword">void</span>* args)</span> </span>&#123;</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"---------------thread init work(%d)--------------\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	<span class="comment">//模拟初始化工作。</span></div><div class="line">	sleep(<span class="number">10</span>);</div><div class="line">	<span class="comment">//到达栅栏</span></div><div class="line">	pthread_barrier_wait(&amp;barrier);</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"--------------thread start work(%d)--------------\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	sleep(<span class="number">10</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"--------------thread stop work(%d)--------------\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span> </span>&#123;</div><div class="line">  	<span class="comment">//初始化栅栏，该栅栏等待两个线程到达时放行</span></div><div class="line">	pthread_barrier_init(&amp;barrier, <span class="literal">NULL</span>, <span class="number">2</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"**************main thread barrier init done****************\n"</span>);</div><div class="line">	<span class="keyword">pthread_t</span> pid;</div><div class="line">	pthread_create(&amp;pid, <span class="literal">NULL</span>, &amp;initor, <span class="literal">NULL</span>);</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"**************main waiting(%d)********************\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	<span class="comment">//主线程到达，被阻塞，当初始化线程到达栅栏时才放行。</span></div><div class="line">  	pthread_barrier_wait(&amp;barrier);</div><div class="line">	pthread_barrier_destroy(&amp;barrier);</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"***************main start to work(%d)****************\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	sleep(<span class="number">30</span>);</div><div class="line">	pthread_join(pid, <span class="literal">NULL</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"***************thread complete(%d)***************\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;pthread使用barrier栅栏方式同步&quot;&gt;&lt;a href=&quot;#pthread使用barrier栅栏方式同步&quot; class=&quot;headerlink&quot; title=&quot;pthread使用barrier栅栏方式同步&quot;&gt;&lt;/a&gt;pthread使用barrier栅栏方式
+    
+    </summary>
+    
+      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
+    
+      <category term="pthread" scheme="http://yoursite.com/tags/pthread/"/>
+    
+      <category term="barrier" scheme="http://yoursite.com/tags/barrier/"/>
+    
+      <category term="同步" scheme="http://yoursite.com/tags/%E5%90%8C%E6%AD%A5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>文件描述符限制</title>
+    <link href="http://yoursite.com/2018/07/04/Linux%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6%E9%99%90%E5%88%B6/"/>
+    <id>http://yoursite.com/2018/07/04/Linux文件描述符限制/</id>
+    <published>2018-07-04T15:50:20.000Z</published>
+    <updated>2018-07-04T16:09:51.367Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="文件描述符限制"><a href="#文件描述符限制" class="headerlink" title="文件描述符限制"></a>文件描述符限制</h1><p>文件描述符是系统的一个重要资源，理论上有多少内存就可以创建多少文件描述符，但是在实际实现过程中，一般打开的文件数是系统内存的10%（以KB计算）。</p>
+<p><strong>查看当前系统最大的文件描述符数量</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#系统最大文件描述符数量</div><div class="line">$sysctl -a | grep fs.file-max</div><div class="line">1026095(与系统相关)</div><div class="line">#当前session最大的文件描述符数量</div><div class="line">$ulimit -n</div><div class="line">1024</div></pre></td></tr></table></figure>
+<p><strong>修改当前系统最大文件描述符数量</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#永久修改系统的最大描述符数量</span></div><div class="line"><span class="comment">#在/etc/sysctl.conf中添加：</span></div><div class="line">fs.file-max=<span class="number">102400</span></div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;文件描述符限制&quot;&gt;&lt;a href=&quot;#文件描述符限制&quot; class=&quot;headerlink&quot; title=&quot;文件描述符限制&quot;&gt;&lt;/a&gt;文件描述符限制&lt;/h1&gt;&lt;p&gt;文件描述符是系统的一个重要资源，理论上有多少内存就可以创建多少文件描述符，但是在实际实现过程中，一般
+    
+    </summary>
+    
+      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="文件描述符" scheme="http://yoursite.com/tags/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>C++作用域运算符</title>
+    <link href="http://yoursite.com/2018/07/04/C++%E4%BD%9C%E7%94%A8%E5%9F%9F%E8%BF%90%E7%AE%97%E7%AC%A6/"/>
+    <id>http://yoursite.com/2018/07/04/C++作用域运算符/</id>
+    <published>2018-07-04T15:47:20.000Z</published>
+    <updated>2018-07-04T16:00:19.948Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="C-作用域运算符"><a href="#C-作用域运算符" class="headerlink" title="C++作用域运算符"></a>C++作用域运算符</h1><blockquote>
+<p> C++作用域运算符是C++运算符中等级最高的。::运算符的本质是：左操作数为域，是一个scope，右操作数是这个scope中的一个名字，它可以是一个scope、class、member、function或者variable等。</p>
+<p> google style对域作用符的建议和说明可参考：</p>
+<p> <a href="http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/scoping/#namespaces" target="_blank" rel="external">http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/scoping/#namespaces</a></p>
+</blockquote>
+<h2 id="作用域运算符作用"><a href="#作用域运算符作用" class="headerlink" title="作用域运算符作用"></a>作用域运算符作用</h2><p>::的作用主要包括以下三种：</p>
+<ul>
+<li>全局作用域符（::name）</li>
+<li>类作用域符（class::name）</li>
+<li>命名空间作用域符（namespace::name）</li>
+</ul>
+<p>后两种比较常见，不做说明。全局作用符的作用是：如果程序中既定义了全局变量a，也定义了局部变量a，此时若要访问全局变量a，则需要使用::a来访问全局变量a。</p>
+<p>当作为类作用符时可用来决议多继承中的重名成员，指定类成员及函数等。</p>
+<p>当作为命名空间域作用符时可有效的防止全局作用域命名冲突。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;C-作用域运算符&quot;&gt;&lt;a href=&quot;#C-作用域运算符&quot; class=&quot;headerlink&quot; title=&quot;C++作用域运算符&quot;&gt;&lt;/a&gt;C++作用域运算符&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt; C++作用域运算符是C++运算符中等级最高的。::运算符的本
+    
+    </summary>
+    
+      <category term="C++ 学习" scheme="http://yoursite.com/categories/C-%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="C++" scheme="http://yoursite.com/tags/C/"/>
+    
+      <category term="作用域" scheme="http://yoursite.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F/"/>
+    
+      <category term="运算符" scheme="http://yoursite.com/tags/%E8%BF%90%E7%AE%97%E7%AC%A6/"/>
+    
+  </entry>
   
   <entry>
     <title>类型转换操作符&amp;&amp;C++重载输出流运算符</title>
@@ -157,6 +262,38 @@
   </entry>
   
   <entry>
+    <title>Unix网络函数与TCP状态转变之间的关系</title>
+    <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E4%B8%8ETCP%E7%8A%B6%E6%80%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E5%85%B3%E7%B3%BB%E5%AF%B9%E5%BA%94/"/>
+    <id>http://yoursite.com/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/</id>
+    <published>2018-02-04T13:52:40.000Z</published>
+    <updated>2018-02-04T14:15:40.018Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
+<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
+<blockquote>
+<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
+</blockquote>
+<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;a href=&quot;#Unix网络函数与TCP状态转变之间的关系&quot; class=&quot;headerlink&quot; title=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;/a&gt;Unix网络函数与TCP状态转变之间的关系&lt;/
+    
+    </summary>
+    
+      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="connect" scheme="http://yoursite.com/tags/connect/"/>
+    
+      <category term="listen" scheme="http://yoursite.com/tags/listen/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Unix网络编程相关错误码和信号处理</title>
     <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9B%B8%E5%85%B3%E9%94%99%E8%AF%AF%E7%A0%81%E6%80%BB%E7%BB%93/"/>
     <id>http://yoursite.com/2018/02/04/Unix网络编程相关错误码总结/</id>
@@ -216,38 +353,6 @@
       <category term="EINPROGRESS" scheme="http://yoursite.com/tags/EINPROGRESS/"/>
     
       <category term="SIGPIPE" scheme="http://yoursite.com/tags/SIGPIPE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unix网络函数与TCP状态转变之间的关系</title>
-    <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E4%B8%8ETCP%E7%8A%B6%E6%80%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E5%85%B3%E7%B3%BB%E5%AF%B9%E5%BA%94/"/>
-    <id>http://yoursite.com/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/</id>
-    <published>2018-02-04T13:52:40.000Z</published>
-    <updated>2018-02-04T14:15:40.018Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
-<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
-<blockquote>
-<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
-</blockquote>
-<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;a href=&quot;#Unix网络函数与TCP状态转变之间的关系&quot; class=&quot;headerlink&quot; title=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;/a&gt;Unix网络函数与TCP状态转变之间的关系&lt;/
-    
-    </summary>
-    
-      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-      <category term="connect" scheme="http://yoursite.com/tags/connect/"/>
-    
-      <category term="listen" scheme="http://yoursite.com/tags/listen/"/>
     
   </entry>
   
@@ -918,311 +1023,6 @@
       <category term="钩子" scheme="http://yoursite.com/tags/%E9%92%A9%E5%AD%90/"/>
     
       <category term="hook" scheme="http://yoursite.com/tags/hook/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux中dlfcn库相关学习.md</title>
-    <link href="http://yoursite.com/2017/10/16/Unix%E4%B8%ADdl%E5%BA%93%E5%AD%A6%E4%B9%A0/"/>
-    <id>http://yoursite.com/2017/10/16/Unix中dl库学习/</id>
-    <published>2017-10-16T08:30:08.000Z</published>
-    <updated>2017-10-16T08:47:35.412Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Linux中dlfcn库相关学习"><a href="#Linux中dlfcn库相关学习" class="headerlink" title="Linux中dlfcn库相关学习"></a>Linux中dlfcn库相关学习</h1><p>在linux中静态链接库和动态链接库是进程之间代码共享的两种方式。Linux在<dlfnc.h>库中提供了加载和处理动态连接库的系统调用,使用非常方便。具体用法如下:</dlfnc.h></p>
-<h2 id="dlfcn库中函数说明"><a href="#dlfcn库中函数说明" class="headerlink" title="dlfcn库中函数说明"></a>dlfcn库中函数说明</h2><p>dlfcn库中主要包括四个函数:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlopen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>*, <span class="keyword">int</span> flag)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">char</span>* <span class="title">dlerror</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">dlsym</span><span class="params">(<span class="keyword">void</span>* handler, <span class="keyword">char</span>* symbol)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dlclose</span><span class="params">(<span class="keyword">void</span>* handler)</span></span>;</div></pre></td></tr></table></figure></p>
-<ul>
-<li>dlopen : 打开一个动态连接库，并返回一个类型为void*的handler,flag为打开模式，可选的模式有两种<ul>
-<li>RTLD_LAZY 暂缓决定，等有需要时再解出符号</li>
-<li>RTLD_NOW 立即决定，返回前解除所有未决定的符号。</li>
-</ul>
-</li>
-<li>dlerror : 返回dl操作的错误，若没有出现错误，则返回NUlL，否则打印错误信息</li>
-<li>dlsym : 查找动态链接库中的符号symbol,并返回该符号所在的地址</li>
-<li>dlclose : 关闭动态链接库句柄</li>
-</ul>
-<h2 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h2><p>动态链接库cal.cpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//cal.cpp</span></div><div class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sub</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a - b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">mul</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a * b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">div</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">	<span class="keyword">return</span> a / b;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>生成动态链接库libcal.so<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ -shared -fPIC cal.cpp libcal.so</div></pre></td></tr></table></figure></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//main.cpp</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;dlfcn.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> LIB_LIBRARY_PATH_1 <span class="meta-string">"./libcal.so"</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*CAC_FUNC)</span><span class="params">(<span class="keyword">int</span> ,<span class="keyword">int</span>)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">void</span>* handler = <span class="literal">NULL</span>;</div><div class="line">	<span class="keyword">char</span>* error = <span class="literal">NULL</span>;</div><div class="line">	CAC_FUNC cac_func = <span class="literal">NULL</span>;</div><div class="line"></div><div class="line">	handler = dlopen(LIB_LIBRARY_PATH_1, RTLD_LAZY);</div><div class="line">	<span class="keyword">if</span> (!handler) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s\n"</span>, dlerror());</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	dlerror();</div><div class="line"></div><div class="line">  <span class="comment">//此处取对应函数地址,</span></div><div class="line">	*(<span class="keyword">void</span> **) (&amp;cac_func) = dlsym(handler, <span class="string">"add"</span>);</div><div class="line">	<span class="keyword">if</span> ((error = dlerror()) != <span class="literal">NULL</span>) &#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"err:%s"</span>, error);</div><div class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"add:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"sub"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"sub:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"mul"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"mul:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	cac_func = (CAC_FUNC)dlsym(handler, <span class="string">"div"</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"div:%d\n"</span>, cac_func(<span class="number">1</span>,<span class="number">2</span>));</div><div class="line"></div><div class="line">	dlclose(handler);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>编译函数main:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g++ main.cpp -rdynamic -ldl</div></pre></td></tr></table></figure></p>
-<p>执行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">add:3</div><div class="line">sub:-1</div><div class="line">mul:2</div><div class="line">div:0</div></pre></td></tr></table></figure></p>
-<h2 id="注意问题"><a href="#注意问题" class="headerlink" title="注意问题"></a>注意问题</h2><p><strong>特别注意，若使用c++编译动态链接库，一定要在需要使用的符号处添加extern “C”,否则会出现符号找不到的问题。即undefined symbol</strong></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Linux中dlfcn库相关学习&quot;&gt;&lt;a href=&quot;#Linux中dlfcn库相关学习&quot; class=&quot;headerlink&quot; title=&quot;Linux中dlfcn库相关学习&quot;&gt;&lt;/a&gt;Linux中dlfcn库相关学习&lt;/h1&gt;&lt;p&gt;在linux中静态链接库和动
-    
-    </summary>
-    
-      <category term="Linux环境高级编程" scheme="http://yoursite.com/categories/Linux%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-      <category term="dlopen" scheme="http://yoursite.com/tags/dlopen/"/>
-    
-      <category term="dlsym" scheme="http://yoursite.com/tags/dlsym/"/>
-    
-      <category term="动态链接库" scheme="http://yoursite.com/tags/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="http://yoursite.com/2017/10/11/AT&amp;T%E6%B1%87%E7%BC%96%E5%AD%A6%E4%B9%A0/"/>
-    <id>http://yoursite.com/2017/10/11/AT&amp;T汇编学习/</id>
-    <published>2017-10-11T02:38:55.297Z</published>
-    <updated>2017-10-11T02:38:55.297Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="AT-amp-T汇编学习"><a href="#AT-amp-T汇编学习" class="headerlink" title="AT&amp;T汇编学习"></a>AT&amp;T汇编学习</h1><p>汇编格式主要包括Intel和AT&amp;T汇编格式两种，两种汇编语言的格式在使用上有较大的差别，我们上一章讲解的汇编格式是以intel的风格为例的,但是在Unix和Linux系统中，大部分的汇编语言采用的是AT&amp;T格式。</p>
-<blockquote>
-<p>注:本节中的实例均以i386处理器中汇编指令为例</p>
-</blockquote>
-<h2 id="AT-amp-T汇编与intel汇编格式对比"><a href="#AT-amp-T汇编与intel汇编格式对比" class="headerlink" title="AT&amp;T汇编与intel汇编格式对比"></a>AT&amp;T汇编与intel汇编格式对比</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">AT&amp;T</th>
-<th style="text-align:center">intel</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">pushl %eax</td>
-<td style="text-align:center">push eax</td>
-<td style="text-align:left">在AT&amp;T格式中，需要在寄存器前面加上%</td>
-</tr>
-<tr>
-<td style="text-align:center">pushl $1</td>
-<td style="text-align:center">push 1</td>
-<td style="text-align:left">在AT&amp;T中使用$作为前缀表示立即数操作</td>
-</tr>
-<tr>
-<td style="text-align:center">addl $1 %eax</td>
-<td style="text-align:center">add eax 1</td>
-<td style="text-align:left">AT&amp;T格式的目的操作数和源操作数的顺序与intel格式相反</td>
-</tr>
-<tr>
-<td style="text-align:center">movl val,%al</td>
-<td style="text-align:center">mov al, byte ptr val</td>
-<td style="text-align:left">AT&amp;T格式操作数的长度由操作符的最后一个字母标识,分别是(movw[word],movl(long)movb[byte])</td>
-</tr>
-<tr>
-<td style="text-align:center">section:disp(base, index, scale)</td>
-<td style="text-align:center">section:[base + index*scale + disp]</td>
-<td style="text-align:left">内存寻址方式不同</td>
-</tr>
-</tbody>
-</table>
-<h2 id="简单汇编代码分析"><a href="#简单汇编代码分析" class="headerlink" title="简单汇编代码分析"></a>简单汇编代码分析</h2><p>下面一段代码的作用是在屏幕上打印helloworld。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">.data                             # 数据段，该段的数据为初始化数据</div><div class="line">        msg: .string &quot;helloworld&quot; #定义string类型变量msg，并赋初始值helloworld</div><div class="line">        len = . - msg             #使用段的起始地址和msg地址相减的方式计算msg的长度</div><div class="line">.text                             #代码段初始位置</div><div class="line">.global _start                    #使得连接程序看得到该symbol，这样就可以在其他文件中引用</div><div class="line"></div><div class="line">_start:                 </div><div class="line">        movl    $len,%edx         #edx中存储要打印的数据的长度</div><div class="line">        movl    $msg,%ecx         #ecx中存储打印为数据内容</div><div class="line">        movl    $1,%ebx           #ebx中为文件描述符,其中1为标准输出流的文件描述符</div><div class="line">        movl    $4,%eax           #eax中为系统调用号,4表示sys_write</div><div class="line">        int     $0x80             #调用内核功能执行,此段代码执行后屏幕上打印出helloworld</div><div class="line"></div><div class="line">        movl    $0,%ebx           #0标识退出代码</div><div class="line">        movl    $1,%eax           #1为系统调用号(sys_exit)</div><div class="line">        int     $0x80             #调用内核功能运行代码</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;AT-amp-T汇编学习&quot;&gt;&lt;a href=&quot;#AT-amp-T汇编学习&quot; class=&quot;headerlink&quot; title=&quot;AT&amp;amp;T汇编学习&quot;&gt;&lt;/a&gt;AT&amp;amp;T汇编学习&lt;/h1&gt;&lt;p&gt;汇编格式主要包括Intel和AT&amp;amp;T汇编格式两种，两
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Unix中select,poll,epoll详解</title>
-    <link href="http://yoursite.com/2017/10/08/Unix%E4%B8%ADSelectPollEpoll%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://yoursite.com/2017/10/08/Unix中SelectPollEpoll详解/</id>
-    <published>2017-10-08T09:01:00.000Z</published>
-    <updated>2017-10-09T08:17:37.544Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unix中select-poll-epoll详解"><a href="#Unix中select-poll-epoll详解" class="headerlink" title="Unix中select,poll,epoll详解"></a>Unix中select,poll,epoll详解</h1><p>网络应用需要处理的问题无非两类,网络I/O和数据计算问题。<br>在处理计算密集型任务的时候,期间会有一些网络IO操作(如写数据库的操作，非本机)，此时若使用同步IO,则会造成大量的IO等待，造成CPU使用率较低。所以此时考虑其他IO模型如异步模型。</p>
-<p>Unix下网络I/O模型包括五类:</p>
-<ul>
-<li>阻塞式IO</li>
-<li>非阻塞式IO</li>
-<li>多路复用IO</li>
-<li>信号驱动IO(边缘触发)</li>
-<li>异步IO</li>
-</ul>
-<p>其中多路复用I/O机制是通过select,poll以及epoll进行监视。这里暂时只介绍多路复用IO,若想了解其他IO模型,参考《Unix网络编程》第六章</p>
-<h2 id="多路复用I-O模型"><a href="#多路复用I-O模型" class="headerlink" title="多路复用I/O模型"></a>多路复用I/O模型</h2><p>网络I/O的本质是socket的读取,socket在linux系统中被抽象为流,所以I/O操作可以理解为对流的操作。这个操作包括两个阶段:</p>
-<ul>
-<li>等待流数据准备就绪(wait for data be ready)</li>
-<li>从内核相进程复制数据</li>
-</ul>
-<p>由于非阻塞调用的过程中，轮训占据了大部分的过程，所以轮训会占据大量的CPU时间。如果轮训不是进程的用户态，而是有人帮忙就好了。多路复用正好处理这样的问题。</p>
-<p>多路复用的过程：多路复用有两个特别的系统调用select和poll。select调用是内核级别的，select轮训相对于非阻塞的轮训区别在于：前者可以等待多个socket，当其中一个socket数据准备好了，就能返回进行可读，然后进程再进行recvform系统调用，将数据由内核拷贝到进程中，拷贝的过程是阻塞的。</p>
-<p>多路复用有两种阻塞，select或poll调用之后，会阻塞进程，与第一种阻塞不同在于，此时的select不是等到socket数据全部到达再处理, 而是有了一部分数据就会调用用户进程来处理。如何知道有一部分数据到达了呢？监视的事情交给了内核，内核负责数据到达的处理。也可以理解为”非阻塞”吧。</p>
-<p><img src="/images/multiplex.png" alt=""></p>
-<blockquote>
-<p>类比钓鱼过程:在钓鱼的时候,我们雇了一个帮手，他可以同时抛下多个鱼竿，任何一个鱼竿的鱼一上钩，他就会拉杆。他只负责帮我们钓鱼，并不处理，所以我们在一旁等着，等他收杆之后，我们再进行处理。</p>
-<p>多路复用既然可以处理多个IO,也就带来了新的问题：多个IO的顺序不能保证</p>
-<p>多路复用的特点多路复用通过一种机制一个进程能同时等待多个IO文件描述符，内核监视这些文件描述符（socket描述符），其中任意一个进入读就绪状态时，select,poll.epoll函数就可以返回。对于监视的方式，有可以分为select,poll,和epoll三种方式。</p>
-</blockquote>
-<h2 id="select函数详解"><a href="#select函数详解" class="headerlink" title="select函数详解"></a>select函数详解</h2><p>###　函数原型</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;select.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> maxfdp1, fd_set* readset, fd_set* writeset, fd_set* except_set, <span class="keyword">const</span> struct timeval* timeout)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h3><p>该函数允许进程指示内核等待多个事件中的其中一个发生，并只在有一个或多个事件发生或者经历了一段时间之后才唤醒它。</p>
-<p>其中等待的事件类型包括三种:指定集合中的描述符处于可读状态,执行集合中的描述符处于可写状态,指定集合中的描述符有异常未处理。</p>
-<p>描述符就绪的条件如下:</p>
-<h4 id="可读就绪"><a href="#可读就绪" class="headerlink" title="可读就绪"></a>可读就绪</h4><p>当描述符满足下列四个条件中的其中一个,表示该描述符已经准备好读</p>
-<ul>
-<li>该套接字接收缓冲区的字节数大于等于套接字接收缓冲区的低水位标记的大小。一般对于TCP和UDP该值默认为1,我们也可以通过SO_RCVLOWAT套接字选项设置该套接字的低水位标记。</li>
-<li>该连接读半部关闭(接受了FIN的TCP连接)，此时函数返回0。</li>
-<li>该套接字是一个监听套接字且完成的连接数不为0。对于这种套接字,accept通常不会阻塞。</li>
-<li>其上有一个套接字错误待处理.对这种套接字的读操作将不阻塞病返回-1。</li>
-</ul>
-<h4 id="可写就绪"><a href="#可写就绪" class="headerlink" title="可写就绪"></a>可写就绪</h4><p>当描述符满足下列四个条件中的其中一个,表示该描述符已经准备好写</p>
-<ul>
-<li>该套接字的发送缓冲区的可用空间字节大于等于套接字发送缓冲区的低水位标记大小。TCP和UDP的默认大小一般为2048。可以使用SO_SNDLOWAT套接字选项来设置该套接字的低水位标记</li>
-<li>该链接的写半部关闭</li>
-<li>使用非阻塞式connect的套接字建立连接，或者connect以失败告终</li>
-<li>其上有一个套接字错误未处理</li>
-</ul>
-<h3 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
-<li>maxfdp1 : fd_set中最大的描述符+1(特别注意不要忘了+1)，如readset中有{1,2,4}，writeset中有{5,7,9}，except_set中有{2,3,6,10}，则此时的maxfdp1为11</li>
-<li>readset : 需要监听的满足可读条件的描述符集合</li>
-<li>writeset : 需要监听的满足可写条件的描述符集合</li>
-<li>except_set : 需要监听的满足异常的描述符集合</li>
-<li>timeout : 等待的时间，若超过此时间,函数返回</li>
-</ul>
-<h4 id="timeout的三种情况"><a href="#timeout的三种情况" class="headerlink" title="timeout的三种情况"></a>timeout的三种情况</h4><ul>
-<li>timeout=NULL,等待时间无限长,即不限等待时间</li>
-<li>timeout-&gt;sec=0,timeout-&gt;usec=0。此时不等待，函数立即返回</li>
-<li>timeout-&gt;sec!=0 || timeout-&gt;usec != 0。此时为等待时间</li>
-</ul>
-<h3 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h3><ul>
-<li>当监视的相应的文件描述符集合中存在满足条件的描述符时，比如说读文件描述符集中有数据到来时,内核IO根据状态修改文件描述符集，并返回一个大于0的数</li>
-<li>当没有满足条件的描述符且设置的timeval超时时,select函数返回0</li>
-<li>出错返回负数</li>
-</ul>
-<p>若存在满足条件的描述符时，内核会将满足条件的描述符置位，并将其他描述符清0.这时，我们可以通过FD_ISSET来判断当前描述符是否满足条件.<br>如:<br>假设set为8位表示，起始为0000 0000。此时将{1,2,5}设置到读文件描述符集合中,即:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">FD_SET(<span class="number">1</span>, &amp;readset);</div><div class="line">FD_SET(<span class="number">2</span>, &amp;readset);</div><div class="line">FD_SET(<span class="number">3</span>, &amp;readset);</div></pre></td></tr></table></figure></p>
-<p>置位以后set的位为:0000 0111</p>
-<p>当调用select函数，并文件描述符2准备就绪时,此时select函数返回大于0的值，set的值变为:0000 0010。此时使用FD_ISSET可以检测到文件描述符2已经就绪。</p>
-<h3 id="fd-set相关操作"><a href="#fd-set相关操作" class="headerlink" title="fd_set相关操作"></a>fd_set相关操作</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_ZERO</span><span class="params">(fd_set* <span class="built_in">set</span>)</span></span>;          <span class="comment">//将fd_set清空，一般声明fd_set第一步现先将其清空</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_SET</span><span class="params">(<span class="keyword">int</span> fd, fd_set* <span class="built_in">set</span>)</span></span>;   <span class="comment">//将某个fd置位</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_CLR</span><span class="params">(<span class="keyword">int</span> fd, fd_set* <span class="built_in">set</span>)</span></span>;   <span class="comment">//清空某个fd</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">FD_ISSET</span><span class="params">(<span class="keyword">int</span> fd, fd_set* <span class="built_in">set</span>)</span></span>;  <span class="comment">//判断fd是否在set中</span></div></pre></td></tr></table></figure>
-<h3 id="select函数底层实现原理"><a href="#select函数底层实现原理" class="headerlink" title="select函数底层实现原理"></a>select函数底层实现原理</h3><p>select底层实现的大致原理是,通过轮训文件描述符集中的文件描述符，检查描述符是否达到条件，若达到符合的相关条件则返回，否则轮训，但是当轮训的机制虽然是死循环，但是不是一直轮训，当内核轮训一遍文件描述符之后，会调用schedule_timeout函数挂起，等待fd设备或定时器来唤醒自己，然后再继续循环体看看哪些fd可用，以此提高效率。</p>
-<p>若要了解详细的select实现原理参考如下博客:<br><a href="http://janfan.cn/chinese/2015/01/05/select-poll-impl-inside-the-kernel.html" target="_blank" rel="external">http://janfan.cn/chinese/2015/01/05/select-poll-impl-inside-the-kernel.html</a><br><a href="http://zhangyafeikimi.iteye.com/blog/248815" target="_blank" rel="external">http://zhangyafeikimi.iteye.com/blog/248815</a></p>
-<h3 id="select函数的特点"><a href="#select函数的特点" class="headerlink" title="select函数的特点"></a>select函数的特点</h3><p>select和poll为水平触发,epoll即支持水平触发也支持边缘触发。</p>
-<p>缺点:</p>
-<ul>
-<li>最大并发数限制:从上面可以看出，被监听的描述符集合的大小受fe_set大小的限制，所以select监听的描述符的个数是有限制的,一般默认个数为1024或4096个等。</li>
-<li>效率问题:从select的底层实现可以看出，select每次调用都会线性扫描全部的fd集合,这样效率会出现线性下降,当把FD_SETSIZE增大可能会出现超时.</li>
-<li>内核用户空间拷贝问题:从select实现源码中不难看出,描述符集合以及timeout参数都是通过内存拷贝的方式从用户空间拷贝到了内核空间，也是会影响函数的性能。</li>
-</ul>
-<h2 id="poll函数详解"><a href="#poll函数详解" class="headerlink" title="poll函数详解"></a>poll函数详解</h2><h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;poll.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span>&#123;</span></div><div class="line">  <span class="keyword">int</span> fd;     <span class="comment">//file descriptor</span></div><div class="line">  <span class="keyword">short</span> events; <span class="comment">//被监听的事件状态(即select中监听当前描述符是否可写或者可读或者异常等等)</span></div><div class="line">  shor revents; <span class="comment">//函数返回时该文件描述符的状态</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">poll</span><span class="params">(struct pollfd* fds, <span class="keyword">unsigned</span> <span class="keyword">long</span> nfds, <span class="keyword">int</span> timeout)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="函数功能-1"><a href="#函数功能-1" class="headerlink" title="函数功能"></a>函数功能</h3><p>poll的函数功能与select功能基本类似。但是poll函数可监听的文件描述符的个数基本没有限制，poll管理多个文件描述符的方式与select一致,都是轮训，并且都是讲文件描述符数组从用户空间复制到内核空间。</p>
-<h3 id="函数参数-1"><a href="#函数参数-1" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
-<li>fds : 被监听的描述符的数组</li>
-<li>nfds : 数组中描述符的个数,这个大小足以监听linux所有的文件描述的符</li>
-<li>timeout : 等待的时间</li>
-</ul>
-<p>events的合法事件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">POLLIN      ---       有数据可读(普通或优先级带数据)等价于POLLRDNORM||POLLRDBAND</div><div class="line">POLLRDNORM  ---       有普通数据可读</div><div class="line">POLLRDBAND  ---       有优先级带数据可读</div><div class="line">POLLPRI     ---       有高优先级数据可读</div><div class="line"></div><div class="line">POLLOUT     ---       有数据可写(普通数据)等价于POLLWRNORM</div><div class="line">POLLWRNORM  ---       有普通数据可写</div><div class="line">POLLWRBBAND ---       有优先级带数据可写</div></pre></td></tr></table></figure></p>
-<p>初此之外,revents返回的事件还有:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">POLLER      ---       发生错误</div><div class="line">POLLHUP     ---       发生挂起</div><div class="line">POLLNVAL    ---       指定的描述符非法，没有打开</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p>POLLIN | POLLPRI等价于select的读事件</p>
-<p>POLLOUT | POLLWRBBAND 等价于select的写事件</p>
-</blockquote>
-<h3 id="函数返回值-1"><a href="#函数返回值-1" class="headerlink" title="函数返回值"></a>函数返回值</h3><ul>
-<li>若监听的描述符满足条件,返回revents域不为0的文件描述符的个数</li>
-<li>若没有描述符满足条件且已过超时时间,poll返回0</li>
-<li>出错返回-1，并设置errno为以下值:</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">EBADF      ---        一个或多个结构体中的描述符无效</div><div class="line">EFAULTfds  ---        指针指向的地址超出进程的地址空间</div><div class="line">EINTR      ---        请求的时间之前产生一个信号，调用可以重新发起</div><div class="line">EINVALnfds ---        参数超出PLIMIT_NOFILE的值</div><div class="line">ENOMEM     ---        可用内存不足，无法完成请求</div></pre></td></tr></table></figure>
-<h3 id="poll函数优缺点"><a href="#poll函数优缺点" class="headerlink" title="poll函数优缺点"></a>poll函数优缺点</h3><p><strong>优点</strong>：</p>
-<ul>
-<li>poll函数不需要计算最大的文件描述符加1.</li>
-<li>poll函数监听的文件描述符的个数不受限制</li>
-<li>poll相对于select函数应付大数目的描述符的效率较高。</li>
-</ul>
-<p><strong>缺点</strong>:</p>
-<ul>
-<li>poll函数没有解决select轮训所有文件描述符的问题</li>
-<li>poll函数和select相同都是将文件描述符信息从用户空间拷贝到内核空间。</li>
-</ul>
-<h2 id="epoll函数详解"><a href="#epoll函数详解" class="headerlink" title="epoll函数详解"></a>epoll函数详解</h2><h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><p>epoll相关数据结构:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//epoll_data保存触发事件相关的数据。(数据类型与具体使用方式有关)</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">union</span> epoll_data&#123;</div><div class="line">  <span class="keyword">void</span>* ptr;</div><div class="line">  <span class="keyword">int</span> fd;</div><div class="line"></div><div class="line">  <span class="keyword">_uint32_t</span> u32;</div><div class="line">  <span class="keyword">_uint64_t</span> u64;</div><div class="line">&#125; <span class="keyword">epoll_data_t</span>;</div><div class="line"></div><div class="line"><span class="comment">//保存感兴趣的事件和被触发的事件</span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">epoll_event</span>&#123;</span></div><div class="line">  <span class="keyword">_uint32_t</span> events;</div><div class="line">  <span class="keyword">epoll_data_t</span> data;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>其中events是一个美剧类型的集合,我们可以使用”|”来增加感兴趣的事件。枚举类型的值包括下面:</p>
-<ul>
-<li>EPOLLIN : 表示关联的fd可以进行读操作</li>
-<li>EPOLLOUT :表示关联的fd可以进行写操作</li>
-<li>EPOLLRDHUP(2.6.17之后):表示套接字关闭了连接，或关闭了正写的一半的连接</li>
-<li>EPOLLPRI : 表示关联的fd有紧急优先事件可以进行读操作。</li>
-<li>EPOLLERR : 表示关联的fd发生了错误，epoll_wait会一直等待这个事件,所以一般没有必要设置这个属性</li>
-<li>EPOLLHUP : 表示关联的fd被挂起，epoll_wait会一直等待这个事件,所以一般没有必要设置这个属性</li>
-<li>EPOLLET : 设置关联的fd为ET的工作方式,即边缘触发</li>
-<li>EPOLLONESHOT : 设置关联的fd为one-shot工作方式,表示只监听一次事件,如果要再次监听，需要把socket放入到epoll队列中。</li>
-</ul>
-<p>epoll相关的函数有三个。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_create</span><span class="params">(<span class="keyword">int</span> size)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_ctl</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">int</span> op, <span class="keyword">int</span> fd, struct epoll_event* event)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_wait</span><span class="params">(<span class="keyword">int</span> epfd, struct epoll_event* events, <span class="keyword">int</span> maxevents, <span class="keyword">int</span> timeout)</span></span>;</div></pre></td></tr></table></figure>
-<ul>
-<li>epoll_create : 创建一个epoll句柄，注意创建epoll句柄会占用一个文件描述符，在使用完之后需要关闭。否则可能会导致文件描述符耗尽。<ul>
-<li>size : size为最大的监听文件描述符数，监听的文件描述符的个数不能超过size可以手动指定，但是这个数值可以达到系统可以开的最大的文件描述符数。</li>
-</ul>
-</li>
-<li>epoll_ctl : epoll的事件注册函数，它不同于select的是，它不是在监听事件的时候告诉内核要监听什么类型的时间，而是先注册要监听的事件类型。<ul>
-<li>epfd : epoll文件描述符，即epoll_ create的返回值，表示该epoll描述符注册事件</li>
-<li>op : 注册事件的类型包括以下三类。<ul>
-<li>EPOLL_CTL_ADD : 注册行的fd到epfd中</li>
-<li>EPOLL_CTL_MOD : 修改已经注册的fd的事件类型</li>
-<li>EPOLL_CTL_DEL : 删除已经注册的fd</li>
-</ul>
-</li>
-<li>fd : 注册的文件描述符</li>
-<li>event : 注册的时间的类型，告诉内核需要监听什么事件，类型包括上面几种。</li>
-</ul>
-</li>
-<li>epoll_wait :　收集epoll监控的时间中已经就绪的事件，若调用成功，返回就绪的文件描述符的个数，返回0表示超时。<ul>
-<li>epfd : epoll的文件描述符</li>
-<li>events : 已经就绪的事件集合.内核不分配内存，需要程序自己分配内存传给内核，内核只负责将书复制到这里</li>
-<li>maxevents : events数组的大小。</li>
-<li>timeout : 超时时间。</li>
-</ul>
-</li>
-</ul>
-<h3 id="水平触发-LT-与边缘触发-ET"><a href="#水平触发-LT-与边缘触发-ET" class="headerlink" title="水平触发(LT)与边缘触发(ET)"></a>水平触发(LT)与边缘触发(ET)</h3><p>epoll的默认工作模式是水平触发(LT)。NGINX使用的epoll的ET工作模式</p>
-<p><strong>水平触发（level_triggered）</strong>:当被监控的文件描述符上有可读可写事件的时,epoll_wait()会通知处理程序去读写。<strong>如果程序没有一次性把缓冲区的数据读完或者写完,那么下次调用epoll_wait的时候，他还会通知你该文件描述符仍可读写,如果你一直不去读写,它会一直通知你。</strong>如果系统中有大量你不需要读写的文件描述符,而他们每次都返回,这样会大大降低处理程序检索自己关心的就绪文件描述符的效率。</p>
-<p><strong>边缘触发(edge-triggered)</strong>:当被监控的文件描述符上有读写事件发生时，epoll_wait会通知处理程序去读写，<strong>如果数据没有一次性读写完,那么下次你再调用epoll_wait的时候,它不会通知你，只有等到下一次发生读写事件的时候,它才会通知你</strong>。这种模式比水平触发的效率高，系统不会充斥大量你不关心的文件描述符。</p>
-<p><strong>注意</strong>:epoll工作在ET模式的时候,必须使用非阻塞的套接字,以避免由于一个文件句柄的阻塞读/阻塞写把多个文件描述符的任务饿死。最好以下面两种方式调用epoll接口</p>
-<ul>
-<li>基于非阻塞文件句柄</li>
-<li>只有当read/write返回值为EAGAIN时才需要挂起。但这不是说每次都需要循环读，直到读到产生EAGAIN才结束,只要读取到的长度小于预期的长度就说明缓冲区的数据我们已经读完了。</li>
-</ul>
-<h3 id="epoll族函数底层实现"><a href="#epoll族函数底层实现" class="headerlink" title="epoll族函数底层实现"></a>epoll族函数底层实现</h3><p>epoll的使用方法上面已经有详细的描述，借口也简单易用。首先我们通过epoll_create创建一个epoll文件描述符，然后在epoll文件描述符上注册需要监听的事件，最后使用epoll_wait等待准备就绪的文件描述符。然而在每一步的过程中，内核都做了哪些操作？底层的实现方式是怎么样的？</p>
-<p>内核使用了slab机制，为epoll提供了高效快速的数据结构。在内核中,epoll向内核注册了一个文件系统，用于存储被监控的文件描述符的信息。epoll在被内核初始化的时候（操作系统启动），同时会开辟出epoll自己的告诉cache区，用于安置我们需要监控的fd信息,这些fd信息会以<strong>红黑树</strong>的结构保存在内核cache中，以支持快速的查找,插入删除操作。这个内核高速cache区，就是建立连续的物理内存页，然后在之上建立slab层，简单的说，就是物理上分配好你想要的size的内存对象，每次使用时都是使用空闲的已分配好的对象。</p>
-<p>epoll fd在内核中对应的数据够如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">struct eventpoll &#123;</div><div class="line">    spin_lock_t       lock;        //对本数据结构的访问</div><div class="line">    struct mutex      mtx;         //防止使用时被删除</div><div class="line">    wait_queue_head_t     wq;      //sys_epoll_wait() 使用的等待队列</div><div class="line">    wait_queue_head_t   poll_wait;       //file-&gt;poll()使用的等待队列</div><div class="line">    struct list_head    rdllist;        //事件满足条件的链表</div><div class="line">    struct rb_root      rbr;            //用于管理所有fd的红黑树（树根）</div><div class="line">    struct epitem      *ovflist;       //将事件到达的fd进行链接起来发送至用户空间</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>当向系统中添加一个fd时，就创建一个epitem结构体，这是内核管理epoll的基本数据结构：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">struct epitem &#123;</div><div class="line">    struct rb_node  rbn;        //用于主结构管理的红黑树</div><div class="line">    struct list_head  rdllink;  //事件就绪队列</div><div class="line">    struct epitem  *next;       //用于主结构体中的链表</div><div class="line">    struct epoll_filefd  ffd;   //这个结构体对应的被监听的文件描述符信息</div><div class="line">    int  nwait;                 //poll操作中事件的个数</div><div class="line">    struct list_head  pwqlist;  //双向链表，保存着被监视文件的等待队列，功能类似于select/poll中的poll_table</div><div class="line">    struct eventpoll  *ep;      //该项属于哪个主结构体（多个epitm从属于一个eventpoll）</div><div class="line">    struct list_head  fllink;   //双向链表，用来链接被监视的文件描述符对应的struct file。因为file里有f_ep_link,用来保存所有监视这个文件的epoll节点</div><div class="line">    struct epoll_event  event;  //注册的感兴趣的事件,也就是用户空间的epoll_event</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ol>
-<li>当调用epoll_create的时候，会首先在epoll内存中为分配一个eventpoll的内存大小，以保存当前的epoll描述符(epfd)结构，然后在这块内存上打开一个epoll文件。</li>
-<li>当调用epoll_ctl的时候，如果增加fd（socket），则检查在红黑树中是否存在，存在立即返回，不存在则添加到红黑树上，然后向内核注册回调函数，用于当中断事件来临时向准备就绪list链表中插入数据。当我们调用epoll_ctl往里塞入百万个fd时，epoll_wait仍然可以飞快的返回，并有效的将发生事件的fd给我们用户。这是由于我们在调用epoll_create时，内核除了帮我们在epoll文件系统里建了个file结点，在内核cache里建了个红黑树用于存储以后epoll_ctl传来的fd外，还会再建立一个list链表，用于存储准备就绪的事件。</li>
-<li>调用epoll_wait的时候立即返回准备就绪链表中的数据即可。</li>
-</ol>
-<p>如此，一颗红黑树，一张准备就绪fd链表，少量的内核cache，就帮我们解决了大并发下的fd（socket）处理问题。</p>
-<p>如果需要了解更详细的epoll底层实现，参考一下链接:<br><a href="http://www.cnblogs.com/apprentice89/p/3234677.html" target="_blank" rel="external">http://www.cnblogs.com/apprentice89/p/3234677.html</a></p>
-<h3 id="epoll特点"><a href="#epoll特点" class="headerlink" title="epoll特点"></a>epoll特点</h3><ul>
-<li>没有文件描述符个数限制</li>
-<li>使用注册监听时间的方式，无需每次wait时都将时间从用户空间拷贝到内核空间，节省了内存拷贝的时间。</li>
-<li>使用回调机制,无需轮训所有的文件描述符检查状态。</li>
-<li>返回值只有准备就绪的文件描述符，检查准备就绪的文件描述符也不需要轮训。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Unix中select-poll-epoll详解&quot;&gt;&lt;a href=&quot;#Unix中select-poll-epoll详解&quot; class=&quot;headerlink&quot; title=&quot;Unix中select,poll,epoll详解&quot;&gt;&lt;/a&gt;Unix中select,po
-    
-    </summary>
-    
-      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="多路复用" scheme="http://yoursite.com/tags/%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/"/>
-    
-      <category term="IO模型" scheme="http://yoursite.com/tags/IO%E6%A8%A1%E5%9E%8B/"/>
-    
-      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-      <category term="epoll" scheme="http://yoursite.com/tags/epoll/"/>
-    
-      <category term="poll" scheme="http://yoursite.com/tags/poll/"/>
-    
-      <category term="select" scheme="http://yoursite.com/tags/select/"/>
     
   </entry>
   
