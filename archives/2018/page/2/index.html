@@ -216,6 +216,100 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
+                            判断主机字节序大端规则或小端规则方法
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-26T18:30:00+08:00">
+	
+		    1月 26, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="判断主机字节序大端规则或小端规则方法"><a href="#判断主机字节序大端规则或小端规则方法" class="headerlink" title="判断主机字节序大端规则或小端规则方法"></a>判断主机字节序大端规则或小端规则方法</h1><h2 id="大端规则与小端规则"><a href="#大端规则与小端规则" class="headerlink" title="大端规则与小端规则"></a>大端规则与小端规则</h2><p>在计算机存储中存储字节的顺序有两种分别为大端规则和小端规则。</p>
+<ul>
+<li>小端规则(littel endian)：低序字节存储到内存较低的位置，即起始位置。</li>
+<li>大端规则(big endian)：低序字节存储到内存较高的位置，即高序字节存储到起始位置。</li>
+</ul>
+<p>有一个32位数字为:0x01020304</p>
+<p>在<strong>小端规则</strong>的机器上，其存储如下：</p>
+<table>
+<thead>
+<tr>
+<th>低地址</th>
+<th>-&gt;</th>
+<th>-&gt;</th>
+<th>高地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x04</td>
+<td>0x03</td>
+<td>0x02</td>
+<td>0x01</td>
+</tr>
+</tbody>
+</table>
+<p>在<strong>大端规则机器上</strong>，其存储如下：</p>
+<table>
+<thead>
+<tr>
+<th>低地址</th>
+<th>-&gt;</th>
+<th>-&gt;</th>
+<th>高地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x01</td>
+<td>0x02</td>
+<td>0x03</td>
+<td>0x04</td>
+</tr>
+</tbody>
+</table>
+<h2 id="判断当前机器字节序的方法"><a href="#判断当前机器字节序的方法" class="headerlink" title="判断当前机器字节序的方法"></a>判断当前机器字节序的方法</h2><p>判断当前机器为大端规则还是小端规则，其本质是<strong>对于一个变量，判断其各字节的存储顺序</strong>，</p>
+<h3 id="方法一：使用union判断"><a href="#方法一：使用union判断" class="headerlink" title="方法一：使用union判断"></a>方法一：使用union判断</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">union</span> &#123;</div><div class="line">		<span class="keyword">short</span> a;</div><div class="line">		<span class="keyword">char</span> c[<span class="number">2</span>];</div><div class="line">	&#125; u;</div><div class="line"></div><div class="line">	u.a = <span class="number">0x0102</span>;</div><div class="line">	<span class="keyword">if</span> (u.c[<span class="number">0</span>] == <span class="number">2</span> &amp;&amp; u.c[<span class="number">1</span>] == <span class="number">1</span>) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"little"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (u.c[<span class="number">0</span>] == <span class="number">1</span> &amp;&amp; u.c[<span class="number">1</span>] == <span class="number">2</span>) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"big"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"unkown"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">  	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="方法二：直接将字节取出-判断顺序"><a href="#方法二：直接将字节取出-判断顺序" class="headerlink" title="方法二：直接将字节取出,判断顺序"></a>方法二：直接将字节取出,判断顺序</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">short</span> s = <span class="number">0x0102</span>;</div><div class="line">	<span class="keyword">char</span>* a = (<span class="keyword">char</span>*)(&amp;s);</div><div class="line">	<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; (*a) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">	<span class="keyword">char</span> b = <span class="number">0x02</span>, c = <span class="number">0x01</span>;</div><div class="line">	<span class="keyword">if</span> (((*a) | b) == b) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"little"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (((*a) | c) == b) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"big"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">      	<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"unknow"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">  	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/26/C语言pack与aligned的区别/">
                             C语言pack与aligned的区别
                         </a>

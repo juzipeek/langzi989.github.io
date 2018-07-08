@@ -216,6 +216,100 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/07/08/CRC循环冗余校验/">
+                            CRC循环冗余校验
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-07-08T18:40:00+08:00">
+	
+		    7月 08, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/计算机通信与安全/">计算机通信与安全</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="CRC循环冗余校验"><a href="#CRC循环冗余校验" class="headerlink" title="CRC循环冗余校验"></a>CRC循环冗余校验</h1><p>CRC（<strong>Cyclic redundancy check</strong>）又称为循环冗余校验，它是一种根据网络数据包或电脑文件等数据产生简短固定位数校验码的一种散列函数，主要用于<strong>检测或校验数据传输或者保存后可能出现的错误</strong>。生成的校验码在传输或者存储之前计算出来并附加到数据后面，然后接收方进行检验确定数据是否发生变化。</p>
+<h2 id="数据通讯校验方法"><a href="#数据通讯校验方法" class="headerlink" title="数据通讯校验方法"></a>数据通讯校验方法</h2><p>数据通讯中常见的几种校验方法包括以下几种：</p>
+<ul>
+<li>奇偶校验/bit校验</li>
+<li>累加和校验</li>
+<li>循环冗余校验</li>
+</ul>
+<h3 id="奇偶校验"><a href="#奇偶校验" class="headerlink" title="奇偶校验"></a>奇偶校验</h3><p>​        奇偶校验算法包括两种类型，分别是奇校验位和偶校验位。它表示一个给定位数的二进制数中的1的个数是奇数个还是偶数个。</p>
+<p>​        奇偶校验的原理是在发送的每一个字节后都加一位，使得每个字节中1的个数为奇数个或者偶数个（若为奇校验，则1的个数是奇数个，若为偶校验，1的个数为偶数个）。</p>
+<p>​        如要传输的数据为1001 0010 0010 0001。</p>
+<p>​    若采用奇校验，则将每个字节补位，传输的数据为1001 0010 <strong>0</strong> 0010 0001 <strong>1</strong></p>
+<p>​    若采用偶校验，则将每个字节补位，传输的数据为1001 0010 <strong>1</strong> 0010 0001 <strong>0</strong></p>
+<p><strong>奇偶校验的缺点</strong>是</p>
+<ol>
+<li>检测出错的概率较大，错误率在50%左右。</li>
+<li>由于对于每个字节都需要补位，所以对传输性能影响较大。</li>
+</ol>
+<h3 id="累加和校验"><a href="#累加和校验" class="headerlink" title="累加和校验"></a>累加和校验</h3><p>累加和校验的实现方式有很多种最常用的一种是在一次通讯数据包的最后加入一个字节的校验数据，这个字节的内容为数据包中全部数据的忽略进位的按字节累加。如:</p>
+<p>​    要传输的数据为:</p>
+<p>​        1、2、3</p>
+<p>​    加上校验和之后的数据包为：</p>
+<p>​        1、2、3、6</p>
+<p><strong>累加和校验的缺点</strong>：</p>
+<p>​    当校验单字节时，有1/256的出错概率。</p>
+<h3 id="循环冗余校验-CRC"><a href="#循环冗余校验-CRC" class="headerlink" title="循环冗余校验(CRC)"></a>循环冗余校验(CRC)</h3><p>循环冗余校验的算法思想可以理解为<strong>选取一个生成多项式k，将需要传输的数据补位，使得补位后的数据可二进制整除该生成多项式，数据接收方校验数据的方法为看接收后的数据是否能二进制整除k</strong>:</p>
+<pre><code> 1. 将要传输的数据用二进制形式展开
+2. 选定一个数K（称为**生成多项式**），K的二进制长度为W+1，则位宽为W
+3. 在要传输的二进制数据后补W个0
+4. 用二进制展开后的数据用二进制除法（不进位不借位,减法为二进制中的XOR）除以k，得到的余数即为循环冗余校验和。
+</code></pre><p>示例如下：</p>
+<p><img src="/images/crc1.jpg" alt="crc1"></p>
+<p><img src="/images/crc2.jpg" alt="crc2"></p>
+<h2 id="影响CRC算法的因素"><a href="#影响CRC算法的因素" class="headerlink" title="影响CRC算法的因素"></a>影响CRC算法的因素</h2><p>​        在实际使用，影响CRC的参数模型因素有如下几个：</p>
+<ul>
+<li>宽度（WIDTH）：即多项式的长度-1。</li>
+<li>多项式（POLY）：即生成多项式，上述示例中的k，要求生成多项式的最高位必须为1。</li>
+<li>初始值（INIT）：初始时CRC寄存器中的值，这个值常选为0x0000或0xFFFF</li>
+<li>结果异或值（XOR）：上述方法计算结果后再与该值异或即得CRC值。</li>
+</ul>
+<p>​        为了使得校验出错率降到最低，业界研究出一些特定的生成多项式用于CRC校验算法。常见的CRC算法有CRC8、CRC16、CRC32、CRC64等等。</p>
+<h2 id="使用C语言实现CRC算法"><a href="#使用C语言实现CRC算法" class="headerlink" title="使用C语言实现CRC算法"></a>使用C语言实现CRC算法</h2><p>以下算法参考redis源码中CRC16实现方法，是一种比较高效的实现方式。</p>
+<p>宽度：16</p>
+<p>生成多项式为：0x1021(x16+x12+x5+1)</p>
+<p>初始值：0</p>
+<p>结果异或值：0</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">uint16_t</span> crc16tab[<span class="number">256</span>]= &#123;</div><div class="line">    <span class="number">0x0000</span>,<span class="number">0x1021</span>,<span class="number">0x2042</span>,<span class="number">0x3063</span>,<span class="number">0x4084</span>,<span class="number">0x50a5</span>,<span class="number">0x60c6</span>,<span class="number">0x70e7</span>,</div><div class="line">    <span class="number">0x8108</span>,<span class="number">0x9129</span>,<span class="number">0xa14a</span>,<span class="number">0xb16b</span>,<span class="number">0xc18c</span>,<span class="number">0xd1ad</span>,<span class="number">0xe1ce</span>,<span class="number">0xf1ef</span>,</div><div class="line">    <span class="number">0x1231</span>,<span class="number">0x0210</span>,<span class="number">0x3273</span>,<span class="number">0x2252</span>,<span class="number">0x52b5</span>,<span class="number">0x4294</span>,<span class="number">0x72f7</span>,<span class="number">0x62d6</span>,</div><div class="line">    <span class="number">0x9339</span>,<span class="number">0x8318</span>,<span class="number">0xb37b</span>,<span class="number">0xa35a</span>,<span class="number">0xd3bd</span>,<span class="number">0xc39c</span>,<span class="number">0xf3ff</span>,<span class="number">0xe3de</span>,</div><div class="line">    <span class="number">0x2462</span>,<span class="number">0x3443</span>,<span class="number">0x0420</span>,<span class="number">0x1401</span>,<span class="number">0x64e6</span>,<span class="number">0x74c7</span>,<span class="number">0x44a4</span>,<span class="number">0x5485</span>,</div><div class="line">    <span class="number">0xa56a</span>,<span class="number">0xb54b</span>,<span class="number">0x8528</span>,<span class="number">0x9509</span>,<span class="number">0xe5ee</span>,<span class="number">0xf5cf</span>,<span class="number">0xc5ac</span>,<span class="number">0xd58d</span>,</div><div class="line">    <span class="number">0x3653</span>,<span class="number">0x2672</span>,<span class="number">0x1611</span>,<span class="number">0x0630</span>,<span class="number">0x76d7</span>,<span class="number">0x66f6</span>,<span class="number">0x5695</span>,<span class="number">0x46b4</span>,</div><div class="line">    <span class="number">0xb75b</span>,<span class="number">0xa77a</span>,<span class="number">0x9719</span>,<span class="number">0x8738</span>,<span class="number">0xf7df</span>,<span class="number">0xe7fe</span>,<span class="number">0xd79d</span>,<span class="number">0xc7bc</span>,</div><div class="line">    <span class="number">0x48c4</span>,<span class="number">0x58e5</span>,<span class="number">0x6886</span>,<span class="number">0x78a7</span>,<span class="number">0x0840</span>,<span class="number">0x1861</span>,<span class="number">0x2802</span>,<span class="number">0x3823</span>,</div><div class="line">    <span class="number">0xc9cc</span>,<span class="number">0xd9ed</span>,<span class="number">0xe98e</span>,<span class="number">0xf9af</span>,<span class="number">0x8948</span>,<span class="number">0x9969</span>,<span class="number">0xa90a</span>,<span class="number">0xb92b</span>,</div><div class="line">    <span class="number">0x5af5</span>,<span class="number">0x4ad4</span>,<span class="number">0x7ab7</span>,<span class="number">0x6a96</span>,<span class="number">0x1a71</span>,<span class="number">0x0a50</span>,<span class="number">0x3a33</span>,<span class="number">0x2a12</span>,</div><div class="line">    <span class="number">0xdbfd</span>,<span class="number">0xcbdc</span>,<span class="number">0xfbbf</span>,<span class="number">0xeb9e</span>,<span class="number">0x9b79</span>,<span class="number">0x8b58</span>,<span class="number">0xbb3b</span>,<span class="number">0xab1a</span>,</div><div class="line">    <span class="number">0x6ca6</span>,<span class="number">0x7c87</span>,<span class="number">0x4ce4</span>,<span class="number">0x5cc5</span>,<span class="number">0x2c22</span>,<span class="number">0x3c03</span>,<span class="number">0x0c60</span>,<span class="number">0x1c41</span>,</div><div class="line">    <span class="number">0xedae</span>,<span class="number">0xfd8f</span>,<span class="number">0xcdec</span>,<span class="number">0xddcd</span>,<span class="number">0xad2a</span>,<span class="number">0xbd0b</span>,<span class="number">0x8d68</span>,<span class="number">0x9d49</span>,</div><div class="line">    <span class="number">0x7e97</span>,<span class="number">0x6eb6</span>,<span class="number">0x5ed5</span>,<span class="number">0x4ef4</span>,<span class="number">0x3e13</span>,<span class="number">0x2e32</span>,<span class="number">0x1e51</span>,<span class="number">0x0e70</span>,</div><div class="line">    <span class="number">0xff9f</span>,<span class="number">0xefbe</span>,<span class="number">0xdfdd</span>,<span class="number">0xcffc</span>,<span class="number">0xbf1b</span>,<span class="number">0xaf3a</span>,<span class="number">0x9f59</span>,<span class="number">0x8f78</span>,</div><div class="line">    <span class="number">0x9188</span>,<span class="number">0x81a9</span>,<span class="number">0xb1ca</span>,<span class="number">0xa1eb</span>,<span class="number">0xd10c</span>,<span class="number">0xc12d</span>,<span class="number">0xf14e</span>,<span class="number">0xe16f</span>,</div><div class="line">    <span class="number">0x1080</span>,<span class="number">0x00a1</span>,<span class="number">0x30c2</span>,<span class="number">0x20e3</span>,<span class="number">0x5004</span>,<span class="number">0x4025</span>,<span class="number">0x7046</span>,<span class="number">0x6067</span>,</div><div class="line">    <span class="number">0x83b9</span>,<span class="number">0x9398</span>,<span class="number">0xa3fb</span>,<span class="number">0xb3da</span>,<span class="number">0xc33d</span>,<span class="number">0xd31c</span>,<span class="number">0xe37f</span>,<span class="number">0xf35e</span>,</div><div class="line">    <span class="number">0x02b1</span>,<span class="number">0x1290</span>,<span class="number">0x22f3</span>,<span class="number">0x32d2</span>,<span class="number">0x4235</span>,<span class="number">0x5214</span>,<span class="number">0x6277</span>,<span class="number">0x7256</span>,</div><div class="line">    <span class="number">0xb5ea</span>,<span class="number">0xa5cb</span>,<span class="number">0x95a8</span>,<span class="number">0x8589</span>,<span class="number">0xf56e</span>,<span class="number">0xe54f</span>,<span class="number">0xd52c</span>,<span class="number">0xc50d</span>,</div><div class="line">    <span class="number">0x34e2</span>,<span class="number">0x24c3</span>,<span class="number">0x14a0</span>,<span class="number">0x0481</span>,<span class="number">0x7466</span>,<span class="number">0x6447</span>,<span class="number">0x5424</span>,<span class="number">0x4405</span>,</div><div class="line">    <span class="number">0xa7db</span>,<span class="number">0xb7fa</span>,<span class="number">0x8799</span>,<span class="number">0x97b8</span>,<span class="number">0xe75f</span>,<span class="number">0xf77e</span>,<span class="number">0xc71d</span>,<span class="number">0xd73c</span>,</div><div class="line">    <span class="number">0x26d3</span>,<span class="number">0x36f2</span>,<span class="number">0x0691</span>,<span class="number">0x16b0</span>,<span class="number">0x6657</span>,<span class="number">0x7676</span>,<span class="number">0x4615</span>,<span class="number">0x5634</span>,</div><div class="line">    <span class="number">0xd94c</span>,<span class="number">0xc96d</span>,<span class="number">0xf90e</span>,<span class="number">0xe92f</span>,<span class="number">0x99c8</span>,<span class="number">0x89e9</span>,<span class="number">0xb98a</span>,<span class="number">0xa9ab</span>,</div><div class="line">    <span class="number">0x5844</span>,<span class="number">0x4865</span>,<span class="number">0x7806</span>,<span class="number">0x6827</span>,<span class="number">0x18c0</span>,<span class="number">0x08e1</span>,<span class="number">0x3882</span>,<span class="number">0x28a3</span>,</div><div class="line">    <span class="number">0xcb7d</span>,<span class="number">0xdb5c</span>,<span class="number">0xeb3f</span>,<span class="number">0xfb1e</span>,<span class="number">0x8bf9</span>,<span class="number">0x9bd8</span>,<span class="number">0xabbb</span>,<span class="number">0xbb9a</span>,</div><div class="line">    <span class="number">0x4a75</span>,<span class="number">0x5a54</span>,<span class="number">0x6a37</span>,<span class="number">0x7a16</span>,<span class="number">0x0af1</span>,<span class="number">0x1ad0</span>,<span class="number">0x2ab3</span>,<span class="number">0x3a92</span>,</div><div class="line">    <span class="number">0xfd2e</span>,<span class="number">0xed0f</span>,<span class="number">0xdd6c</span>,<span class="number">0xcd4d</span>,<span class="number">0xbdaa</span>,<span class="number">0xad8b</span>,<span class="number">0x9de8</span>,<span class="number">0x8dc9</span>,</div><div class="line">    <span class="number">0x7c26</span>,<span class="number">0x6c07</span>,<span class="number">0x5c64</span>,<span class="number">0x4c45</span>,<span class="number">0x3ca2</span>,<span class="number">0x2c83</span>,<span class="number">0x1ce0</span>,<span class="number">0x0cc1</span>,</div><div class="line">    <span class="number">0xef1f</span>,<span class="number">0xff3e</span>,<span class="number">0xcf5d</span>,<span class="number">0xdf7c</span>,<span class="number">0xaf9b</span>,<span class="number">0xbfba</span>,<span class="number">0x8fd9</span>,<span class="number">0x9ff8</span>,</div><div class="line">    <span class="number">0x6e17</span>,<span class="number">0x7e36</span>,<span class="number">0x4e55</span>,<span class="number">0x5e74</span>,<span class="number">0x2e93</span>,<span class="number">0x3eb2</span>,<span class="number">0x0ed1</span>,<span class="number">0x1ef0</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">uint16_t</span> crc16(<span class="keyword">const</span> <span class="keyword">char</span> *buf, <span class="keyword">int</span> len) &#123;</div><div class="line">    <span class="keyword">int</span> counter;</div><div class="line">    <span class="keyword">uint16_t</span> crc = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span> (counter = <span class="number">0</span>; counter &lt; len; counter++)</div><div class="line">            crc = (crc&lt;&lt;<span class="number">8</span>) ^ crc16tab[((crc&gt;&gt;<span class="number">8</span>) ^ *buf++)&amp;<span class="number">0x00FF</span>];</div><div class="line">    <span class="keyword">return</span> crc;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></div><div class="line">&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="built_in">std</span>::hex &lt;&lt;  crc16(<span class="string">"123"</span>, <span class="number">3</span>) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="使用boost库计算crc校验和"><a href="#使用boost库计算crc校验和" class="headerlink" title="使用boost库计算crc校验和"></a>使用boost库计算crc校验和</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;boost/crc.hpp&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> boost;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	crc_32_type crc32;</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; hex;</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; crc32.checksum() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">	crc32.process_byte(<span class="string">'a'</span>);</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; crc32.checksum() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/07/08/CRC循环冗余校验/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/07/05/pthread使用barrier栅栏方式同步/">
                             pthread使用barrier栅栏方式同步
                         </a>
@@ -568,59 +662,6 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/">
-                            Unix网络函数与TCP状态转变之间的关系
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
-	
-		    2月 04, 2018
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
-<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
-<blockquote>
-<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
-</blockquote>
-<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
                         <a class="link-unstyled" href="/2018/02/04/Unix网络编程相关错误码总结/">
                             Unix网络编程相关错误码和信号处理
                         </a>
@@ -682,6 +723,59 @@
                     
                         <p>
                             <a href="/2018/02/04/Unix网络编程相关错误码总结/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/">
+                            Unix网络函数与TCP状态转变之间的关系
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
+	
+		    2月 04, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
+<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
+<blockquote>
+<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
+</blockquote>
+<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
@@ -839,100 +933,6 @@
                     
                         <p>
                             <a href="/2018/01/28/Unix信号之sigaction函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/">
-                            判断主机字节序大端规则或小端规则方法
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-01-26T18:30:00+08:00">
-	
-		    1月 26, 2018
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="判断主机字节序大端规则或小端规则方法"><a href="#判断主机字节序大端规则或小端规则方法" class="headerlink" title="判断主机字节序大端规则或小端规则方法"></a>判断主机字节序大端规则或小端规则方法</h1><h2 id="大端规则与小端规则"><a href="#大端规则与小端规则" class="headerlink" title="大端规则与小端规则"></a>大端规则与小端规则</h2><p>在计算机存储中存储字节的顺序有两种分别为大端规则和小端规则。</p>
-<ul>
-<li>小端规则(littel endian)：低序字节存储到内存较低的位置，即起始位置。</li>
-<li>大端规则(big endian)：低序字节存储到内存较高的位置，即高序字节存储到起始位置。</li>
-</ul>
-<p>有一个32位数字为:0x01020304</p>
-<p>在<strong>小端规则</strong>的机器上，其存储如下：</p>
-<table>
-<thead>
-<tr>
-<th>低地址</th>
-<th>-&gt;</th>
-<th>-&gt;</th>
-<th>高地址</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0x04</td>
-<td>0x03</td>
-<td>0x02</td>
-<td>0x01</td>
-</tr>
-</tbody>
-</table>
-<p>在<strong>大端规则机器上</strong>，其存储如下：</p>
-<table>
-<thead>
-<tr>
-<th>低地址</th>
-<th>-&gt;</th>
-<th>-&gt;</th>
-<th>高地址</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0x01</td>
-<td>0x02</td>
-<td>0x03</td>
-<td>0x04</td>
-</tr>
-</tbody>
-</table>
-<h2 id="判断当前机器字节序的方法"><a href="#判断当前机器字节序的方法" class="headerlink" title="判断当前机器字节序的方法"></a>判断当前机器字节序的方法</h2><p>判断当前机器为大端规则还是小端规则，其本质是<strong>对于一个变量，判断其各字节的存储顺序</strong>，</p>
-<h3 id="方法一：使用union判断"><a href="#方法一：使用union判断" class="headerlink" title="方法一：使用union判断"></a>方法一：使用union判断</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">union</span> &#123;</div><div class="line">		<span class="keyword">short</span> a;</div><div class="line">		<span class="keyword">char</span> c[<span class="number">2</span>];</div><div class="line">	&#125; u;</div><div class="line"></div><div class="line">	u.a = <span class="number">0x0102</span>;</div><div class="line">	<span class="keyword">if</span> (u.c[<span class="number">0</span>] == <span class="number">2</span> &amp;&amp; u.c[<span class="number">1</span>] == <span class="number">1</span>) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"little"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (u.c[<span class="number">0</span>] == <span class="number">1</span> &amp;&amp; u.c[<span class="number">1</span>] == <span class="number">2</span>) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"big"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"unkown"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line">  	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="方法二：直接将字节取出-判断顺序"><a href="#方法二：直接将字节取出-判断顺序" class="headerlink" title="方法二：直接将字节取出,判断顺序"></a>方法二：直接将字节取出,判断顺序</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">short</span> s = <span class="number">0x0102</span>;</div><div class="line">	<span class="keyword">char</span>* a = (<span class="keyword">char</span>*)(&amp;s);</div><div class="line">	<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; (*a) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line"></div><div class="line">	<span class="keyword">char</span> b = <span class="number">0x02</span>, c = <span class="number">0x01</span>;</div><div class="line">	<span class="keyword">if</span> (((*a) | b) == b) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"little"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (((*a) | c) == b) &#123;</div><div class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"big"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line">      	<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"unknow"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">  	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

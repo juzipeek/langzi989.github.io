@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archives: 2018/7 - 魏传柳</title>
+    <title>Tag: 循环冗余校验 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -17,7 +17,7 @@
     
     <meta property="og:type" content="blog">
 <meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/archives/2018/07/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/循环冗余校验/index.html">
 <meta property="og:site_name" content="魏传柳">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="魏传柳">
@@ -303,175 +303,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/07/05/pthread使用barrier栅栏方式同步/">
-                            pthread使用barrier栅栏方式同步
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-07-05T00:10:31+08:00">
-	
-		    7月 05, 2018
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="pthread使用barrier栅栏方式同步"><a href="#pthread使用barrier栅栏方式同步" class="headerlink" title="pthread使用barrier栅栏方式同步"></a>pthread使用barrier栅栏方式同步</h1><p>Linux中提供了多种同步机制，其中使用barrier(栅栏)是多线程之间进行同步的方法之一。</p>
-<blockquote>
-<p> <strong>基本原理</strong>：</p>
-<p> 假设多个线程约定一个栅栏，只有当所有的线程都达到这个栅栏时，栅栏才会放行，否则到达此处的线程将被阻塞。</p>
-<p> <strong>使用场景</strong>：</p>
-<p> 程序启动的时候，需要建立一个独立的线程去做一些特殊的工作。比如这个线程需要初始化一些全局配置等等。而主线程启动后，必须等待这个子线程拿到配置信息后，才能继续工作。所以这里就存在一个问题要解决，主线程如何等待这个子线程完成工作后，才继续往下执行呢？</p>
-</blockquote>
-<h3 id="栅栏相关API"><a href="#栅栏相关API" class="headerlink" title="栅栏相关API"></a>栅栏相关API</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">//初始化栅栏，栅栏需要等待到count个线程，才会全部一起放行。</span></div><div class="line"><span class="function"><span class="keyword">int</span>   <span class="title">pthread_barrier_init</span><span class="params">(<span class="keyword">pthread_barrier_t</span> *<span class="keyword">restrict</span>,</span></span></div><div class="line">                        <span class="keyword">const</span> <span class="keyword">pthread_barrierattr_t</span> *<span class="keyword">restrict</span>, <span class="keyword">unsigned</span> count);</div><div class="line"></div><div class="line"><span class="comment">//报道函数，当一个线程到达栅栏的时候，就报道。</span></div><div class="line"><span class="comment">//所有的线程都报道后，栅栏自然会放行。</span></div><div class="line"><span class="function"><span class="keyword">int</span>   <span class="title">pthread_barrier_wait</span><span class="params">(<span class="keyword">pthread_barrier_t</span> *barrier)</span></span>;</div><div class="line"></div><div class="line">栅栏完成历史使命后，当然是功成身退。</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_barrier_destroy</span><span class="params">(<span class="keyword">pthread_barrier_t</span> *barrier)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">pthread_barrier_t</span> barrier;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">initor</span><span class="params">(<span class="keyword">void</span>* args)</span> </span>&#123;</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"---------------thread init work(%d)--------------\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	<span class="comment">//模拟初始化工作。</span></div><div class="line">	sleep(<span class="number">10</span>);</div><div class="line">	<span class="comment">//到达栅栏</span></div><div class="line">	pthread_barrier_wait(&amp;barrier);</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"--------------thread start work(%d)--------------\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	sleep(<span class="number">10</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"--------------thread stop work(%d)--------------\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span> </span>&#123;</div><div class="line">  	<span class="comment">//初始化栅栏，该栅栏等待两个线程到达时放行</span></div><div class="line">	pthread_barrier_init(&amp;barrier, <span class="literal">NULL</span>, <span class="number">2</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"**************main thread barrier init done****************\n"</span>);</div><div class="line">	<span class="keyword">pthread_t</span> pid;</div><div class="line">	pthread_create(&amp;pid, <span class="literal">NULL</span>, &amp;initor, <span class="literal">NULL</span>);</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"**************main waiting(%d)********************\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	<span class="comment">//主线程到达，被阻塞，当初始化线程到达栅栏时才放行。</span></div><div class="line">  	pthread_barrier_wait(&amp;barrier);</div><div class="line">	pthread_barrier_destroy(&amp;barrier);</div><div class="line"></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"***************main start to work(%d)****************\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line">	sleep(<span class="number">30</span>);</div><div class="line">	pthread_join(pid, <span class="literal">NULL</span>);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"***************thread complete(%d)***************\n"</span>, time(<span class="literal">NULL</span>));</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/07/05/pthread使用barrier栅栏方式同步/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/07/04/Linux文件描述符限制/">
-                            文件描述符限制
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-07-04T23:50:20+08:00">
-	
-		    7月 04, 2018
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="文件描述符限制"><a href="#文件描述符限制" class="headerlink" title="文件描述符限制"></a>文件描述符限制</h1><p>文件描述符是系统的一个重要资源，理论上有多少内存就可以创建多少文件描述符，但是在实际实现过程中，一般打开的文件数是系统内存的10%（以KB计算）。</p>
-<p><strong>查看当前系统最大的文件描述符数量</strong>：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#系统最大文件描述符数量</div><div class="line">$sysctl -a | grep fs.file-max</div><div class="line">1026095(与系统相关)</div><div class="line">#当前session最大的文件描述符数量</div><div class="line">$ulimit -n</div><div class="line">1024</div></pre></td></tr></table></figure>
-<p><strong>修改当前系统最大文件描述符数量</strong></p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#永久修改系统的最大描述符数量</span></div><div class="line"><span class="comment">#在/etc/sysctl.conf中添加：</span></div><div class="line">fs.file-max=<span class="number">102400</span></div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/07/04/Linux文件描述符限制/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/07/04/C++作用域运算符/">
-                            C++作用域运算符
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-07-04T23:47:20+08:00">
-	
-		    7月 04, 2018
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-学习/">C++ 学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C-作用域运算符"><a href="#C-作用域运算符" class="headerlink" title="C++作用域运算符"></a>C++作用域运算符</h1><blockquote>
-<p> C++作用域运算符是C++运算符中等级最高的。::运算符的本质是：左操作数为域，是一个scope，右操作数是这个scope中的一个名字，它可以是一个scope、class、member、function或者variable等。</p>
-<p> google style对域作用符的建议和说明可参考：</p>
-<p> <a href="http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/scoping/#namespaces" target="_blank" rel="external">http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/scoping/#namespaces</a></p>
-</blockquote>
-<h2 id="作用域运算符作用"><a href="#作用域运算符作用" class="headerlink" title="作用域运算符作用"></a>作用域运算符作用</h2><p>::的作用主要包括以下三种：</p>
-<ul>
-<li>全局作用域符（::name）</li>
-<li>类作用域符（class::name）</li>
-<li>命名空间作用域符（namespace::name）</li>
-</ul>
-<p>后两种比较常见，不做说明。全局作用符的作用是：如果程序中既定义了全局变量a，也定义了局部变量a，此时若要访问全局变量a，则需要使用::a来访问全局变量a。</p>
-<p>当作为类作用符时可用来决议多继承中的重名成员，指定类成员及函数等。</p>
-<p>当作为命名空间域作用符时可有效的防止全局作用域命名冲突。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/07/04/C++作用域运算符/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -481,7 +312,6 @@
 </div>
 
 </section>
-
 
 
                 <footer id="footer" class="main-content-wrap">
