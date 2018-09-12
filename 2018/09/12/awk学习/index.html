@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Tag: 脚本 - 魏传柳</title>
+    <title>AWK学习 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -15,12 +15,30 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta property="og:type" content="blog">
-<meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/tags/脚本/index.html">
+    <meta name="description" content="AWK是一种强大的文本处理工具，其处理文本的效率极高，其输出可以来自标注输入、其他命令的输出或一个或多个文件，熟练使用awk将会对工作效率有很大的提升。
+awk调用方式awk调用方式包括三种：
+一、命令行调用1awk [-F seperator] &apos;commond&apos; input-file
+commond的组成又可以包括多个模式和动作的组合，即命令行调用又可以写为：
+1akw [-F seperat">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="AWK学习">
+<meta property="og:url" content="http://yoursite.com/2018/09/12/awk学习/index.html">
 <meta property="og:site_name" content="魏传柳">
+<meta property="og:description" content="AWK是一种强大的文本处理工具，其处理文本的效率极高，其输出可以来自标注输入、其他命令的输出或一个或多个文件，熟练使用awk将会对工作效率有很大的提升。
+awk调用方式awk调用方式包括三种：
+一、命令行调用1awk [-F seperator] &apos;commond&apos; input-file
+commond的组成又可以包括多个模式和动作的组合，即命令行调用又可以写为：
+1akw [-F seperat">
+<meta property="og:image" content="http://yoursite.com/images/算术优先级.gif">
+<meta property="og:updated_time" content="2018-09-12T14:46:32.606Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="魏传柳">
+<meta name="twitter:title" content="AWK学习">
+<meta name="twitter:description" content="AWK是一种强大的文本处理工具，其处理文本的效率极高，其输出可以来自标注输入、其他命令的输出或一个或多个文件，熟练使用awk将会对工作效率有很大的提升。
+awk调用方式awk调用方式包括三种：
+一、命令行调用1awk [-F seperator] &apos;commond&apos; input-file
+commond的组成又可以包括多个模式和动作的组合，即命令行调用又可以写为：
+1akw [-F seperat">
+<meta name="twitter:image" content="http://yoursite.com/images/算术优先级.gif">
     
     
         
@@ -49,7 +67,7 @@
         
     
 
-<header id="header" data-behavior="1">
+<header id="header" data-behavior="3">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <h1 class="header-title">
         <a class="header-title-link" href="/ ">魏传柳</a>
@@ -73,7 +91,7 @@
         
     
 
-<nav id="sidebar" data-behavior="1">
+<nav id="sidebar" data-behavior="3">
     
         <div class="sidebar-profile">
             <a href="/#about">
@@ -200,28 +218,21 @@
 </nav>
 
             
-            <div id="main" data-behavior="1"
+            <div id="main" data-behavior="3"
                  class="
                         hasCoverMetaIn
                         ">
                 
-    
-
-<section class="postShorten-group main-content-wrap">
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/09/12/awk学习/">
-                            AWK学习
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            AWK学习
+        </h1>
+    
+    <div class="post-meta">
     <time itemprop="datePublished" datetime="2018-09-12T22:46:32+08:00">
 	
 		    9月 12, 2018
@@ -236,10 +247,11 @@
     
 </div>
 
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>AWK是一种强大的文本处理工具，其处理文本的效率极高，其输出可以来自标注输入、其他命令的输出或一个或多个文件，熟练使用awk将会对工作效率有很大的提升。</p>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>AWK是一种强大的文本处理工具，其处理文本的效率极高，其输出可以来自标注输入、其他命令的输出或一个或多个文件，熟练使用awk将会对工作效率有很大的提升。</p>
 <h2 id="awk调用方式"><a href="#awk调用方式" class="headerlink" title="awk调用方式"></a>awk调用方式</h2><p>awk调用方式包括三种：</p>
 <h4 id="一、命令行调用"><a href="#一、命令行调用" class="headerlink" title="一、命令行调用"></a>一、命令行调用</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">awk [-F seperator] <span class="string">'commond'</span> input-file</div></pre></td></tr></table></figure>
 <p>commond的组成又可以包括多个模式和动作的组合，即命令行调用又可以写为：</p>
@@ -666,154 +678,78 @@
 <h4 id="文件内容合并"><a href="#文件内容合并" class="headerlink" title="文件内容合并"></a>文件内容合并</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">test.txt.<span class="number">1</span></div><div class="line"><span class="number">111</span></div><div class="line"><span class="number">555</span></div><div class="line"><span class="number">666</span></div><div class="line"></div><div class="line">awk <span class="string">'&#123;if(!arr[$0]) &#123;print $0; arr[$0]++&#125;&#125;'</span> test.txt test.txt.<span class="number">1</span></div></pre></td></tr></table></figure>
 <h4 id="找出文件A中存在且文件B中不存在的记录"><a href="#找出文件A中存在且文件B中不存在的记录" class="headerlink" title="找出文件A中存在且文件B中不存在的记录"></a>找出文件A中存在且文件B中不存在的记录</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">A:</div><div class="line"><span class="number">111</span></div><div class="line"><span class="number">222</span></div><div class="line"><span class="number">333</span></div><div class="line"><span class="number">444</span></div><div class="line"></div><div class="line">B:</div><div class="line"><span class="number">333</span></div><div class="line"><span class="number">444</span></div><div class="line"></div><div class="line"><span class="comment">#计算a.txt-(a.txt并a.txt)</span></div><div class="line">awk <span class="string">'NR==FNR &#123;a[$0]=1&#125; NR&gt;FNR &#123;if (!a[$0]) print $0&#125;'</span> b.txt a.txt</div><div class="line">输出：</div><div class="line"><span class="number">111</span></div><div class="line"><span class="number">222</span></div></pre></td></tr></table></figure>
 
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/09/12/awk学习/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
             
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/02/26/Unix脚本语言之TCL/">
-                            TCL脚本语言学习
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-26T23:52:40+08:00">
-	
-		    2月 26, 2018
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Unix脚本语言/">Unix脚本语言</a>
-
-
-    
-</div>
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Linux/">Linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/awk/">awk</a> <a class="tag tag--primary tag--small t-link" href="/tags/脚本/">脚本</a>
 
             </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/07/08/CRC循环冗余校验/" data-tooltip="CRC循环冗余校验">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/09/12/awk学习/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/09/12/awk学习/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/09/12/awk学习/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="TCL脚本语言学习"><a href="#TCL脚本语言学习" class="headerlink" title="TCL脚本语言学习"></a>TCL脚本语言学习</h1><p>TCL是一种脚本语言，它几乎可以在<strong>全部平台</strong>上运行,可移植行很强。<br>TCL语言设计的目的是提供程序与其他程序之间进行交互的功能，也是作为一个可嵌入的翻译互相作用的能力。<br>开发简单，上手快。</p>
-<h2 id="TCL输入输出"><a href="#TCL输入输出" class="headerlink" title="TCL输入输出"></a>TCL输入输出</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/tclsh</div><div class="line">#默认输出到标准输出流</div><div class="line">puts hello</div><div class="line">puts stdout hello</div><div class="line">#输出到标准错误流</div><div class="line">puts stderr error</div><div class="line"></div><div class="line">#输入必须指定输入流</div><div class="line">gets stdin varible</div><div class="line">puts $varible</div></pre></td></tr></table></figure>
-<h2 id="TCL文件读写操作"><a href="#TCL文件读写操作" class="headerlink" title="TCL文件读写操作"></a>TCL文件读写操作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">#打开data文件,打开模式有r,w,a,r+,w+,a+</div><div class="line">set fp [open data w]</div><div class="line">puts $fp &quot;hello world&quot;</div><div class="line">close $fp</div><div class="line"></div><div class="line">set fp [open data r]</div><div class="line">gets $fp test</div><div class="line">puts  $test</div><div class="line">close $fp</div></pre></td></tr></table></figure>
-<h2 id="TCL数据类型"><a href="#TCL数据类型" class="headerlink" title="TCL数据类型"></a>TCL数据类型</h2><p><strong>TCL变量不需要声明，可以直接使用</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"># TCL对象，对于整数，浮点数，bool,字符串，都是一个对象</div><div class="line">#可直接给其赋值</div><div class="line">set varible 1</div><div class="line">set s &quot;hello world&quot;</div><div class="line"></div><div class="line"># 列表，列表初始化时可以使用双引号或者大括号进行初始化</div><div class="line">set list &#123;hello world hah hah&#125;</div><div class="line">set list &quot;hello world hah hah&quot;</div><div class="line"></div><div class="line">#访问列表元素，使用lindex</div><div class="line">puts [lindex $list 0] #hello</div><div class="line"></div><div class="line">#关联数组，类似map,key可以是数字，也可以是字符串</div><div class="line">set map(a) 10</div><div class="line">puts $map(a)</div></pre></td></tr></table></figure></p>
-<h2 id="TCL条件控制语句"><a href="#TCL条件控制语句" class="headerlink" title="TCL条件控制语句"></a>TCL条件控制语句</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"># if语句</div><div class="line">if &#123;expression1&#125; &#123;</div><div class="line">  dosomting</div><div class="line">&#125; elseif &#123;expression2&#125; &#123;</div><div class="line">  dosometing</div><div class="line">&#125; else &#123;</div><div class="line">  dosomething</div><div class="line">&#125;</div><div class="line"></div><div class="line">#for 语句</div><div class="line">for &#123;set a 10&#125; &#123;$a &lt; 20&#125; &#123;incr a&#125; &#123;</div><div class="line">   dosometing</div><div class="line">&#125;</div><div class="line"></div><div class="line">#switch语句</div><div class="line">switch switchingString &#123;</div><div class="line">   matchString1 &#123;</div><div class="line">      body1</div><div class="line">   &#125;</div><div class="line">   matchString2 &#123;</div><div class="line">      body2</div><div class="line">   &#125;</div><div class="line">   matchStringn &#123;</div><div class="line">      bodyn</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="运算符的优先级"><a href="#运算符的优先级" class="headerlink" title="运算符的优先级"></a>运算符的优先级</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">分类</th>
-<th style="text-align:center">操作符</th>
-<th style="text-align:center">关联</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">Unary</td>
-<td style="text-align:center">+ -</td>
-<td style="text-align:center">Right to left</td>
-</tr>
-<tr>
-<td style="text-align:center">Multiplicative</td>
-<td style="text-align:center">* / %</td>
-<td style="text-align:center">Left to right</td>
-</tr>
-<tr>
-<td style="text-align:center">Additive</td>
-<td style="text-align:center">+ -</td>
-<td style="text-align:center">Left to right</td>
-</tr>
-<tr>
-<td style="text-align:center">Shift</td>
-<td style="text-align:center">&lt;&lt; &gt;&gt;</td>
-<td style="text-align:center">Left to right</td>
-</tr>
-<tr>
-<td style="text-align:center">Relational</td>
-<td style="text-align:center">&lt; &lt;= &gt; &gt;=</td>
-<td style="text-align:center">Left to right</td>
-</tr>
-<tr>
-<td style="text-align:center">Equality</td>
-<td style="text-align:center">== !=</td>
-<td style="text-align:center">Left to right</td>
-</tr>
-<tr>
-<td style="text-align:center">Bitwise AND</td>
-<td style="text-align:center">&amp;</td>
-<td style="text-align:center">Left to right</td>
-</tr>
-<tr>
-<td style="text-align:center">Bitwise XOR</td>
-<td style="text-align:center">^</td>
-<td style="text-align:center">Left to right</td>
-</tr>
-<tr>
-<td style="text-align:center">Bitwise OR</td>
-<td style="text-align:center">｜</td>
-<td style="text-align:center">Left to right</td>
-</tr>
-<tr>
-<td style="text-align:center">Logical AND</td>
-<td style="text-align:center">&amp;&amp;</td>
-<td style="text-align:center">Left to right</td>
-</tr>
-<tr>
-<td style="text-align:center">Logical OR</td>
-<td style="text-align:center">｜｜</td>
-<td style="text-align:center">Left to right</td>
-</tr>
-<tr>
-<td style="text-align:center">Ternary</td>
-<td style="text-align:center">?:</td>
-<td style="text-align:center">Right to left</td>
-</tr>
-</tbody>
-</table>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/02/26/Unix脚本语言之TCL/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
+                <a class="post-action-btn btn btn--default" href="#">
             
-        </div>
-        
-    </article>
-    
-    <div class="pagination-bar">
-    <ul class="pagination">
-        
-        
-        <li class="pagination-number">page 1 of 1</li>
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
     </ul>
 </div>
 
-</section>
+
+        
+            
+        
+    </div>
+</article>
+
 
 
                 <footer id="footer" class="main-content-wrap">
@@ -826,6 +762,83 @@
 </footer>
 
             </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/07/08/CRC循环冗余校验/" data-tooltip="CRC循环冗余校验">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/09/12/awk学习/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/09/12/awk学习/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/09/12/awk学习/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/09/12/awk学习/">
+                <i class="fa fa-google-plus"></i><span class="">Share on Google Plus</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/09/12/awk学习/">
+                <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/09/12/awk学习/">
+                <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
             
         </div>
         
@@ -872,6 +885,8 @@
     <!--SCRIPTS-->
 <script src="/assets/js/script-i4qo6jx6jji9fg0dftpya6ivemizsbow4fhow76d8dwpm7m1wbvi378ssumx.min.js"></script>
 <!--SCRIPTS END-->
+
+    
 
 
 

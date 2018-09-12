@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-07-08T14:30:08.662Z</updated>
+  <updated>2018-09-12T14:46:32.606Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,459 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>AWK学习</title>
+    <link href="http://yoursite.com/2018/09/12/awk%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://yoursite.com/2018/09/12/awk学习/</id>
+    <published>2018-09-12T14:46:32.606Z</published>
+    <updated>2018-09-12T14:46:32.606Z</updated>
+    
+    <content type="html"><![CDATA[<p>AWK是一种强大的文本处理工具，其处理文本的效率极高，其输出可以来自标注输入、其他命令的输出或一个或多个文件，熟练使用awk将会对工作效率有很大的提升。</p>
+<h2 id="awk调用方式"><a href="#awk调用方式" class="headerlink" title="awk调用方式"></a>awk调用方式</h2><p>awk调用方式包括三种：</p>
+<h4 id="一、命令行调用"><a href="#一、命令行调用" class="headerlink" title="一、命令行调用"></a>一、命令行调用</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">awk [-F seperator] <span class="string">'commond'</span> input-file</div></pre></td></tr></table></figure>
+<p>commond的组成又可以包括多个模式和动作的组合，即命令行调用又可以写为：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">akw [-F seperator] <span class="string">'parrtern1 &#123;Action1&#125; pattern2 &#123;Action2&#125;'</span> input-file</div></pre></td></tr></table></figure>
+<ul>
+<li>seperator:分隔符。分隔符为可选参数，可以为任意字符串,若不指定，默认分隔符为空格。</li>
+<li>commond:awk命令</li>
+<li>input_file: 待处理的文本文件</li>
+</ul>
+<h4 id="二、脚本调用"><a href="#二、脚本调用" class="headerlink" title="二、脚本调用"></a>二、脚本调用</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">awk -f awk-script-file input-file</div></pre></td></tr></table></figure>
+<p>将awk命令写入一个文件中，然后使用-f参数指定该文件运行</p>
+<h4 id="三、shell脚本插入awk命令"><a href="#三、shell脚本插入awk命令" class="headerlink" title="三、shell脚本插入awk命令"></a>三、shell脚本插入awk命令</h4><p>在shell中插入awk命令对文件进行处理,直接执行shell命令。</p>
+<h2 id="模式与动作"><a href="#模式与动作" class="headerlink" title="模式与动作"></a>模式与动作</h2><pre><code>任何awk语句都由**模式**和**动作**组成，**模式部分决定Action语句何时触发以及触发事件，动作决定对当前被匹配的数据进行的操作**，Action中由多个awk处理语句组成。
+</code></pre><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">awk [-F seperator] <span class="string">'parrtern1 &#123;Action1&#125; pattern2 &#123;Action2&#125;'</span> input-file</div></pre></td></tr></table></figure>
+<p><strong>注意问题</strong>：</p>
+<ul>
+<li>awk语句必须被单引号或双引号包含，防止awk语句被当做shell命令解析。</li>
+<li>确保awk命令中所有引号都成对出现</li>
+<li><p>确保用花括号括起来动作语句，用圆括号括起来条件语句</p>
+</li>
+<li><p>模式与动作<strong>一一对应</strong>，只有pattern匹配成功，对应的action(用{}括起来表示一个action)才会执行。</p>
+</li>
+<li><p>模式可以为任何<strong>条件语句</strong>或<strong>复合语句</strong>或<strong>正则表达式</strong>，也可以为awk保留字BEGIN，END</p>
+</li>
+<li><p>模式尽量<strong>不要加双引号</strong>，否则某些情况下可能会失效，如”$1&gt;30”。</p>
+</li>
+<li><p>action一定要<strong>用{}括起来</strong>，一个{}括起来的动作属于一个action，不同{}括起来的动作属于不同action,其对应不同的pattern。</p>
+</li>
+<li><p>BEGIN和END为特殊的模式，<strong>BEGIN模式使用在任何文本浏览之前</strong>，常用来做一些初始化设置或打印头部信息等，<strong>END模式使用在完成文本浏览动作之后</strong>，常用来处理一些收尾打印等工作。注意<strong>BEGIN和END语句都仅且执行一次</strong></p>
+</li>
+</ul>
+<h2 id="awk基本用法"><a href="#awk基本用法" class="headerlink" title="awk基本用法"></a>awk基本用法</h2><p>假定一下为一个学校中抽样的几个学生的成绩(score.txt)，下面四列分别为学号，名字，年级，分数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">13331264 tom   grade4 94</div><div class="line">13342010 marry grade4 90</div><div class="line">13315012 jemmy grade1 85</div><div class="line">13323089 jane  grade2 80</div></pre></td></tr></table></figure>
+<h4 id="域标识"><a href="#域标识" class="headerlink" title="域标识"></a>域标识</h4><pre><code>awk从输入文件中**每次读取一行**，当遇到分割符时将其分割为域，这些域被标记为\$1，\$2,\$3...，直到读到文件结尾或文件不存在,$0表示当前记录（即当前行）。
+</code></pre><p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"># 不加pattern</div><div class="line">awk &apos;&#123;print $1,$4&#125;&apos; score.txt</div><div class="line"></div><div class="line">输出结果：</div><div class="line">13331264 94</div><div class="line">13342010 90</div><div class="line">13315012 85</div><div class="line">13323089 80</div><div class="line"></div><div class="line"># pattern为$4&gt;=90,过滤分数超过90分的用户才处理</div><div class="line">awk &apos;$4&gt;=90 &#123;print $1,$4&#125;&apos; score.txt</div><div class="line">输出结果：</div><div class="line">13331264 94</div><div class="line">13342010 90</div><div class="line"></div><div class="line"># 命令有两个parttern action组，第一个pattern为BEGIN,第二个patter为$4&gt;=90</div><div class="line">awk &apos;BEGIN &#123;print &quot;学号     成绩&quot;&#125; $4&gt;=90 &#123;print $1,$4&#125;&apos; score.txt</div><div class="line">输出结果：</div><div class="line">学号     成绩</div><div class="line">13331264 94</div><div class="line">13342010 90</div></pre></td></tr></table></figure>
+<h4 id="条件控制语句"><a href="#条件控制语句" class="headerlink" title="条件控制语句"></a>条件控制语句</h4><p><strong>关系与正则运算符</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt;</td>
+<td>小于</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>小于等于</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>大于</td>
+</tr>
+<tr>
+<td>&gt;=</td>
+<td>大于等于</td>
+</tr>
+<tr>
+<td>==</td>
+<td>等于</td>
+</tr>
+<tr>
+<td>~</td>
+<td>匹配正则表达式（二元 符号前面为被匹配的字符串，后面为模式串，一般模式传用/pattern/括起来）</td>
+</tr>
+<tr>
+<td>!~</td>
+<td>不匹配正则表达式</td>
+</tr>
+</tbody>
+</table>
+<p><strong>逻辑运算符</strong></p>
+<p>逻辑运算符与C语言中完全一致。</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&amp;&amp;</td>
+<td>且，两个条件同时满足才为真</td>
+</tr>
+<tr>
+<td>\</td>
+<td>\</td>
+<td></td>
+<td>或，只要有一个条件为真即为真</td>
+</tr>
+<tr>
+<td>!</td>
+<td>将结果取反（一元运算符）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键字</strong></p>
+<table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>break</td>
+<td>用于while或for循环，退出循环</td>
+</tr>
+<tr>
+<td>continue</td>
+<td>终止当前循环，执行下一个循环</td>
+</tr>
+<tr>
+<td>next</td>
+<td>导致读入下一个输入行，并返回到脚本的顶部。这可以避免对当前输入行执行其他的操作过程。</td>
+</tr>
+<tr>
+<td>exit</td>
+<td>退出执行，直接跳转到END执行，若没有END,终止脚本</td>
+</tr>
+</tbody>
+</table>
+<p><strong>if条件控制语句</strong></p>
+<pre><code>在awk中使用if判断条件时，必须将if后面的条件用()括起来，与C语言类似。
+</code></pre><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 过滤学号中有1333字符串的成绩记录</span></div><div class="line">awk <span class="string">'&#123;if($1~/1333/) print $0&#125;'</span> score.txt</div><div class="line">输出：</div><div class="line"><span class="number">13331264</span> tom   grade4 <span class="number">94</span></div><div class="line"></div><div class="line"><span class="comment"># 过滤学号中不含1333字符串的成绩记录</span></div><div class="line">awk <span class="string">'&#123;if($1!~/1333/) print $0&#125;'</span> score.txt</div><div class="line">输出：</div><div class="line"><span class="number">13342010</span> marry grade4 <span class="number">90</span></div><div class="line"><span class="number">13315012</span> jemmy grade1 <span class="number">85</span></div><div class="line"><span class="number">13323089</span> jane  grade2 <span class="number">80</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># 过滤成绩大于85分的成绩记录</span></div><div class="line">awk <span class="string">'&#123;if($4&gt;85) print $0&#125;'</span> score.txt</div><div class="line">输出：</div><div class="line"><span class="number">13331264</span> tom   grade4 <span class="number">94</span></div><div class="line"><span class="number">13342010</span> marry grade4 <span class="number">90</span></div><div class="line"></div><div class="line"><span class="comment"># 过滤成绩大于90小于100的成绩记录</span></div><div class="line">awk <span class="string">'&#123;if($4&gt;90&amp;&amp;$4&lt;100) print $0&#125;'</span> score.txt</div><div class="line">输出：</div><div class="line"><span class="number">13331264</span> tom   grade4 <span class="number">94</span></div></pre></td></tr></table></figure>
+<p>当然我们使用模式代替if条件判断，这个可以达到相同的效果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 使用条件语句</div><div class="line">awk &apos;&#123;if($4&gt;85) print $0&#125;&apos; score.txt</div><div class="line"></div><div class="line"># 使用模式过滤行</div><div class="line">awk &apos;$4&gt;85 &#123;print $0&#125;&apos; score.txt</div></pre></td></tr></table></figure>
+<h4 id="for循环控制语句"><a href="#for循环控制语句" class="headerlink" title="for循环控制语句"></a>for循环控制语句</h4><p><strong>语法</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 格式一：</span></div><div class="line"><span class="keyword">for</span> (变量 <span class="keyword">in</span> 数组)</div><div class="line">&#123;</div><div class="line">    do_something;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment"># 格式二（与C语言相同）</span></div><div class="line"><span class="keyword">for</span> (变量;条件;表达式)</div><div class="line">&#123;</div><div class="line">    do_something;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>使用示例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># ENVIRON为awk内置的环境变量，下面会说到。其为一个数组，该作用为打印环境变量中的所有键值对</div><div class="line">awk &apos;BEGIN &#123;for(k in ENVIRON) &#123;print k&quot;=&quot;ENVIRON[k];&#125;&#125;&apos;</div><div class="line"></div><div class="line"># 打印0-9</div><div class="line">awk &apos;BEGIN &#123;for(i=0;i&lt;10;i++) &#123;print i&#125;&#125;&apos;</div></pre></td></tr></table></figure>
+<h4 id="while循环控制语句"><a href="#while循环控制语句" class="headerlink" title="while循环控制语句"></a>while循环控制语句</h4><p><strong>语法：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">while (条件表达式)</div><div class="line">&#123;</div><div class="line">    do_something;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>使用示例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 打印0-9</div><div class="line">awk &apos;BEGIN &#123;i=0; while (i&lt;10)&#123;print i;i++&#125;&#125;&apos;</div></pre></td></tr></table></figure>
+<h4 id="do-while循环控制语句"><a href="#do-while循环控制语句" class="headerlink" title="do while循环控制语句"></a>do while循环控制语句</h4><p><strong>语法:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">do</div><div class="line">&#123;</div><div class="line">    do_something</div><div class="line">&#125;</div><div class="line">while (条件表达式)</div></pre></td></tr></table></figure>
+<p><strong>使用示例</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印0-9</div><div class="line">awk &apos;BEGIN &#123;i=0;do&#123;print i; i++;&#125; while (i&lt;10)&#125;&apos;</div></pre></td></tr></table></figure>
+<h4 id="awk运算"><a href="#awk运算" class="headerlink" title="awk运算"></a>awk运算</h4><p><strong>算术运算符</strong></p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>+ - *  / %</td>
+<td>加/减/乘/除/取余</td>
+</tr>
+<tr>
+<td>++</td>
+<td>自增1</td>
+</tr>
+<tr>
+<td>–</td>
+<td>自减1</td>
+</tr>
+<tr>
+<td>+</td>
+<td>一元加操作符，将操作数乘以1</td>
+</tr>
+<tr>
+<td>-</td>
+<td>一元减操作符，将操作数乘以-1</td>
+</tr>
+<tr>
+<td>^</td>
+<td>求幂。如2^2=4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>赋值运算符</strong></p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>=</td>
+<td>赋值</td>
+</tr>
+<tr>
+<td>+=、-=、*=、/=、%=、^=</td>
+<td>将左右操作数进行对应操作，然后赋值给左操作数（与C语言完全一致）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>其他运算符</strong></p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$</td>
+<td>字段引用（引用域）</td>
+</tr>
+<tr>
+<td>? :</td>
+<td>条件表达式（与C语言一致）</td>
+</tr>
+<tr>
+<td>空格</td>
+<td>字符串连接符</td>
+</tr>
+<tr>
+<td>in</td>
+<td>判断数组中是否存在某个键值</td>
+</tr>
+</tbody>
+</table>
+<p><strong>运算符优先级：</strong><br><img src="/images/算术优先级.gif" alt="crc1"></p>
+<h4 id="awk数组"><a href="#awk数组" class="headerlink" title="awk数组"></a>awk数组</h4><pre><code>awk数组是一种关联数组，其下标既可以是数字，也可以是字符串。
+</code></pre><ul>
+<li>无需定义，数组在使用时被定义</li>
+<li>数组元素的初始值为0或者空字符串</li>
+<li>数组可以自动扩展</li>
+</ul>
+<p>使用示例：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 数组可直接使用，且无需定义</span></div><div class="line">awk <span class="string">'BEGIN &#123;a["123"]=2;print a["123"]&#125;'</span></div><div class="line">输出：</div><div class="line"><span class="number">2</span></div><div class="line"></div><div class="line"><span class="comment"># 可使用for循环对数组中的元素进行循环读取</span></div><div class="line">awk <span class="string">'BEGIN &#123;a[1]=2;a[2]=3;a[3]=4; for(k in a) print k"="a[k];&#125;'</span></div><div class="line">输出：</div><div class="line"><span class="number">1</span>=<span class="number">2</span></div><div class="line"><span class="number">2</span>=<span class="number">3</span></div><div class="line"><span class="number">3</span>=<span class="number">4</span></div><div class="line"></div><div class="line"><span class="comment"># 可以通过if 判断某个key是否在数组中</span></div><div class="line">awk <span class="string">'BEGIN &#123;a[1]=2;a[2]=3;a[3]=4; print 5 in a; print 1 in a&#125;'</span></div><div class="line">输出：</div><div class="line"><span class="number">0</span></div><div class="line"><span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># 删除数组中的元素，使用delete arr['key']</span></div><div class="line">awk <span class="string">'BEGIN &#123;a[1]=2;a[2]=3;a[3]=4; delete a[1];for(k in a) print k"="a[k];&#125;'</span></div><div class="line">输出：</div><div class="line"><span class="number">2</span>=<span class="number">3</span></div><div class="line"><span class="number">3</span>=<span class="number">4</span></div><div class="line"></div><div class="line"><span class="comment"># 多维数组的下标分隔符默认为“\034”，可通过设定SUBSEP修改多为数组的下标分隔符</span></div><div class="line">awk <span class="string">'BEGIN &#123;a[1,2]=10; for(k in a) print k"="a[k];&#125;'</span></div><div class="line">输出：</div><div class="line"><span class="number">12</span>=<span class="number">10</span></div><div class="line"></div><div class="line">awk <span class="string">'BEGIN &#123;SUBSEP=":";a[1,2]=10; for(k in a) print k"="a[k];&#125;'</span></div><div class="line">输出：</div><div class="line"><span class="number">1</span>:<span class="number">2</span>=<span class="number">10</span></div></pre></td></tr></table></figure>
+<h4 id="awk内置变量"><a href="#awk内置变量" class="headerlink" title="awk内置变量"></a>awk内置变量</h4><table>
+<thead>
+<tr>
+<th>变量</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ARGC</td>
+<td>命令行参数个数,awk后参数个数</td>
+</tr>
+<tr>
+<td>ARGV</td>
+<td>命令行参数数组，数组下标从0开始</td>
+</tr>
+<tr>
+<td>ENVIRON</td>
+<td>系统环境变量数组</td>
+</tr>
+<tr>
+<td>FILENAME</td>
+<td>输入文件的名字</td>
+</tr>
+<tr>
+<td>FNR</td>
+<td>浏览文件的记录数（文件中的记录数，若多个文件不会累加）</td>
+</tr>
+<tr>
+<td>NR</td>
+<td>已读记录数（已读的记录数，若多文件会离家）</td>
+</tr>
+<tr>
+<td>NF</td>
+<td>浏览记录域的个数（即每行分割的域的最大值）</td>
+</tr>
+<tr>
+<td>FS</td>
+<td>设置域分割符，常用于BEGIN中设置域分割符</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>设置记录分隔符，原记录分隔符默认为换行，即一行一行读取，可使用该参数控制其不按照行读取</td>
+</tr>
+<tr>
+<td>OFS</td>
+<td>设置<strong>输出域分隔符</strong>，原域默认分隔符为空格，可使用此分隔符修改</td>
+</tr>
+<tr>
+<td>ORS</td>
+<td>设置输出记录分隔符。原记录默认分隔符为换行，可使用此参数修改</td>
+</tr>
+</tbody>
+</table>
+<p><strong>使用示例：</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ARGC测试</span></div><div class="line">awk <span class="string">'BEGIN &#123;print ARGC&#125;'</span> score.txt</div><div class="line">输出:</div><div class="line"><span class="number">2</span></div><div class="line"></div><div class="line"><span class="comment"># ARGV测试</span></div><div class="line">awk <span class="string">'BEGIN &#123;print ARGC; print ARGV[0];print ARGV[1]&#125;'</span> score.txt</div><div class="line">输出：</div><div class="line"><span class="number">2</span></div><div class="line">awk</div><div class="line">score.txt</div><div class="line"></div><div class="line"><span class="comment"># ENVIRON测试</span></div><div class="line">awk <span class="string">'BEGIN &#123;for(k in ENVIRON) &#123;print k"="ENVIRON[k];&#125;&#125;'</span></div><div class="line"></div><div class="line"><span class="comment"># FILENAME测试</span></div><div class="line"> awk <span class="string">'BEGIN &#123;i=0&#125; &#123;if(i==0)&#123;print FILENAME;i++&#125;&#125;'</span> score.txt</div><div class="line">输出：</div><div class="line">score.txt</div><div class="line"></div><div class="line"><span class="comment"># FNR测试</span></div><div class="line">awk <span class="string">' END &#123;print FNR&#125;'</span> score.txt</div><div class="line">输出：</div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">2</span></div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">4</span></div><div class="line"></div><div class="line"><span class="comment">#NR 测试</span></div><div class="line">awk <span class="string">'&#123;print NR&#125;'</span> score.txt  </div><div class="line">输出：</div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">2</span></div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">4</span></div><div class="line"></div><div class="line"><span class="comment"># NF测试</span></div><div class="line">awk <span class="string">' END &#123;print NF&#125;'</span> score.txt</div><div class="line"></div><div class="line"><span class="comment"># FS测试(以下两种方式效果一致)</span></div><div class="line">awk <span class="string">'BEGIN &#123;FS="\t"&#125; &#123;print NR&#125;'</span> score.txt</div><div class="line">awk -F<span class="string">'\t'</span> <span class="string">'&#123;print NR&#125;'</span> score.txt</div><div class="line"></div><div class="line"><span class="comment"># OFS测试</span></div><div class="line">awk <span class="string">'BEGIN &#123;OFS="|"&#125; &#123;print $1,$2&#125;'</span> score.txt</div><div class="line">输出：</div><div class="line"><span class="number">13331264</span>|tom</div><div class="line"><span class="number">13342010</span>|marry</div><div class="line"><span class="number">13315012</span>|jemmy</div><div class="line"><span class="number">13323089</span>|jane</div><div class="line"></div><div class="line"><span class="comment"># ORS测试</span></div><div class="line">awk <span class="string">'BEGIN &#123;ORS="|"&#125; &#123;print $1,$2&#125;'</span> score.txt</div><div class="line">输出：</div><div class="line"><span class="number">13331264</span> tom|<span class="number">13342010</span> marry|<span class="number">13315012</span> jemmy|<span class="number">13323089</span> jane|</div><div class="line"></div><div class="line"><span class="comment"># RS测试</span></div><div class="line">awk <span class="string">'BEGIN &#123;RS="1333"&#125; &#123;print $1,$2&#125;'</span> score.txt</div><div class="line">输出：</div><div class="line"></div><div class="line"><span class="number">1264</span> tom</div></pre></td></tr></table></figure>
+<p><strong>FNR与NR区别</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">cat a.txt</div><div class="line"><span class="number">111</span></div><div class="line"><span class="number">222</span></div><div class="line"><span class="number">111</span></div><div class="line"><span class="number">333</span></div><div class="line"><span class="number">444</span></div><div class="line">cat b.txt</div><div class="line"><span class="number">111</span></div><div class="line"><span class="number">555</span></div><div class="line"><span class="number">666</span></div><div class="line"></div><div class="line">awk <span class="string">'&#123;print FNR&#125;'</span> a.txt b.txt</div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">2</span></div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">4</span></div><div class="line"><span class="number">5</span></div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">2</span></div><div class="line"><span class="number">3</span></div><div class="line"></div><div class="line">awk <span class="string">'&#123;print NR&#125;'</span> a.txt b.txt</div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">2</span></div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">4</span></div><div class="line"><span class="number">5</span></div><div class="line"><span class="number">6</span></div><div class="line"><span class="number">7</span></div><div class="line"><span class="number">8</span></div></pre></td></tr></table></figure>
+<h4 id="awk内置函数"><a href="#awk内置函数" class="headerlink" title="awk内置函数"></a>awk内置函数</h4><p><strong>计算相关函数：</strong></p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cos(expr)</td>
+<td>计算余弦值，参数为弧度</td>
+</tr>
+<tr>
+<td>sin(expr)</td>
+<td>计算正弦值，参数为弧度</td>
+</tr>
+<tr>
+<td>int(expr)</td>
+<td>取整</td>
+</tr>
+<tr>
+<td>log(expr)</td>
+<td>计算expr的自然对数</td>
+</tr>
+<tr>
+<td>sqrt(expr)</td>
+<td>计算expr的平方根</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 测试cos</span></div><div class="line">awk <span class="string">'BEGIN &#123;print cos(60*3.1415936/180)&#125;'</span></div><div class="line">输出：</div><div class="line"><span class="number">0.5</span></div><div class="line"></div><div class="line"><span class="comment"># 测试int</span></div><div class="line">awk <span class="string">'BEGIN &#123;print int(20.5)&#125;'</span></div><div class="line">输出：</div><div class="line"><span class="number">20</span></div><div class="line"><span class="comment"># 测试log</span></div><div class="line">awk <span class="string">'BEGIN &#123;print log(10)&#125;'</span></div><div class="line">输出：</div><div class="line"><span class="number">2.30259</span></div></pre></td></tr></table></figure>
+<p><strong>注意：awk字符串下标从1开始不是从0开始</strong></p>
+<p><strong>字符串相关函数：</strong></p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sub(src,des)</td>
+<td>将0中src第一次出现的子串替换为des</td>
+</tr>
+<tr>
+<td>sub(src,des,str)</td>
+<td>将字符串str中第一次出现的src替换为des。</td>
+</tr>
+<tr>
+<td>gsub(src,des)</td>
+<td>将0中的src全部替换为des，若0中包含src,则返回1否则返回0</td>
+</tr>
+<tr>
+<td>gsub(src,des,str)</td>
+<td>将字符串str中的所有src替换为des,</td>
+</tr>
+<tr>
+<td>index(str,substr)</td>
+<td>返回str中字符串substr首次出现的位置，位置从1开始，若未找到则返回0</td>
+</tr>
+<tr>
+<td>length（str）</td>
+<td>返回str的长度</td>
+</tr>
+<tr>
+<td>match(str, substr)</td>
+<td>测试str中是否存在子串substr</td>
+</tr>
+<tr>
+<td>split(str,result,sep)</td>
+<td>将str以sep为分割符分割为数组，并存到result中</td>
+</tr>
+<tr>
+<td>printf(format,…)</td>
+<td>格式化输出，与C语言类似</td>
+</tr>
+<tr>
+<td>substr(str,start)</td>
+<td>返回从start开始一直到最后的子字符串,与C++类似</td>
+</tr>
+<tr>
+<td>substr(str,start,n)</td>
+<td>返回从start开始长度为n的子字符串，与C++类似</td>
+</tr>
+</tbody>
+</table>
+<p><strong>常用printf format</strong></p>
+<table>
+<thead>
+<tr>
+<th>format</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>%c</td>
+<td>ascii字符</td>
+</tr>
+<tr>
+<td>%d</td>
+<td>整数</td>
+</tr>
+<tr>
+<td>%e</td>
+<td>浮点数，科学计数法</td>
+</tr>
+<tr>
+<td>%f</td>
+<td>浮点数(如1.234)</td>
+</tr>
+<tr>
+<td>%o</td>
+<td>八进制数</td>
+</tr>
+<tr>
+<td>%x</td>
+<td>十六进制数</td>
+</tr>
+<tr>
+<td>%s</td>
+<td>字符串</td>
+</tr>
+</tbody>
+</table>
+<p>更多format详见（<a href="http://wiki.jikexueyuan.com/project/awk/pretty-printing.html）" target="_blank" rel="external">http://wiki.jikexueyuan.com/project/awk/pretty-printing.html）</a></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#sub测试</span></div><div class="line">awk <span class="string">'BEGIN &#123;s="aaabbbaaaccc";sub("aaa","1",s);print s&#125;'</span></div><div class="line">输出：</div><div class="line"><span class="number">1</span>bbbaaaccc</div><div class="line"></div><div class="line"><span class="comment"># gsub(r,s)测试</span></div><div class="line">awk <span class="string">'&#123;gsub("t","s");print $0&#125;'</span> ./score.txt</div><div class="line">输出：</div><div class="line"><span class="number">13331264</span> som   grade4 <span class="number">94</span></div><div class="line"><span class="number">13342010</span> marry grade4 <span class="number">90</span></div><div class="line"><span class="number">13315012</span> jemmy grade1 <span class="number">85</span></div><div class="line"><span class="number">13323089</span> jane  grade2 <span class="number">80</span></div><div class="line"></div><div class="line"><span class="comment"># gsub(r,s,t)测试</span></div><div class="line">awk <span class="string">'&#123;gsub("133", "45",$1);print $0&#125;'</span> ./score.txt  </div><div class="line">输出：</div><div class="line"><span class="number">4531264</span> tom grade4 <span class="number">94</span></div><div class="line"><span class="number">4542010</span> marry grade4 <span class="number">90</span></div><div class="line"><span class="number">4515012</span> jemmy grade1 <span class="number">85</span></div><div class="line"><span class="number">4523089</span> jane grade2 <span class="number">80</span></div><div class="line"></div><div class="line"><span class="comment"># index(s,t)测试</span></div><div class="line">awk <span class="string">'&#123;r = index($2,"m");print r&#125;'</span> ./score.txt</div><div class="line">输出：</div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">0</span></div><div class="line"></div><div class="line"><span class="comment"># 测试length</span></div><div class="line">awk <span class="string">'&#123;print length($2)&#125;'</span> ./score.txt</div><div class="line">输出：</div><div class="line"><span class="number">3</span></div><div class="line"><span class="number">5</span></div><div class="line"><span class="number">5</span></div><div class="line"><span class="number">4</span></div><div class="line"></div><div class="line"><span class="comment"># 测试match</span></div><div class="line">awk <span class="string">'&#123;print match($2,"to")&#125;'</span> ./score.txt</div><div class="line">输出：</div><div class="line"><span class="number">1</span></div><div class="line"><span class="number">0</span></div><div class="line"><span class="number">0</span></div><div class="line"><span class="number">0</span></div><div class="line"><span class="comment"># split测试</span></div><div class="line">awk <span class="string">'BEGIN &#123;print split("this is a test",result, " "); for(k in result) &#123;print k":"result[k]&#125;&#125;'</span></div><div class="line"></div><div class="line"><span class="comment"># substr测试</span></div><div class="line">awk <span class="string">'BEGIN &#123;s="aaabbbccc";print substr(s,2)&#125;'</span></div><div class="line">输出：</div><div class="line">aabbbccc</div></pre></td></tr></table></figure>
+<h2 id="AWK几个例子"><a href="#AWK几个例子" class="headerlink" title="AWK几个例子"></a>AWK几个例子</h2><h4 id="文件去重并统计相同记录出现次数-保留记录原来的顺序"><a href="#文件去重并统计相同记录出现次数-保留记录原来的顺序" class="headerlink" title="文件去重并统计相同记录出现次数(保留记录原来的顺序)"></a>文件去重并统计相同记录出现次数(保留记录原来的顺序)</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">test.txt</div><div class="line"><span class="number">111</span></div><div class="line"><span class="number">222</span></div><div class="line"><span class="number">111</span></div><div class="line"><span class="number">333</span></div><div class="line"><span class="number">444</span></div><div class="line"><span class="comment"># !的优先级高于++,读到一条记录，首先判断记录是否存在于arr中，若不存在，添加到数组中并将该记录数出现次数+1，否则打印</span></div><div class="line">awk <span class="string">'!arr[$0]++'</span> test.txt</div><div class="line"></div><div class="line"><span class="comment"># 统计每条记录出现的次数</span></div><div class="line">awk <span class="string">'&#123;!arr[$0]++&#125; END &#123;for (k in arr) print k,arr[k]&#125;'</span> test.txt</div></pre></td></tr></table></figure>
+<h4 id="文件内容合并"><a href="#文件内容合并" class="headerlink" title="文件内容合并"></a>文件内容合并</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">test.txt.<span class="number">1</span></div><div class="line"><span class="number">111</span></div><div class="line"><span class="number">555</span></div><div class="line"><span class="number">666</span></div><div class="line"></div><div class="line">awk <span class="string">'&#123;if(!arr[$0]) &#123;print $0; arr[$0]++&#125;&#125;'</span> test.txt test.txt.<span class="number">1</span></div></pre></td></tr></table></figure>
+<h4 id="找出文件A中存在且文件B中不存在的记录"><a href="#找出文件A中存在且文件B中不存在的记录" class="headerlink" title="找出文件A中存在且文件B中不存在的记录"></a>找出文件A中存在且文件B中不存在的记录</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">A:</div><div class="line"><span class="number">111</span></div><div class="line"><span class="number">222</span></div><div class="line"><span class="number">333</span></div><div class="line"><span class="number">444</span></div><div class="line"></div><div class="line">B:</div><div class="line"><span class="number">333</span></div><div class="line"><span class="number">444</span></div><div class="line"></div><div class="line"><span class="comment">#计算a.txt-(a.txt并a.txt)</span></div><div class="line">awk <span class="string">'NR==FNR &#123;a[$0]=1&#125; NR&gt;FNR &#123;if (!a[$0]) print $0&#125;'</span> b.txt a.txt</div><div class="line">输出：</div><div class="line"><span class="number">111</span></div><div class="line"><span class="number">222</span></div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;AWK是一种强大的文本处理工具，其处理文本的效率极高，其输出可以来自标注输入、其他命令的输出或一个或多个文件，熟练使用awk将会对工作效率有很大的提升。&lt;/p&gt;
+&lt;h2 id=&quot;awk调用方式&quot;&gt;&lt;a href=&quot;#awk调用方式&quot; class=&quot;headerlink&quot; t
+    
+    </summary>
+    
+      <category term="Unix脚本语言" scheme="http://yoursite.com/categories/Unix%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80/"/>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
+    
+      <category term="脚本" scheme="http://yoursite.com/tags/%E8%84%9A%E6%9C%AC/"/>
+    
+      <category term="awk" scheme="http://yoursite.com/tags/awk/"/>
+    
+  </entry>
   
   <entry>
     <title>CRC循环冗余校验</title>
@@ -337,38 +790,6 @@
   </entry>
   
   <entry>
-    <title>Unix网络函数与TCP状态转变之间的关系</title>
-    <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E4%B8%8ETCP%E7%8A%B6%E6%80%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E5%85%B3%E7%B3%BB%E5%AF%B9%E5%BA%94/"/>
-    <id>http://yoursite.com/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/</id>
-    <published>2018-02-04T13:52:40.000Z</published>
-    <updated>2018-02-04T14:15:40.018Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
-<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
-<blockquote>
-<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
-</blockquote>
-<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;a href=&quot;#Unix网络函数与TCP状态转变之间的关系&quot; class=&quot;headerlink&quot; title=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;/a&gt;Unix网络函数与TCP状态转变之间的关系&lt;/
-    
-    </summary>
-    
-      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-      <category term="connect" scheme="http://yoursite.com/tags/connect/"/>
-    
-      <category term="listen" scheme="http://yoursite.com/tags/listen/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Unix网络编程相关错误码和信号处理</title>
     <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9B%B8%E5%85%B3%E9%94%99%E8%AF%AF%E7%A0%81%E6%80%BB%E7%BB%93/"/>
     <id>http://yoursite.com/2018/02/04/Unix网络编程相关错误码总结/</id>
@@ -428,6 +849,38 @@
       <category term="EINPROGRESS" scheme="http://yoursite.com/tags/EINPROGRESS/"/>
     
       <category term="SIGPIPE" scheme="http://yoursite.com/tags/SIGPIPE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Unix网络函数与TCP状态转变之间的关系</title>
+    <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E4%B8%8ETCP%E7%8A%B6%E6%80%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E5%85%B3%E7%B3%BB%E5%AF%B9%E5%BA%94/"/>
+    <id>http://yoursite.com/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/</id>
+    <published>2018-02-04T13:52:40.000Z</published>
+    <updated>2018-02-04T14:15:40.018Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
+<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
+<blockquote>
+<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
+</blockquote>
+<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;a href=&quot;#Unix网络函数与TCP状态转变之间的关系&quot; class=&quot;headerlink&quot; title=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;/a&gt;Unix网络函数与TCP状态转变之间的关系&lt;/
+    
+    </summary>
+    
+      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="connect" scheme="http://yoursite.com/tags/connect/"/>
+    
+      <category term="listen" scheme="http://yoursite.com/tags/listen/"/>
     
   </entry>
   
@@ -982,83 +1435,6 @@
       <category term="vscode" scheme="http://yoursite.com/tags/vscode/"/>
     
       <category term="配置" scheme="http://yoursite.com/tags/%E9%85%8D%E7%BD%AE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>C++截取定长utf8字符及字符集与字符编码总结.md</title>
-    <link href="http://yoursite.com/2017/11/09/C++%E6%88%AA%E5%8F%96utf8%E5%AD%97%E7%AC%A6%E4%BB%A5%E5%8F%8A%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81%E8%AE%B0%E5%BD%95/"/>
-    <id>http://yoursite.com/2017/11/09/C++截取utf8字符以及字符编码记录/</id>
-    <published>2017-11-09T02:20:08.000Z</published>
-    <updated>2017-11-09T03:26:13.511Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="C-截取定长utf8字符及字符集与字符编码总结"><a href="#C-截取定长utf8字符及字符集与字符编码总结" class="headerlink" title="C++截取定长utf8字符及字符集与字符编码总结"></a>C++截取定长utf8字符及字符集与字符编码总结</h1><p>之前有个需求要求从一段utf8编码的文字中截取前n个字符，由于文字中包含既有中文又有数字字母等，这些字符所占的字节数都不相同，所以直接截取前Ｍ个字符可能会导致乱码问题。在完成截取之前，需要先了解utf8编码字符的存储规则。后面简单介绍一下常见的字符集及字符编码</p>
-<h2 id="utf8编码规则"><a href="#utf8编码规则" class="headerlink" title="utf8编码规则"></a>utf8编码规则</h2><p>在理解utf8编码规则之前先说一下utf16和utf32的编码规则，utf32规定所有的unicode字符集上的所有字符都是用32bit来存储，即可存储的字符数可达2^32个,接近40亿，这明显可以容纳已有的所有字符。utf16编码使用2个字节存储，超过此范围的使用其他特殊技巧处理。使用utf16和utf32有一个问题，就是会受到计算机存储大端规则和小端规则的影响。所以utf16又有utf16_LE和utf16_BE之分。为了解决这个问题，需要在文本文件的开头定义一个BOM(Byte order Mark)，这是一个非打印标志,用此标志来标志当前文本存储是大端存储还是小端存储。</p>
-<p>utf8是一种针对unicode的可变长度字符编码，也是一种前缀码，它可以表示unicode标准中的任何字符。且与ascii码兼容，这使得我们处理ascii字符的时候不许做特殊修改。</p>
-<p>utf8使用1~6个字符为每个字符编码,但实际使用中只使用了4个。</p>
-<p><strong>utf8编码规则</strong>:</p>
-<p>(1)对于单字节字符,字节的第一位为0，后面7位为这个字符的unicode码，因此对于ascii码，unicode与ascii保持一致。<br>(2)对于n字节符号(n&gt;1),第一个字节的前n位都为1,第n+1位为0,其他字节的前两位都为10,其余位为实际的unicode位。</p>
-<p>规则:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">unicode范围</th>
-<th style="text-align:left">二进制表示范围</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">U-00000000 - U-0000007F</td>
-<td style="text-align:left">0xxxxxxx</td>
-</tr>
-<tr>
-<td style="text-align:center">U-00000080 - U-000007FF</td>
-<td style="text-align:left">110xxxxx 10xxxxxx</td>
-</tr>
-<tr>
-<td style="text-align:center">U-00000800 - U-0000FFFF</td>
-<td style="text-align:left">1110xxxx 10xxxxxx 10xxxxxx</td>
-</tr>
-<tr>
-<td style="text-align:center">U-00010000 - U-001FFFFF</td>
-<td style="text-align:left">11110xxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
-</tr>
-<tr>
-<td style="text-align:center">U-00200000 - U-03FFFFFF</td>
-<td style="text-align:left">111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
-</tr>
-<tr>
-<td style="text-align:center">U-04000000 - U-7FFFFFFF</td>
-<td style="text-align:left">1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
-</tr>
-</tbody>
-</table>
-<p>利用上述utf8编码规则实现C++截取定长字符串。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">const</span> <span class="built_in">string</span> <span class="title">utf8Cut</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;src, <span class="keyword">int</span> utf8Len)</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> ret;</div><div class="line">  <span class="keyword">int</span> utf8LenCnt = <span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> srcIdx = <span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> srcLen = src.length();</div><div class="line">  <span class="keyword">int</span> cutLen = <span class="number">0</span>;</div><div class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span> tmp;</div><div class="line">  <span class="keyword">while</span> (utf8LenCnt &lt; utf8Len &amp;&amp;  srcIdx &lt; srcLen) &#123;</div><div class="line">    tmp = (<span class="keyword">unsigned</span> <span class="keyword">char</span>)src[srcIdx];</div><div class="line">    <span class="keyword">if</span> (tmp &gt;= <span class="number">252</span>)</div><div class="line">      cutLen = <span class="number">6</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">248</span>)</div><div class="line">      cutLen = <span class="number">5</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">240</span>)</div><div class="line">      cutLen = <span class="number">4</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">224</span>)</div><div class="line">      cutLen = <span class="number">3</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">192</span>)</div><div class="line">      cutLen = <span class="number">2</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">65</span> &amp;&amp; tmp &lt;=<span class="number">90</span>)</div><div class="line">      cutLen = <span class="number">1</span>;</div><div class="line">    <span class="keyword">else</span></div><div class="line">      cutLen = <span class="number">1</span>;</div><div class="line">      ret += src.substr(srcIdx, cutLen);</div><div class="line">      srcIdx += cutLen;</div><div class="line">      ++utf8LenCnt;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> ret;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="字符集与字符编码"><a href="#字符集与字符编码" class="headerlink" title="字符集与字符编码"></a>字符集与字符编码</h2><p><strong>字符集</strong>是一个系统所支持的字符的集合，常见的字符集包括ascii字符集,GB2312字符集,GBK字符集以及unicode字符集。其中ascii字符集包括所有的英文字母数字以及控制字符等等。</p>
-<p><strong>字符编码</strong>是用来定义计算机中某个字符的存储和传输规则。</p>
-<p>区别：字符集仅仅是一个字符集合，与计算机的存储和传输没有关系,而字符编码规定了计算机中字符的编码规则。</p>
-<h3 id="常见的字符集及字符编码"><a href="#常见的字符集及字符编码" class="headerlink" title="常见的字符集及字符编码"></a>常见的字符集及字符编码</h3><ul>
-<li>ascii字符集及字符编码:使用一个字符编码,包括所有的字母数字,换行以及控制字符等。</li>
-<li>GB*字符集及编码:是一种多字节编码标准,GB表示国标,包括GB2312,GBK等编码，2312是标准号，GB2312涵盖了绝大多数的中文，但是一些生僻字不包含在其中，GBK是对GB2312的扩展.</li>
-<li>BIG*:常见的为BIG5字符集及编码，BIG5中收录了大部分的中文繁体，常用语香港台湾等地区。</li>
-<li>unicode字符集及编码:unicode又称为统一码，几乎涵盖了所有国家和地区的所有字符，并还在不断的扩充新字符。unicode是一个字符集，而不是编码规则，我们常见的utf8,utf16以及utf32是unicode常见的字符编码.</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;C-截取定长utf8字符及字符集与字符编码总结&quot;&gt;&lt;a href=&quot;#C-截取定长utf8字符及字符集与字符编码总结&quot; class=&quot;headerlink&quot; title=&quot;C++截取定长utf8字符及字符集与字符编码总结&quot;&gt;&lt;/a&gt;C++截取定长utf8字符及字符
-    
-    </summary>
-    
-      <category term="C++学习" scheme="http://yoursite.com/categories/C-%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-      <category term="编码" scheme="http://yoursite.com/tags/%E7%BC%96%E7%A0%81/"/>
-    
-      <category term="utf8" scheme="http://yoursite.com/tags/utf8/"/>
-    
-      <category term="字符串截取" scheme="http://yoursite.com/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%88%AA%E5%8F%96/"/>
     
   </entry>
   
