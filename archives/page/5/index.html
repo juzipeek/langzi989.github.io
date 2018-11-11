@@ -216,13 +216,13 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/08/20/Linux常用命令/">
-                            Linux常用命令混淆点记录
+                        <a class="link-unstyled" href="/2017/08/20/Linux正则表达式/">
+                            Linux正则表达式以及Sed使用学习
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
+    <time itemprop="datePublished" datetime="2017-08-20T15:11:12+08:00">
 	
 		    8月 20, 2017
     	
@@ -239,15 +239,83 @@
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux常用命令混淆点记录"><a href="#Linux常用命令混淆点记录" class="headerlink" title="Linux常用命令混淆点记录"></a>Linux常用命令混淆点记录</h1><h2 id="ls命令单位问题"><a href="#ls命令单位问题" class="headerlink" title="ls命令单位问题"></a>ls命令单位问题</h2><p>ls命令的<strong>默认单位为字节</strong>。<br>若使用ls时需要指定单位显示的时候，需要添加参数-h或–block-size进行操作。具体操作方法如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#-h表示human，即人可读的方式</div><div class="line">#它会按照文件的大小显示单位,</div><div class="line">#若文件小于1k，则不显示单位，表示字节</div><div class="line">#若文件大于1k但是小于1M，显示的单位为k</div><div class="line">#文件大于1M小于1G会显示单位为M，</div><div class="line">#以此类推</div><div class="line">ls -h ~/test</div><div class="line"></div><div class="line">#按照指定的单位显示</div><div class="line">#注意使用此参数需要注意一个问题。若文件小于1G</div><div class="line">ls --block-size=g ~/test    #按照单位为g显示</div></pre></td></tr></table></figure>
+                    <h1 id="Linux正则表达式以及Sed使用学习"><a href="#Linux正则表达式以及Sed使用学习" class="headerlink" title="Linux正则表达式以及Sed使用学习"></a>Linux正则表达式以及Sed使用学习</h1><p>正则表达式是熟悉和使用Linux系统的最重要的基础，其中grep,find,awk以及sed等对其依赖更大。本节将总结一下Linux中常用的正则表达式使用方法。</p>
+<h2 id="正则表达式中特殊字符"><a href="#正则表达式中特殊字符" class="headerlink" title="正则表达式中特殊字符"></a>正则表达式中特殊字符</h2><ul>
+<li>.   : 表示任何单个字符</li>
+<li>[]  : 包含一个字符序列，表示匹配序列中其中一个字符</li>
+<li>-  : 出现在[]中,表示一个序列范围.如[a-z]表示26个小写的英文字母</li>
+<li>^   : 出现在[]中，表示对序列去反。如[^a-z]表示匹配不是a-z的其他字符</li>
+<li>*  : 匹配某一个字符的０个或1个或多个实例</li>
+<li>?   : 匹配某一个字符的0个或1个实例</li>
+<li>+  : 匹配某一个字符的1个或多个实例</li>
+<li>$   : 匹配行尾。如test$指匹配以test结尾的行</li>
+<li>^   : 匹配行首。如^test指匹配以test开始的行</li>
+<li>\&lt;  : 匹配词首</li>
+<li>>  :　匹配词尾</li>
+<li>\   : 转移特殊字符,如果需要匹配上述特殊字符，用反斜杠转义</li>
+</ul>
+<h2 id="sed使用说明"><a href="#sed使用说明" class="headerlink" title="sed使用说明"></a>sed使用说明</h2><h3 id="sed命令："><a href="#sed命令：" class="headerlink" title="sed命令："></a>sed命令：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed [OPTION]... &#123;script-only-if-no-other-script&#125; [input-file]...</div></pre></td></tr></table></figure>
+<h3 id="sed使用"><a href="#sed使用" class="headerlink" title="sed使用"></a>sed使用</h3><p>data文件内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<h4 id="用s命令进行替换"><a href="#用s命令进行替换" class="headerlink" title="用s命令进行替换"></a>用s命令进行替换</h4><p>替换时若出现单引号，直接将脚本用双引号括起来即可。<br>1.将一行中第一个匹配的特定字符串替换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/&quot; data</div></pre></td></tr></table></figure></p>
+<p>注意不会改变原文件，只是会打印到标准输出流。若要保存可以重定向到新的文件中。</p>
+<p>2.讲一行中所有匹配的特定字符串匹配，使用g参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/g&quot; data</div></pre></td></tr></table></figure></p>
+<p>3.使用-i参数直接修改文件内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed -i &quot;s/a/an/g&quot; data</div></pre></td></tr></table></figure></p>
+<p>4.在每一行的开头添加内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/^/#/&quot; data</div></pre></td></tr></table></figure></p>
+<p>5.在每一行的结尾添加内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/$/#/&quot; data</div></pre></td></tr></table></figure></p>
+<p>6.指定特定行替换,或指定特定范围内的行替换<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sed &quot;3s/an/a/&quot; data</div><div class="line">sed &quot;1,2s/an/a/&quot; data</div></pre></td></tr></table></figure></p>
+<p>7.只替换每一行的第一个a:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/1&quot; data</div></pre></td></tr></table></figure></p>
+<p>8.只替换每一行的第二个a:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/2&quot; data</div></pre></td></tr></table></figure></p>
+<p>9.只替换每一行第二个以后的所有a<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/a/an/2g&quot; data</div></pre></td></tr></table></figure></p>
+<h4 id="多个匹配"><a href="#多个匹配" class="headerlink" title="多个匹配"></a>多个匹配</h4><p>多个匹配可以用分好将匹配规则连接。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/an/a/g;s/dog/cat/g&quot; data</div></pre></td></tr></table></figure></p>
+<p>上述命令等价于:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed -e &quot;s/an/a/g&quot; -e &quot;s/dog/cat/g&quot; data</div></pre></td></tr></table></figure></p>
+<h4 id="显示被匹配的变量"><a href="#显示被匹配的变量" class="headerlink" title="显示被匹配的变量"></a>显示被匹配的变量</h4><p>&amp;可以表示被匹配的变量,即若被匹配的变量为”abc”,则&amp;代表abc。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#功能为在每个an外加[]</div><div class="line">sed -e &quot;s/an/[&amp;]/g&quot; data</div></pre></td></tr></table></figure></p>
+<h3 id="圆括号匹配"><a href="#圆括号匹配" class="headerlink" title="圆括号匹配"></a>圆括号匹配</h3><p>被圆括号括起来的匹配可以当做变量使用，注意圆括号匹配时括号需要”\”转义。变量按顺序使用\1,\2指代。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;s/this \(.*\) an \(.*\)/\1:\2/&quot; data</div></pre></td></tr></table></figure></p>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">is:dog an</div><div class="line">is:cant</div><div class="line">is:money</div><div class="line">is:fish</div></pre></td></tr></table></figure></p>
+<h2 id="sed命令"><a href="#sed命令" class="headerlink" title="sed命令"></a>sed命令</h2><p>data内容:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<h3 id="N命令"><a href="#N命令" class="headerlink" title="N命令"></a>N命令</h3><p>N命令的作用是把下一行的命令纳入当做缓冲区。也就是缓冲区包括两行.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#只匹配缓冲区的第一个this</div><div class="line">sed &quot;N;s/this/that/&quot; data</div></pre></td></tr></table></figure></p>
+<p>执行命令结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">that is a dog a</div><div class="line">this is a cat</div><div class="line">that is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed &quot;N;s/\n/,/&quot; data</div></pre></td></tr></table></figure>
+<p>执行命令结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a,this is a cat</div><div class="line">this is a money,this is a fish</div></pre></td></tr></table></figure></p>
+<h3 id="a命令和i命令"><a href="#a命令和i命令" class="headerlink" title="a命令和i命令"></a>a命令和i命令</h3><ol>
+<li><p>i命令的作用是在指定行前面插入一行，行号写在i前面，中间空格可有可无；如果不写行号默认在所有行的前面插入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#在第一行前面插入 this is my test i</div><div class="line">sed &quot;1i this is my test i&quot; data</div></pre></td></tr></table></figure>
+</li>
+<li><p>a命令的作用是在指定行后追加内容,行号写在a前面，若不写表示所有行后。也可用$代表最后一行，不过一定要有空格.</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#在第一行后插入 this is my test a</div><div class="line">sed &quot;1a this is my test a&quot; data</div></pre></td></tr></table></figure>
+<ol>
+<li>可以使用匹配来添加</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#若匹配到cat，则在当前行后追加一行 this is test match a</div><div class="line">sed &quot;/cat/a this is test match a&quot; data</div></pre></td></tr></table></figure>
+<h3 id="c命令"><a href="#c命令" class="headerlink" title="c命令"></a>c命令</h3><p>c命令是替换匹配的行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#替换第二行</div><div class="line">sed &quot;2 c this is test c&quot; data</div></pre></td></tr></table></figure></p>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is test c</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#用匹配替换</div><div class="line">sed &quot;/fish/c this is the test c&quot; data</div></pre></td></tr></table></figure>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div><div class="line">this is the test c</div></pre></td></tr></table></figure></p>
+<h3 id="d命令"><a href="#d命令" class="headerlink" title="d命令"></a>d命令</h3><p>d命令删除指定的行，可指定范围<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除第２到3行</div><div class="line">sed &quot;2,3 d&quot; data</div></pre></td></tr></table></figure></p>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除找到cat指定的行</div><div class="line">sed &quot;/cat/d&quot; data</div></pre></td></tr></table></figure>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a money</div><div class="line">this is a fish</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#删除第二行到结尾</div><div class="line">sed &quot;2,$ d&quot; data</div></pre></td></tr></table></figure>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div></pre></td></tr></table></figure></p>
+<h3 id="p命令"><a href="#p命令" class="headerlink" title="p命令"></a>p命令</h3><p>p命令的作用是打印匹配到的行.注意打印的时候使用-n参数。sed默认输出处理后的文本，使用-n参数阻止默认输出。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印匹配到cat的行</div><div class="line">sed -n &quot;/cat/p&quot; data</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印符合从一个模式当另一个模式的行</div><div class="line">sed -n &quot;/dog/,/money/p&quot; data</div></pre></td></tr></table></figure>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div><div class="line">this is a money</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印从第一行到匹配到的哪一行</div><div class="line">sed -n &quot;1,/cat/p&quot; data</div></pre></td></tr></table></figure>
+<p>结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this is a dog a</div><div class="line">this is a cat</div></pre></td></tr></table></figure></p>
+<h3 id="命令"><a href="#命令" class="headerlink" title="=命令"></a>=命令</h3><p>=参数用于打印匹配到的行号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#打印含有cat的行号</div><div class="line">sed -n &quot;/cat/=&quot; data</div></pre></td></tr></table></figure></p>
+<h2 id="综合运用"><a href="#综合运用" class="headerlink" title="综合运用"></a>综合运用</h2><p>将下列中所有的100替换为当前行号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div><div class="line">hmset &apos;99_p_100&apos; &apos;m_19&apos; 100 &apos;t_19&apos; 100 &apos;semm_19&apos; 100</div></pre></td></tr></table></figure>
+<p>shell命令如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sed = data | sed &quot;N;s/\([0-9]*\)\n\(hmset &apos;99_p_\)[0-9]*\(&apos; &apos;m_19&apos; \)[0-9]*\( &apos;t_19&apos; \)[0-9]*\( &apos;semm_19&apos; \)[0-9]*/\2\1\3\1\4\1\5\1/&quot;</div></pre></td></tr></table></figure></p>
+<p>结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">hmset &apos;99_p_1&apos; &apos;m_19&apos; 1 &apos;t_19&apos; 1 &apos;semm_19&apos; 1</div><div class="line">hmset &apos;99_p_2&apos; &apos;m_19&apos; 2 &apos;t_19&apos; 2 &apos;semm_19&apos; 2</div><div class="line">hmset &apos;99_p_3&apos; &apos;m_19&apos; 3 &apos;t_19&apos; 3 &apos;semm_19&apos; 3</div><div class="line">hmset &apos;99_p_4&apos; &apos;m_19&apos; 4 &apos;t_19&apos; 4 &apos;semm_19&apos; 4</div><div class="line">hmset &apos;99_p_5&apos; &apos;m_19&apos; 5 &apos;t_19&apos; 5 &apos;semm_19&apos; 5</div><div class="line">hmset &apos;99_p_6&apos; &apos;m_19&apos; 6 &apos;t_19&apos; 6 &apos;semm_19&apos; 6</div><div class="line">hmset &apos;99_p_7&apos; &apos;m_19&apos; 7 &apos;t_19&apos; 7 &apos;semm_19&apos; 7</div><div class="line">hmset &apos;99_p_8&apos; &apos;m_19&apos; 8 &apos;t_19&apos; 8 &apos;semm_19&apos; 8</div><div class="line">hmset &apos;99_p_9&apos; &apos;m_19&apos; 9 &apos;t_19&apos; 9 &apos;semm_19&apos; 9</div><div class="line">hmset &apos;99_p_10&apos; &apos;m_19&apos; 10 &apos;t_19&apos; 10 &apos;semm_19&apos; 10</div><div class="line">hmset &apos;99_p_11&apos; &apos;m_19&apos; 11 &apos;t_19&apos; 11 &apos;semm_19&apos; 11</div><div class="line">hmset &apos;99_p_12&apos; &apos;m_19&apos; 12 &apos;t_19&apos; 12 &apos;semm_19&apos; 12</div><div class="line">hmset &apos;99_p_13&apos; &apos;m_19&apos; 13 &apos;t_19&apos; 13 &apos;semm_19&apos; 13</div></pre></td></tr></table></figure></p>
 
                     
                         
                     
                     
                         <p>
-                            <a href="/2017/08/20/Linux常用命令/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2017/08/20/Linux正则表达式/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
@@ -299,6 +367,55 @@
                     
                         <p>
                             <a href="/2017/08/20/Linux查找含有特定字符串的文件/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/08/20/Linux常用命令/">
+                            Linux常用命令混淆点记录
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-08-20T14:25:01+08:00">
+	
+		    8月 20, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Linux常用命令混淆点记录"><a href="#Linux常用命令混淆点记录" class="headerlink" title="Linux常用命令混淆点记录"></a>Linux常用命令混淆点记录</h1><h2 id="ls命令单位问题"><a href="#ls命令单位问题" class="headerlink" title="ls命令单位问题"></a>ls命令单位问题</h2><p>ls命令的<strong>默认单位为字节</strong>。<br>若使用ls时需要指定单位显示的时候，需要添加参数-h或–block-size进行操作。具体操作方法如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">#-h表示human，即人可读的方式</div><div class="line">#它会按照文件的大小显示单位,</div><div class="line">#若文件小于1k，则不显示单位，表示字节</div><div class="line">#若文件大于1k但是小于1M，显示的单位为k</div><div class="line">#文件大于1M小于1G会显示单位为M，</div><div class="line">#以此类推</div><div class="line">ls -h ~/test</div><div class="line"></div><div class="line">#按照指定的单位显示</div><div class="line">#注意使用此参数需要注意一个问题。若文件小于1G</div><div class="line">ls --block-size=g ~/test    #按照单位为g显示</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/08/20/Linux常用命令/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
@@ -849,101 +966,6 @@
                     
                         <p>
                             <a href="/2017/06/12/Unix网络编程之主机字节序与网络字节序/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/12/Unix网络编程基础之套接字结构/">
-                            Unix网络编程基础之套接字结构
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-06-12T16:57:47+08:00">
-	
-		    6月 12, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix网络编程基础之套接字结构"><a href="#Unix网络编程基础之套接字结构" class="headerlink" title="Unix网络编程基础之套接字结构"></a>Unix网络编程基础之套接字结构</h1><p>大多数的套接字函数都使用到了套接字地址，它们以套接字地址的指针作为参数。每个协议族都定义了自己的套接字地址结构，这些套接字地址结构均以sockaddr_开头，以协议族唯一的后缀结尾。</p>
-<h2 id="IPv4套接字地址结构"><a href="#IPv4套接字地址结构" class="headerlink" title="IPv4套接字地址结构"></a>IPv4套接字地址结构</h2><p>IPv4的套接字以sockaddr_in命名，其具体定义如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> &#123;</span></div><div class="line">  <span class="keyword">in_addr_t</span> s_addr;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> &#123;</span></div><div class="line">  uint8 sin_len;            <span class="comment">//套接字的长度,sizeof(struct　sockaddr_in)</span></div><div class="line">  <span class="keyword">sa_family_t</span> sin_family;   <span class="comment">//协议族</span></div><div class="line">  <span class="keyword">in_port_t</span> sin_port;       <span class="comment">//套接字端口</span></div><div class="line"></div><div class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> <span class="title">sin_addr</span>;</span>  <span class="comment">//套接字地址</span></div><div class="line"></div><div class="line">  <span class="keyword">char</span> sin_zero[<span class="number">8</span>];         <span class="comment">//保留位</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<ul>
-<li>sin_len : 套接字的长度字段，类型为uint8_t,sizeof(struct sockaddr_in),不是所有的系统都支持。长度字段简化了可变长度的套接字的处理。<strong>在使用过程中无需设置和检查它</strong>，除非涉及路由套接字。</li>
-<li>sin_family : 协议族，IPv4的协议族为AF_INET.类型为无符号整形，其长度受系统的影响。若sockaddr_in中含有sin_len字段，其大小为16位，若含有长度字段，其大小为8位。</li>
-<li>sin_port : 套接字端口, 一般为uint16_t类型。</li>
-<li>sin_addr : 套接字Ip，其类型为in_addr，in_addr中的s_addr类型为uint32_t.</li>
-<li>sin_zero : 不常用，若需要在套接字中加入额外字段，使用到此字段，<strong>若不使用将其置为0，一般使用sockaddr_in首先将整个结构置0</strong>。</li>
-</ul>
-<blockquote>
-<p><strong>注意：套接字地址结构仅在本机上使用，虽然结构中的某些字段用在不同主机之间的通信，但是结构体本身不在主机之间传递。</strong></p>
-</blockquote>
-<h3 id="协议族参数说明"><a href="#协议族参数说明" class="headerlink" title="协议族参数说明"></a>协议族参数说明</h3><p>网络通信过程中有不同的协议族，通常我们在socket地址的sin_family中指出当前通信使用的协议族，不同协议族对应不同的参数，其对应参数如下所示：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">sin_family</th>
-<th>协议说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">AF_INET</td>
-<td>IPv4协议</td>
-</tr>
-<tr>
-<td style="text-align:center">AF_INET6</td>
-<td>IPv6协议</td>
-</tr>
-<tr>
-<td style="text-align:center">AF_LOCAL</td>
-<td>Unix域协议</td>
-</tr>
-<tr>
-<td style="text-align:center">AF_ROUTE</td>
-<td>路由套接字协议</td>
-</tr>
-<tr>
-<td style="text-align:center">AF_KEY</td>
-<td>密钥套接字</td>
-</tr>
-</tbody>
-</table>
-<h2 id="通用套接字地址结构"><a href="#通用套接字地址结构" class="headerlink" title="通用套接字地址结构"></a>通用套接字地址结构</h2><p>套接字函数以套接字地址结构指针作为参数的过程中，由于在C中没有继承的机制，这个时候向套接字函数传递参数的时候，由于不同协议的套接字地址不同，会出现问题。这个时候有一种解决办法就是<strong>传递void*指针给socket函数，但是void空指针的出现在socket函数之后</strong>，所以这个方案不可行。这个时候的解决方案是　<strong>定义一个通用的套接字函数，socket函数的参数为通用套接字地址的指针，传递参数的时候我们将特定的套接字指针强制转换为通用套接字地址指针。</strong>　如bind函数的函数原型为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span>, struct sockaddr*, <span class="keyword">socklen_t</span>)</span></span>;</div></pre></td></tr></table></figure></p>
-<p>通用套接字地址的定义如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> &#123;</span></div><div class="line">  <span class="keyword">uint8_t</span> sa_len;</div><div class="line">  <span class="keyword">sa_family_t</span> sa_family;</div><div class="line">  <span class="keyword">char</span> sa_data[<span class="number">14</span>];</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<h2 id="Ubuntu16-04中sockaddr-in的定义"><a href="#Ubuntu16-04中sockaddr-in的定义" class="headerlink" title="Ubuntu16.04中sockaddr_in的定义"></a>Ubuntu16.04中sockaddr_in的定义</h2><p>Ubuntu16.04中sockaddr_in的定义在/usr/include/netinet/in.h，注意其不支持sin_len字段，为了保持与通用套接字字符串兼容，其保留字符串的长度直接用通用套接字的大小减去其他字段。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span></span></div><div class="line">  &#123;</div><div class="line">    __SOCKADDR_COMMON (sin_);</div><div class="line">    <span class="keyword">in_port_t</span> sin_port;                 <span class="comment">// Port number.  </span></div><div class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> <span class="title">sin_addr</span>;</span>            <span class="comment">// Internet address.  </span></div><div class="line"></div><div class="line">    <span class="comment">//Pad to size of struct sockaddr</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> sin_zero[<span class="keyword">sizeof</span> (struct sockaddr) -</div><div class="line">                          __SOCKADDR_COMMON_SIZE -</div><div class="line">                           <span class="keyword">sizeof</span> (<span class="keyword">in_port_t</span>) -</div><div class="line">                           <span class="keyword">sizeof</span> (struct in_addr)];</div><div class="line">  &#125;;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/06/12/Unix网络编程基础之套接字结构/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

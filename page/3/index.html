@@ -215,6 +215,55 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/12/01/VS配置/">
+                            VS code配置
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-12-01T14:08:00+08:00">
+	
+		    12月 01, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/配置管理/">配置管理</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>#VS Code配置管理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">&quot;[cpp]&quot;: &#123;</div><div class="line">&quot;editor.quickSuggestions&quot;: false</div><div class="line">&#125;,</div><div class="line">&quot;[c]&quot;: &#123;</div><div class="line">&quot;editor.quickSuggestions&quot;: false</div><div class="line">&#125;,</div><div class="line">&quot;window.zoomLevel&quot;: 0,</div><div class="line">&quot;workbench.colorTheme&quot;: &quot;Monokai&quot;,</div><div class="line">&quot;editor.fontSize&quot;: 22,</div><div class="line">// insert space when type tab</div><div class="line">&quot;editor.insertSpaces&quot;: true,</div><div class="line">&quot;http.proxy&quot;: &quot;http://dev-proxy.oa.com:8080&quot;,</div><div class="line">&quot;files.autoGuessEncoding&quot;: false,</div><div class="line">&quot;files.trimTrailingWhitespace&quot;: true,</div><div class="line">&quot;files.eol&quot;: &quot;\n&quot;,</div><div class="line">&quot;editor.wordWrap&quot;: &quot;on&quot;,</div><div class="line">&quot;editor.minimap.enabled&quot;: false,</div><div class="line">&quot;workbench.editor.enablePreview&quot;: false,</div><div class="line">&quot;codegnuglobal.executable&quot;: &quot;C:\\Program Files\\glo656wb\\bin\\global.exe&quot;,</div><div class="line">&quot;C_Cpp.clang_format_path&quot;: &quot;C:\\Program Files\\LLVM\\bin\\clang-format.exe&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/12/01/VS配置/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/11/09/C++截取utf8字符以及字符编码记录/">
                             C++截取定长utf8字符及字符集与字符编码总结.md
                         </a>
@@ -1165,68 +1214,6 @@
                     
                         <p>
                             <a href="/2017/10/02/C语言内存对其相关/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/09/29/Message存储服务同步刷盘与异步刷盘/">
-                            异步刷盘与同步刷盘的区别
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-09-29T17:05:01+08:00">
-	
-		    9月 29, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/消息队列/">消息队列</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="异步刷盘与同步刷盘的区别"><a href="#异步刷盘与同步刷盘的区别" class="headerlink" title="异步刷盘与同步刷盘的区别"></a>异步刷盘与同步刷盘的区别</h1><p>存储系统往往追求尽量高的吞吐,无论是传统的MySQl还是分布式存储系统Hbase，在写入的时候会尽量提升系统的吞吐。一般来说，提升系统性能的方式是先将数据写入内存中，然后再刷盘到磁盘中进行持久化。</p>
-<p>刷盘对应于MySQL中的fsync和hbase中的flush，在mysql中标识将写入的redo log以及bin　Log持久化到磁盘中，这样就保证mysql可以持续的对外提供数据服务;在hbase中表示将MainStore中的数据持久化到磁盘中。一般来说刷盘的方式有<strong>同步刷盘和异步刷盘</strong>两种。</p>
-<p>同步刷盘和异步刷盘的区别如下:</p>
-<ul>
-<li>同步刷盘:当数据写如到内存中之后立刻刷盘(同步)，在保证刷盘成功的前提下响应client。</li>
-<li>异步刷盘:数据写入内存后，直接响应client。异步将内存中的数据持久化到磁盘上。</li>
-</ul>
-<p>同步刷盘和异步输盘的优劣:</p>
-<ul>
-<li>同步刷盘保证了数据的可靠性,保证数据不会丢失。</li>
-<li>同步刷盘效率较低,因为client获取响应需要等待刷盘时间，为了提升效率，通常采用批量输盘的方式，每次刷盘将会flush内存中的所有数据。(若底层的存储为mmap，则每次刷盘将刷新所有的dirty页)</li>
-<li>异步刷盘不能保证数据的可靠性.</li>
-<li>异步刷盘可以提高系统的吞吐量.</li>
-<li>常见的异步刷盘方式有两种,分别是定时刷盘和触发式刷盘。定时刷盘可设置为如每1s刷新一次内存.触发刷盘为当内存中数据到达一定的值，会触发异步刷盘程序进行刷盘。</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/09/29/Message存储服务同步刷盘与异步刷盘/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

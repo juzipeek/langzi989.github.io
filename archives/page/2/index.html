@@ -216,6 +216,94 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/02/01/Linux netstat命令详解/">
+                            netstat命令使用详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-01T20:05:01+08:00">
+	
+		    2月 01, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="netstat命令使用详解"><a href="#netstat命令使用详解" class="headerlink" title="netstat命令使用详解"></a>netstat命令使用详解</h1><p>netstat命令用于显示各种网络信息，如当前机器的网络连接状态，路由表，接口状态等等。</p>
+<h2 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h2><p>执行netstat命令，其结果主要包括两个部分。</p>
+<ul>
+<li>Active Internet connections (servers and established),称为有源TCP链接，包括TCP和UDP等的详细状态</li>
+<li>Active UNIX domain sockets (servers and established)。称为有源Unix域套接口。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$netstat</span> -a</div><div class="line">Active Internet connections (servers and established)</div><div class="line">Proto Recv-Q Send-Q Local Address Foreign Address State</div><div class="line">tcp <span class="number">0</span> <span class="number">2</span> xx.xx.xx.xx:telnet ss.ss.ss.ss:port ESTABLISHED</div><div class="line">...</div><div class="line"></div><div class="line">Active UNIX domain sockets (servers and established)</div><div class="line">Proto RefCnt Flags       Type       State         I-Node Path</div><div class="line">unix  <span class="number">2</span>      [ ACC ]     STREAM     LISTENING     <span class="number">6474</span>   /var/run/test.socket</div><div class="line">...</div></pre></td></tr></table></figure>
+<h4 id="有源TCP链接字段详解："><a href="#有源TCP链接字段详解：" class="headerlink" title="有源TCP链接字段详解："></a>有源TCP链接字段详解：</h4><ul>
+<li>Proto : 当前链接的协议。如TCP，UDP</li>
+<li>Recv-Q : 网络接收队列</li>
+<li>Send-Q : 网络发送队列</li>
+<li>Local Address : 本机的ip:端口（注意此处127.0.0.1默认显示主机名，0.0.0.0默认显示*，端口可能显示别名。若强制显示数字,加-n参数）</li>
+<li>Foreign Address:对端IP：端口。与local address规则相同</li>
+<li>State : 当前套接字的网络状态。</li>
+</ul>
+<h4 id="有源Unix域套接口字段详解"><a href="#有源Unix域套接口字段详解" class="headerlink" title="有源Unix域套接口字段详解"></a>有源Unix域套接口字段详解</h4><ul>
+<li>proto : 当前链接的协议，一般为Unix</li>
+<li>RefCnt : 连接段本端口上的进程号</li>
+<li>Type:套接字的类型，stream或 DGRAM</li>
+<li>state : 当前套接字的状态</li>
+<li>I-Node : 当前socket对应的inode号</li>
+<li>Path : 连接到套接口的其它进程使用的路径名。</li>
+</ul>
+<h2 id="netstat常用参数"><a href="#netstat常用参数" class="headerlink" title="netstat常用参数"></a>netstat常用参数</h2><ul>
+<li>-a : 显示所有选项</li>
+<li>-t : 显示所有与TCP相关的选项</li>
+<li>-u : 显示所有与UDP相关的选项</li>
+<li>-x : 显示所有与Unix域相关的套接字选项</li>
+<li>-n : <strong>拒绝显示别名</strong>，能显示数字的全部转换为数字显示</li>
+<li>-p : 显示<strong>建立相关连接的程序名。</strong></li>
+<li>-l : 显示所有状态为Listen的连接</li>
+<li>-e : 显示扩展信息,<strong>如当前链接所对应的用户</strong></li>
+<li>-c : 间隔一段时间执行一次netstat命令。</li>
+<li>-s : 显示统计信息。对每种类型进行汇总</li>
+</ul>
+<h2 id="netstat常用组合"><a href="#netstat常用组合" class="headerlink" title="netstat常用组合"></a>netstat常用组合</h2><ul>
+<li>netstat -anp : 显示所有的网络连接，并拒绝显示别名，同时打印该连接对应的程序名</li>
+<li>netstat -lt : 显示所有正在监听状态的tcp连接</li>
+<li>netstat -lu : 显示所有正在监听状态的udp连接</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/02/01/Linux netstat命令详解/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/28/Unix信号之sigaction函数/">
                             Unix信号之sigaction函数
                         </a>
@@ -847,55 +935,6 @@
                     
                         <p>
                             <a href="/2017/12/03/Linux调试工具之readelf/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/12/01/VS配置/">
-                            VS code配置
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-12-01T14:08:00+08:00">
-	
-		    12月 01, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/配置管理/">配置管理</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>#VS Code配置管理</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">&quot;[cpp]&quot;: &#123;</div><div class="line">&quot;editor.quickSuggestions&quot;: false</div><div class="line">&#125;,</div><div class="line">&quot;[c]&quot;: &#123;</div><div class="line">&quot;editor.quickSuggestions&quot;: false</div><div class="line">&#125;,</div><div class="line">&quot;window.zoomLevel&quot;: 0,</div><div class="line">&quot;workbench.colorTheme&quot;: &quot;Monokai&quot;,</div><div class="line">&quot;editor.fontSize&quot;: 22,</div><div class="line">// insert space when type tab</div><div class="line">&quot;editor.insertSpaces&quot;: true,</div><div class="line">&quot;http.proxy&quot;: &quot;http://dev-proxy.oa.com:8080&quot;,</div><div class="line">&quot;files.autoGuessEncoding&quot;: false,</div><div class="line">&quot;files.trimTrailingWhitespace&quot;: true,</div><div class="line">&quot;files.eol&quot;: &quot;\n&quot;,</div><div class="line">&quot;editor.wordWrap&quot;: &quot;on&quot;,</div><div class="line">&quot;editor.minimap.enabled&quot;: false,</div><div class="line">&quot;workbench.editor.enablePreview&quot;: false,</div><div class="line">&quot;codegnuglobal.executable&quot;: &quot;C:\\Program Files\\glo656wb\\bin\\global.exe&quot;,</div><div class="line">&quot;C_Cpp.clang_format_path&quot;: &quot;C:\\Program Files\\LLVM\\bin\\clang-format.exe&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/12/01/VS配置/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
