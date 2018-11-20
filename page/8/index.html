@@ -215,6 +215,250 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/22/Unix文件IO相关函数/">
+                            Unix文件IO相关函数
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-22T23:31:31+08:00">
+	
+		    5月 22, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix文件IO相关函数"><a href="#Unix文件IO相关函数" class="headerlink" title="Unix文件IO相关函数"></a>Unix文件IO相关函数</h1><p>Unix中大多数文件的操作只需要用到五个函数open、read、write、lseek、和close。本章将详细讲解这些函数的用法以及参数详解。</p>
+<h2 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h2><p>对于内核而言，所有打开的文件都是通过文件描述符进行引用。文件描述符是一个非负整数。当打开或者创建一个文件的时候，内核向进程返回一个文件描述符。当对这个文件进行读写的时候，将这个参数传递给read或write。LINUX用于IO的数据结构一章中讲了STDIN_FILENO、STDOUT_FILENO以及STDERR_FILENO所对应的文件描述符。</p>
+<p>为了保证系统资源的合理使用和安全性，Unix系统对于系统和用户能打开的文件描述符的格式都做了一定的限制。通过一下命令我们可以进行查看：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sysctl -a | grep fs.file-max //查看系统级限制的文件描述符的个数</div><div class="line">ulimit -n //查看用户（进程）级别限制的文件描述符的个数，</div></pre></td></tr></table></figure>
+<h3 id="文件描述符与文件指针的关系"><a href="#文件描述符与文件指针的关系" class="headerlink" title="文件描述符与文件指针的关系"></a>文件描述符与文件指针的关系</h3><p>文件描述符：内核会为每一个运行中的进程在进程控制块(pcb)中维护一个打开文件的记录表，每个表项都有一个指针指向打开的文件，文件描述符就是记录表的索引。</p>
+<p>文件指针：C语言使用文件指针而不是文件描述符作为文件IO的句柄，文件指针是指向进程的用户空间中的一个FILE结构的数据结构，FILE结构中包括一个IO缓冲区和一个文件描述符，而文件描述符是<br>文件描述符表的一个索引，从某种意义上可以将文件指针理解为文件句柄的句柄。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></div><div class="line">  <span class="keyword">char</span>*	_ptr;</div><div class="line">  <span class="keyword">int</span>	_cnt;</div><div class="line">  <span class="keyword">char</span>*	_base;</div><div class="line">  <span class="keyword">int</span>	_flag;</div><div class="line">  <span class="keyword">int</span>	_file;</div><div class="line">  <span class="keyword">int</span>	_charbuf;</div><div class="line">  <span class="keyword">int</span>	_bufsiz;</div><div class="line">  <span class="keyword">char</span>*	_tmpfname;</div><div class="line">&#125; FILE;</div></pre></td></tr></table></figure>
+<ul>
+<li>文件指针相比于文件描述符是高级的接口.</li>
+<li>文件指针使用fread()和fwrite()函数进行操作,文件描述符使用write()和read()函数进行操作</li>
+<li>文件指针具有缓冲区，是较高级别的IO，读写时具有缓冲，具有错误指示和EOF检测；文件描述符没有</li>
+<li>文件指针具有移植性，文件描述符不能移植到除Unix之外的系统。</li>
+<li>fopen在stdio.h中，open在fcntl.h中</li>
+<li>fopen是标准C中定义的，而open是posix中定义的。</li>
+<li>fwrite/fread处理的速度快于read/write，但是在内存方面read/write性能较好。</li>
+</ul>
+<h2 id="函数open-和openat"><a href="#函数open-和openat" class="headerlink" title="函数open()和openat()"></a>函数open()和openat()</h2><h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* path, <span class="keyword">int</span> oflag, ...<span class="comment">/*mode_t mode*/</span>)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">openat</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">char</span>* path, <span class="keyword">int</span> oflag, ...<span class="comment">/*mode_t mode*/</span>)</span></span></div></pre></td></tr></table></figure>
+<h3 id="返回值说明"><a href="#返回值说明" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若文件打开失败返回-1，打开失败原因可以通过errno或者strerror(errno)查看;</p>
+<p>若成功将返回最小的未用的文件描述符的值。</p>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li>path为要打开的文件的文件路径</li>
+<li>oflag为文件打开模式.</li>
+<li>…为可变参数，可以视情况添加</li>
+</ul>
+<h4 id="文件打开模式"><a href="#文件打开模式" class="headerlink" title="文件打开模式"></a>文件打开模式</h4><p>文件打开模式标识当前进程对打开文件的操作权限。通常用一个或者多个权限的或来表示。权限列表如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">flag</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">O_RDONLY</td>
+<td>只读权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_WRONLY</td>
+<td>只写权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_RDWR</td>
+<td>读写权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_EXEC</td>
+<td>可执行权限</td>
+</tr>
+<tr>
+<td style="text-align:center">O_SEARCH</td>
+<td>搜索权限(针对目录)</td>
+</tr>
+<tr>
+<td style="text-align:center">O_APPEND</td>
+<td>每次写都追加到文件的末端</td>
+</tr>
+<tr>
+<td style="text-align:center">O_CLOEXEC</td>
+<td>把close_on_exec设置为文件描述符标识</td>
+</tr>
+<tr>
+<td style="text-align:center">O_CREATE</td>
+<td>若文件不存在，则创建它。使用此选项的时候，需要使用第三个参数指定该新文件的访问权限位</td>
+</tr>
+<tr>
+<td style="text-align:center">O_DIRECTORY</td>
+<td>如果path不是目录则出错</td>
+</tr>
+<tr>
+<td style="text-align:center">O_EXCL</td>
+<td>若同时执行了O_CREATE，若文件存在则出错，可以用此选项测试文件是否存在</td>
+</tr>
+<tr>
+<td style="text-align:center">O_NOCTTY</td>
+<td>如果PATH引用的是终端设备，则不将该终端设备作为该进程的控制终端</td>
+</tr>
+<tr>
+<td style="text-align:center">O_NOFOLLOW</td>
+<td>若PATH引用的是符号链接，则出错</td>
+</tr>
+<tr>
+<td style="text-align:center">O_NONBLOCK</td>
+<td>如果path引用的是FIFO,一个块特殊文件或者一个字符特殊文件，则将文本打开操作和后续的IO设置为非阻塞模式</td>
+</tr>
+<tr>
+<td style="text-align:center">O_SYNC</td>
+<td>使每次write等待物理IO完成，包括该write属性引起的文件属性更新需要的IO</td>
+</tr>
+<tr>
+<td style="text-align:center">O_TRUNC</td>
+<td>如果文件存在，且打开模式为只写或者读写，则将文件内容截断为0</td>
+</tr>
+<tr>
+<td style="text-align:center">O_TTY_INIT</td>
+<td>如果打开一个还未打开的终端设备，设置非标准termios参数值，使其符合Single Unix Specification</td>
+</tr>
+<tr>
+<td style="text-align:center">O_DSYNC</td>
+<td>每次write要等待物理IO操作完成，但是如果该写操作并不影响读取刚写入的数据，则不需要等待文件属性被更新</td>
+</tr>
+<tr>
+<td style="text-align:center">O_RSYNC</td>
+<td>使每一个以文件描述符作为参数进行的read操作等待，直至所有对文件同一部分挂起的写操作完成</td>
+</tr>
+</tbody>
+</table>
+<h4 id="文件访问权限mode-t"><a href="#文件访问权限mode-t" class="headerlink" title="文件访问权限mode_t"></a>文件访问权限mode_t</h4><p>mode的值表示了对文件的访问权限。这个访问权限与使用shell命令chmod去修改文件的权限的含义相同，文件的权限包括三大类，分别是当前文件对于文件所有者(u)，文件所有者所在的组(g)以及其他<br>用户(o)而言,对这三种角色又分别具有读写可执行的权限。所以这个参数只有在创建文件的时候才用到，用来指定当前创建的文件所对应的权限。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">mode</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">S_IRUSR</td>
+<td>用户读</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IWUSR</td>
+<td>用户写</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IXUSR</td>
+<td>用户可执行</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IRGRP</td>
+<td>组读</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IWGRP</td>
+<td>组写</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IXGRP</td>
+<td>组可执行</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IROTH</td>
+<td>其他读</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IWOTH</td>
+<td>其他写</td>
+</tr>
+<tr>
+<td style="text-align:center">S_IXOTH</td>
+<td>其他可执行</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>需要注意的是，目录的可执行权限以及读权限与文件的相应权限完全不同。目录的可执行权限表示搜索位，即可搜索权限，若目录不具有可执行权限则不能cd进入文件；<br>目录的读权限是可以查看目录中文件内容的权限，若文件夹不具有读权限，则ls不能显示目录内的内容。</p>
+</blockquote>
+<h3 id="open与openat的区别"><a href="#open与openat的区别" class="headerlink" title="open与openat的区别"></a>open与openat的区别</h3><p>open和openat的区别主要在fd上</p>
+<ul>
+<li>path参数指定的是绝对路径名，在这种情况下，open与openat相同，fd忽略.</li>
+<li>path参数是相对路径名，fd参数指出了相对路径名在文件系统中的开始地址。fd参数通过打开相对路径名所在的文件目录获取。即此时fd为打开相对路径所获取的文件描述符。</li>
+<li>path参数为相对路径，fd参数为AT_FDCWD，此时相对路径为当前目录，作用于open相同。</li>
+</ul>
+<h2 id="函数create"><a href="#函数create" class="headerlink" title="函数create()"></a>函数create()</h2><h3 id="函数原型-1"><a href="#函数原型-1" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">create</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *path, <span class="keyword">mode_t</span> mode)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="返回值说明-1"><a href="#返回值说明-1" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若文件创建失败返回-1;<br>若创建成功返回当前创建文件的文件描述符。</p>
+<h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><p>参数与open中对应的参数含义相同</p>
+<h3 id="函数功能说明"><a href="#函数功能说明" class="headerlink" title="函数功能说明"></a>函数功能说明</h3><p>create(path, mode)函数功能为创建新文件，与open(path, O_CREATE|O_TRUNC|O_WRONLY)功能相同。</p>
+<h2 id="函数close"><a href="#函数close" class="headerlink" title="函数close()"></a>函数close()</h2><h3 id="函数原型-2"><a href="#函数原型-2" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="返回值说明-2"><a href="#返回值说明-2" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>文件关闭成功返回0,关闭失败返回-1.</p>
+<h3 id="函数功能介绍"><a href="#函数功能介绍" class="headerlink" title="函数功能介绍"></a>函数功能介绍</h3><p>该函数的作用是关闭指定文件描述符的文件，关闭文件时还会释放该进程加在该文件上的所有的记录锁。当一个进程终止时，内核自动关闭它所有打开的文件。很多程序都是利用这一功能而不是close<br>函数关闭打开的文件。但是对于长期运行的函数，最好还是使用close关闭打开的文件。</p>
+<h2 id="lseek-函数"><a href="#lseek-函数" class="headerlink" title="lseek()函数"></a>lseek()函数</h2><p>每个打开的文件在文件表项中存在着对应的当前文件的偏移量(current file offset)，通常为非负整数。文件的读写操作都是从当前偏移量开始，并在操作后将偏移量增加相应的字节数。当打开文件<br>模式为O_APPEND时，该文件的offset是文件末尾，除此之外，其他情况都被初始化为0.</p>
+<h3 id="函数原型-3"><a href="#函数原型-3" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">lseek</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">off_t</span> offset, <span class="keyword">int</span> whence)</span></span>;</div></pre></td></tr></table></figure>
+<h3 id="返回值说明-3"><a href="#返回值说明-3" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>成功则返回新的文件的偏移量；<br>失败则返回-1.</p>
+<h3 id="函数功能"><a href="#函数功能" class="headerlink" title="函数功能"></a>函数功能</h3><p>使用lseek()函数显式的为一个打开的文件设置偏移量。lseek仅将文件的偏移量记录在内核中，并不引起IO开销。</p>
+<h3 id="参数说明-2"><a href="#参数说明-2" class="headerlink" title="参数说明"></a>参数说明</h3><p>参数offset的解释与whence相关。</p>
+<ul>
+<li>若whence为SEEK_SET，则将该文件的偏移量设置为距离<strong>当前文件开始处offset</strong>字节。</li>
+<li>若whence为SEEK_CUR，则将该文件的偏移量设置为距离<strong>当前偏移量加offset</strong>个字节,此时offset可正可负。</li>
+<li>若whence为SEEK_END，则将该文件的偏移量设置为<strong>当前文件长度加offser</strong>个字节，此时offset可正可负。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> fd = open(<span class="string">"./data"</span>, O_WRONLY | O_CREAT | O_TRUNC);</div><div class="line">    lseek(fd, <span class="number">20</span>, SEEK_END);</div><div class="line">    write(fd, <span class="string">"haha"</span>, <span class="number">4</span>);</div><div class="line"></div><div class="line">    <span class="comment">//可以用这种方法查看打开文件的当前偏移量。</span></div><div class="line">    <span class="comment">//这种方法可以用来确定当前文件是否可以设置偏移量</span></div><div class="line">    <span class="comment">//若文件是管道、FIFO或者网络套接字，则lseek返回-1，并将errno设置为ESPIPE</span></div><div class="line">    <span class="keyword">off_t</span> currpos;</div><div class="line">    currpos = lseek(fd, <span class="number">0</span>, SEEK_CUR);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注意一般情况下文件的偏移量不能为负值，但是一些特殊的文件允许偏移量为负值，如在FreeBSD上运行的设备/dev/kmem支持负的偏移量。<br>因为偏移量可能为负值，所以在比较偏移量的时候不能直接判断其是否小于0，而是要判断其是否等于-1.</p>
+<p>文件的偏移量允许大于文件的长度，这时会在文件中出现一些空洞，但是是被允许的。文件中的空洞并不在文件中占磁盘块（block）。</p>
+</blockquote>
+<h2 id="read-函数"><a href="#read-函数" class="headerlink" title="read()函数"></a>read()函数</h2><h3 id="函数原型-4"><a href="#函数原型-4" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> read(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes);</div></pre></td></tr></table></figure>
+<h3 id="返回值说明-4"><a href="#返回值说明-4" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若读取成功，读到文件末尾返回0，未读到文件末尾返回当前读的字节数。<br>若读取失败，返回-1。</p>
+<h3 id="参数说明-3"><a href="#参数说明-3" class="headerlink" title="参数说明"></a>参数说明</h3><p>fd为要读取文件的文件描述符。buf为读取文件数据缓冲区，nbytes为期待读取的字节数，通常为sizeof(buf)。</p>
+<blockquote>
+<p>注意read函数默认读入多行，遇到换行不会停止读入，直到读到文件末尾，下一次读取返回值为0.</p>
+</blockquote>
+<h2 id="write-函数"><a href="#write-函数" class="headerlink" title="write()函数"></a>write()函数</h2><h3 id="函数原型-5"><a href="#函数原型-5" class="headerlink" title="函数原型"></a>函数原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="keyword">ssize_t</span> write(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span>* buf, <span class="keyword">size_t</span> ntyes);</div></pre></td></tr></table></figure>
+<h3 id="返回值说明-5"><a href="#返回值说明-5" class="headerlink" title="返回值说明"></a>返回值说明</h3><p>若写入成功则返回写入的字节数；失败返回-1.</p>
+<h3 id="参数说明-4"><a href="#参数说明-4" class="headerlink" title="参数说明"></a>参数说明</h3><p>buf为写入内容的缓冲区，ntyes为期待写入的字节数，通常为sizeof(buf)。一般情况下返回值与ntypes相等，否则写入失败。</p>
+<blockquote>
+<p>当指定O_APPEND选项，内容将从文件末尾写入，否则从文件开始写入。一般情况下将缓冲区的长度设置为磁盘块的大小可以最大程度的提升程序读写的性能。</p>
+</blockquote>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/22/Unix文件IO相关函数/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/22/Unix错误处理/">
                             Unix错误处理
                         </a>
@@ -1126,121 +1370,6 @@
                     
                         <p>
                             <a href="/2017/01/09/工厂类模式家族之简单工厂模式/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/01/08/GRASP设计原则（职责分配原则）/">
-                            GRASP设计原则（职责分配原则）
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-01-08T19:45:46+08:00">
-	
-		    1月 08, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/设计模式之路/">设计模式之路</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="GRASP设计原则（职责分配原则）"><a href="#GRASP设计原则（职责分配原则）" class="headerlink" title="GRASP设计原则（职责分配原则）"></a>GRASP设计原则（职责分配原则）</h1><p>GRASP(General responsibility assignment software Principle)设计原则是设计模式的基础,在GOF的23中设计模式中处处可以体现其中的一个或多个设计原则，所以在掌握设计模式之前需要对GRASP原则有一定的了解，本节我在这里总结一下grasp原则。</p>
-<p>本文共分为以下几个内容：</p>
-<ul>
-<li>GRASP的九个原则</li>
-<li>GRASP原则详解</li>
-<li>GRASP原则在23中设计模式中的体现</li>
-</ul>
-<h2 id="GRASP的九个原则"><a href="#GRASP的九个原则" class="headerlink" title="GRASP的九个原则"></a>GRASP的九个原则</h2><ul>
-<li>信息专家原则(information)</li>
-<li>创造者原则(creator)</li>
-<li>低耦合原则(low coupling)</li>
-<li>高内聚原则(high cohesion)</li>
-<li>控制器原则(controller)</li>
-<li>多态原则(polymorphism)</li>
-<li>纯虚构(pure Fabrication)</li>
-<li>中介原则(indirect)</li>
-<li>受保护变量原则(protected Variations)</li>
-</ul>
-<h2 id="Grasp原则详解"><a href="#Grasp原则详解" class="headerlink" title="Grasp原则详解"></a>Grasp原则详解</h2><h3 id="信息专家原则-information-expert"><a href="#信息专家原则-information-expert" class="headerlink" title="信息专家原则(information expert)"></a>信息专家原则(information expert)</h3><p>信息专家模式的本质指的是我们应该将<strong>职责委托给哪一个对象</strong>，这个职责可以是一个方法，也可以是一个算法或者其他内容。它是面向过程设计过程中最基本的原则。</p>
-<p><strong>委托原则</strong>:我们在设计对象的时候，如果某个对象拥有完成某个职责所需要的所有信息，那么这个职责就分配给这个对象实现。这个时候，这个类就是相对于这个职责的信息专家。</p>
-<p>示例：我们在设计购物网站的时候，为避免重复，一种商品只能在购物车中出现一次，如果多次出现，则需要将其数量增加。这个时候我们在将物品放入购物车的时候，要首先判断当前物品是否在购物车中，判断两个物品是否为同一个物品的方法这个职责应该委托给谁呢？显而易见，商品类中有唯一标识，所以这个职责由商品类实现，而不是购物车。</p>
-<h3 id="创造者原则-creator"><a href="#创造者原则-creator" class="headerlink" title="创造者原则(creator)"></a>创造者原则(creator)</h3><p>creator原则的本质是创建类对象职责应该委托给那个对象，也就是谁应该负责产生某个类的实例。</p>
-<p>解决方案:　如果符合下面的一个或者多个条件，则可以将创建A的实例的职责分配给B;</p>
-<ul>
-<li>B包含A</li>
-<li>B聚合A</li>
-<li>B拥有初始化A的数据并在创建A的实例时将数据传递给A</li>
-<li>B记录A的实例</li>
-<li>B频发使用A</li>
-</ul>
-<p>满足上述一种或者多种情况的时候，我们应该奖创建A的实例的职责分配给B。</p>
-<p>合理的creator原则带来的<strong>优点</strong>：如果职责分配合理，设计就能降低耦合，提高设计的清晰度，封装性和重用性。</p>
-<p>示例:例如订单和商品的关系是聚合关系，这个时候我们将在订单中创建商品。</p>
-<h3 id="低耦合-Low-coupling"><a href="#低耦合-Low-coupling" class="headerlink" title="低耦合(Low coupling)"></a>低耦合(Low coupling)</h3><p><strong>耦合是评价一个系统中各个元素之间连接或者依赖关系强弱的尺度。</strong>低耦合的原则是我们在设计系统的时候尽量降低系统中各个元素之间的耦合度，这样对于系统的理解和维护都有很大的益处。</p>
-<p>耦合性高的系统会带来的坏处:</p>
-<ul>
-<li>一个类的修改导致其他类产生较大的影响；</li>
-<li>系统难以维护和理解；</li>
-<li>系统的重用性差，在重用一个高耦合类的时候，不得不重用它所依赖的所有类。</li>
-</ul>
-<p>两个类具有以下特性中的其中一个，我们就说这两个类是耦合的：</p>
-<ul>
-<li>A具有一个类型为B的属性；</li>
-<li>A调用B的方法</li>
-<li>A的方法包含对B的引用(参数或者返回值的方式)</li>
-<li>A是B的直接或者间接的子类</li>
-<li>A是接口B的一种实现</li>
-</ul>
-<p>低耦合系统的<strong>设计方法</strong>：</p>
-<ul>
-<li>在类的划分上，尽量创建松耦合的类，类之间的耦合性越低，越有利于复用，修改一个类不会影响其他类。</li>
-<li>在类的设计上，尽量降低类中成员和方法的访问权限。</li>
-<li>在类的设计上，尽量将类设计为不变类</li>
-<li>在类的引用上，将一个对象对另一个对象的引用降低到最小</li>
-</ul>
-<h3 id="高内聚-high-cohesion"><a href="#高内聚-high-cohesion" class="headerlink" title="高内聚(high cohesion)"></a>高内聚(high cohesion)</h3><p><strong>内聚是评价一个对象的职责被关联的尺度或者强弱，也可以说是功能性内聚的职责。</strong>也就是功能性紧密的相关职责应该放在同一个类中，并共同完成有限的功能。这样做更加有利于对类的理解和重用，也可以降低类的维护成本。</p>
-<p>往往低内聚的系统设计会导致类的混乱，当对功能进行扩展或者改进的时候带来不必要的麻烦，低内聚的类也不利于重用，因为他们的职责如此之混乱。</p>
-<p>为了达到高内聚，我们需要对类的职责进行分解，使分解出来的类具有独立的职责，满足单一职责原则。<strong>将一些需要在多个类中使用到的方法封装到一个类中，其他的类只负责他们需要负责的相关功能</strong>，这样我们可以提高类的内聚程度。</p>
-<h3 id="控制器原则-controller"><a href="#控制器原则-controller" class="headerlink" title="控制器原则(controller)"></a>控制器原则(controller)</h3><p>控制器模式的实质是将一些<strong>系统事件的接受和处理</strong>委托给一个的对象controller，这个对象可以是一个<strong>类，系统或者子系统</strong>，它不与UI进行交互，它只负责系统信息的接收和处理。</p>
-<p>一般情况下，控制器是一个系统，这个系统中包括多个处理器，分别对应处理不同的事务。通常情况下，一个控制器应当把要完成的功能委托给其他对象，而它只负责任务的协调控制和分配。</p>
-<p>控制器原则与MVC模式相对应，MVC模式是一种比设计模式更高的架构模式。</p>
-<h3 id="多态原则-polymorphism"><a href="#多态原则-polymorphism" class="headerlink" title="多态原则(polymorphism)"></a>多态原则(polymorphism)</h3><p>多态原则与面向对象设计原则中的多态概念类似，这里不再详细赘述。</p>
-<h3 id="纯虚构-pure-Fabrication"><a href="#纯虚构-pure-Fabrication" class="headerlink" title="纯虚构(pure Fabrication)"></a>纯虚构(pure Fabrication)</h3><p>纯虚构原则与我们所说的纯虚函数类似。</p>
-<p>　　纯虚构的作用是用来解决高内聚和低耦合之间的矛盾的。高内聚低耦合是我们系统设计的终极目标，高内聚意味着我们要将类拆分成多个功能集中的类，但是拆分的多个类之间需要进行协作才能正常工作，这样又增加了类之间的耦合性。</p>
-<p>　　纯虚构原则是用来解决上述问题的方案。它要求将一部分类的职责转移到纯虚构类中，在理想的情况下，分配给这种虚构类的职责是为了达到高内聚低耦合的效果。在实际的操作过程中，纯虚构类的实现又很多种方式，例如将数据库中操作的方法从数据库实体中分离出来，形成专门的数据访问类；通过对类的分解来实现类的重用，新增加的数据访问类对应于数据的持久化存储，这是软件开发过程中为了方便虚构出来的一个概念。一般情况下，<strong>纯虚构模式通常基于功能进行划分的。</strong></p>
-<h3 id="中介模式-indirect"><a href="#中介模式-indirect" class="headerlink" title="中介模式(indirect)"></a>中介模式(indirect)</h3><p>中介模式的目的是为了避免两个对象之间产生直接耦合，降低对象之间的耦合度。</p>
-<p>解决方案是建立中间对象来协调两个对象之间的交互，避免耦合性过高。</p>
-<h3 id="受保护模式-protected-variations"><a href="#受保护模式-protected-variations" class="headerlink" title="受保护模式(protected variations)"></a>受保护模式(protected variations)</h3><p>受保护模式的实质与OCP(开放闭合原则)类似，我们首先找到系统中不稳定的变化点，使用统一的接口封装起来，如果未来发生变化的时候，可以通过扩展接口来扩展新的功能，而不需要改变旧的代码。这样达到易于扩展的目的。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/01/08/GRASP设计原则（职责分配原则）/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

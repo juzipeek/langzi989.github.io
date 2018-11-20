@@ -216,6 +216,78 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/11/20/分布式系统数据一致性/">
+                            分布式系统中的数据一致性问题
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-11-20T22:36:19+08:00">
+	
+		    11月 20, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/分布式系统基础/">分布式系统基础</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="分布式系统中的数据一致性问题"><a href="#分布式系统中的数据一致性问题" class="headerlink" title="分布式系统中的数据一致性问题"></a>分布式系统中的数据一致性问题</h1><h2 id="数据一致性"><a href="#数据一致性" class="headerlink" title="数据一致性"></a>数据一致性</h2><h4 id="数据库系统中的数据一致性"><a href="#数据库系统中的数据一致性" class="headerlink" title="数据库系统中的数据一致性"></a>数据库系统中的数据一致性</h4><p>　　数据一致性问题最初是存在于数据库系统中的一个概念，数据库系统中一致性问题通常指的是<strong>关联数据之间的逻辑是否完整和正确</strong>，通常数据库系统会通过使用事务来保证数据的一致性和完整性。<strong>事务本质上就是一个操作序列的有限集合，若事务中有的操作没有成功完成，则事务中的所有操作都需要被回滚，回到事务执行前的状态。</strong></p>
+<p>　　比如当你在淘宝中购买商品进行付款的时候，从宏观上看有以下最基本的步骤：付款成功—-&gt;发放商品，若用户付款成功之后，发放商品失败，这个时候会导致数据不一致。解决这种问题常用的方法就是使用事务，若付款成功，发放商品失败，此时将第一个操作回滚。</p>
+<h4 id="分布式系统中的数据一致性"><a href="#分布式系统中的数据一致性" class="headerlink" title="分布式系统中的数据一致性"></a>分布式系统中的数据一致性</h4><p>　　在分布式系统中，为了达到<strong>系统容灾和提高系统性能</strong>，数据通常会冗余存储在不同机器，通过复制技术来进行主副本之间的数据同步。所以分布式系统中的数据一致性指的是<strong>集群中主副本数据内容的一致性</strong></p>
+<ul>
+<li><p>由于数据冗余在不同机器中，当集群中部分机器挂掉，也可以正常对外服务，消除单点故障</p>
+</li>
+<li><p>集群中的主副本同时对外提供服务，提高系统对外提供服务的性能</p>
+</li>
+</ul>
+<h3 id="分布式系统数据一致性模型"><a href="#分布式系统数据一致性模型" class="headerlink" title="分布式系统数据一致性模型"></a>分布式系统数据一致性模型</h3><p>　　根据对数据一致性的强弱可以将一致性划分为强一致性、弱一致性和最终一致性三种模型。可以通过一个例子来理解这三种一致性之间的区别与关联。</p>
+<p>　　如某运营号在今日头条对一篇文章做了修改，文章存储于主副数据库，主副数据库均对外提供服务，如下：<br>    <img src="/images/数据一致性.png" alt=""></p>
+<h4 id="强一致性"><a href="#强一致性" class="headerlink" title="强一致性"></a>强一致性</h4><p>　　强一致性指的是当对数据完成更新操作之后，所有客户端访问到的数据均为更新之后的数据，这样可以保证客户端取到的总是最新的数据。要达到强一致性，将会牺牲较大的性能。</p>
+<p>　　对应上述今日头条文章的例子，当运营号修改文章A之后，用户不管是通过应用服务器A访问还是通过应用服务器B访问文章都将访问到最新更新的文章。</p>
+<h4 id="弱一致性"><a href="#弱一致性" class="headerlink" title="弱一致性"></a>弱一致性</h4><p>　　弱一致性指的是当数据完成更新操作之后，系统并不保证所有的客户端访问到的数据为最新数据，但是会尽量保证在某个时间级别（如秒级或分钟级）之后，让数据达到一致性状态。</p>
+<p>　　对应上述今日头条的例子，当运营号修改文章A之后，通过应用服务器B访问的用户并不能保证获取到的一定是最新的文章，但是可以保证在一段时间之后，访问的一定是最新的文章</p>
+<h4 id="最终一致性"><a href="#最终一致性" class="headerlink" title="最终一致性"></a>最终一致性</h4><p>　　最终一致性是弱一致性的一种特例。当对数据更新完之后，保证没有后续更新的前提下，系统最终返回的是上一次更新操作的值。</p>
+<p>　　对应今日头条的例子，当运营号修改文章A之后，通过应用服务器A和B访问的用户最终获取到的文章一定是更新之后的文章。</p>
+<p>最终一致性又衍生出以下几种一致性模型：</p>
+<ul>
+<li>因果一致性：如果A进程在更新之后向B进程通知更新的完成，那么B的访问操作将会返回更新的值。如果没有因果关系的C进程将会遵循最终一致性的规则。</li>
+<li>读己所写一致性：因果一致性的特定形式。一个进程总可以读到自己更新的数据。</li>
+<li>会话一致性：读己所写一致性的特定形式。进程在访问存储系统同一个会话内，系统保证该进程读己之所写。</li>
+<li>单调读一致性：如果一个进程已经读取到一个特定值，那么该进程不会读取到该值以前的任何值。</li>
+<li>单调写一致性：系统保证对同一个进程的写操作串行化。</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/11/20/分布式系统数据一致性/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/11/11/C++输入输出流详细理解/">
                             C++输入输出流详细理解
                         </a>
@@ -1197,84 +1269,6 @@
                     
                         <p>
                             <a href="/2018/02/26/Unix脚本语言之TCL/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/02/04/Unix网络编程相关错误码总结/">
-                            Unix网络编程相关错误码和信号处理
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
-	
-		    2月 04, 2018
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix网络编程相关错误码和信号处理"><a href="#Unix网络编程相关错误码和信号处理" class="headerlink" title="Unix网络编程相关错误码和信号处理"></a>Unix网络编程相关错误码和信号处理</h1><p><strong>特别注意当出现一下错误码时，处理之后一定要将errno复位为0</strong></p>
-<p>在网络编程的过程中会出现一些错误码，下面总结:</p>
-<ul>
-<li><p>EAGAIN(11) : Resource temporarily unavailable</p>
-<ul>
-<li>错误原因：当将套接字设置为<strong>异步</strong>时，由于函数调用之后是立即返回的，所以会出现两种情况导致这个错误：（1）：当调用read函数，此时没有数据可读，此时read函数会立即返回错误码EAGAIN表示此时无数据可读（2）：当调用write函数，此时缓冲区满，write函数将会立即返回错误码EAGAIN。</li>
-<li>解决方法：EAGAIN错误表示此时无数据可读或者缓冲区已满，所以此时只需要重试即可。</li>
-</ul>
-</li>
-<li><p>ECONNRESET(104)：Connection reset by peer</p>
-<ul>
-<li>错误原因：当对端socket已关闭，此时调用read或write函数将返回ECONNRESET错误，在之后如果继续调用read或write，就会得到该错误。常见的原因是<strong>发送端接收端实现约定好的数据长度不一致，若接收端被通知需要接收99个字节,而服务端发送了100个字节给接收端,这样一来，接收端接收99个字节就执行了close操作，如果发送端继续发送,接收端将向发送端返回一个RESET信号</strong></li>
-</ul>
-</li>
-<li><p>EALREADY (114)：Operation already in progress</p>
-<ul>
-<li>错误原因：套接字为非阻塞套接字，并且原来的链接请求还未完成</li>
-</ul>
-</li>
-<li><p>EINPROGRESS(115)：Operation in progress</p>
-<ul>
-<li>错误原因：套接字为非阻塞套接字，连接正在建立</li>
-</ul>
-</li>
-</ul>
-<h2 id="网络编程相关信号"><a href="#网络编程相关信号" class="headerlink" title="网络编程相关信号"></a>网络编程相关信号</h2><ul>
-<li>SIGPIPE(13):管道破裂。管道另一端没有进程接收数据，导致管道破裂而崩溃。对一个对端已经关闭的socket进行两次write，第二次调用将会产生该信号，此信号的<strong>默认行为是结束进程</strong>。<ul>
-<li>解决方法：将该信号的处理函数设置为SIG_IGN，即忽略此信号</li>
-</ul>
-</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/02/04/Unix网络编程相关错误码总结/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

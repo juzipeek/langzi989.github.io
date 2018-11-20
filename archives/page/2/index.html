@@ -216,6 +216,84 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/02/04/Unix网络编程相关错误码总结/">
+                            Unix网络编程相关错误码和信号处理
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
+	
+		    2月 04, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix网络编程相关错误码和信号处理"><a href="#Unix网络编程相关错误码和信号处理" class="headerlink" title="Unix网络编程相关错误码和信号处理"></a>Unix网络编程相关错误码和信号处理</h1><p><strong>特别注意当出现一下错误码时，处理之后一定要将errno复位为0</strong></p>
+<p>在网络编程的过程中会出现一些错误码，下面总结:</p>
+<ul>
+<li><p>EAGAIN(11) : Resource temporarily unavailable</p>
+<ul>
+<li>错误原因：当将套接字设置为<strong>异步</strong>时，由于函数调用之后是立即返回的，所以会出现两种情况导致这个错误：（1）：当调用read函数，此时没有数据可读，此时read函数会立即返回错误码EAGAIN表示此时无数据可读（2）：当调用write函数，此时缓冲区满，write函数将会立即返回错误码EAGAIN。</li>
+<li>解决方法：EAGAIN错误表示此时无数据可读或者缓冲区已满，所以此时只需要重试即可。</li>
+</ul>
+</li>
+<li><p>ECONNRESET(104)：Connection reset by peer</p>
+<ul>
+<li>错误原因：当对端socket已关闭，此时调用read或write函数将返回ECONNRESET错误，在之后如果继续调用read或write，就会得到该错误。常见的原因是<strong>发送端接收端实现约定好的数据长度不一致，若接收端被通知需要接收99个字节,而服务端发送了100个字节给接收端,这样一来，接收端接收99个字节就执行了close操作，如果发送端继续发送,接收端将向发送端返回一个RESET信号</strong></li>
+</ul>
+</li>
+<li><p>EALREADY (114)：Operation already in progress</p>
+<ul>
+<li>错误原因：套接字为非阻塞套接字，并且原来的链接请求还未完成</li>
+</ul>
+</li>
+<li><p>EINPROGRESS(115)：Operation in progress</p>
+<ul>
+<li>错误原因：套接字为非阻塞套接字，连接正在建立</li>
+</ul>
+</li>
+</ul>
+<h2 id="网络编程相关信号"><a href="#网络编程相关信号" class="headerlink" title="网络编程相关信号"></a>网络编程相关信号</h2><ul>
+<li>SIGPIPE(13):管道破裂。管道另一端没有进程接收数据，导致管道破裂而崩溃。对一个对端已经关闭的socket进行两次write，第二次调用将会产生该信号，此信号的<strong>默认行为是结束进程</strong>。<ul>
+<li>解决方法：将该信号的处理函数设置为SIG_IGN，即忽略此信号</li>
+</ul>
+</li>
+</ul>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/02/04/Unix网络编程相关错误码总结/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/02/01/Linux netstat命令详解/">
                             netstat命令使用详解
                         </a>
@@ -860,81 +938,6 @@
                     
                         <p>
                             <a href="/2017/12/10/Linux调试工具之strings/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/12/03/Linux调试工具之readelf/">
-                            Linux调试工具之readelf
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-12-03T10:08:00+08:00">
-	
-		    12月 03, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/Linux调试工具/">Linux调试工具</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux调试工具之readelf"><a href="#Linux调试工具之readelf" class="headerlink" title="Linux调试工具之readelf"></a>Linux调试工具之readelf</h1><p>readelf命令可以用来查看elf格式文件的信息，与objdump相比,该工具显示的信息较为详细</p>
-<h2 id="elf文件"><a href="#elf文件" class="headerlink" title="elf文件"></a>elf文件</h2><p>ELF(excutable and linking format)是一种对象文件格式，用于定义<strong>不同类型的对象文件中存放了那些东西，以及以什么格式存放</strong>。ELF文件可分为三种：</p>
-<ul>
-<li>可重定位对象文件(relocatable file)</li>
-<li>可执行对象文件(excutable file)</li>
-<li>可被共享的对象文件(shared object file)</li>
-</ul>
-<h3 id="可重定位对象文件"><a href="#可重定位对象文件" class="headerlink" title="可重定位对象文件"></a>可重定位对象文件</h3><p>可重定位对象文件中包含适合于与其他目标文件链接来创建可执行文件或者共享目标文件的代码和数据。一般包括如汇编器汇编生成的.o文件</p>
-<h3 id="可执行文件"><a href="#可执行文件" class="headerlink" title="可执行文件"></a>可执行文件</h3><p>可执行文件是一个可执行文件，此文件规定了exec()如何创建一个程序的进程映像</p>
-<h3 id="可被共享的对象文件"><a href="#可被共享的对象文件" class="headerlink" title="可被共享的对象文件"></a>可被共享的对象文件</h3><p>可被共享的对象文件中包含可在两种上下文中链接的代码和数据。首先链接编辑器可将它与其他可重定位文件和目标文件和可共享目标文件一起处理，生成另外一个目标文件，其次，动态链接器可以将它与某个可执行文件以及其他可共享目标一起组合，创建进程映像。</p>
-<h2 id="readelf调试工具"><a href="#readelf调试工具" class="headerlink" title="readelf调试工具"></a>readelf调试工具</h2><p>readelf参数较多，可直接通过readelf -h获取readelf的所有参数及用法，此处只对其中的几个常用参数以及数据详解。</p>
-<h3 id="readelf-h"><a href="#readelf-h" class="headerlink" title="readelf -h"></a>readelf -h</h3><p>readelf -h参数的作用是读取指定elf文件的头信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">$ readelf -h</div><div class="line">ELF Header:</div><div class="line">  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00</div><div class="line">  Class:                             ELF64</div><div class="line">  Data:                              2&apos;s complement, little endian</div><div class="line">  Version:                           1 (current)</div><div class="line">  OS/ABI:                            UNIX - System V</div><div class="line">  ABI Version:                       0</div><div class="line">  Type:                              EXEC (Executable file)</div><div class="line">  Machine:                           Advanced Micro Devices X86-64</div><div class="line">  Version:                           0x1</div><div class="line">  Entry point address:               0x400800</div><div class="line">  Start of program headers:          64 (bytes into file)</div><div class="line">  Start of section headers:          7344 (bytes into file)</div><div class="line">  Flags:                             0x0</div><div class="line">  Size of this header:               64 (bytes)</div><div class="line">  Size of program headers:           56 (bytes)</div><div class="line">  Number of program headers:         9</div><div class="line">  Size of section headers:           64 (bytes)</div><div class="line">  Number of section headers:         31</div><div class="line">  Section header string table index: 28</div></pre></td></tr></table></figure></p>
-<p><strong>重要参数解释:</strong></p>
-<ul>
-<li>Class : 该elf文件的类型，这里是64位的elf格式</li>
-<li>Data : 该参数指明了文件中数据的组织方式是大端规则还是小端规则，此处为二进制存储的小端规则</li>
-<li>OS/ABI :　生成该文件的操作系统类型,ABI(Application Binary Interface)</li>
-<li>Type : 当前文件的类型,EXEC(可执行文件), REL(可重定位文件)，DYN(可被共享文件)</li>
-<li>Machine : 处理器类型</li>
-<li>Entry point address : 程序的虚拟地址入口点，可执行文件之外的类型该值为0x0</li>
-<li>Start of program headers : 程序头的开始处，从程序入口地址偏移地址开始。程序头table中记录elf文件中段的信息</li>
-<li>Start of section headers : 段头的开始处，从程序入口地址偏移地址开始</li>
-</ul>
-<h3 id="readelf-s"><a href="#readelf-s" class="headerlink" title="readelf -s"></a>readelf -s</h3><p>readelf的作用是用来查看当前elf文件的符号表，符号表中的信息只包括<strong>全局变量和函数名</strong>。<br><strong>动态符号表(.synsym)用来保存与动态链接相关的导入导出符号，不包括模块内的符号;而sy,tab表则保存所有的符号,包括.dynsym中的符号。</strong><br>动态符号表所包含的符号的符号名保存在动态符号字符串表.dynstr中。</p>
-<p>如下所示程序：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="comment">//main.c</span></div><div class="line"><span class="keyword">int</span> g_data;</div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> gs_data;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"hello world"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> <span class="keyword">int</span> a = <span class="number">0</span>;</div><div class="line">  <span class="keyword">char</span> l_data =<span class="number">0</span>;</div><div class="line">  hello();</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>将上述文件编译汇编成目标文件main.o文件，使用readelf -s main.o，结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">Symbol table &apos;.symtab&apos; contains 15 entries:</div><div class="line">   Num:    Value          Size Type    Bind   Vis      Ndx Name</div><div class="line">     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND</div><div class="line">     1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS main.cpp</div><div class="line">     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1</div><div class="line">     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    3</div><div class="line">     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    4</div><div class="line">     5: 0000000000000004     4 OBJECT  LOCAL  DEFAULT    4 _ZL7gs_data</div><div class="line">     6: 0000000000000000     0 SECTION LOCAL  DEFAULT    5</div><div class="line">     7: 0000000000000008     4 OBJECT  LOCAL  DEFAULT    4 _ZZ4mainE7ls_data</div><div class="line">     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    7</div><div class="line">     9: 0000000000000000     0 SECTION LOCAL  DEFAULT    8</div><div class="line">    10: 0000000000000000     0 SECTION LOCAL  DEFAULT    6</div><div class="line">    11: 0000000000000000     4 OBJECT  GLOBAL DEFAULT    4 g_data</div><div class="line">    12: 0000000000000000    22 FUNC    GLOBAL DEFAULT    1 _Z5hellov</div><div class="line">    13: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND printf</div><div class="line">    14: 0000000000000016    24 FUNC    GLOBAL DEFAULT    1 main</div></pre></td></tr></table></figure></p>
-<p>可以看出<strong>全局变量,静态全局变量，静态局部变量，全局函数名</strong>都会出现在符号表中,而局部变量不会被保存在符号表中。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/12/03/Linux调试工具之readelf/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>

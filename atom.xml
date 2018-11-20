@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-11-11T04:20:04.945Z</updated>
+  <updated>2018-11-20T15:21:19.935Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,57 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>分布式系统中的数据一致性问题</title>
+    <link href="http://yoursite.com/2018/11/20/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/"/>
+    <id>http://yoursite.com/2018/11/20/分布式系统数据一致性/</id>
+    <published>2018-11-20T14:36:19.000Z</published>
+    <updated>2018-11-20T15:21:19.935Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="分布式系统中的数据一致性问题"><a href="#分布式系统中的数据一致性问题" class="headerlink" title="分布式系统中的数据一致性问题"></a>分布式系统中的数据一致性问题</h1><h2 id="数据一致性"><a href="#数据一致性" class="headerlink" title="数据一致性"></a>数据一致性</h2><h4 id="数据库系统中的数据一致性"><a href="#数据库系统中的数据一致性" class="headerlink" title="数据库系统中的数据一致性"></a>数据库系统中的数据一致性</h4><p>　　数据一致性问题最初是存在于数据库系统中的一个概念，数据库系统中一致性问题通常指的是<strong>关联数据之间的逻辑是否完整和正确</strong>，通常数据库系统会通过使用事务来保证数据的一致性和完整性。<strong>事务本质上就是一个操作序列的有限集合，若事务中有的操作没有成功完成，则事务中的所有操作都需要被回滚，回到事务执行前的状态。</strong></p>
+<p>　　比如当你在淘宝中购买商品进行付款的时候，从宏观上看有以下最基本的步骤：付款成功—-&gt;发放商品，若用户付款成功之后，发放商品失败，这个时候会导致数据不一致。解决这种问题常用的方法就是使用事务，若付款成功，发放商品失败，此时将第一个操作回滚。</p>
+<h4 id="分布式系统中的数据一致性"><a href="#分布式系统中的数据一致性" class="headerlink" title="分布式系统中的数据一致性"></a>分布式系统中的数据一致性</h4><p>　　在分布式系统中，为了达到<strong>系统容灾和提高系统性能</strong>，数据通常会冗余存储在不同机器，通过复制技术来进行主副本之间的数据同步。所以分布式系统中的数据一致性指的是<strong>集群中主副本数据内容的一致性</strong></p>
+<ul>
+<li><p>由于数据冗余在不同机器中，当集群中部分机器挂掉，也可以正常对外服务，消除单点故障</p>
+</li>
+<li><p>集群中的主副本同时对外提供服务，提高系统对外提供服务的性能</p>
+</li>
+</ul>
+<h3 id="分布式系统数据一致性模型"><a href="#分布式系统数据一致性模型" class="headerlink" title="分布式系统数据一致性模型"></a>分布式系统数据一致性模型</h3><p>　　根据对数据一致性的强弱可以将一致性划分为强一致性、弱一致性和最终一致性三种模型。可以通过一个例子来理解这三种一致性之间的区别与关联。</p>
+<p>　　如某运营号在今日头条对一篇文章做了修改，文章存储于主副数据库，主副数据库均对外提供服务，如下：<br>    <img src="/images/数据一致性.png" alt=""></p>
+<h4 id="强一致性"><a href="#强一致性" class="headerlink" title="强一致性"></a>强一致性</h4><p>　　强一致性指的是当对数据完成更新操作之后，所有客户端访问到的数据均为更新之后的数据，这样可以保证客户端取到的总是最新的数据。要达到强一致性，将会牺牲较大的性能。</p>
+<p>　　对应上述今日头条文章的例子，当运营号修改文章A之后，用户不管是通过应用服务器A访问还是通过应用服务器B访问文章都将访问到最新更新的文章。</p>
+<h4 id="弱一致性"><a href="#弱一致性" class="headerlink" title="弱一致性"></a>弱一致性</h4><p>　　弱一致性指的是当数据完成更新操作之后，系统并不保证所有的客户端访问到的数据为最新数据，但是会尽量保证在某个时间级别（如秒级或分钟级）之后，让数据达到一致性状态。</p>
+<p>　　对应上述今日头条的例子，当运营号修改文章A之后，通过应用服务器B访问的用户并不能保证获取到的一定是最新的文章，但是可以保证在一段时间之后，访问的一定是最新的文章</p>
+<h4 id="最终一致性"><a href="#最终一致性" class="headerlink" title="最终一致性"></a>最终一致性</h4><p>　　最终一致性是弱一致性的一种特例。当对数据更新完之后，保证没有后续更新的前提下，系统最终返回的是上一次更新操作的值。</p>
+<p>　　对应今日头条的例子，当运营号修改文章A之后，通过应用服务器A和B访问的用户最终获取到的文章一定是更新之后的文章。</p>
+<p>最终一致性又衍生出以下几种一致性模型：</p>
+<ul>
+<li>因果一致性：如果A进程在更新之后向B进程通知更新的完成，那么B的访问操作将会返回更新的值。如果没有因果关系的C进程将会遵循最终一致性的规则。</li>
+<li>读己所写一致性：因果一致性的特定形式。一个进程总可以读到自己更新的数据。</li>
+<li>会话一致性：读己所写一致性的特定形式。进程在访问存储系统同一个会话内，系统保证该进程读己之所写。</li>
+<li>单调读一致性：如果一个进程已经读取到一个特定值，那么该进程不会读取到该值以前的任何值。</li>
+<li>单调写一致性：系统保证对同一个进程的写操作串行化。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;分布式系统中的数据一致性问题&quot;&gt;&lt;a href=&quot;#分布式系统中的数据一致性问题&quot; class=&quot;headerlink&quot; title=&quot;分布式系统中的数据一致性问题&quot;&gt;&lt;/a&gt;分布式系统中的数据一致性问题&lt;/h1&gt;&lt;h2 id=&quot;数据一致性&quot;&gt;&lt;a href=&quot;#
+    
+    </summary>
+    
+      <category term="分布式系统基础" scheme="http://yoursite.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="分布式系统" scheme="http://yoursite.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/"/>
+    
+      <category term="一致性" scheme="http://yoursite.com/tags/%E4%B8%80%E8%87%B4%E6%80%A7/"/>
+    
+      <category term="zookeeper" scheme="http://yoursite.com/tags/zookeeper/"/>
+    
+  </entry>
   
   <entry>
     <title>C++输入输出流详细理解</title>
@@ -846,6 +897,38 @@
   </entry>
   
   <entry>
+    <title>Unix网络函数与TCP状态转变之间的关系</title>
+    <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E4%B8%8ETCP%E7%8A%B6%E6%80%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E5%85%B3%E7%B3%BB%E5%AF%B9%E5%BA%94/"/>
+    <id>http://yoursite.com/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/</id>
+    <published>2018-02-04T13:52:40.000Z</published>
+    <updated>2018-02-04T14:15:40.018Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
+<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
+<blockquote>
+<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
+</blockquote>
+<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;a href=&quot;#Unix网络函数与TCP状态转变之间的关系&quot; class=&quot;headerlink&quot; title=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;/a&gt;Unix网络函数与TCP状态转变之间的关系&lt;/
+    
+    </summary>
+    
+      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="connect" scheme="http://yoursite.com/tags/connect/"/>
+    
+      <category term="listen" scheme="http://yoursite.com/tags/listen/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Unix网络编程相关错误码和信号处理</title>
     <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9B%B8%E5%85%B3%E9%94%99%E8%AF%AF%E7%A0%81%E6%80%BB%E7%BB%93/"/>
     <id>http://yoursite.com/2018/02/04/Unix网络编程相关错误码总结/</id>
@@ -905,38 +988,6 @@
       <category term="EINPROGRESS" scheme="http://yoursite.com/tags/EINPROGRESS/"/>
     
       <category term="SIGPIPE" scheme="http://yoursite.com/tags/SIGPIPE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Unix网络函数与TCP状态转变之间的关系</title>
-    <link href="http://yoursite.com/2018/02/04/Unix%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E4%B8%8ETCP%E7%8A%B6%E6%80%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2%E5%85%B3%E7%B3%BB%E5%AF%B9%E5%BA%94/"/>
-    <id>http://yoursite.com/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/</id>
-    <published>2018-02-04T13:52:40.000Z</published>
-    <updated>2018-02-04T14:15:40.018Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
-<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
-<blockquote>
-<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
-</blockquote>
-<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;a href=&quot;#Unix网络函数与TCP状态转变之间的关系&quot; class=&quot;headerlink&quot; title=&quot;Unix网络函数与TCP状态转变之间的关系&quot;&gt;&lt;/a&gt;Unix网络函数与TCP状态转变之间的关系&lt;/
-    
-    </summary>
-    
-      <category term="Unix网络编程" scheme="http://yoursite.com/categories/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="网络编程" scheme="http://yoursite.com/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"/>
-    
-      <category term="connect" scheme="http://yoursite.com/tags/connect/"/>
-    
-      <category term="listen" scheme="http://yoursite.com/tags/listen/"/>
     
   </entry>
   
@@ -1412,58 +1463,6 @@
       <category term="调试工具" scheme="http://yoursite.com/tags/%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/"/>
     
       <category term="strings" scheme="http://yoursite.com/tags/strings/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux调试工具之readelf</title>
-    <link href="http://yoursite.com/2017/12/03/Linux%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E4%B9%8Breadelf/"/>
-    <id>http://yoursite.com/2017/12/03/Linux调试工具之readelf/</id>
-    <published>2017-12-03T02:08:00.000Z</published>
-    <updated>2017-12-04T12:52:03.501Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Linux调试工具之readelf"><a href="#Linux调试工具之readelf" class="headerlink" title="Linux调试工具之readelf"></a>Linux调试工具之readelf</h1><p>readelf命令可以用来查看elf格式文件的信息，与objdump相比,该工具显示的信息较为详细</p>
-<h2 id="elf文件"><a href="#elf文件" class="headerlink" title="elf文件"></a>elf文件</h2><p>ELF(excutable and linking format)是一种对象文件格式，用于定义<strong>不同类型的对象文件中存放了那些东西，以及以什么格式存放</strong>。ELF文件可分为三种：</p>
-<ul>
-<li>可重定位对象文件(relocatable file)</li>
-<li>可执行对象文件(excutable file)</li>
-<li>可被共享的对象文件(shared object file)</li>
-</ul>
-<h3 id="可重定位对象文件"><a href="#可重定位对象文件" class="headerlink" title="可重定位对象文件"></a>可重定位对象文件</h3><p>可重定位对象文件中包含适合于与其他目标文件链接来创建可执行文件或者共享目标文件的代码和数据。一般包括如汇编器汇编生成的.o文件</p>
-<h3 id="可执行文件"><a href="#可执行文件" class="headerlink" title="可执行文件"></a>可执行文件</h3><p>可执行文件是一个可执行文件，此文件规定了exec()如何创建一个程序的进程映像</p>
-<h3 id="可被共享的对象文件"><a href="#可被共享的对象文件" class="headerlink" title="可被共享的对象文件"></a>可被共享的对象文件</h3><p>可被共享的对象文件中包含可在两种上下文中链接的代码和数据。首先链接编辑器可将它与其他可重定位文件和目标文件和可共享目标文件一起处理，生成另外一个目标文件，其次，动态链接器可以将它与某个可执行文件以及其他可共享目标一起组合，创建进程映像。</p>
-<h2 id="readelf调试工具"><a href="#readelf调试工具" class="headerlink" title="readelf调试工具"></a>readelf调试工具</h2><p>readelf参数较多，可直接通过readelf -h获取readelf的所有参数及用法，此处只对其中的几个常用参数以及数据详解。</p>
-<h3 id="readelf-h"><a href="#readelf-h" class="headerlink" title="readelf -h"></a>readelf -h</h3><p>readelf -h参数的作用是读取指定elf文件的头信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">$ readelf -h</div><div class="line">ELF Header:</div><div class="line">  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00</div><div class="line">  Class:                             ELF64</div><div class="line">  Data:                              2&apos;s complement, little endian</div><div class="line">  Version:                           1 (current)</div><div class="line">  OS/ABI:                            UNIX - System V</div><div class="line">  ABI Version:                       0</div><div class="line">  Type:                              EXEC (Executable file)</div><div class="line">  Machine:                           Advanced Micro Devices X86-64</div><div class="line">  Version:                           0x1</div><div class="line">  Entry point address:               0x400800</div><div class="line">  Start of program headers:          64 (bytes into file)</div><div class="line">  Start of section headers:          7344 (bytes into file)</div><div class="line">  Flags:                             0x0</div><div class="line">  Size of this header:               64 (bytes)</div><div class="line">  Size of program headers:           56 (bytes)</div><div class="line">  Number of program headers:         9</div><div class="line">  Size of section headers:           64 (bytes)</div><div class="line">  Number of section headers:         31</div><div class="line">  Section header string table index: 28</div></pre></td></tr></table></figure></p>
-<p><strong>重要参数解释:</strong></p>
-<ul>
-<li>Class : 该elf文件的类型，这里是64位的elf格式</li>
-<li>Data : 该参数指明了文件中数据的组织方式是大端规则还是小端规则，此处为二进制存储的小端规则</li>
-<li>OS/ABI :　生成该文件的操作系统类型,ABI(Application Binary Interface)</li>
-<li>Type : 当前文件的类型,EXEC(可执行文件), REL(可重定位文件)，DYN(可被共享文件)</li>
-<li>Machine : 处理器类型</li>
-<li>Entry point address : 程序的虚拟地址入口点，可执行文件之外的类型该值为0x0</li>
-<li>Start of program headers : 程序头的开始处，从程序入口地址偏移地址开始。程序头table中记录elf文件中段的信息</li>
-<li>Start of section headers : 段头的开始处，从程序入口地址偏移地址开始</li>
-</ul>
-<h3 id="readelf-s"><a href="#readelf-s" class="headerlink" title="readelf -s"></a>readelf -s</h3><p>readelf的作用是用来查看当前elf文件的符号表，符号表中的信息只包括<strong>全局变量和函数名</strong>。<br><strong>动态符号表(.synsym)用来保存与动态链接相关的导入导出符号，不包括模块内的符号;而sy,tab表则保存所有的符号,包括.dynsym中的符号。</strong><br>动态符号表所包含的符号的符号名保存在动态符号字符串表.dynstr中。</p>
-<p>如下所示程序：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="comment">//main.c</span></div><div class="line"><span class="keyword">int</span> g_data;</div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> gs_data;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"hello world"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">static</span> <span class="keyword">int</span> a = <span class="number">0</span>;</div><div class="line">  <span class="keyword">char</span> l_data =<span class="number">0</span>;</div><div class="line">  hello();</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>将上述文件编译汇编成目标文件main.o文件，使用readelf -s main.o，结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">Symbol table &apos;.symtab&apos; contains 15 entries:</div><div class="line">   Num:    Value          Size Type    Bind   Vis      Ndx Name</div><div class="line">     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND</div><div class="line">     1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS main.cpp</div><div class="line">     2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1</div><div class="line">     3: 0000000000000000     0 SECTION LOCAL  DEFAULT    3</div><div class="line">     4: 0000000000000000     0 SECTION LOCAL  DEFAULT    4</div><div class="line">     5: 0000000000000004     4 OBJECT  LOCAL  DEFAULT    4 _ZL7gs_data</div><div class="line">     6: 0000000000000000     0 SECTION LOCAL  DEFAULT    5</div><div class="line">     7: 0000000000000008     4 OBJECT  LOCAL  DEFAULT    4 _ZZ4mainE7ls_data</div><div class="line">     8: 0000000000000000     0 SECTION LOCAL  DEFAULT    7</div><div class="line">     9: 0000000000000000     0 SECTION LOCAL  DEFAULT    8</div><div class="line">    10: 0000000000000000     0 SECTION LOCAL  DEFAULT    6</div><div class="line">    11: 0000000000000000     4 OBJECT  GLOBAL DEFAULT    4 g_data</div><div class="line">    12: 0000000000000000    22 FUNC    GLOBAL DEFAULT    1 _Z5hellov</div><div class="line">    13: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND printf</div><div class="line">    14: 0000000000000016    24 FUNC    GLOBAL DEFAULT    1 main</div></pre></td></tr></table></figure></p>
-<p>可以看出<strong>全局变量,静态全局变量，静态局部变量，全局函数名</strong>都会出现在符号表中,而局部变量不会被保存在符号表中。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Linux调试工具之readelf&quot;&gt;&lt;a href=&quot;#Linux调试工具之readelf&quot; class=&quot;headerlink&quot; title=&quot;Linux调试工具之readelf&quot;&gt;&lt;/a&gt;Linux调试工具之readelf&lt;/h1&gt;&lt;p&gt;readelf命令可
-    
-    </summary>
-    
-      <category term="Linux调试工具" scheme="http://yoursite.com/categories/Linux%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/"/>
-    
-    
-      <category term="调试工具" scheme="http://yoursite.com/tags/%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7/"/>
-    
-      <category term="readelf" scheme="http://yoursite.com/tags/readelf/"/>
     
   </entry>
   

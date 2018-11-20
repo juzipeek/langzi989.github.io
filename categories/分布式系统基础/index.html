@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archives: 2018/11 - 魏传柳</title>
+    <title>Category: 分布式系统基础 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -17,7 +17,7 @@
     
     <meta property="og:type" content="blog">
 <meta property="og:title" content="魏传柳">
-<meta property="og:url" content="http://yoursite.com/archives/2018/11/index.html">
+<meta property="og:url" content="http://yoursite.com/categories/分布式系统基础/index.html">
 <meta property="og:site_name" content="魏传柳">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="魏传柳">
@@ -271,85 +271,6 @@
                     
                         <p>
                             <a href="/2018/11/20/分布式系统数据一致性/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/11/11/C++输入输出流详细理解/">
-                            C++输入输出流详细理解
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-11-11T12:20:04+08:00">
-	
-		    11月 11, 2018
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-学习/">C++ 学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C-输入输出流详细理解"><a href="#C-输入输出流详细理解" class="headerlink" title="C++输入输出流详细理解"></a>C++输入输出流详细理解</h1><p>今天重读C++ Primer时，重新回顾了一下C++中iostream标准库，标准库提供了四个标准输入输出流，包括<strong>输入流cin和输出流cout,cerr,clog</strong>。<strong>cerr通常用来输出警告和错误信息给程序的使用者,而clog对象用于产生程序执行的一般信息。</strong></p>
-<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">extern</span> istream <span class="built_in">cin</span>;           <span class="comment">/// Linked to standard input</span></div><div class="line"><span class="keyword">extern</span> ostream <span class="built_in">cout</span>;          <span class="comment">/// Linked to standard output</span></div><div class="line"><span class="keyword">extern</span> ostream <span class="built_in">cerr</span>;          <span class="comment">/// Linked to standard error (unbuffered)</span></div><div class="line"><span class="keyword">extern</span> ostream <span class="built_in">clog</span>;          <span class="comment">/// Linked to standard error (buffered)</span></div></pre></td></tr></table></figure>
-<h2 id="标准输入流"><a href="#标准输入流" class="headerlink" title="标准输入流"></a>标准输入流</h2><p>iostream标准库中标准输入流中只有cin一个，指的是从输入设备(如键盘)中向程序输入数据，程序通过cin从标准输入流中获取数据。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> s;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cin</span> &gt;&gt; s;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; s &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="标准输出流"><a href="#标准输出流" class="headerlink" title="标准输出流"></a>标准输出流</h2><p>iostream标准库中提供的输出流有cout,cerr,以及clog三个。</p>
-<h3 id="cout-cerr与clog区别"><a href="#cout-cerr与clog区别" class="headerlink" title="cout,cerr与clog区别"></a>cout,cerr与clog区别</h3><p>这三个输出流到底有什么区别呢？根据GNU官方的解释，其区别如下：</p>
-<ul>
-<li>cout : 输出数据经过缓冲区(buffered[标准输出流的缓冲区])，可被重定向</li>
-<li>cerr: 输出数据不经过缓冲区(unbuffered),不可被重定向</li>
-<li>clog:输出数据经过缓冲区(buffered[标准错误流的缓冲区])，不可被重定向</li>
-</ul>
-<p>参考链接：</p>
-<p><a href="https://gcc.gnu.org/onlinedocs/gcc-4.6.0/libstdc++/api/a00914_source.html" target="_blank" rel="external">https://gcc.gnu.org/onlinedocs/gcc-4.6.0/libstdc++/api/a00914_source.html</a></p>
-<p><a href="https://gcc.gnu.org/onlinedocs/gcc-4.6.0/libstdc++/api/a01140.html#a7e2a2fc4b5924b7292c0566ca4c95463" target="_blank" rel="external">https://gcc.gnu.org/onlinedocs/gcc-4.6.0/libstdc++/api/a01140.html#a7e2a2fc4b5924b7292c0566ca4c95463</a></p>
-<h3 id="实验程序"><a href="#实验程序" class="headerlink" title="实验程序"></a>实验程序</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">// sleep 10s后输出123</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="string">"123"</span>;</div><div class="line">  sleep(<span class="number">10</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// sleep前输出123</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">   <span class="built_in">cerr</span> &lt;&lt; <span class="string">"123"</span>;</div><div class="line">   sleep(<span class="number">10</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// sleep前输出123</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  <span class="built_in">clog</span> &lt;&lt; <span class="string">"123"</span>;</div><div class="line">  sleep(<span class="number">10</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>​    从上面的实验结果可以看出，cout与cerr的行为与上述cout和cerr的区别一致，但是<strong>从现象看clog并没有buffered</strong>，这是什么原因呢？</p>
-<p>​    产生上述现象的原因从上面三个输出流的定义可以看出，<strong>cout是使用的标准输入(stdout)的缓冲区，clog是使用的标准错误流(stderr)的缓冲区</strong>，由于stderr的缓冲区大小默认为0，所以虽然clog输出流有缓冲，但是缓冲区大小为0,所以上述效果与无缓冲一致。</p>
-<p>​    可通过设置标准错误流的缓冲区来达到clog缓冲的效果。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="keyword">char</span> buffer[<span class="number">256</span>];</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  setbuf(<span class="built_in">stderr</span>, buffer);</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">clog</span> &lt;&lt; <span class="string">"123"</span>;</div><div class="line">  sleep(<span class="number">10</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="endl与-n区别"><a href="#endl与-n区别" class="headerlink" title="endl与\n区别"></a>endl与\n区别</h3><p>​    在使用endl与\n的作用相同，但是还是有一些区别的。</p>
-<ul>
-<li>对于无缓冲的输出流如cerr，endl与\n完全一致。</li>
-<li>对于带缓冲的输出流cout和clog，\n仅仅输出换行,而endl除了输出换行之外，还刷新输出流或错误流缓冲区。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">// 直接打印到屏幕上：在sleep前输出123</span></div><div class="line"><span class="comment">// 重定向到  文件中: 在sleep前输出123</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"123"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  sleep(<span class="number">3</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 直接打印到屏幕上：在sleep前输出123</span></div><div class="line"><span class="comment">// 重定向到文件中  : 在sleep后输出123</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"123\n"</span>;</div><div class="line">  sleep(<span class="number">3</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>既然\n不刷新缓冲区，那为什么第二个程序在输出到terminal的时候会在sleep前打印123呢？这是由于<strong>当打印到屏幕上的时候，输出流的缓冲为行缓冲，当重定向到文件中时候，输出流缓冲为全缓冲</strong></p>
-<h3 id="行缓冲与全缓冲"><a href="#行缓冲与全缓冲" class="headerlink" title="行缓冲与全缓冲"></a>行缓冲与全缓冲</h3><p>从上面可以看出标准输出在输出到屏幕和输出到文件中默认的缓冲类型不一致，当输出到屏幕的时候，为行缓冲；当输出到文件的时候为全缓冲。</p>
-<ul>
-<li>全缓冲：填满标准I/O缓冲区才进行实际的I/O操作。</li>
-<li>行缓冲：当缓冲区内容遇到换行时，即进行实际的I/O操作。</li>
-</ul>
-<p>所以当cout打印到屏幕上的时候，使用cout&lt;&lt;”\n”，也会立即显示结果。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/11/11/C++输入输出流详细理解/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
