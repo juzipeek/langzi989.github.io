@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archivos - 魏传柳</title>
+    <title>Archives - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,84 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/11/28/CAP定理与Base理论/">
+                            分布式系统CAP定理与BASE理论
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-11-28T22:37:19+08:00">
+	
+		    11月 28, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/分布式系统基础/">分布式系统基础</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="分布式系统CAP定理与BASE理论"><a href="#分布式系统CAP定理与BASE理论" class="headerlink" title="分布式系统CAP定理与BASE理论"></a>分布式系统CAP定理与BASE理论</h1><h2 id="CAP定理"><a href="#CAP定理" class="headerlink" title="CAP定理"></a>CAP定理</h2><p>在计算机科学中，CAP定理指出，对于一个分布式系统，不能同时满足一下三点，最多只能同时满足其中两点：</p>
+<ul>
+<li>一致性(Consistency)：在分布式系统环境下，数据在多台机器上有多个副本。当对数据执行更新操作时，数据更新操作完成后，所有节点<strong>在同一时间的数据完全一致</strong>，客户端读取的数据永远是更新后的最新数据。</li>
+<li>可用性(<strong>A</strong>vailability) : 服务一直可用，即<strong>对于客户端每次读或写请求都能在有限时间内得到正确的响应</strong>，但不保证获取的数据为最新数据。 “有限时间内”是指对于客户端的每一个操作请求，系统必能够在指定的时间内返回对应的处理结果，如果超过了这个时间范围，系统将被认为是不可用的。</li>
+<li>分区容错性(Partition tolerance) : 在<strong>网络分区出现故障时保证系统不受影响</strong>，仍让可以对外提供一致性和可用性服务。网络分区出现故障通常指的是节点之间的网络故障，但是节点内部网络是完好的，这种情况导致的问题就是节点之间无法进行数据复制。</li>
+</ul>
+<h4 id="CAP定理简单证明"><a href="#CAP定理简单证明" class="headerlink" title="CAP定理简单证明"></a>CAP定理简单证明</h4><p>由于分布式系统中多个节点分布在不同的机器（当然也可以是单台机器上的多个节点），节点之间通过网络进行通信，由于网络不完全可靠，所以在分布式系统中我们<strong>必须要满足分区容错性</strong>。若要舍弃分区容错性，也就是只有一个分区，何谈分布式系统，所以下面的讨论总是围绕分区容错性来讨论。当网络分区出现故障的时候，我们可以通过一定策略来达到一致性或可用性的要求。</p>
+<p> 一个简单的分布式系统如下：系统中有两个节点对外提供服务，Server1和Server2，Server1和Server2各自维护和访问自己的数据库DB1和DB2，DB1和DB2数据通过复制技术保证数据之间的同步。</p>
+<p><img src="/images/cap理论.png" alt=""></p>
+<p>在理想情况下，即同时满足CAP的情况，DB1和DB2的数据是完全一致的，Server1与Server2可以同时对外提供服务，用户不管是请求server1还是请求server2，都会得到立即响应，并且获取的数据是完全一致且为最新数据。</p>
+<p>但是现实中不可能出现这么理想的情况，当DB1和DB2之间网络发声故障时，此时有用户向Server1发送数据更新请求，DB1数据更新后无法将最新数据同步到DB2，此时DB2中存储的任然是旧数据；这个时候，有用户向Server2发送读数据请求，由于数据还没有同步，应用程序无法将最新的数据返回给用户，这个时候有两种选择：</p>
+<ul>
+<li>牺牲数据一致性，保证服务可用性。Server返回DB2中的旧数据给用户</li>
+<li>牺牲服务可用性，保证数据一致性。阻塞服务请求，直到故障恢复，DB1与DB2数据同步完成之后再恢复提供服务。</li>
+</ul>
+<p>从上面分析可以看出，分布式系统不可能同时满足CAP。在实际应用的过程中，由于不能同时满足CAP,我们必须舍弃其中之一，由于P是所有分布式系统中不许满足的，所以最后需要在C和A之间做个取舍。</p>
+<p>在大多数的分布式数据库中（如redis、Hbase等），往往是优先保证CP，因为无论是分布式系统还是想zooKeeper这种分布式协调组件，数据一致性往往是他们最基本的要求。</p>
+<p>对于需要保证高可用性的系统，将舍弃数据一致性而保证服务的高可用性。如12306</p>
+<h2 id="Base理论"><a href="#Base理论" class="headerlink" title="Base理论"></a>Base理论</h2><p>Base理论是Basically Available（基本可用）、Soft state（软状态）、Eventually consistent（最终一致性）的缩写；它基于CAP定理逐步演化来的，它是CAP中一致性和可用性权衡的结果，其核心思想是即使系统无法达到强一致性，可以<strong>根据应用自身的业务特点，采用适当的方式来使系统达到最终一致性</strong>。</p>
+<h4 id="基本可用（Basically-Available）"><a href="#基本可用（Basically-Available）" class="headerlink" title="基本可用（Basically Available）"></a>基本可用（Basically Available）</h4><p>基本可用是指当分布式系统发生故障的时候，允许损失部分可用性。常见的有以下几种情况：</p>
+<ul>
+<li>响应时间上的损失：正常情况下，一个在线搜索引擎需要再0.5秒之内返回给用户响应的查询结果，但由于出现故障，查询结果的响应时间增加到了1~2秒。</li>
+<li>功能上的损失：通常的做法是<strong>降级服务</strong>，如对于展示一些有序元素的页面，但部分组件出现故障时，这个时候可不展示有序元素，降级为无序元素列表。</li>
+</ul>
+<h4 id="软状态"><a href="#软状态" class="headerlink" title="软状态"></a>软状态</h4><p>软状态是指允许系统中的数据存在中间状态，并认为该中间状态的存在不影响系统的整体可用性，即允许系统不同节点的数据副本之间进行数据同步的过程中存在延时。</p>
+<h4 id="最终一致性"><a href="#最终一致性" class="headerlink" title="最终一致性"></a>最终一致性</h4><p>最终一致性强调的是系统所有的数据副本，在经过一段时间的同步后，最终能够达到一个一致的状态。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要试试保证系统数据的强一致性。 具体最终一致性的实现方法见之前一致性相关博客：</p>
+<p><a href="https://langzi989.github.io/2018/11/20/分布式系统数据一致性/]" target="_blank" rel="external">https://langzi989.github.io/2018/11/20/分布式系统数据一致性/</a></p>
+<p>参考链接：</p>
+<p><a href="http://robertgreiner.com/2014/08/cap-theorem-revisited/" target="_blank" rel="external">http://robertgreiner.com/2014/08/cap-theorem-revisited/</a></p>
+<p><a href="https://www.hollischuang.com/archives/666" target="_blank" rel="external">https://www.hollischuang.com/archives/666</a></p>
+<p><a href="https://yq.aliyun.com/articles/240630" target="_blank" rel="external">https://yq.aliyun.com/articles/240630</a></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/11/28/CAP定理与Base理论/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/11/20/分布式系统数据一致性/">
                             分布式系统中的数据一致性问题
                         </a>
@@ -224,11 +302,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-11-20T22:36:19+08:00">
 	
-		    20 11月 2018
+		    11月 20, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/分布式系统基础/">分布式系统基础</a>
 
@@ -271,7 +349,7 @@
                     
                         <p>
                             <a href="/2018/11/20/分布式系统数据一致性/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -296,11 +374,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-11-11T12:20:04+08:00">
 	
-		    11 11月 2018
+		    11月 11, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-学习/">C++ 学习</a>
 
@@ -350,7 +428,7 @@
                     
                         <p>
                             <a href="/2018/11/11/C++输入输出流详细理解/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -375,11 +453,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-09-12T22:46:32+08:00">
 	
-		    12 9月 2018
+		    9月 12, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Unix脚本语言/">Unix脚本语言</a>
 
@@ -823,7 +901,7 @@
                     
                         <p>
                             <a href="/2018/09/12/awk学习/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -848,11 +926,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-07-08T18:40:00+08:00">
 	
-		    08 7月 2018
+		    7月 08, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/计算机通信与安全/">计算机通信与安全</a>
 
@@ -917,7 +995,7 @@
                     
                         <p>
                             <a href="/2018/07/08/CRC循环冗余校验/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -942,11 +1020,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-07-05T00:10:31+08:00">
 	
-		    05 7月 2018
+		    7月 05, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -973,7 +1051,7 @@
                     
                         <p>
                             <a href="/2018/07/05/pthread使用barrier栅栏方式同步/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -998,11 +1076,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-07-04T23:50:20+08:00">
 	
-		    04 7月 2018
+		    7月 04, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -1025,7 +1103,7 @@
                     
                         <p>
                             <a href="/2018/07/04/Linux文件描述符限制/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -1050,11 +1128,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-07-04T23:47:20+08:00">
 	
-		    04 7月 2018
+		    7月 04, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-学习/">C++ 学习</a>
 
@@ -1086,7 +1164,7 @@
                     
                         <p>
                             <a href="/2018/07/04/C++作用域运算符/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -1111,11 +1189,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-04-17T16:17:08+08:00">
 	
-		    17 4月 2018
+		    4月 17, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-学习/">C++学习</a>
 
@@ -1146,7 +1224,7 @@
                     
                         <p>
                             <a href="/2018/04/17/C++类型转换操作符/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -1171,11 +1249,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-02-26T23:52:40+08:00">
 	
-		    26 2月 2018
+		    2月 26, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Unix脚本语言/">Unix脚本语言</a>
 
@@ -1269,60 +1347,7 @@
                     
                         <p>
                             <a href="/2018/02/26/Unix脚本语言之TCL/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/">
-                            Unix网络函数与TCP状态转变之间的关系
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
-	
-		    04 2月 2018
-    	
-    </time>
-    
-        <span>en </span>
-        
-    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
-<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
-<blockquote>
-<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
-</blockquote>
-<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -1338,12 +1363,12 @@
         
         <li class="pagination-next">
             <a class="btn btn--default btn--small" href="/archives/page/2/">
-                    <span>ARTÍCULOS ANTERIORES</span>
+                    <span>OLDER POSTS</span>
                 <i class="fa fa-angle-right text-base icon-ml"></i>
             </a>
         </li>
         
-        <li class="pagination-number">página 1 de 10</li>
+        <li class="pagination-number">page 1 of 10</li>
     </ul>
 </div>
 

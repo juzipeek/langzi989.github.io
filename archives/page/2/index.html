@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archivos - 魏传柳</title>
+    <title>Archives - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,59 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/">
+                            Unix网络函数与TCP状态转变之间的关系
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
+	
+		    2月 04, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="Unix网络函数与TCP状态转变之间的关系"><a href="#Unix网络函数与TCP状态转变之间的关系" class="headerlink" title="Unix网络函数与TCP状态转变之间的关系"></a>Unix网络函数与TCP状态转变之间的关系</h1><h2 id="connect函数导致状态转变"><a href="#connect函数导致状态转变" class="headerlink" title="connect函数导致状态转变"></a>connect函数导致状态转变</h2><h3 id="client状态变化："><a href="#client状态变化：" class="headerlink" title="client状态变化："></a>client状态变化：</h3><p>connect函数导致当前<strong>client套接字从CLOSED(初始状态)转移到SYN_SENT状态，若成功则再转移到ESTIBLISHED状态，若失败，则回到CLOSED状态</strong>。</p>
+<h3 id="server-TCP状态变化："><a href="#server-TCP状态变化：" class="headerlink" title="server TCP状态变化："></a>server TCP状态变化：</h3><p>当client发送SYN分节，server接收成功并返回SYN分节之后，<strong>server套接字将从LISTEN状态转移到SYN_RCVD状态，</strong>server发送SYN分节之后，client返回ACK到server，<strong>Server套接字状态从SYN_RCVD状态转变为ESTIBLISHED状态。</strong></p>
+<blockquote>
+<p> 注意：<strong>若connect失败，必须调用close函数将当前socket关闭，不可再次调用connect函数。若需重试，则关闭后重新创建socket进行connect操作</strong></p>
+</blockquote>
+<h3 id="listen函数导致状态转变"><a href="#listen函数导致状态转变" class="headerlink" title="listen函数导致状态转变"></a>listen函数导致状态转变</h3><p>listen函数把一个未连接的套接字转换成一个被动套接字，调用listen导致套接字<strong>从CLOSED状态转变为LISTENED状态</strong></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2018/02/04/Unix网络相关函数与TCP状态之间的转换关系对应/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/02/04/Unix网络编程相关错误码总结/">
                             Unix网络编程相关错误码和信号处理
                         </a>
@@ -224,11 +277,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-02-04T21:52:40+08:00">
 	
-		    04 2月 2018
+		    2月 04, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
 
@@ -277,7 +330,7 @@
                     
                         <p>
                             <a href="/2018/02/04/Unix网络编程相关错误码总结/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -302,11 +355,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-02-01T20:05:01+08:00">
 	
-		    01 2月 2018
+		    2月 01, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -365,7 +418,7 @@
                     
                         <p>
                             <a href="/2018/02/01/Linux netstat命令详解/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -390,11 +443,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-28T15:20:00+08:00">
 	
-		    28 1月 2018
+		    1月 28, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -434,7 +487,7 @@
                     
                         <p>
                             <a href="/2018/01/28/Unix信号之sigaction函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -459,11 +512,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-26T18:30:00+08:00">
 	
-		    26 1月 2018
+		    1月 26, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -528,7 +581,7 @@
                     
                         <p>
                             <a href="/2018/01/26/C语言判断主机字节序大端规则或小端规则方法/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -553,11 +606,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-26T17:30:08+08:00">
 	
-		    26 1月 2018
+		    1月 26, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -602,7 +655,7 @@
                     
                         <p>
                             <a href="/2018/01/26/C语言pack与aligned的区别/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -627,11 +680,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-06T20:31:31+08:00">
 	
-		    06 1月 2018
+		    1月 06, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/Linux环境高级编程/">Linux环境高级编程</a>
 
@@ -682,7 +735,7 @@
                     
                         <p>
                             <a href="/2018/01/06/Unix中fcntl实现对文件加锁功能/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -707,11 +760,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-01T17:51:00+08:00">
 	
-		    01 1月 2018
+		    1月 01, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -739,7 +792,7 @@
                     
                         <p>
                             <a href="/2018/01/01/C中记录基础库从32位到64位机器移植导致的一些问题/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -764,11 +817,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-01T15:00:00+08:00">
 	
-		    01 1月 2018
+		    1月 01, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -800,7 +853,7 @@
                     
                         <p>
                             <a href="/2018/01/01/C中va_list类型在32位和64位机器的区别与使用/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -825,11 +878,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2018-01-01T12:59:59+08:00">
 	
-		    01 1月 2018
+		    1月 01, 2018
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/C-problems/">C++ problems</a>
 
@@ -867,78 +920,7 @@
                     
                         <p>
                             <a href="/2018/01/01/C中snprintf与vsnprintf函数/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/12/10/Linux调试工具之strings/">
-                            Linux调试工具之strings
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-12-10T18:40:00+08:00">
-	
-		    10 12月 2017
-    	
-    </time>
-    
-        <span>en </span>
-        
-    <a class="category-link" href="/categories/Linux调试工具/">Linux调试工具</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="Linux调试工具之strings"><a href="#Linux调试工具之strings" class="headerlink" title="Linux调试工具之strings"></a>Linux调试工具之strings</h1><h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>strings命令的作用是查找指定<strong>文本文件或者二进制文件</strong>中的可打印字符串。默认打印字符串长度大于等于4的字符串。</p>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
-<li>-a : 搜索整个文件，而不仅仅是数据段，以寻找可显示的字符串。如果省略这个标志，那么 strings 命令只在对象文件的初始化数据空间内寻找。</li>
-<li>-n number(-number):指定寻找打印字符串的最小长度，默认最小长度为4,可以通过此参数设置最小长度为1或2等。最长不能超过4096</li>
-<li>-o : 显示可打印字符串以及可打印字符串在文件中的位置，位置以８进制形式显示。</li>
-<li>-t format:显示可打印字符串以及可打印字符串在文件中的位置，format可指定显示位置的格式是(o)8,(d)10,(x)16进制。</li>
-</ul>
-<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span> l_data =<span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> a = <span class="number">0</span>;</div><div class="line"> a;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ol>
-<li><p>直接使用stirngs,默认只显示长度大于等于4的可打印字符串</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ strings main.cpp</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">int main() &#123;</div><div class="line">  char l_data =0;</div><div class="line">  int a = 0;</div><div class="line">  return 0;</div></pre></td></tr></table></figure>
-</li>
-<li><p>-n参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$strings -1 main.cpp</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">int main() &#123;</div><div class="line">  char l_data =0;</div><div class="line">  int a = 0;</div><div class="line"> a;</div><div class="line">  return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>-o 参数</p>
-</li>
-</ol>
-<p>前面为其在文件中的8进制位置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$strings -o main.cpp</div><div class="line">0 #include &lt;stdio.h&gt;</div><div class="line">24 int main() &#123;</div><div class="line">41   char l_data =0;</div><div class="line">63   int a = 0;</div><div class="line">104   return 0;</div></pre></td></tr></table></figure></p>
-<ol>
-<li>-t format参数<br>-t o参数与-o参数作用一样</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$strings -t d main.cpp</div><div class="line">0 #include &lt;stdio.h&gt;</div><div class="line">20 int main() &#123;</div><div class="line">33   char l_data =0;</div><div class="line">51   int a = 0;</div><div class="line">68   return 0;</div></pre></td></tr></table></figure>
-<h2 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h2><p>当我们将多个文件编译到一个库文件或者可执行文件的时候，我们可以通过strings命令查看新增文件的一些可打印字符串是否在库中，来判断该文件是否已经编译到库中。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/12/10/Linux调试工具之strings/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -956,19 +938,19 @@
                 <a class="btn btn--default btn--small" href="/ ">
             
                 <i class="fa fa-angle-left text-base icon-mr"></i>
-                    <span>ARTÍCULOS RECIENTES</span>
+                    <span>NEWER POSTS</span>
             </a>
         </li>
         
         
         <li class="pagination-next">
             <a class="btn btn--default btn--small" href="/archives/page/3/">
-                    <span>ARTÍCULOS ANTERIORES</span>
+                    <span>OLDER POSTS</span>
                 <i class="fa fa-angle-right text-base icon-ml"></i>
             </a>
         </li>
         
-        <li class="pagination-number">página 2 de 10</li>
+        <li class="pagination-number">page 2 of 10</li>
     </ul>
 </div>
 

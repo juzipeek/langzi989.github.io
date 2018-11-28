@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Archivos - 魏传柳</title>
+    <title>Archives - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,6 +216,69 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/">
+                            通过/proc/stat计算linux系统即时CPU使用率
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-12-19T06:03:09+08:00">
+	
+		    12月 19, 2016
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="通过-proc-stat计算linux系统即时CPU使用率"><a href="#通过-proc-stat计算linux系统即时CPU使用率" class="headerlink" title="通过/proc/stat计算linux系统即时CPU使用率"></a>通过/proc/stat计算linux系统即时CPU使用率</h1><h2 id="proc-stat"><a href="#proc-stat" class="headerlink" title="/proc/stat"></a>/proc/stat</h2><p>/proc文件系统是一个伪文件系统，它存在于内存中，不占用外存空间。它以文件系统的方式为内核与进程提供通信接口。用户和应用程序可以通过/proc得到系统的信息，并可以改变内核的某些参数。由于系统的信息，如进程是动态改变的，所以用户或应用程序读取/proc目录中的文件的时，/proc文件系统是动态从系统内核读出所需信息并提交的。<br>在linux或Ubuntu系统中，/proc/stat文件记录了所有CPU活动的信息，该文件中的所有值都是从系统启动开始累计到当前的值。我们可以通过一个较小的时间段的CPU利用率值来估算某一个时刻的CPU利用率。首先我们先来查看一下/proc/stat中的内容：<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ cat /proc/stat</div><div class="line">cpu  <span class="number">15543</span> <span class="number">334</span> <span class="number">4963</span> <span class="number">142337</span> <span class="number">3413</span> <span class="number">0</span> <span class="number">180</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu0 <span class="number">3877</span> <span class="number">142</span> <span class="number">1137</span> <span class="number">35988</span> <span class="number">615</span> <span class="number">0</span> <span class="number">28</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu1 <span class="number">3866</span> <span class="number">23</span> <span class="number">1068</span> <span class="number">35982</span> <span class="number">608</span> <span class="number">0</span> <span class="number">74</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu2 <span class="number">4104</span> <span class="number">159</span> <span class="number">1333</span> <span class="number">35395</span> <span class="number">735</span> <span class="number">0</span> <span class="number">59</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div><div class="line">cpu3 <span class="number">3695</span> <span class="number">9</span> <span class="number">1424</span> <span class="number">34970</span> <span class="number">1454</span> <span class="number">0</span> <span class="number">18</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></div></pre></td></tr></table></figure></p>
+<p>上面的信息中前八个是比较重要的。</p>
+<ul>
+<li>user(15543): 从系统启动到当前时刻，处于用户态的时间(用户空间的CPU时间)，不包括nice为负值的进程。</li>
+<li>nice(334): 从系统启动到当前时刻，nice值为负的进程所占的CPU时间。</li>
+<li>system(4963): 从系统启动到当前时刻，处于内核状态的CPU时间。</li>
+<li>idle(142337): 从系统启动到当前时刻，除了I/O等待时间以外的其他等待时间</li>
+<li>iowait(3413): ~，IO等待时间</li>
+<li>irq(0): ~, 硬中断时间</li>
+<li>softrq(180): ~,软中断时间。</li>
+<li>steal: ~,在虚拟环境中运行的时间。</li>
+</ul>
+<blockquote>
+<p>总的CPU时间为：total = user+nice+system+idle+iowait+irq+softrq</p>
+</blockquote>
+<h2 id="计算当前时刻的CPU使用率"><a href="#计算当前时刻的CPU使用率" class="headerlink" title="计算当前时刻的CPU使用率"></a>计算当前时刻的CPU使用率</h2><p>我们使用距离当前时刻较小的间隔的时间段的CPU使用率近似当前时刻的CPU使用率。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">CPU Usage=1 - (△idle+△iowait) / △total_time</div><div class="line">		 =1 - (idle2+iowait2 - idle1 - iowait1) / (total_time2 - total_time1)</div></pre></td></tr></table></figure></p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2016/12/19/通过-proc-stat计算linux系统即时CPU使用率/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/12/19/linux进程nice值及其与优先级的关系/">
                             linux进程nice值及其与优先级的关系
                         </a>
@@ -224,11 +287,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-19T04:25:04+08:00">
 	
-		    19 12月 2016
+		    12月 19, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/linux笔记/">linux笔记</a>
 
@@ -262,7 +325,7 @@
                     
                         <p>
                             <a href="/2016/12/19/linux进程nice值及其与优先级的关系/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -287,11 +350,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-16T23:48:06+08:00">
 	
-		    16 12月 2016
+		    12月 16, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -338,7 +401,7 @@
                     
                         <p>
                             <a href="/2016/12/16/tornado表单与模板/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -363,11 +426,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-05T22:18:06+08:00">
 	
-		    05 12月 2016
+		    12月 05, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -416,7 +479,7 @@
                     
                         <p>
                             <a href="/2016/12/05/tornado入门-简单的web服务/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -441,11 +504,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-04T20:22:48+08:00">
 	
-		    04 12月 2016
+		    12月 04, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -476,7 +539,7 @@
                     
                         <p>
                             <a href="/2016/12/04/迭代器和简单的生成器/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -501,11 +564,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-03T22:08:04+08:00">
 	
-		    03 12月 2016
+		    12月 03, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -548,7 +611,7 @@
                     
                         <p>
                             <a href="/2016/12/03/python-yield使用浅析/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -573,11 +636,11 @@
                 <div class="postShorten-meta">
     <time itemprop="datePublished" datetime="2016-12-02T21:43:51+08:00">
 	
-		    02 12月 2016
+		    12月 02, 2016
     	
     </time>
     
-        <span>en </span>
+        <span>in </span>
         
     <a class="category-link" href="/categories/python学习/">python学习</a>
 
@@ -630,7 +693,7 @@
                     
                         <p>
                             <a href="/2016/12/02/python装饰其入门/#post-footer" class="postShorten-excerpt_link link">
-                                Comentar y compartir
+                                Comment and share
                             </a>
                         </p>
                     
@@ -648,12 +711,12 @@
                 <a class="btn btn--default btn--small" href="/archives/page/9/">
             
                 <i class="fa fa-angle-left text-base icon-mr"></i>
-                    <span>ARTÍCULOS RECIENTES</span>
+                    <span>NEWER POSTS</span>
             </a>
         </li>
         
         
-        <li class="pagination-number">página 10 de 10</li>
+        <li class="pagination-number">page 10 of 10</li>
     </ul>
 </div>
 
