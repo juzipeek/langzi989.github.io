@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-11-28T14:39:56.533Z</updated>
+  <updated>2019-01-01T14:35:53.523Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,80 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>uname命令解析</title>
+    <link href="http://yoursite.com/2018/12/25/uname%E5%91%BD%E4%BB%A4%E8%AF%B4%E6%98%8E/"/>
+    <id>http://yoursite.com/2018/12/25/uname命令说明/</id>
+    <published>2018-12-25T12:25:01.000Z</published>
+    <updated>2019-01-01T14:35:53.523Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="uname命令解析"><a href="#uname命令解析" class="headerlink" title="uname命令解析"></a>uname命令解析</h1><blockquote>
+<p>使用uname命令可以帮助我们了解当前使用的系统的硬件信息，内核信息，处理器信息和当前使用的系统信息等。该命令可以在Fedora, Debian, CentOS, SUSE Linux 或者其他Linux操作系统的发行版本上运行。</p>
+</blockquote>
+<p>uname命令的使用方法在网络上已经有很多，甚至直接使用<strong>man uname</strong>命令就可以获取uname的用法，所以不再赘述，本文主要记录uname打印的信息的具体信息的分析。</p>
+<h2 id="1-查看内核信息"><a href="#1-查看内核信息" class="headerlink" title="1. 查看内核信息"></a>1. 查看内核信息</h2><blockquote>
+<p>内核简单的理解就是硬件与用户程序之间的一层系统软件，它为应用程序提供了对计算机硬件访问的一套统一的接口，使得应用程序设计和编写更加简介和易用。</p>
+</blockquote>
+<h4 id="1-1-查看内核名称"><a href="#1-1-查看内核名称" class="headerlink" title="1.1 查看内核名称"></a>1.1 查看内核名称</h4><p>uname -s[–sysname]<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ uname -s</div><div class="line">Linux</div></pre></td></tr></table></figure></p>
+<p>上述说明当前系统使用的是Linux内核，内核可以分为四大类：<strong>单内核、微内核、混合内核、外内核</strong>，Linux属于单内核。<br>详细可参考博客</p>
+<p><a href="https://blog.csdn.net/ciahi/article/details/1630083" target="_blank" rel="external">https://blog.csdn.net/ciahi/article/details/1630083</a></p>
+<p><a href="https://blog.csdn.net/force_eagle/article/details/8729675" target="_blank" rel="external">https://blog.csdn.net/force_eagle/article/details/8729675</a></p>
+<h4 id="1-2-查看内核发行版本"><a href="#1-2-查看内核发行版本" class="headerlink" title="1.2 查看内核发行版本"></a>1.2 查看内核发行版本</h4><p>uname -r[–kernel-release]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ uname -r</div><div class="line">4.4.0-97-generic</div></pre></td></tr></table></figure>
+<p>上述结果表示你使用的Linux内核版本为4.4版本的内核。下面解释一下每个数字对应的含义：</p>
+<ul>
+<li>4  : 内核版本</li>
+<li>4  : 主要修订版本</li>
+<li>0  : 次要修订版本</li>
+<li>97 : Bug fix版本号</li>
+<li>generic : 当前内核版本为通用版本，另有表示不同含义的server（服务器版本）、i386（针对老式英特尔处理器），或使用者定制的版本。</li>
+</ul>
+<h4 id="1-3-查看内核版本"><a href="#1-3-查看内核版本" class="headerlink" title="1.3 查看内核版本"></a>1.3 查看内核版本</h4><p>uname -v[–kernel-version]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ uname -v</div><div class="line">#1 SMP Wed Nov 19 10:24:30 CST 2014</div></pre></td></tr></table></figure>
+<ul>
+<li>SMP: 对称多处理机，表示内核支持多核、多处理器</li>
+<li>Wed Nov 19 10:24:30 CST 2014 : 内核的编译时间(build date)为(2014/11/19 10:24:30)</li>
+</ul>
+<h2 id="2-硬件与处理器信息"><a href="#2-硬件与处理器信息" class="headerlink" title="2. 硬件与处理器信息"></a>2. 硬件与处理器信息</h2><h4 id="2-1-查看硬件名称"><a href="#2-1-查看硬件名称" class="headerlink" title="2.1 查看硬件名称"></a>2.1 查看硬件名称</h4><p>uname -m[–machine]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ uname -m</div><div class="line">i686</div></pre></td></tr></table></figure>
+<p>该命令打印硬件名称，我们可以通过此属性<strong>判断操作系统的架构</strong>。</p>
+<ul>
+<li>x86_64 : 64位系统</li>
+<li>ix86   : 32位系统(x表示3、4、5、6)</li>
+</ul>
+<h4 id="2-2-查看硬件平台"><a href="#2-2-查看硬件平台" class="headerlink" title="2.2 查看硬件平台"></a>2.2 查看硬件平台</h4><p>uname -i[–hardware-platform]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ uname -i</div><div class="line">i386</div></pre></td></tr></table></figure>
+<p>硬件平台告诉我们<strong>构建内核的架构</strong>（可能会针对更高版本进行优化）。</p>
+<h4 id="2-3-查看处理器类型"><a href="#2-3-查看处理器类型" class="headerlink" title="2.3 查看处理器类型"></a>2.3 查看处理器类型</h4><p>uname -p</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ uname -p</div><div class="line">i686</div></pre></td></tr></table></figure>
+<p>该属性表示该机器处理器的类型(CPU)</p>
+<h2 id="3-其他信息"><a href="#3-其他信息" class="headerlink" title="3. 其他信息"></a>3. 其他信息</h2><h4 id="3-1-查看操作系统类型"><a href="#3-1-查看操作系统类型" class="headerlink" title="3.1 查看操作系统类型"></a>3.1 查看操作系统类型</h4><p>uname -o[–operating-system]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">$ uname -o</div><div class="line"></div><div class="line">GNU/Linux</div></pre></td></tr></table></figure>
+<p>该属性表名当前运行的操作系统为GNU/Linux</p>
+<h4 id="3-2-查看主机名"><a href="#3-2-查看主机名" class="headerlink" title="3.2 查看主机名"></a>3.2 查看主机名</h4><p>uname -n[–nodename]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$uname -n</div><div class="line">wing</div></pre></td></tr></table></figure>
+<h4 id="3-3-查看全部信息"><a href="#3-3-查看全部信息" class="headerlink" title="3.3 查看全部信息"></a>3.3 查看全部信息</h4><p>uname -a</p>
+<p>参考链接：<br><a href="http://man.linuxde.net/uname" target="_blank" rel="external">http://man.linuxde.net/uname</a><br><a href="https://blog.csdn.net/digimon/article/details/8607482" target="_blank" rel="external">https://blog.csdn.net/digimon/article/details/8607482</a><br><a href="https://itsfoss.com/find-which-kernel-version-is-running-in-ubuntu/" target="_blank" rel="external">https://itsfoss.com/find-which-kernel-version-is-running-in-ubuntu/</a><br><a href="https://blog.csdn.net/ciahi/article/details/1630083](https://blog.csdn.net/ciahi/article/details/1630083" target="_blank" rel="external">https://blog.csdn.net/ciahi/article/details/1630083](https://blog.csdn.net/ciahi/article/details/1630083</a><br><a href="https://ubuntu.dovov.com/2841/%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%88%91%E7%9A%84pc%E5%92%8Cubuntu%E7%9A%84%E6%9E%B6%E6%9E%84%EF%BC%9F.html" target="_blank" rel="external">https://ubuntu.dovov.com/2841/%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%88%91%E7%9A%84pc%E5%92%8Cubuntu%E7%9A%84%E6%9E%B6%E6%9E%84%EF%BC%9F.html</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;uname命令解析&quot;&gt;&lt;a href=&quot;#uname命令解析&quot; class=&quot;headerlink&quot; title=&quot;uname命令解析&quot;&gt;&lt;/a&gt;uname命令解析&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;使用uname命令可以帮助我们了解当前使用的系统的硬件信息
+    
+    </summary>
+    
+      <category term="linux笔记" scheme="http://yoursite.com/categories/linux%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="uname" scheme="http://yoursite.com/tags/uname/"/>
+    
+      <category term="系统" scheme="http://yoursite.com/tags/%E7%B3%BB%E7%BB%9F/"/>
+    
+      <category term="硬件" scheme="http://yoursite.com/tags/%E7%A1%AC%E4%BB%B6/"/>
+    
+  </entry>
   
   <entry>
     <title>分布式系统CAP定理与BASE理论</title>
@@ -1159,9 +1233,9 @@
     
       <category term="C" scheme="http://yoursite.com/tags/C/"/>
     
-      <category term="sigaction" scheme="http://yoursite.com/tags/sigaction/"/>
-    
       <category term="信号" scheme="http://yoursite.com/tags/%E4%BF%A1%E5%8F%B7/"/>
+    
+      <category term="sigaction" scheme="http://yoursite.com/tags/sigaction/"/>
     
   </entry>
   
@@ -1417,52 +1491,6 @@
     <summary type="html">
     
       &lt;h1 id=&quot;C中va-list在32位和64位机器的区别与差异&quot;&gt;&lt;a href=&quot;#C中va-list在32位和64位机器的区别与差异&quot; class=&quot;headerlink&quot; title=&quot;C中va_list在32位和64位机器的区别与差异&quot;&gt;&lt;/a&gt;C中va_list在3
-    
-    </summary>
-    
-      <category term="C++ problems" scheme="http://yoursite.com/categories/C-problems/"/>
-    
-    
-      <category term="snprintf" scheme="http://yoursite.com/tags/snprintf/"/>
-    
-      <category term="vsnprintf" scheme="http://yoursite.com/tags/vsnprintf/"/>
-    
-      <category term="可变参数" scheme="http://yoursite.com/tags/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>C中snprintf与vsnprintf函数,自定义可变参数格式化字符串</title>
-    <link href="http://yoursite.com/2018/01/01/C%E4%B8%ADsnprintf%E4%B8%8Evsnprintf%E5%87%BD%E6%95%B0/"/>
-    <id>http://yoursite.com/2018/01/01/C中snprintf与vsnprintf函数/</id>
-    <published>2018-01-01T04:59:59.000Z</published>
-    <updated>2018-01-01T05:00:17.575Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="C中snprintf与vsnprintf函数"><a href="#C中snprintf与vsnprintf函数" class="headerlink" title="C中snprintf与vsnprintf函数"></a>C中snprintf与vsnprintf函数</h1><blockquote>
-<p>虽然snprintf函数在开发过程中比较常用,但是其中有一些细节性的问题需要注意。因为snprintf函数不是C中的标准函数，不同的编译器可能对该函数的实现不同，本文说明是基于GCC编译器。</p>
-</blockquote>
-<h2 id="snprintf函数"><a href="#snprintf函数" class="headerlink" title="snprintf函数"></a>snprintf函数</h2><h3 id="函数原型"><a href="#函数原型" class="headerlink" title="函数原型"></a>函数原型</h3><p>snprintf函数的作用是将格式化的数据写入字符串。其函数原型如下:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">snprintf</span>(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">char</span>* format, ...);</div></pre></td></tr></table></figure>
-<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
-<li>buffer : 存储格式化字符串的buffer</li>
-<li>n : 指定格式化字符串的大小,<strong>包括\0</strong></li>
-<li>format : 指定需要格式化字符串的format</li>
-<li>… : 可变参数</li>
-</ul>
-<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>该函数的返回值为其期望字符串的长度，而不是实际存入buffer中的字符串的长度。且<strong>不包括\0</strong>。</p>
-<h3 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h3><p>特别注意函数原型中的第二个参数包括\0的大小，而返回值为期望大小且不包括\0。</p>
-<p>例:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">char</span> buffer[<span class="number">256</span>];</div><div class="line"><span class="comment">//返回值ret = 13,buffer中的内容为123456789</span></div><div class="line"><span class="keyword">int</span> ret = <span class="built_in">snprintf</span>(buffer, <span class="number">10</span>, <span class="string">"%s"</span>, <span class="string">"1234567890abc"</span>);</div><div class="line"></div><div class="line"><span class="built_in">memset</span>(buffer, <span class="number">0x0</span>, <span class="keyword">sizeof</span>(buffer));</div><div class="line"></div><div class="line"><span class="comment">//返回值ret = 3,buffer中的内容为123</span></div><div class="line">ret =<span class="built_in">snprintf</span>(buffer, <span class="number">10</span>, <span class="string">"%s"</span>, <span class="string">"123"</span>);</div></pre></td></tr></table></figure></p>
-<h2 id="snprintf与vsnprintf"><a href="#snprintf与vsnprintf" class="headerlink" title="snprintf与vsnprintf"></a>snprintf与vsnprintf</h2><p>snprintf和vsnprintf都是C语言printf家族函数的成员。实际上，snprintf和vsnprintf功能完全一样，只是vsnprintf将snprintf中的可变参数换成了av_list类型。如下:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">printf</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>; <span class="comment">//输出到标准输出</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fprintf</span><span class="params">(FILE* stream, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>; <span class="comment">//输出到文件</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>;   <span class="comment">//输出到字符串</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">snprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span></span>;   <span class="comment">//输出到字符串</span></div></pre></td></tr></table></figure>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vprintf</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>; <span class="comment">//输出到标准输出</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vfprintf</span><span class="params">(FILE* stream, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>; <span class="comment">//输出到文件</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vsprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>;   <span class="comment">//输出到字符串</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">vsnprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> n, <span class="keyword">const</span> <span class="keyword">char</span>* format, va_list ap)</span></span>;   <span class="comment">//输出到字符串</span></div></pre></td></tr></table></figure>
-<h3 id="va-list获取"><a href="#va-list获取" class="headerlink" title="va_list获取"></a>va_list获取</h3><p>可变参数va_list获取方式通过下列函数获取,并且总是成对调用</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">va_start(va_list ap, last);</div><div class="line">va_end(va_list ap);</div></pre></td></tr></table></figure>
-<h3 id="简单的使用vsnprintf函数实现snprintf"><a href="#简单的使用vsnprintf函数实现snprintf" class="headerlink" title="简单的使用vsnprintf函数实现snprintf"></a>简单的使用vsnprintf函数实现snprintf</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">my_snprintf</span><span class="params">(<span class="keyword">char</span>* buffer, <span class="keyword">int</span> size, <span class="keyword">const</span> <span class="keyword">char</span>* format, ...)</span> </span>&#123;</div><div class="line">  va_list ap;</div><div class="line">  va_start(ap, format);</div><div class="line">  <span class="keyword">int</span> ret = vsnprintf(buffer, size, format, ap);</div><div class="line">  va_end(ap);</div><div class="line">  <span class="keyword">return</span> ret;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;C中snprintf与vsnprintf函数&quot;&gt;&lt;a href=&quot;#C中snprintf与vsnprintf函数&quot; class=&quot;headerlink&quot; title=&quot;C中snprintf与vsnprintf函数&quot;&gt;&lt;/a&gt;C中snprintf与vsnprintf
     
     </summary>
     

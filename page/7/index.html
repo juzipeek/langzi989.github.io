@@ -215,6 +215,57 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/05/30/Unix网络编程之TCP状态转换图/">
+                            TCP状态转换图
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2017-05-30T17:01:00+08:00">
+	
+		    5月 30, 2017
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Unix网络编程/">Unix网络编程</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="TCP状态转换图"><a href="#TCP状态转换图" class="headerlink" title="TCP状态转换图"></a>TCP状态转换图</h1><p>TCP涉及连接建立和连接终止的操作可以用状态转换图来说明。</p>
+<p>TCP为一个连接定义了11中状态，并且规定了如何基于当前状态以及该状态下接收的分节(TCP报文段)从一个状态转换为另一个状态。其状态转换图如下所示：</p>
+<p><img src="/images/TCP状态转化图.jpg" alt=""></p>
+<p>具体转化过程和转换条件如上图所示。</p>
+
+                    
+                        
+                    
+                    
+                        <p>
+                            <a href="/2017/05/30/Unix网络编程之TCP状态转换图/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/05/30/Unix网络编程之TCP的连接与建立过程/">
                             TCP的连接与建立
                         </a>
@@ -979,60 +1030,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/05/22/CprintNULL/">
-                            CprintNULL
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-05-22T23:55:20+08:00">
-	
-		    5月 22, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-problems/">C++ problems</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="printf-s情况下字符串为NULL的输出结果"><a href="#printf-s情况下字符串为NULL的输出结果" class="headerlink" title="printf %s情况下字符串为NULL的输出结果"></a>printf %s情况下字符串为NULL的输出结果</h1><h2 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">printf</span>(<span class="string">"this%s\n"</span>, s);</div><div class="line"><span class="built_in">printf</span>(<span class="string">"%s\n"</span>, s);</div></pre></td></tr></table></figure>
-<p>当s为NULL的时候，执行上面三个语句两个语句执行结果分别为:<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">this(null)</div><div class="line">segment fault</div></pre></td></tr></table></figure></p>
-<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>在ANSI C中没有对printf时字符串为NULL的情况进行明确的定义，所以当出现这种情况时往往是未定义行为。<br>所以上面第一种情况会出现segment fault的情况是一种未定义行为，可能在其他编译器上不会出现段错误。</p>
-<p>上面出现段错误的行为我们可以通过反汇编进行查看。</p>
-<p>反汇编的结果如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">804842</span>d:	c7 <span class="number">04</span> <span class="number">24</span> <span class="number">20</span> <span class="number">85</span> <span class="number">04</span> <span class="number">08</span> 	movl   $<span class="number">0x8048520</span>,(%esp)</div><div class="line"><span class="number">8048434</span>:	e8 <span class="number">0b</span> ff ff ff       	call   <span class="number">8048344</span> &lt;<span class="built_in">printf</span>@plt&gt;</div><div class="line"><span class="number">8048439</span>:	c7 <span class="number">04</span> <span class="number">24</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> 	movl   $<span class="number">0x0</span>,(%esp)</div><div class="line"><span class="number">8048440</span>:	e8 df fe ff ff       	call   <span class="number">8048324</span> &lt;<span class="built_in">puts</span>@plt&gt;</div><div class="line"><span class="number">8048445</span>:	<span class="number">83</span> c4 <span class="number">14</span>             	add    $<span class="number">0x14</span>,%esp</div></pre></td></tr></table></figure>
-<p>从上面可以看出第一个执行被汇编成真正的printf指令，而第二个简单的printf NULL的指令被汇编成puts。<br>所以才出现了上面的结果。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/05/22/CprintNULL/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1062,7 +1059,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2018 魏传柳(2824759538@qq.com). All Rights Reserved.
+        Copyrights &copy; 2019 魏传柳(2824759538@qq.com). All Rights Reserved.
     </span>
     <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
      </script>
