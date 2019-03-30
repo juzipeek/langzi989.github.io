@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="魏传柳">
-    <title>Category: C++学习 - 魏传柳</title>
+    <title>Category: C++ 学习 - 魏传柳</title>
     <meta name="author" content="魏传柳(2824759538@qq.com)">
     
         <meta name="keywords" content="hexo,javascript,">
@@ -216,21 +216,21 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/04/17/C++类型转换操作符/">
-                            类型转换操作符&amp;&amp;C++重载输出流运算符
+                        <a class="link-unstyled" href="/2018/11/11/C++输入输出流详细理解/">
+                            C++输入输出流详细理解
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-04-17T16:17:08+08:00">
+    <time itemprop="datePublished" datetime="2018-11-11T12:20:04+08:00">
 	
-		    4月 17, 2018
+		    11月 11, 2018
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/C-学习/">C++学习</a>
+    <a class="category-link" href="/categories/C-学习/">C++ 学习</a>
 
 
     
@@ -239,201 +239,45 @@
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="类型转换操作符-amp-amp-C-重载输出流运算符"><a href="#类型转换操作符-amp-amp-C-重载输出流运算符" class="headerlink" title="类型转换操作符&amp;&amp;C++重载输出流运算符"></a>类型转换操作符&amp;&amp;C++重载输出流运算符</h1><blockquote>
-<p>在将一种类型转换为另一种类型的时候，直接使用强制类型转换往往不能做到无缝转换，C++提供了类型转换操作符将类转换为特定的类型。</p>
-</blockquote>
-<h2 id="类型转换操作符"><a href="#类型转换操作符" class="headerlink" title="类型转换操作符"></a>类型转换操作符</h2><h3 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span>&#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">  Test(<span class="keyword">int</span> a, <span class="built_in">std</span>::<span class="built_in">string</span> c):_a(a), _c(c) &#123;&#125;</div><div class="line"></div><div class="line">  <span class="comment">//类型转换操作符:将Test转换为int类型</span></div><div class="line">  <span class="function"><span class="keyword">operator</span> <span class="title">int</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;<span class="keyword">return</span> _a;&#125;</div><div class="line"></div><div class="line">  <span class="comment">//Test转换为string类型</span></div><div class="line">  <span class="keyword">operator</span> <span class="built_in">std</span>::<span class="built_in">string</span>() <span class="keyword">const</span> &#123;<span class="keyword">return</span> _c;&#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">  <span class="keyword">int</span> _a;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> _c;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">Test <span class="title">t</span><span class="params">(<span class="number">1</span>, <span class="string">"qwe"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"t="</span> &lt;&lt; t &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;               <span class="comment">//t=1</span></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"t="</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">string</span>(t) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;  <span class="comment">//t=qwe</span></div><div class="line"></div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>从上面可以看出,我们可以通过operator type()来进行类型转换。当同时定义两种类型转换的时候，默认会调用哪一种类型转换呢？<br>这个和C++输出流的实现有关。</p>
-<h2 id="C-重载输出流运算符"><a href="#C-重载输出流运算符" class="headerlink" title="C++重载输出流运算符"></a>C++重载输出流运算符</h2><blockquote>
-<p>在实际运用中，我们通常有将自定义的一个类中的一些信息打印出来的需求，这个时候可以使用重载输出流运算符来实现。<br>而实现的当时有多种，最常见的是通过<strong>友元和全局函数重载输出流运算符</strong></p>
-</blockquote>
-<h3 id="流输出运算符"><a href="#流输出运算符" class="headerlink" title="流输出运算符"></a>流输出运算符</h3><p>在C++中类basic_ostream有成员函数operator&lt;&lt;(int)，而没有成员函数operator &lt;&lt; (const std::string)，<br>故上面有限调用同名的成员函数，所以默认输出int，若同时定义了int和float的类型转换，这个时候就需要强制类型转换，否则会出现二义性。</p>
-<h3 id="使用友元方式重载流输出运算符"><a href="#使用友元方式重载流输出运算符" class="headerlink" title="使用友元方式重载流输出运算符"></a>使用友元方式重载流输出运算符</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class Test&#123;</div><div class="line">public:</div><div class="line">  Test(int a, std::string c):_a(a), _c(c) &#123;&#125;</div><div class="line"></div><div class="line">  friend std::ostream&amp; operator&lt;&lt; (std::ostream&amp; os, const Test&amp; t) &#123;</div><div class="line">    os &lt;&lt; t._a &lt;&lt; &quot; &quot; &lt;&lt; t._c &lt;&lt; std::endl;</div><div class="line">    return os;</div><div class="line">  &#125;</div><div class="line">private:</div><div class="line">  int _a;</div><div class="line">  std::string _c;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  Test t(1, &quot;qwe&quot;);</div><div class="line"></div><div class="line">  std::cout &lt;&lt; t &lt;&lt; std::endl;</div><div class="line">  return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="使用全局重载流输出运算符"><a href="#使用全局重载流输出运算符" class="headerlink" title="使用全局重载流输出运算符"></a>使用全局重载流输出运算符</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span>&#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">  Test(<span class="keyword">int</span> a, <span class="built_in">std</span>::<span class="built_in">string</span> c):_a(a), _c(c) &#123;&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="keyword">int</span> _a;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> _c;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="built_in">std</span>::ostream&amp; <span class="keyword">operator</span> &lt;&lt; (<span class="built_in">std</span>::ostream&amp; os, <span class="keyword">const</span> Test&amp; t) &#123;</div><div class="line">	os &lt;&lt; t._a &lt;&lt; <span class="string">" "</span> &lt;&lt; t._c &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">	<span class="keyword">return</span> os;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">Test <span class="title">t</span><span class="params">(<span class="number">1</span>, <span class="string">"qwe"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; t &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">string</span>(t) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; t &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="类内部重载流输出操作符"><a href="#类内部重载流输出操作符" class="headerlink" title="类内部重载流输出操作符"></a>类内部重载流输出操作符</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span>&#123;</span></div><div class="line"><span class="keyword">public</span>:</div><div class="line">  Test(<span class="keyword">int</span> a, <span class="built_in">std</span>::<span class="built_in">string</span> c):_a(a), _c(c) &#123;&#125;</div><div class="line"></div><div class="line">  <span class="built_in">std</span>::ostream&amp; <span class="keyword">operator</span>&lt;&lt; (<span class="built_in">std</span>::ostream&amp; os) &#123;</div><div class="line">    os &lt;&lt; _a &lt;&lt; <span class="string">" "</span> &lt;&lt; _c &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span> os;</div><div class="line">  &#125;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">  <span class="keyword">int</span> _a;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> _c;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="function">Test <span class="title">t</span><span class="params">(<span class="number">1</span>, <span class="string">"qwe"</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="comment">//注意此时为Test的成员函数，所以要通过成员函数的方法来调用</span></div><div class="line">  t.<span class="keyword">operator</span>&lt;&lt;(<span class="built_in">std</span>::<span class="built_in">cout</span>) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>为什么重载+号运算符不需要使用类成员的方式调用，因为+号运算符的做操作数为当前类。</p>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2018/04/17/C++类型转换操作符/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/11/09/C++截取utf8字符以及字符编码记录/">
-                            C++截取定长utf8字符及字符集与字符编码总结.md
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-11-09T10:20:08+08:00">
-	
-		    11月 09, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-学习/">C++学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C-截取定长utf8字符及字符集与字符编码总结"><a href="#C-截取定长utf8字符及字符集与字符编码总结" class="headerlink" title="C++截取定长utf8字符及字符集与字符编码总结"></a>C++截取定长utf8字符及字符集与字符编码总结</h1><p>之前有个需求要求从一段utf8编码的文字中截取前n个字符，由于文字中包含既有中文又有数字字母等，这些字符所占的字节数都不相同，所以直接截取前Ｍ个字符可能会导致乱码问题。在完成截取之前，需要先了解utf8编码字符的存储规则。后面简单介绍一下常见的字符集及字符编码</p>
-<h2 id="utf8编码规则"><a href="#utf8编码规则" class="headerlink" title="utf8编码规则"></a>utf8编码规则</h2><p>在理解utf8编码规则之前先说一下utf16和utf32的编码规则，utf32规定所有的unicode字符集上的所有字符都是用32bit来存储，即可存储的字符数可达2^32个,接近40亿，这明显可以容纳已有的所有字符。utf16编码使用2个字节存储，超过此范围的使用其他特殊技巧处理。使用utf16和utf32有一个问题，就是会受到计算机存储大端规则和小端规则的影响。所以utf16又有utf16_LE和utf16_BE之分。为了解决这个问题，需要在文本文件的开头定义一个BOM(Byte order Mark)，这是一个非打印标志,用此标志来标志当前文本存储是大端存储还是小端存储。</p>
-<p>utf8是一种针对unicode的可变长度字符编码，也是一种前缀码，它可以表示unicode标准中的任何字符。且与ascii码兼容，这使得我们处理ascii字符的时候不许做特殊修改。</p>
-<p>utf8使用1~6个字符为每个字符编码,但实际使用中只使用了4个。</p>
-<p><strong>utf8编码规则</strong>:</p>
-<p>(1)对于单字节字符,字节的第一位为0，后面7位为这个字符的unicode码，因此对于ascii码，unicode与ascii保持一致。<br>(2)对于n字节符号(n&gt;1),第一个字节的前n位都为1,第n+1位为0,其他字节的前两位都为10,其余位为实际的unicode位。</p>
-<p>规则:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">unicode范围</th>
-<th style="text-align:left">二进制表示范围</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">U-00000000 - U-0000007F</td>
-<td style="text-align:left">0xxxxxxx</td>
-</tr>
-<tr>
-<td style="text-align:center">U-00000080 - U-000007FF</td>
-<td style="text-align:left">110xxxxx 10xxxxxx</td>
-</tr>
-<tr>
-<td style="text-align:center">U-00000800 - U-0000FFFF</td>
-<td style="text-align:left">1110xxxx 10xxxxxx 10xxxxxx</td>
-</tr>
-<tr>
-<td style="text-align:center">U-00010000 - U-001FFFFF</td>
-<td style="text-align:left">11110xxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
-</tr>
-<tr>
-<td style="text-align:center">U-00200000 - U-03FFFFFF</td>
-<td style="text-align:left">111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
-</tr>
-<tr>
-<td style="text-align:center">U-04000000 - U-7FFFFFFF</td>
-<td style="text-align:left">1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
-</tr>
-</tbody>
-</table>
-<p>利用上述utf8编码规则实现C++截取定长字符串。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">const</span> <span class="built_in">string</span> <span class="title">utf8Cut</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;src, <span class="keyword">int</span> utf8Len)</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> ret;</div><div class="line">  <span class="keyword">int</span> utf8LenCnt = <span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> srcIdx = <span class="number">0</span>;</div><div class="line">  <span class="keyword">int</span> srcLen = src.length();</div><div class="line">  <span class="keyword">int</span> cutLen = <span class="number">0</span>;</div><div class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span> tmp;</div><div class="line">  <span class="keyword">while</span> (utf8LenCnt &lt; utf8Len &amp;&amp;  srcIdx &lt; srcLen) &#123;</div><div class="line">    tmp = (<span class="keyword">unsigned</span> <span class="keyword">char</span>)src[srcIdx];</div><div class="line">    <span class="keyword">if</span> (tmp &gt;= <span class="number">252</span>)</div><div class="line">      cutLen = <span class="number">6</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">248</span>)</div><div class="line">      cutLen = <span class="number">5</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">240</span>)</div><div class="line">      cutLen = <span class="number">4</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">224</span>)</div><div class="line">      cutLen = <span class="number">3</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">192</span>)</div><div class="line">      cutLen = <span class="number">2</span>;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (tmp &gt;= <span class="number">65</span> &amp;&amp; tmp &lt;=<span class="number">90</span>)</div><div class="line">      cutLen = <span class="number">1</span>;</div><div class="line">    <span class="keyword">else</span></div><div class="line">      cutLen = <span class="number">1</span>;</div><div class="line">      ret += src.substr(srcIdx, cutLen);</div><div class="line">      srcIdx += cutLen;</div><div class="line">      ++utf8LenCnt;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> ret;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="字符集与字符编码"><a href="#字符集与字符编码" class="headerlink" title="字符集与字符编码"></a>字符集与字符编码</h2><p><strong>字符集</strong>是一个系统所支持的字符的集合，常见的字符集包括ascii字符集,GB2312字符集,GBK字符集以及unicode字符集。其中ascii字符集包括所有的英文字母数字以及控制字符等等。</p>
-<p><strong>字符编码</strong>是用来定义计算机中某个字符的存储和传输规则。</p>
-<p>区别：字符集仅仅是一个字符集合，与计算机的存储和传输没有关系,而字符编码规定了计算机中字符的编码规则。</p>
-<h3 id="常见的字符集及字符编码"><a href="#常见的字符集及字符编码" class="headerlink" title="常见的字符集及字符编码"></a>常见的字符集及字符编码</h3><ul>
-<li>ascii字符集及字符编码:使用一个字符编码,包括所有的字母数字,换行以及控制字符等。</li>
-<li>GB*字符集及编码:是一种多字节编码标准,GB表示国标,包括GB2312,GBK等编码，2312是标准号，GB2312涵盖了绝大多数的中文，但是一些生僻字不包含在其中，GBK是对GB2312的扩展.</li>
-<li>BIG*:常见的为BIG5字符集及编码，BIG5中收录了大部分的中文繁体，常用语香港台湾等地区。</li>
-<li>unicode字符集及编码:unicode又称为统一码，几乎涵盖了所有国家和地区的所有字符，并还在不断的扩充新字符。unicode是一个字符集，而不是编码规则，我们常见的utf8,utf16以及utf32是unicode常见的字符编码.</li>
-</ul>
-
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2017/11/09/C++截取utf8字符以及字符编码记录/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/07/17/C中编码问题/">
-                            C中编码问题
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-07-17T14:40:31+08:00">
-	
-		    7月 17, 2017
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-学习/">C++学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C中编码问题"><a href="#C中编码问题" class="headerlink" title="C中编码问题"></a>C中编码问题</h1><h2 id="编码介绍"><a href="#编码介绍" class="headerlink" title="编码介绍"></a>编码介绍</h2><p>在代码中我们通常不可避免的出现一些中文，这个时候我们就要考虑到中文的编码格式，如果不注意可能会导致乱码或者信息失真等问题。我们常用的中文编码有GBK,gb2312,Unicode等等。具体详细的介绍看下面几篇文章：</p>
+                    <h1 id="C-输入输出流详细理解"><a href="#C-输入输出流详细理解" class="headerlink" title="C++输入输出流详细理解"></a>C++输入输出流详细理解</h1><p>今天重读C++ Primer时，重新回顾了一下C++中iostream标准库，标准库提供了四个标准输入输出流，包括<strong>输入流cin和输出流cout,cerr,clog</strong>。<strong>cerr通常用来输出警告和错误信息给程序的使用者,而clog对象用于产生程序执行的一般信息。</strong></p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">extern</span> istream <span class="built_in">cin</span>;           <span class="comment">/// Linked to standard input</span></div><div class="line"><span class="keyword">extern</span> ostream <span class="built_in">cout</span>;          <span class="comment">/// Linked to standard output</span></div><div class="line"><span class="keyword">extern</span> ostream <span class="built_in">cerr</span>;          <span class="comment">/// Linked to standard error (unbuffered)</span></div><div class="line"><span class="keyword">extern</span> ostream <span class="built_in">clog</span>;          <span class="comment">/// Linked to standard error (buffered)</span></div></pre></td></tr></table></figure>
+<h2 id="标准输入流"><a href="#标准输入流" class="headerlink" title="标准输入流"></a>标准输入流</h2><p>iostream标准库中标准输入流中只有cin一个，指的是从输入设备(如键盘)中向程序输入数据，程序通过cin从标准输入流中获取数据。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">string</span> s;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cin</span> &gt;&gt; s;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; s &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="标准输出流"><a href="#标准输出流" class="headerlink" title="标准输出流"></a>标准输出流</h2><p>iostream标准库中提供的输出流有cout,cerr,以及clog三个。</p>
+<h3 id="cout-cerr与clog区别"><a href="#cout-cerr与clog区别" class="headerlink" title="cout,cerr与clog区别"></a>cout,cerr与clog区别</h3><p>这三个输出流到底有什么区别呢？根据GNU官方的解释，其区别如下：</p>
 <ul>
-<li><a href="http://www.cnblogs.com/lizhenghn/p/3690406.html" target="_blank" rel="external">http://www.cnblogs.com/lizhenghn/p/3690406.html</a></li>
-<li><a href="http://docs.linuxtone.org/ebooks/C&amp;CPP/c/apas03.html" target="_blank" rel="external">http://docs.linuxtone.org/ebooks/C&amp;CPP/c/apas03.html</a></li>
+<li>cout : 输出数据经过缓冲区(buffered[标准输出流的缓冲区])，可被重定向</li>
+<li>cerr: 输出数据不经过缓冲区(unbuffered),不可被重定向</li>
+<li>clog:输出数据经过缓冲区(buffered[标准错误流的缓冲区])，不可被重定向</li>
 </ul>
-<h2 id="C语言编码转换"><a href="#C语言编码转换" class="headerlink" title="C语言编码转换"></a>C语言编码转换</h2><p>在C语言中，如果需要讲编码进行转换，可以使用iconv系列函数。<br>头文件以及常用函数:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iconv.h&gt;</span></span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">void</span>* <span class="keyword">iconv_t</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> iconv_t <span class="title">iconv_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* to_code, <span class="keyword">const</span> <span class="keyword">char</span>* from_code)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">iconv_close</span><span class="params">(<span class="keyword">iconv_t</span> cd)</span></span>;</div></pre></td></tr></table></figure>
-<h3 id="iconv-open"><a href="#iconv-open" class="headerlink" title="iconv_open"></a>iconv_open</h3><h4 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h4><p>此函数说明将要进行哪两种编码的转换，并返回一个转化句柄。</p>
-<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
-<li>tocode:目标编码</li>
-<li>fromcode : 原编码</li>
+<p>参考链接：</p>
+<p><a href="https://gcc.gnu.org/onlinedocs/gcc-4.6.0/libstdc++/api/a00914_source.html" target="_blank" rel="external">https://gcc.gnu.org/onlinedocs/gcc-4.6.0/libstdc++/api/a00914_source.html</a></p>
+<p><a href="https://gcc.gnu.org/onlinedocs/gcc-4.6.0/libstdc++/api/a01140.html#a7e2a2fc4b5924b7292c0566ca4c95463" target="_blank" rel="external">https://gcc.gnu.org/onlinedocs/gcc-4.6.0/libstdc++/api/a01140.html#a7e2a2fc4b5924b7292c0566ca4c95463</a></p>
+<h3 id="实验程序"><a href="#实验程序" class="headerlink" title="实验程序"></a>实验程序</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">// sleep 10s后输出123</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="string">"123"</span>;</div><div class="line">  sleep(<span class="number">10</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// sleep前输出123</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">   <span class="built_in">cerr</span> &lt;&lt; <span class="string">"123"</span>;</div><div class="line">   sleep(<span class="number">10</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// sleep前输出123</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  <span class="built_in">clog</span> &lt;&lt; <span class="string">"123"</span>;</div><div class="line">  sleep(<span class="number">10</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>​    从上面的实验结果可以看出，cout与cerr的行为与上述cout和cerr的区别一致，但是<strong>从现象看clog并没有buffered</strong>，这是什么原因呢？</p>
+<p>​    产生上述现象的原因从上面三个输出流的定义可以看出，<strong>cout是使用的标准输入(stdout)的缓冲区，clog是使用的标准错误流(stderr)的缓冲区</strong>，由于stderr的缓冲区大小默认为0，所以虽然clog输出流有缓冲，但是缓冲区大小为0,所以上述效果与无缓冲一致。</p>
+<p>​    可通过设置标准错误流的缓冲区来达到clog缓冲的效果。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="keyword">char</span> buffer[<span class="number">256</span>];</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  setbuf(<span class="built_in">stderr</span>, buffer);</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">clog</span> &lt;&lt; <span class="string">"123"</span>;</div><div class="line">  sleep(<span class="number">10</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="endl与-n区别"><a href="#endl与-n区别" class="headerlink" title="endl与\n区别"></a>endl与\n区别</h3><p>​    在使用endl与\n的作用相同，但是还是有一些区别的。</p>
+<ul>
+<li>对于无缓冲的输出流如cerr，endl与\n完全一致。</li>
+<li>对于带缓冲的输出流cout和clog，\n仅仅输出换行,而endl除了输出换行之外，还刷新输出流或错误流缓冲区。</li>
 </ul>
-<h3 id="iconv"><a href="#iconv" class="headerlink" title="iconv"></a>iconv</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div></pre></td></tr></table></figure>
-<h4 id="函数说明-1"><a href="#函数说明-1" class="headerlink" title="函数说明"></a>函数说明</h4><p>此函数用于从inbuf中读取数据并将转换到指定编码的的数据输出到outbuf中，若转换成功，则输出本次转化的字节数，否则返回sizeof_t(-1)</p>
-<h4 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h4><ul>
-<li>cd : 转换描述符,由iconv_open获得</li>
-<li>inbuf:输入缓冲区</li>
-<li>in_left_buf :输入缓冲区还未转换的字符数</li>
-<li>outbuf : 输出缓冲区</li>
-<li>out_len_buf:输出缓冲区的剩余空间.</li>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="comment">// 直接打印到屏幕上：在sleep前输出123</span></div><div class="line"><span class="comment">// 重定向到  文件中: 在sleep前输出123</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"123"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  sleep(<span class="number">3</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 直接打印到屏幕上：在sleep前输出123</span></div><div class="line"><span class="comment">// 重定向到文件中  : 在sleep后输出123</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"123\n"</span>;</div><div class="line">  sleep(<span class="number">3</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>既然\n不刷新缓冲区，那为什么第二个程序在输出到terminal的时候会在sleep前打印123呢？这是由于<strong>当打印到屏幕上的时候，输出流的缓冲为行缓冲，当重定向到文件中时候，输出流缓冲为全缓冲</strong></p>
+<h3 id="行缓冲与全缓冲"><a href="#行缓冲与全缓冲" class="headerlink" title="行缓冲与全缓冲"></a>行缓冲与全缓冲</h3><p>从上面可以看出标准输出在输出到屏幕和输出到文件中默认的缓冲类型不一致，当输出到屏幕的时候，为行缓冲；当输出到文件的时候为全缓冲。</p>
+<ul>
+<li>全缓冲：填满标准I/O缓冲区才进行实际的I/O操作。</li>
+<li>行缓冲：当缓冲区内容遇到换行时，即进行实际的I/O操作。</li>
 </ul>
-<h3 id="iconv-close"><a href="#iconv-close" class="headerlink" title="iconv_close"></a>iconv_close</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">iconv_close</span><span class="params">(<span class="keyword">iconv_t</span> cd)</span></span>;</div></pre></td></tr></table></figure>
-<p>用于关闭iconv_open打开的文件描述符</p>
-<h2 id="举例转换函数"><a href="#举例转换函数" class="headerlink" title="举例转换函数"></a>举例转换函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iconv.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="built_in">string</span> <span class="title">convertCode</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; p_str, <span class="keyword">const</span> <span class="keyword">char</span>* from, <span class="keyword">const</span> <span class="keyword">char</span>* to)</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span> * <span class="built_in">sin</span>, * sout;</div><div class="line">  <span class="keyword">int</span> lenin, lenout, ret;</div><div class="line">  <span class="keyword">const</span> <span class="keyword">int</span> BUF_LEN = <span class="number">10240</span>;</div><div class="line">  <span class="keyword">char</span> bufOut[BUF_LEN];</div><div class="line">  <span class="function"><span class="built_in">string</span> <span class="title">result</span><span class="params">(<span class="string">""</span>)</span></span>;</div><div class="line"></div><div class="line">  <span class="built_in">memset</span>(bufOut, <span class="number">0x0</span>, <span class="keyword">sizeof</span>(bufOut));</div><div class="line"></div><div class="line"></div><div class="line">  <span class="keyword">iconv_t</span> cd;</div><div class="line">  <span class="keyword">if</span> ((cd = iconv_open(to, from)) == (<span class="keyword">iconv_t</span>)(<span class="number">-1</span>)) &#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"open iconv error"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">return</span> <span class="string">""</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  lenin = p_str.length();</div><div class="line">  lenout = BUF_LEN;</div><div class="line"></div><div class="line">  <span class="built_in">sin</span> = (<span class="keyword">char</span>*)p_str.c_str();</div><div class="line">  sout = bufOut;</div><div class="line"><span class="comment">//  std::cout &lt;&lt; sin &lt;&lt; std::endl;</span></div><div class="line">  <span class="comment">//std::cout &lt;&lt; lenin &lt;&lt; std::endl;</span></div><div class="line">  <span class="comment">//std::cout &lt;&lt; lenout &lt;&lt; std::endl;</span></div><div class="line"></div><div class="line">  ret = iconv(cd, &amp;<span class="built_in">sin</span>, <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span> * &gt;(&amp;lenin), &amp;sout, <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span> * &gt;(&amp;lenout));</div><div class="line"></div><div class="line">  <span class="comment">//errno:84:Invalid or incomplate multibyte or wide character</span></div><div class="line">  <span class="keyword">if</span> (<span class="number">-1</span> == ret) &#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; strerror(errno) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">    <span class="keyword">if</span> (errno != <span class="number">84</span>) &#123;</div><div class="line">      <span class="keyword">return</span> <span class="string">""</span>;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"bufout:"</span> &lt;&lt; bufOut &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"bufout end"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  iconv_close(cd);</div><div class="line"></div><div class="line">  result.assign(bufOut, BUF_LEN - lenout);</div><div class="line"></div><div class="line">  <span class="keyword">return</span> result;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">string</span> s = <span class="string">"哈哈"</span>;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; s.length() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">  s = convertCode(s, <span class="string">"gbk"</span>, <span class="string">"utf-8//IGNORE"</span>);</div><div class="line">  <span class="comment">//std::cout &lt;&lt; s &lt;&lt; std::endl;</span></div><div class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; s.length() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="iconv函数出现段错误的原因"><a href="#iconv函数出现段错误的原因" class="headerlink" title="iconv函数出现段错误的原因"></a>iconv函数出现段错误的原因</h2><p>使用iconv函数进行转换的时候可能会出现段错误，这里出现这个错误的主要原因是注意看iconv函数的函数原型:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">iconv</span><span class="params">(<span class="keyword">iconv_t</span> cd, <span class="keyword">char</span>** <span class="keyword">restrict</span> inbuf, <span class="keyword">size_t</span>* in_left_buf, <span class="keyword">char</span>** <span class="keyword">restrict</span> outbuf, <span class="keyword">size_t</span>* out_left_buf)</span></span>;</div></pre></td></tr></table></figure></p>
-<p>长度为size_t的指针，<strong>int指针转换为size_t指针在一些系统的转换过程会出现问题</strong>，导致长度出现错误，内存越界，出现段错误。错误信息如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Program received signal SIGSEGV, Segmentation fault.</div><div class="line">from_gbk (irreversible=0x7fffffffb188, outend=0x61d7c0 &quot;&quot;, outptrp=&lt;synthetic pointer&gt;,</div><div class="line">    inend=0xa7ffffffdb76 &lt;error: Cannot access memory at address 0xa7ffffffdb76&gt;,</div><div class="line">    inptrp=0x7fffffffb2e8, step_data=0x6157d0, step=0x615030) at ../iconv/loop.c:325</div><div class="line">325	../iconv/loop.c: No such file or directory.</div></pre></td></tr></table></figure>
-<h3 id="size-t与int类型"><a href="#size-t与int类型" class="headerlink" title="size_t与int类型"></a>size_t与int类型</h3><p>size_t类型是在stddef.h文件中定义。size_t的类型与操作系统相关，在32位架构中被普遍定义为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">size_t</span>;</div></pre></td></tr></table></figure></p>
-<p>在64为机器中被定义为:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">size_t</span>;</div></pre></td></tr></table></figure></p>
-<p>int类型在32和64为机器上的长度都是4位，long在32位机器为4位，在64位机器为8位。所以在64为机器上,size_t和int指针转换的过程中一定会出现问题，在32为系统中的正整数指针不会指针，但是负整数也会出现问题。</p>
+<p>所以当cout打印到屏幕上的时候，使用cout&lt;&lt;”\n”，也会立即显示结果。</p>
 
                     
                         
                     
                     
                         <p>
-                            <a href="/2017/07/17/C中编码问题/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2018/11/11/C++输入输出流详细理解/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
@@ -451,21 +295,21 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2017/04/07/free如何知道要free多大的空间/">
-                            C语言free如何知道要free多大的空间
+                        <a class="link-unstyled" href="/2018/07/04/C++作用域运算符/">
+                            C++作用域运算符
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-04-07T10:50:31+08:00">
+    <time itemprop="datePublished" datetime="2018-07-04T23:47:20+08:00">
 	
-		    4月 07, 2017
+		    7月 04, 2018
     	
     </time>
     
         <span>in </span>
         
-    <a class="category-link" href="/categories/C-学习/">C++学习</a>
+    <a class="category-link" href="/categories/C-学习/">C++ 学习</a>
 
 
     
@@ -474,80 +318,27 @@
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <p>在C语言中，当向一个函数传递指针的时候，它的长度信息往往会被截断（如果是数组名），传入函数的只是一个指针，而无法标示数组的长度，在函数中我们也无法获取它的长度信息，除非显示的传递一个长度参数。但是使用free函数的过程中，我们只是向free中传递了一个指针，并没有标示它的大小，那free是如何知道将要被free掉的内存的大小呢？下面将详细解答这一问题。</p>
-<p>malloc函数的实现是以块分配内存，在被分配的块中包括两部分。<strong>第一部分中存储含有报头的元数据，它其中包含有分配块的大小信息，是一个常量；第二部分中存储实际用户数据</strong>。而使用malloc分配内存返回的是第二部分用户数据的地址。而块的两个部分在内存中的存储取决有编译器的实现，一般有两种情况，第一种是最常见的，即元数据和用户数据是连续的，存储在连续空间位置。第二种是两部分分开存储。</p>
-<p>对于第一种情况，malloc分配内存的空间图如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">____ The allocated block ____</div><div class="line">/                             \</div><div class="line">+--------+--------------------+</div><div class="line">| Header | Your data area ... |</div><div class="line">+--------+--------------------+</div><div class="line">         ^</div><div class="line">         |</div><div class="line">         +-- The address you are given</div></pre></td></tr></table></figure>
-<p>对于上述情况，malloc中内存转换实现方式为：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* The corresponding word size */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> SIZE_SZ                (sizeof(INTERNAL_SIZE_T))</span></div><div class="line">...</div><div class="line"><span class="comment">/* conversion from malloc headers to user pointers, and back */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> chunk2mem(p) ((void*)((char*)(p) + 2*SIZE_SZ))</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> mem2chunk(mem) ((mchunkptr)((char*)(mem) - 2*SIZE_SZ))</span></div></pre></td></tr></table></figure></p>
-<p>如上源码我们可以看出来，chunk2mem将原始指针转换为user_data的指针，mem2chunk做了相反的转换。这个时候free的实现为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span>* mem)</span> </span>&#123;</div><div class="line">  p = mem2chunk(mem);</div><div class="line">  <span class="comment">// Now that you know how large is chunk "p", go ahead and free the chunk.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>同时，我们通过实验可以推测，标准库对void*的operator=做了重载。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">#include &lt;iostream&gt;</div><div class="line"></div><div class="line">int main() &#123;</div><div class="line">  int *a = (int*)malloc(sizeof(int));</div><div class="line">  int *b = (int*)malloc(sizeof(int));</div><div class="line">  short *c = (short*)malloc(sizeof(short));</div><div class="line">  std::cout &lt;&lt; a &lt;&lt; std::endl</div><div class="line">            &lt;&lt; b &lt;&lt; std::endl</div><div class="line">            &lt;&lt; c &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; b - a &lt;&lt; std::endl;</div><div class="line">  std::cout &lt;&lt; reinterpret_cast&lt;size_t&gt;(b) - reinterpret_cast&lt;size_t&gt;(a) &lt;&lt; std::endl;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>输出结果为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">0x10b5c20</div><div class="line">0x10b5c40</div><div class="line">0x10b5c60</div><div class="line">8</div><div class="line">32</div></pre></td></tr></table></figure></p>
-<p>参考:</p>
-<p><a href="https://www.quora.com/How-does-free-function-in-C-knows-how-much-memory-to-be-released-deallocate" target="_blank" rel="external">https://www.quora.com/How-does-free-function-in-C-knows-how-much-memory-to-be-released-deallocate</a></p>
-<p><a href="http://stackoverflow.com/questions/1518711/how-does-free-know-how-much-to-free" target="_blank" rel="external">http://stackoverflow.com/questions/1518711/how-does-free-know-how-much-to-free</a></p>
+                    <h1 id="C-作用域运算符"><a href="#C-作用域运算符" class="headerlink" title="C++作用域运算符"></a>C++作用域运算符</h1><blockquote>
+<p> C++作用域运算符是C++运算符中等级最高的。::运算符的本质是：左操作数为域，是一个scope，右操作数是这个scope中的一个名字，它可以是一个scope、class、member、function或者variable等。</p>
+<p> google style对域作用符的建议和说明可参考：</p>
+<p> <a href="http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/scoping/#namespaces" target="_blank" rel="external">http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/scoping/#namespaces</a></p>
+</blockquote>
+<h2 id="作用域运算符作用"><a href="#作用域运算符作用" class="headerlink" title="作用域运算符作用"></a>作用域运算符作用</h2><p>::的作用主要包括以下三种：</p>
+<ul>
+<li>全局作用域符（::name）</li>
+<li>类作用域符（class::name）</li>
+<li>命名空间作用域符（namespace::name）</li>
+</ul>
+<p>后两种比较常见，不做说明。全局作用符的作用是：如果程序中既定义了全局变量a，也定义了局部变量a，此时若要访问全局变量a，则需要使用::a来访问全局变量a。</p>
+<p>当作为类作用符时可用来决议多继承中的重名成员，指定类成员及函数等。</p>
+<p>当作为命名空间域作用符时可有效的防止全局作用域命名冲突。</p>
 
                     
                         
                     
                     
                         <p>
-                            <a href="/2017/04/07/free如何知道要free多大的空间/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/12/22/C-前置声明/">
-                            C++前置声明
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-12-22T22:08:31+08:00">
-	
-		    12月 22, 2016
-    	
-    </time>
-    
-        <span>in </span>
-        
-    <a class="category-link" href="/categories/C-学习/">C++学习</a>
-
-
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="C-前置声明"><a href="#C-前置声明" class="headerlink" title="C++前置声明"></a>C++前置声明</h1><p>以个人理解，C++的前置声明的意思是在类定义之前对其进行声明。它在现实编程的场景中可以解决很多问题。比如解决两个类相互依赖的问题，降低类之间的编译依存关系等等。</p>
-<h2 id="实际场景"><a href="#实际场景" class="headerlink" title="实际场景"></a>实际场景</h2><p>我们分别定义一个锁(Lock)和钥匙(Key)的类(默认一把钥匙只能开一把锁，一把锁只能被一把钥匙打开)。代码如下：<br>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Key.hpp"</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span> &#123;</span></div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key m_key;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Lock.hpp"</span></span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Key</span> &#123;</span></div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		m_lock;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这个时候出现了两个类相互包含的情况，因为在编译Lock.cpp的时候，我们需要去查看Key的定义，于是去定义Key,在Key中需要Lock的定义，于是又去构造Lock,这样下去，就出现了一个无限循环包含的情况，有些编译器会直接编译错误，而其他编译器会无限包含下去。<br>这该怎么办呢？有办法，C++为我们提供了前置声明。前置声明是什么？就这个例子来讲，我们要造一把锁，光有锁不行啊，我们还得有能打开这把锁的钥匙。但是锁还没有造好，总不能先打造钥匙吧，钥匙的形状我定了，改天在造。先把锁造好，造锁的时候我要先给要是留一个位置，等锁造好了，我再决定造什么样的钥匙。<strong>前置声明就是我在声明一个类(Lock)的时候,用到了另外一个类（Key）的定义，但是Key还没定义呢，而且我先不需要Key的定义，只需要直到Key是一个类就好了。那好，我就先声明类Key,告诉编译器Key是一个类(不需要包含Key.hpp)</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Key</span>;</span></div></pre></td></tr></table></figure></p>
-<p>然后在Lock中用到Key的时候，都用指针或者引用代替(因为指针是固定大小的，但Key的大小只有知道了Key的定义才能确定)。然后上面的代码就可以改造为如下：</p>
-<p>Lock.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Key</span>;</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span>&#123;</span></div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Key *mp_key;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Lock();</div><div class="line">		<span class="keyword">virtual</span> ~Lock();</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>Key.hpp<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span>;</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Key</span> &#123;</span></div><div class="line">	<span class="keyword">private</span>:</div><div class="line">		Lock* mp_lock;</div><div class="line">	<span class="keyword">public</span>:</div><div class="line">		Key();</div><div class="line">		<span class="keyword">virtual</span> ~Key();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="前置声明注意的问题"><a href="#前置声明注意的问题" class="headerlink" title="前置声明注意的问题"></a>前置声明注意的问题</h2><h3 id="必须使用前置声明的指针或引用形式"><a href="#必须使用前置声明的指针或引用形式" class="headerlink" title="必须使用前置声明的指针或引用形式"></a>必须使用前置声明的指针或引用形式</h3><p>在需要使用前置声明的文件中，不可以使用类的定义式，因为类的定义式只有在类定义之后才能获取，这个时候类还没有定义，所以会出错。另一个类在构造的时候编译器是需要计算该对象所占的字节的大小给其分配内存的，但是如果使用类的定义式，这个时候类还未定义，所以无法计算其大小，所以只能使用指针或者引用的形式进行引用。</p>
-<h3 id="避免在Lock中使用Key的方法"><a href="#避免在Lock中使用Key的方法" class="headerlink" title="避免在Lock中使用Key的方法"></a>避免在Lock中使用Key的方法</h3><h3 id="避免在Key定义之前调用Key的析构函数"><a href="#避免在Key定义之前调用Key的析构函数" class="headerlink" title="避免在Key定义之前调用Key的析构函数"></a>避免在Key定义之前调用Key的析构函数</h3>
-                    
-                        
-                    
-                    
-                        <p>
-                            <a href="/2016/12/22/C-前置声明/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2018/07/04/C++作用域运算符/#post-footer" class="postShorten-excerpt_link link">
                                 Comment and share
                             </a>
                         </p>
